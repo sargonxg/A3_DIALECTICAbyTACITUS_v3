@@ -28,6 +28,7 @@ capsule/
   retrieval_pack.jsonl
   output_contracts.json
   review_ledger.jsonl
+  capsule_health.json
   eval_report.json
   checksums.sha256
   signature.json
@@ -51,6 +52,7 @@ Required fields:
 - `review_state`
 - `bundle_digest`
 - `compiler_version`
+- `capsule_health`
 
 ## `capsule.json`
 
@@ -255,6 +257,27 @@ Allowed decisions:
 - `needs_revision`
 - `approved_with_caveats`
 - `escalated`
+
+## `capsule_health.json`
+
+Required fields:
+
+- `capsule_id`
+- `schema_version`
+- `source_coverage`
+- `unsupported_claim_count`
+- `stale_claim_count`
+- `contested_claim_count`
+- `graph_provenance_coverage`
+- `ontology_coverage`
+- `review_coverage`
+- `reasoning_device_coverage`
+- `output_contract_completeness`
+- `praxis_eval_score`
+- `blocking_warnings`
+- `recommended_next_actions`
+
+Capsule health is a gate. It should not be only a UI score.
 
 ## Compatibility Rules
 

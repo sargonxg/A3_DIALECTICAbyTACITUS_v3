@@ -195,6 +195,46 @@ adapters until an ADR promotes them.
 - `created_at`
 - `expires_at`
 
+### `reasoning_devices`
+
+- `id`
+- `capsule_id`
+- `device_type`
+- `label`
+- `purpose`
+- `method_steps_json`
+- `failure_modes_json`
+- `review_state`
+- `created_by_run_id`
+
+### `capsule_health_reports`
+
+- `id`
+- `capsule_id`
+- `source_coverage`
+- `unsupported_claim_count`
+- `stale_claim_count`
+- `contested_claim_count`
+- `review_coverage`
+- `reasoning_device_coverage`
+- `praxis_eval_score`
+- `blocking_warnings_json`
+- `recommended_next_actions_json`
+- `created_at`
+
+### `capsule_read_receipts`
+
+- `id`
+- `capsule_id`
+- `praxis_run_id`
+- `workflow`
+- `bundle_digest`
+- `source_ids_json`
+- `claim_ids_json`
+- `reasoning_device_ids_json`
+- `warnings_triggered_json`
+- `created_at`
+
 ### `bundle_exports`
 
 - `id`
@@ -217,6 +257,7 @@ Initial indexes:
 - graph edge from/to node ids;
 - review object lookup;
 - bundle digest.
+- capsule read receipts by capsule and PRAXIS run.
 
 Optional later indexes:
 

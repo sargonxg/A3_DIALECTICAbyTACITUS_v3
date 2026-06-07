@@ -9,14 +9,17 @@ When documents conflict, use this order:
 1. `docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md`
 2. `docs/SOURCE_OF_TRUTH.md`
 3. `docs/MVP_DEFINITION.md`
-4. `docs/CAPSULE_SPEC.md`
-5. `docs/API_CONTRACT.md`
-6. `docs/DATA_MODEL.md`
-7. `docs/ARCHITECTURE.md`
-8. `docs/DEPLOYMENT.md`
-9. `docs/PRAXIS_INTEGRATION.md`
-10. ADRs in `docs/decisions/`
-11. Implementation notes in issues, PRs, and comments
+4. `docs/TECH_BENCHMARK.md`
+5. `docs/CAPSULE_FORMAL_MODEL.md`
+6. `docs/CAPSULE_SPEC.md`
+7. `docs/INTELLECTUAL_TOOLS.md`
+8. `docs/API_CONTRACT.md`
+9. `docs/DATA_MODEL.md`
+10. `docs/ARCHITECTURE.md`
+11. `docs/DEPLOYMENT.md`
+12. `docs/PRAXIS_INTEGRATION.md`
+13. ADRs in `docs/decisions/`
+14. Implementation notes in issues, PRs, and comments
 
 If an implementation contradicts a higher-priority document, update the
 document through an ADR or stop and ask for a product decision.

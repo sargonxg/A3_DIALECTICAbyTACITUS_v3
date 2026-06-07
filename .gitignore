@@ -18,7 +18,8 @@ secrets/
 # Rust
 /target/
 **/*.rs.bk
-Cargo.lock
+# Commit Cargo.lock once the Rust workspace lands; DIALECTICA is an application
+# and service repo, not a reusable library-only crate.
 
 # Node and tooling
 node_modules/

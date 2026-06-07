@@ -10,12 +10,16 @@ Before implementation work, read:
 1. `docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md`
 2. `docs/SOURCE_OF_TRUTH.md`
 3. `docs/MVP_DEFINITION.md`
-4. `docs/CAPSULE_SPEC.md`
-5. `docs/API_CONTRACT.md`
-6. `docs/DATA_MODEL.md`
-7. `docs/ARCHITECTURE.md`
-8. `docs/IMPLEMENTATION_BLUEPRINT.md`
-9. `docs/BUILD_LEDGER.md`
+4. `docs/TECH_BENCHMARK.md`
+5. `docs/CAPSULE_FORMAL_MODEL.md`
+6. `docs/CAPSULE_SPEC.md`
+7. `docs/INTELLECTUAL_TOOLS.md`
+8. `docs/API_CONTRACT.md`
+9. `docs/DATA_MODEL.md`
+10. `docs/ARCHITECTURE.md`
+11. `docs/IMPLEMENTATION_BLUEPRINT.md`
+12. `docs/AGENTIC_WORKFLOWS.md`
+13. `docs/BUILD_LEDGER.md`
 
 ## Non-Negotiables
 

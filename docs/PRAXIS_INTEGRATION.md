@@ -140,10 +140,46 @@ The agent should return:
 
 - answer or artifact;
 - capsule ids used;
+- bundle digest used;
 - source ids cited;
+- claim ids cited;
+- reasoning device ids applied;
 - unresolved uncertainties;
 - capsule warnings triggered;
 - follow-up source gaps.
+
+## Read Receipts
+
+PRAXIS should record capsule read receipts when a capsule materially affects an
+answer, memo, agent run, or handover.
+
+Minimum receipt fields:
+
+- PRAXIS run id or conversation id;
+- capsule id;
+- bundle digest;
+- context pack version;
+- source ids;
+- claim ids;
+- reasoning device ids;
+- warnings triggered;
+- review state at use time.
+
+These receipts let DIALECTICA and PRAXIS measure which capsules improve real
+workflows and which ones need review, refresh, or retirement.
+
+## Capsule+ Compatibility
+
+PRAXIS already has Capsule+ as a portable, review-gated graph bundle concept.
+DIALECTICA graph slices should be designed so they can map cleanly into
+Capsule+ graph proposals:
+
+- source-backed nodes and edges;
+- confidence;
+- review state;
+- owner/capsule scoping;
+- advisory markers for unapproved items;
+- GraphLite seed compatibility if PRAXIS exports it.
 
 ## Compatibility With Existing PRAXIS Direction
 

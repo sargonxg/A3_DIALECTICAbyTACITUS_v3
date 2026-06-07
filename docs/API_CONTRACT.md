@@ -133,6 +133,13 @@ Response:
   "temporal_warnings": [],
   "reasoning_devices": [],
   "output_contract": {},
+  "capsule_health": {},
+  "read_receipt_hints": {
+    "bundle_digest": "sha256:...",
+    "source_ids": [],
+    "claim_ids": [],
+    "reasoning_device_ids": []
+  },
   "forbidden_claims": [],
   "review_state": "approved"
 }
@@ -193,6 +200,28 @@ Response:
   "export_id": "export_123",
   "status": "queued",
   "format": "directory_or_archive"
+}
+```
+
+### Record Capsule Read Receipt
+
+```http
+POST /v1/capsules/{capsule_id}/read-receipts
+```
+
+Use when PRAXIS uses a capsule in an answer, agent run, memo, or handover.
+
+Request:
+
+```json
+{
+  "praxis_run_id": "run_123",
+  "workflow": "decision_brief",
+  "bundle_digest": "sha256:...",
+  "source_ids": ["source_1"],
+  "claim_ids": ["claim_1"],
+  "reasoning_device_ids": ["actor_incentive_map"],
+  "warnings_triggered": ["stale_claim"]
 }
 ```
 

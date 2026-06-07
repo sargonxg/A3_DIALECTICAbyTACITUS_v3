@@ -1,8 +1,12 @@
-# DIALECTICA by TACITUS v3
+<p align="center">
+  <img src="assets/dialectica-mark.svg" alt="DIALECTICA by TACITUS" width="760">
+</p>
 
 ![Status](https://img.shields.io/badge/status-design%20source%20of%20truth-blue)
 ![Runtime](https://img.shields.io/badge/runtime-Cloud%20Run%20first-4285F4)
 ![Store](https://img.shields.io/badge/store-Cloud%20SQL%20PostgreSQL-336791)
+![Capsule](https://img.shields.io/badge/capsule-signed%20bundle-111827)
+![PRAXIS](https://img.shields.io/badge/serves-PRAXIS%20Capsules-0F766E)
 ![License](https://img.shields.io/badge/license-proprietary-lightgrey)
 
 DIALECTICA is the internal TACITUS capsule intelligence engine for PRAXIS.
@@ -19,6 +23,23 @@ The technical thesis is:
 
 > A capsule is a signed, portable, self-describing analytical context object: a
 > model of a situation plus a model of how to think about it.
+
+## Why This Exists
+
+Generic LLM generation loses the things policy teams care about most: source
+status, time, institutional context, contested facts, tacit expert reasoning,
+review gates, and handover memory. DIALECTICA fixes that by compiling these
+elements into a portable capsule that PRAXIS can inspect and use.
+
+```mermaid
+flowchart LR
+  Sources["Sources<br/>docs, notes, feeds, interactions"] --> Ledger["Source ledger<br/>spans, hashes, trust"]
+  Ledger --> Situation["Situation model<br/>actors, claims, time, risks"]
+  Situation --> Reasoning["Reasoning playbook<br/>methods, lenses, heuristics"]
+  Reasoning --> Review["Human gate<br/>approve, reject, caveat"]
+  Review --> Bundle["Signed PRAXIS Capsule<br/>portable context bundle"]
+  Bundle --> Praxis["PRAXIS workflows<br/>Ask, agents, memos, handover"]
+```
 
 ## What DIALECTICA Builds
 
@@ -42,17 +63,40 @@ carry the real context policy teams need:
 
 PRAXIS remains the visible cockpit. DIALECTICA is the engine behind it.
 
-```text
-Policy sources + user context + interactions + expert review
-        |
-        v
-DIALECTICA ingestion, reasoning, ontology, graph, and review engine
-        |
-        v
-Signed PRAXIS Capsule bundle
-        |
-        v
-PRAXIS agentic workflows, Ask PRAXIS, memos, analysis chains, simulations
+```mermaid
+flowchart TB
+  subgraph P["PRAXIS"]
+    Ask["Ask PRAXIS"]
+    Workbench["Capsule workbench"]
+    Runs["Agent runs and receipts"]
+    Memos["Memo and brief outputs"]
+  end
+
+  subgraph D["DIALECTICA"]
+    API["Capsule API"]
+    Ingest["Ingestion workers"]
+    Compiler["Capsule compiler"]
+    Review["Review gate"]
+    Eval["Eval harness"]
+  end
+
+  subgraph Store["Canonical substrate"]
+    PG["Cloud SQL PostgreSQL"]
+    GCS["Cloud Storage bundles"]
+    Tasks["Cloud Tasks / Pub/Sub"]
+  end
+
+  Ask --> API
+  Workbench --> API
+  API --> Tasks
+  Tasks --> Ingest
+  Ingest --> PG
+  PG --> Compiler
+  Review --> Compiler
+  Compiler --> GCS
+  Compiler --> Eval
+  GCS --> Runs
+  Runs --> Memos
 ```
 
 Public product language should say **PRAXIS Capsules**, **Capsules**, **Capsule
@@ -93,6 +137,33 @@ Canonical stores:
 - **Firestore adapter** where PRAXIS needs capsule visibility in its current
   user-facing surfaces.
 - Optional graph/semantic adapters only after the base contract is stable.
+
+## Capsule Formal Model
+
+At MVP scale, a capsule is:
+
+```text
+Capsule = Identity + Situation + Sources + Time + Ontology + Graph
+        + Reasoning Devices + Retrieval Pack + Output Contracts
+        + Review Ledger + Evaluation Report + Signature
+```
+
+The most important distinction is between **canonical records** and **derived
+adapters**.
+
+```mermaid
+flowchart LR
+  Canonical["Canonical records<br/>Postgres + source artifacts"] --> Export["Capsule bundle"]
+  Canonical --> Derived["Derived adapters"]
+  Derived --> Graph["Graph summaries"]
+  Derived --> Vector["Embeddings"]
+  Derived --> MCP["MCP/resources"]
+  Derived --> Memory["Advisory memory"]
+  Export --> PraxisPack["PRAXIS context pack"]
+```
+
+Graph, vector, MCP, and memory planes can make retrieval better, but they do not
+replace the capsule bundle or PostgreSQL ledger in the MVP.
 
 ## Deployment Direction
 
@@ -139,13 +210,34 @@ Primary source anchors:
 
 See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for the full deployment decision.
 
+## Benchmark-Informed Position
+
+The current AI memory and knowledge-graph ecosystem points to four useful
+patterns:
+
+| Pattern | What to learn | DIALECTICA stance |
+| --- | --- | --- |
+| Temporal context graphs | Time, provenance, and evolving facts matter for agents operating on changing facts. | Adopt temporal/provenance semantics, but keep Postgres and bundle export canonical. |
+| Agent memory layers | Agents need durable user/session/project state. | Capture memory as reviewed capsule records, not uncontrolled chat memory. |
+| GraphRAG pipelines | Graph structure improves synthesis over private corpora. | Use graph slices and evals, but avoid expensive batch graph dependency for MVP. |
+| Agent orchestration runtimes | Long-running workflows need persistence, human gates, and traces. | PRAXIS owns visible agent runs; DIALECTICA supplies capsule context and receipts. |
+
+See [docs/TECH_BENCHMARK.md](docs/TECH_BENCHMARK.md) for sources and lessons
+from Graphiti/Zep, Cognee, Mem0, Khoj, Letta, Microsoft GraphRAG, LangGraph,
+MCP, and the OpenAI Agents SDK.
+
 ## Repository Map
 
 ```text
+assets/
+  dialectica-mark.svg                    GitHub README mark
 docs/
   DIALECTICA_v3_BUILD_INSTRUCTIONS.md   imported canonical build spec
   SOURCE_OF_TRUTH.md                    document priority and working rules
   MVP_DEFINITION.md                      first product slice and non-goals
+  TECH_BENCHMARK.md                      research and ecosystem comparison
+  CAPSULE_FORMAL_MODEL.md                formal capsule layers and invariants
+  INTELLECTUAL_TOOLS.md                  policy reasoning devices and capture
   ARCHITECTURE.md                       system architecture and data flow
   API_CONTRACT.md                        API endpoints PRAXIS will consume
   CAPSULE_SPEC.md                       capsule bundle contract
@@ -156,6 +248,9 @@ docs/
   LOCAL_DEVELOPMENT.md                  local dev and fixture workflow
   CI_CD.md                              continuous integration and release gates
   REPOSITORY_STRUCTURE.md               ownership map for repo directories
+  AGENTIC_WORKFLOWS.md                  Codex agent swarm lanes and gates
+  PRAXIS_REPO_ALIGNMENT.md              integration seams from PRAXIS repo
+  RESEARCH_BACKLOG.md                   research tracks for future improvement
   AGENT_GUIDE.md                        build lanes for future agents
   BUILD_LEDGER.md                       decisions, tasks, and evidence trail
   DEPENDENCIES.md                       dependency candidates and constraints
@@ -205,6 +300,7 @@ Start here:
 5. Read [docs/API_CONTRACT.md](docs/API_CONTRACT.md).
 6. Read [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 7. Read [docs/IMPLEMENTATION_BLUEPRINT.md](docs/IMPLEMENTATION_BLUEPRINT.md).
+8. Read [docs/INTELLECTUAL_TOOLS.md](docs/INTELLECTUAL_TOOLS.md).
 
 ## First Build Commands
 

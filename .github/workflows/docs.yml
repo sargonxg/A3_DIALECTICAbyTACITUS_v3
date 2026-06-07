@@ -20,7 +20,10 @@ jobs:
           test -f docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md
           test -f docs/SOURCE_OF_TRUTH.md
           test -f docs/MVP_DEFINITION.md
+          test -f docs/TECH_BENCHMARK.md
+          test -f docs/CAPSULE_FORMAL_MODEL.md
           test -f docs/CAPSULE_SPEC.md
+          test -f docs/INTELLECTUAL_TOOLS.md
           test -f docs/API_CONTRACT.md
           test -f docs/DATA_MODEL.md
           test -f docs/ARCHITECTURE.md
@@ -29,4 +32,7 @@ jobs:
           test -f docs/LOCAL_DEVELOPMENT.md
           test -f docs/CI_CD.md
           test -f docs/REPOSITORY_STRUCTURE.md
+          test -f docs/AGENTIC_WORKFLOWS.md
+          test -f docs/PRAXIS_REPO_ALIGNMENT.md
+          test -f docs/RESEARCH_BACKLOG.md
           test -f docs/BUILD_LEDGER.md

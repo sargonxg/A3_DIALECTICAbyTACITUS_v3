@@ -20,6 +20,9 @@ Actions:
 - added second-pass build scaffolding docs for MVP definition, API contract,
   data model, local development, CI/CD, repository structure, and dependency
   source anchors.
+- added final pre-push polish with README diagrams, SVG mark, tech benchmark,
+  formal capsule model, intellectual tools guide, agentic workflow lanes,
+  PRAXIS repo alignment, research backlog, and benchmark-informed ADR.
 
 Evidence:
 
@@ -36,6 +39,7 @@ Evidence:
 | ADR-002 | Cloud Run first, GKE Autopilot later if proven | accepted | `docs/decisions/ADR-002-cloud-run-first-deployment.md` |
 | ADR-003 | PostgreSQL first operational store | accepted | `docs/decisions/ADR-003-postgres-first-operational-store.md` |
 | ADR-004 | Rust service stack: Tokio, Axum, SQLx, Serde, Schemars, tracing | accepted | `docs/decisions/ADR-004-rust-service-stack.md` |
+| ADR-005 | Benchmark-informed capsule engine posture | accepted | `docs/decisions/ADR-005-benchmark-informed-capsule-engine-posture.md` |
 
 ## Next Build Tasks
 

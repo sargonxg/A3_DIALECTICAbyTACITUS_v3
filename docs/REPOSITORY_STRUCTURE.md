@@ -7,9 +7,11 @@ README.md
 AGENTS.md
 LICENSE
 NOTICE
+SUPPORT.md
 CONTRIBUTING.md
 SECURITY.md
 CODE_OF_CONDUCT.md
+assets/
 docs/
 crates/
 services/
@@ -24,6 +26,13 @@ tests/
 Source-of-truth documentation, architecture decisions, and build plans.
 
 Changes here should explain why the system works the way it does.
+
+## `assets/`
+
+Lightweight repository graphics and documentation assets.
+
+The current SVG mark is for GitHub presentation, not final TACITUS brand
+identity.
 
 ## `crates/`
 
