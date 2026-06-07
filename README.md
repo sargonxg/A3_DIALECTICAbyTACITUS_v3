@@ -90,6 +90,10 @@ and usage constraints.
 See [docs/ABOUT_DIALECTICA.md](docs/ABOUT_DIALECTICA.md) for the product
 definition.
 
+<p align="center">
+  <img src="assets/agent-build-flow.svg" alt="DIALECTICA agent build flow" width="900">
+</p>
+
 ## TACITUS System Map
 
 ```text
@@ -448,6 +452,22 @@ See [docs/TECH_BENCHMARK.md](docs/TECH_BENCHMARK.md) for sources and lessons
 from Graphiti/Zep, Cognee, Mem0, Khoj, Letta, Microsoft GraphRAG, LangGraph,
 MCP, and the OpenAI Agents SDK.
 
+## Research Memory
+
+Future agents should not rediscover the same architecture from scratch. The
+repo keeps a durable research ledger that turns source links into design
+conclusions, refresh triggers, and implementation constraints.
+
+<p align="center">
+  <img src="assets/research-ledger.svg" alt="DIALECTICA research ledger" width="900">
+</p>
+
+Start from [docs/RESEARCH_LEDGER.md](docs/RESEARCH_LEDGER.md) before adding a
+graph, memory, MCP, ontology, agent, or cloud adapter. The current conclusion is
+clear: the signed capsule bundle and Cloud SQL PostgreSQL records are
+canonical; Firestore is the PRAXIS visibility mirror; graph/vector/MCP/memory
+systems are derived adapters until an ADR and eval evidence promote them.
+
 ## Repository Map
 
 ```text
@@ -455,6 +475,8 @@ assets/
   dialectica-mark.svg                    GitHub README mark
   capsule-stack.svg                      capsule stack diagram
   embedded-graph.svg                     embedded graph diagram
+  agent-build-flow.svg                   build order diagram for future agents
+  research-ledger.svg                    research-memory diagram
 Cargo.toml                               Rust workspace scaffold
 docs/
   DIALECTICA_v3_BUILD_INSTRUCTIONS.md   imported reference context
@@ -469,6 +491,8 @@ docs/
   FOUNDATION_BUILD.md                   first product slice and non-goals
   TECH_BENCHMARK.md                      research and ecosystem comparison
   GRAPH_ONTOLOGY_RESEARCH_NOTES.md       graph, ontology, Ladybug, and standards research
+  RESEARCH_LEDGER.md                     source links, conclusions, and refresh triggers
+  AGENT_BUILD_GUIDE.md                   practical build order for future agents
   CAPSULE_STRUCTURE_GUIDE.md             bundle layers and agent guidance contract
   GITHUB_PROFILE.md                      recommended GitHub About metadata and topics
   REPOSITORY_CONCEPT_REVIEW.md            concept, narrative, and repo coherence audit
@@ -547,18 +571,20 @@ Start here:
 8. Read [docs/SCAFFOLD_AUDIT.md](docs/SCAFFOLD_AUDIT.md).
 9. Read [docs/CAPSULE_STRUCTURE_GUIDE.md](docs/CAPSULE_STRUCTURE_GUIDE.md).
 10. Read [docs/GRAPH_ONTOLOGY_RESEARCH_NOTES.md](docs/GRAPH_ONTOLOGY_RESEARCH_NOTES.md).
-11. Read [docs/REPOSITORY_CONCEPT_REVIEW.md](docs/REPOSITORY_CONCEPT_REVIEW.md).
-12. Read [docs/GITHUB_PROFILE.md](docs/GITHUB_PROFILE.md).
-13. Read [docs/FOUNDATION_BUILD.md](docs/FOUNDATION_BUILD.md).
-14. Read [docs/CAPSULE_SPEC.md](docs/CAPSULE_SPEC.md).
-15. Read [docs/CAPSULE_TYPES_AND_MARKETPLACE.md](docs/CAPSULE_TYPES_AND_MARKETPLACE.md).
-16. Read [docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md](docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md).
-17. Read [docs/CAPSULE_BUILD_EXAMPLES.md](docs/CAPSULE_BUILD_EXAMPLES.md).
-18. Read [docs/API_CONTRACT.md](docs/API_CONTRACT.md).
-19. Read [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
-20. Read [docs/IMPLEMENTATION_BLUEPRINT.md](docs/IMPLEMENTATION_BLUEPRINT.md).
-21. Read [docs/INTELLECTUAL_TOOLS.md](docs/INTELLECTUAL_TOOLS.md).
-22. Use [docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md](docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md) as reference context.
+11. Read [docs/RESEARCH_LEDGER.md](docs/RESEARCH_LEDGER.md).
+12. Read [docs/AGENT_BUILD_GUIDE.md](docs/AGENT_BUILD_GUIDE.md).
+13. Read [docs/REPOSITORY_CONCEPT_REVIEW.md](docs/REPOSITORY_CONCEPT_REVIEW.md).
+14. Read [docs/GITHUB_PROFILE.md](docs/GITHUB_PROFILE.md).
+15. Read [docs/FOUNDATION_BUILD.md](docs/FOUNDATION_BUILD.md).
+16. Read [docs/CAPSULE_SPEC.md](docs/CAPSULE_SPEC.md).
+17. Read [docs/CAPSULE_TYPES_AND_MARKETPLACE.md](docs/CAPSULE_TYPES_AND_MARKETPLACE.md).
+18. Read [docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md](docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md).
+19. Read [docs/CAPSULE_BUILD_EXAMPLES.md](docs/CAPSULE_BUILD_EXAMPLES.md).
+20. Read [docs/API_CONTRACT.md](docs/API_CONTRACT.md).
+21. Read [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+22. Read [docs/IMPLEMENTATION_BLUEPRINT.md](docs/IMPLEMENTATION_BLUEPRINT.md).
+23. Read [docs/INTELLECTUAL_TOOLS.md](docs/INTELLECTUAL_TOOLS.md).
+24. Use [docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md](docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md) as reference context.
 
 ## First Build Commands
 

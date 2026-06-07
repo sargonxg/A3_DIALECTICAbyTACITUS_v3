@@ -1,0 +1,46 @@
+<svg width="1120" height="540" viewBox="0 0 1120 540" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">DIALECTICA research ledger</title>
+  <desc id="desc">A diagram showing how online research becomes durable repository memory, design decisions, acceptance tests, and future refresh tasks.</desc>
+  <rect width="1120" height="540" rx="30" fill="#06131A"/>
+  <rect x="28" y="28" width="1064" height="484" rx="24" fill="#0F172A" stroke="#334155" stroke-width="2"/>
+  <text x="64" y="78" fill="#F8FAFC" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="30" font-weight="700">RESEARCH BECOMES BUILD MEMORY</text>
+  <text x="64" y="110" fill="#CBD5E1" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">every source changes the repo only through conclusions, decisions, fixtures, and validation gates</text>
+
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+    <rect x="70" y="162" width="214" height="92" rx="12" fill="#082F49" stroke="#7DD3FC" stroke-width="2"/>
+    <text x="96" y="195" fill="#E0F2FE" font-size="16" font-weight="700">source anchors</text>
+    <text x="96" y="222" fill="#BAE6FD" font-size="12">official docs + papers</text>
+
+    <rect x="344" y="162" width="214" height="92" rx="12" fill="#422006" stroke="#FCD34D" stroke-width="2"/>
+    <text x="370" y="195" fill="#FEF3C7" font-size="16" font-weight="700">design conclusion</text>
+    <text x="370" y="222" fill="#FDE68A" font-size="12">what DIALECTICA adopts</text>
+
+    <rect x="618" y="162" width="214" height="92" rx="12" fill="#064E3B" stroke="#6EE7B7" stroke-width="2"/>
+    <text x="644" y="195" fill="#D1FAE5" font-size="16" font-weight="700">repo artifact</text>
+    <text x="644" y="222" fill="#A7F3D0" font-size="12">spec, ADR, fixture, test</text>
+
+    <rect x="880" y="162" width="174" height="92" rx="12" fill="#4C1D95" stroke="#C4B5FD" stroke-width="2"/>
+    <text x="906" y="195" fill="#EDE9FE" font-size="16" font-weight="700">refresh gate</text>
+    <text x="906" y="222" fill="#DDD6FE" font-size="12">recheck before code</text>
+
+    <rect x="136" y="342" width="850" height="64" rx="12" fill="#020617" stroke="#64748B" stroke-width="2"/>
+    <text x="168" y="374" fill="#E5E7EB" font-size="15">research never overrides the capsule contract by vibe; it must land as typed data, source links, tests, or ADRs.</text>
+  </g>
+
+  <g stroke="#94A3B8" stroke-width="2.5" marker-end="url(#arrow)">
+    <path d="M284 208H344"/>
+    <path d="M558 208H618"/>
+    <path d="M832 208H880"/>
+    <path d="M967 254C967 312 560 312 560 342"/>
+  </g>
+
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13">
+    <text x="64" y="470" fill="#94A3B8">current rule: Cloud SQL PostgreSQL + signed bundles are canonical; Firestore is the PRAXIS visibility mirror; graph engines are adapters.</text>
+  </g>
+
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#94A3B8"/>
+    </marker>
+  </defs>
+</svg>

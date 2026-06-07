@@ -16,16 +16,18 @@ Before implementation work, read the active coding authority first:
 7. `docs/GRAPH_PROFILE_REGISTRY.md`
 8. `docs/CAPSULE_STRUCTURE_GUIDE.md`
 9. `docs/GRAPH_ONTOLOGY_RESEARCH_NOTES.md`
-10. `docs/REPOSITORY_CONCEPT_REVIEW.md`
-11. `docs/GITHUB_PROFILE.md`
-12. `docs/SCAFFOLD_AUDIT.md`
-13. `docs/CAPSULE_SPEC.md`
-14. `docs/API_CONTRACT.md`
-15. `docs/DATA_MODEL.md`
-16. `docs/ARCHITECTURE.md`
-17. `docs/IMPLEMENTATION_BLUEPRINT.md`
-18. `docs/AGENTIC_WORKFLOWS.md`
-19. `docs/BUILD_LEDGER.md`
+10. `docs/RESEARCH_LEDGER.md`
+11. `docs/AGENT_BUILD_GUIDE.md`
+12. `docs/REPOSITORY_CONCEPT_REVIEW.md`
+13. `docs/GITHUB_PROFILE.md`
+14. `docs/SCAFFOLD_AUDIT.md`
+15. `docs/CAPSULE_SPEC.md`
+16. `docs/API_CONTRACT.md`
+17. `docs/DATA_MODEL.md`
+18. `docs/ARCHITECTURE.md`
+19. `docs/IMPLEMENTATION_BLUEPRINT.md`
+20. `docs/AGENTIC_WORKFLOWS.md`
+21. `docs/BUILD_LEDGER.md`
 
 Use `docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md` as product/reference context.
 When it conflicts with the active Rust-first coding docs above, follow

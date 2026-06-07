@@ -6,25 +6,32 @@ This guide defines how future coding agents should work in this repository.
 
 Before editing behavior, read:
 
-1. `docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md`
-2. `docs/SOURCE_OF_TRUTH.md`
+1. `docs/SOURCE_OF_TRUTH.md`
+2. `docs/AGENT_BUILD_GUIDE.md`
 3. `docs/CODING_LEDGER.md`
-4. `docs/SCAFFOLD_AUDIT.md`
-5. `docs/FOUNDATION_BUILD.md`
-6. `docs/TECH_BENCHMARK.md`
-7. `docs/CAPSULE_FORMAL_MODEL.md`
-8. `docs/CAPSULE_TYPES_AND_MARKETPLACE.md`
-9. `docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md`
-10. `docs/EXPERT_REVIEW_AND_MARKETPLACE.md`
-11. `docs/CAPSULE_BUILD_EXAMPLES.md`
-12. `docs/CAPSULE_SPEC.md`
-13. `docs/INTELLECTUAL_TOOLS.md`
-14. `docs/API_CONTRACT.md`
-15. `docs/DATA_MODEL.md`
-16. `docs/ARCHITECTURE.md`
-17. `docs/IMPLEMENTATION_BLUEPRINT.md`
-18. `docs/AGENTIC_WORKFLOWS.md`
-19. `docs/BUILD_LEDGER.md`
+4. `docs/ENGINEERING_BASELINE.md`
+5. `docs/LANE_A_ACCEPTANCE.md`
+6. `docs/API_SLICE_1.md`
+7. `docs/RESEARCH_LEDGER.md`
+8. `docs/GRAPH_PROFILE_REGISTRY.md`
+9. `docs/CAPSULE_STRUCTURE_GUIDE.md`
+10. `docs/SCAFFOLD_AUDIT.md`
+11. `docs/FOUNDATION_BUILD.md`
+12. `docs/TECH_BENCHMARK.md`
+13. `docs/CAPSULE_FORMAL_MODEL.md`
+14. `docs/CAPSULE_TYPES_AND_MARKETPLACE.md`
+15. `docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md`
+16. `docs/EXPERT_REVIEW_AND_MARKETPLACE.md`
+17. `docs/CAPSULE_BUILD_EXAMPLES.md`
+18. `docs/CAPSULE_SPEC.md`
+19. `docs/INTELLECTUAL_TOOLS.md`
+20. `docs/API_CONTRACT.md`
+21. `docs/DATA_MODEL.md`
+22. `docs/ARCHITECTURE.md`
+23. `docs/IMPLEMENTATION_BLUEPRINT.md`
+24. `docs/AGENTIC_WORKFLOWS.md`
+25. `docs/BUILD_LEDGER.md`
+26. `docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md`
 
 For deployment work, also read:
 
@@ -109,6 +116,18 @@ Constraints:
 - graph engines are adapters until an ADR changes this;
 - every edge requires provenance and review state.
 - graph files must remain loadable by PRAXIS without a dedicated graph database.
+
+### Research Scout
+
+Purpose: refresh external sources and convert findings into durable build
+memory.
+
+Validation:
+
+- `docs/RESEARCH_LEDGER.md` has source URL, checked date, conclusion,
+  DIALECTICA decision, and refresh trigger;
+- any design change also updates the affected spec, ADR, fixture, or backlog;
+- no implementation dependency is promoted from research alone.
 
 ### Review And Marketplace Engineer
 

@@ -15,6 +15,8 @@ need real schema, storage, compiler, API, and fixture logic.
 - `AGENTS.md`
 - `Cargo.toml`
 - `.github/workflows/docs.yml`
+- `assets/agent-build-flow.svg`
+- `assets/research-ledger.svg`
 - `crates/`
 - `services/`
 - `fixtures/`
@@ -25,6 +27,8 @@ need real schema, storage, compiler, API, and fixture logic.
 - `docs/CAPSULE_SPEC.md`
 - `docs/DATA_MODEL.md`
 - `docs/DEPLOYMENT.md`
+- `docs/RESEARCH_LEDGER.md`
+- `docs/AGENT_BUILD_GUIDE.md`
 - `docs/BUILD_LEDGER.md`
 
 ## Ready
@@ -48,6 +52,9 @@ need real schema, storage, compiler, API, and fixture logic.
   `docs/CAPSULE_STRUCTURE_GUIDE.md`.
 - Research-backed graph and ontology adapter decisions are recorded in
   `docs/GRAPH_ONTOLOGY_RESEARCH_NOTES.md`.
+- Source links, academic-paper conclusions, official documentation anchors, and
+  refresh triggers are now recorded in `docs/RESEARCH_LEDGER.md`.
+- Future-agent coding order is now explicit in `docs/AGENT_BUILD_GUIDE.md`.
 - Four small example capsule envelopes exist under
   `fixtures/example-capsules/`.
 - Python tooling is auxiliary and governed by `docs/PYTHON_TOOLING.md`.

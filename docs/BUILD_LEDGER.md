@@ -4,7 +4,7 @@ This file records major build decisions, evidence, and next actions.
 
 ## 2026-06-07 - Repository Initialization
 
-Status: complete locally, pending commit/push approval.
+Status: active repository baseline; commit and push requested by user.
 
 Actions:
 
@@ -38,6 +38,9 @@ Actions:
 - added repository concept review, GitHub profile guidance, and first-class
   `language_profile.json` support across README, capsule spec, examples,
   PRAXIS context-pack docs, and Lane A acceptance.
+- added durable research ledger, future-agent build guide, agent build-flow
+  diagram, and research-memory diagram so future agents can trace source links
+  into implementation decisions and refresh triggers.
 
 Evidence:
 
@@ -51,6 +54,10 @@ Evidence:
 - updated research checked against LadybugDB, RDF 1.2, JSON-LD 1.1, PROV-O,
   SKOS, SHACL 1.2, ODRL, OWL, OASIS LegalDocML/Akoma Ntoso, Microsoft
   GraphRAG, Graphiti, Cloud Run, and Cloud Tasks sources.
+- latest research ledger checked against MCP resources, Microsoft GraphRAG,
+  Graphiti/Zep, temporal knowledge graph papers, RAG, LadybugDB, JSON-LD,
+  PROV-O, SKOS, SHACL, ODRL, LegalDocML, Cloud Run, Cloud SQL, Cloud Tasks,
+  Firestore, and OpenAI Agents SDK source anchors.
 - local Rust toolchain checked with `cargo --version`.
 - workspace scaffold is expected to pass `cargo fmt --all -- --check`,
   `cargo check --locked --workspace --all-targets`,

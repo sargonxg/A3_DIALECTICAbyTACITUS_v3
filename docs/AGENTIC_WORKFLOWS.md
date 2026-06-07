@@ -27,12 +27,19 @@ flowchart LR
 ### Research Scout
 
 Reads external docs, benchmarks memory/graph/RAG systems, and updates
-`docs/TECH_BENCHMARK.md` and `docs/RESEARCH_BACKLOG.md`.
+`docs/RESEARCH_LEDGER.md`, `docs/TECH_BENCHMARK.md`, and
+`docs/RESEARCH_BACKLOG.md`.
 
 No-touch:
 
 - implementation crates;
 - deployment configs.
+
+Output requirement:
+
+- every source that changes the build direction gets a URL, checked date,
+  conclusion, DIALECTICA decision, and refresh trigger in
+  `docs/RESEARCH_LEDGER.md`.
 
 ### Capsule Spec Engineer
 

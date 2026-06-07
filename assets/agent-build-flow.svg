@@ -1,0 +1,61 @@
+<svg width="1120" height="620" viewBox="0 0 1120 620" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">DIALECTICA agent build flow</title>
+  <desc id="desc">A build flow diagram for future agents showing research, capsule contracts, fixtures, compiler, API, PRAXIS integration, and evaluation gates.</desc>
+  <rect width="1120" height="620" rx="30" fill="#0A0F1E"/>
+  <rect x="28" y="28" width="1064" height="564" rx="24" fill="#111827" stroke="#334155" stroke-width="2"/>
+  <text x="64" y="78" fill="#F8FAFC" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="30" font-weight="700">BUILD DIALECTICA LIKE A CAPSULE ENGINE</text>
+  <text x="64" y="110" fill="#CBD5E1" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">future agents start from research memory, then make the contract executable before adding adapters</text>
+
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+    <rect x="64" y="158" width="184" height="86" rx="12" fill="#172554" stroke="#60A5FA" stroke-width="2"/>
+    <text x="88" y="190" fill="#DBEAFE" font-size="16" font-weight="700">1 research</text>
+    <text x="88" y="216" fill="#BFDBFE" font-size="12">ledger + source links</text>
+
+    <rect x="306" y="158" width="184" height="86" rx="12" fill="#3F2D0B" stroke="#FBBF24" stroke-width="2"/>
+    <text x="330" y="190" fill="#FEF3C7" font-size="16" font-weight="700">2 contract</text>
+    <text x="330" y="216" fill="#FDE68A" font-size="12">types + schema + gates</text>
+
+    <rect x="548" y="158" width="184" height="86" rx="12" fill="#134E4A" stroke="#2DD4BF" stroke-width="2"/>
+    <text x="572" y="190" fill="#CCFBF1" font-size="16" font-weight="700">3 fixtures</text>
+    <text x="572" y="216" fill="#99F6E4" font-size="12">golden capsule bundle</text>
+
+    <rect x="790" y="158" width="238" height="86" rx="12" fill="#581C87" stroke="#D8B4FE" stroke-width="2"/>
+    <text x="814" y="190" fill="#F3E8FF" font-size="16" font-weight="700">4 compiler</text>
+    <text x="814" y="216" fill="#E9D5FF" font-size="12">deterministic signed export</text>
+
+    <rect x="138" y="336" width="206" height="92" rx="12" fill="#164E63" stroke="#67E8F9" stroke-width="2"/>
+    <text x="162" y="369" fill="#CFFAFE" font-size="16" font-weight="700">5 API + store</text>
+    <text x="162" y="395" fill="#A5F3FC" font-size="12">Axum + Cloud SQL Postgres</text>
+
+    <rect x="458" y="336" width="206" height="92" rx="12" fill="#14532D" stroke="#86EFAC" stroke-width="2"/>
+    <text x="482" y="369" fill="#DCFCE7" font-size="16" font-weight="700">6 PRAXIS pack</text>
+    <text x="482" y="395" fill="#BBF7D0" font-size="12">manifest graph context receipts</text>
+
+    <rect x="778" y="336" width="206" height="92" rx="12" fill="#7F1D1D" stroke="#FCA5A5" stroke-width="2"/>
+    <text x="802" y="369" fill="#FEE2E2" font-size="16" font-weight="700">7 eval + review</text>
+    <text x="802" y="395" fill="#FECACA" font-size="12">source fidelity + human gates</text>
+
+    <rect x="214" y="494" width="692" height="50" rx="12" fill="#020617" stroke="#64748B" stroke-width="2"/>
+    <text x="244" y="525" fill="#E5E7EB" font-size="15">only after this: graph engines, MCP servers, vector stores, marketplace automation, GKE</text>
+  </g>
+
+  <g stroke="#94A3B8" stroke-width="2.5" marker-end="url(#arrow)">
+    <path d="M248 201H306"/>
+    <path d="M490 201H548"/>
+    <path d="M732 201H790"/>
+    <path d="M909 244C909 286 296 286 252 336"/>
+    <path d="M344 382H458"/>
+    <path d="M664 382H778"/>
+    <path d="M881 428C881 474 560 468 560 494"/>
+  </g>
+
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13">
+    <text x="64" y="578" fill="#94A3B8">rule: canonical bundle + PostgreSQL first; graph/vector/memory adapters stay derived until an ADR and eval evidence promote them.</text>
+  </g>
+
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#94A3B8"/>
+    </marker>
+  </defs>
+</svg>

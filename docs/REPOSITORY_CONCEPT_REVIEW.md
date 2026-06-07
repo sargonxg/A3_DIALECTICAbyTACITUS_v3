@@ -96,11 +96,16 @@ expert-shaped output than raw prompting.
   envelopes.
 - Added a GitHub Profile document with recommended description, website, and
   topics.
+- Added `docs/RESEARCH_LEDGER.md` so source links, academic papers, official
+  docs, conclusions, and refresh triggers are durable.
+- Added `docs/AGENT_BUILD_GUIDE.md` and build-flow graphics so future coding
+  agents can follow the contract-first path without rediscovering the product
+  architecture.
 
 ## Remaining Product Gaps
 
-- The actual GitHub repository About metadata is still empty until explicitly
-  updated through GitHub.
+- GitHub repository About metadata should be kept aligned with
+  `docs/GITHUB_PROFILE.md`.
 - The example capsules are intentionally small; the repo still needs a richer
   golden policy capsule with multiple sources, contested claims, review
   objects, graph warnings, and measured PRAXIS output improvement.

@@ -38,7 +38,9 @@ Current assets:
 
 - `dialectica-mark.svg`;
 - `capsule-stack.svg`;
-- `embedded-graph.svg`.
+- `embedded-graph.svg`;
+- `agent-build-flow.svg`;
+- `research-ledger.svg`.
 
 ## `crates/`
 
