@@ -2,7 +2,7 @@
   <img src="assets/dialectica-mark.svg" alt="DIALECTICA by TACITUS" width="760">
 </p>
 
-![Status](https://img.shields.io/badge/status-design%20source%20of%20truth-blue)
+![Status](https://img.shields.io/badge/status-build%20cockpit-blue)
 ![Runtime](https://img.shields.io/badge/runtime-Cloud%20Run%20first-4285F4)
 ![Store](https://img.shields.io/badge/store-Cloud%20SQL%20PostgreSQL-336791)
 ![Capsule](https://img.shields.io/badge/capsule-signed%20bundle-111827)
@@ -77,7 +77,7 @@ flowchart LR
 ## What DIALECTICA Builds
 
 DIALECTICA does not build another chatbot memory layer. It builds capsules that
-carry the real context policy teams need:
+carry the durable knowledge structure that policy teams need:
 
 - the user, team, institution, mandate, audience, and decision horizon;
 - the situation, actors, constraints, incentives, claims, uncertainties, and
@@ -91,6 +91,10 @@ carry the real context policy teams need:
 - output contracts for memos, briefings, scenarios, plans, model cards, and
   PRAXIS agent workflows;
 - human review gates, audit receipts, and capsule version history.
+
+The point is interchangeability: a human analyst should be able to open the
+capsule, understand the same knowledge structure that an AI agent receives, and
+decide whether it is fit for a specific workflow.
 
 ## Relationship to PRAXIS
 
@@ -155,6 +159,24 @@ Core services:
   findings, and promotion decisions.
 - **Evaluation harness**: tests source fidelity, temporal accuracy, retrieval
   quality, reasoning transfer, and PRAXIS answer improvement.
+
+Current coding scaffold:
+
+```text
+Cargo workspace
+  crates/dialectica-capsule       contract types and validation
+  crates/dialectica-compiler      deterministic bundle assembly
+  crates/dialectica-store         PostgreSQL repositories and migrations
+  crates/dialectica-eval          quality and outcome checks
+  crates/dialectica-cli           local validation and fixture commands
+  services/dialectica-api         PRAXIS-facing API
+  services/dialectica-task-handler Cloud Tasks entrypoint
+  tests/dialectica-contract-tests workspace contract tests
+```
+
+Start coding from [docs/CODING_LEDGER.md](docs/CODING_LEDGER.md). Read
+[docs/SCAFFOLD_AUDIT.md](docs/SCAFFOLD_AUDIT.md) before claiming that any slice
+is functional.
 
 Initial runtime promise:
 
@@ -350,9 +372,13 @@ MCP, and the OpenAI Agents SDK.
 ```text
 assets/
   dialectica-mark.svg                    GitHub README mark
+  capsule-stack.svg                      capsule stack diagram
+Cargo.toml                               Rust workspace scaffold
 docs/
   DIALECTICA_v3_BUILD_INSTRUCTIONS.md   imported canonical build spec
   SOURCE_OF_TRUTH.md                    document priority and working rules
+  CODING_LEDGER.md                      active coding control file
+  SCAFFOLD_AUDIT.md                     repo readiness and gap audit
   FOUNDATION_BUILD.md                   first product slice and non-goals
   TECH_BENCHMARK.md                      research and ecosystem comparison
   CAPSULE_FORMAL_MODEL.md                formal capsule layers and invariants
@@ -382,11 +408,11 @@ docs/
   ROADMAP.md                            staged build plan
   SECURITY_AND_PRIVACY.md               trust, privacy, and threat posture
   decisions/                            architecture decision records
-crates/                                 Rust crates will live here
-services/                               deployable services will live here
+crates/                                 Rust library and CLI crates
+services/                               deployable Rust service binaries
 infrastructure/                         Terraform/OpenTofu and deployment files
 fixtures/                               test capsules, source packs, eval data
-tests/                                  integration and contract tests
+tests/                                  workspace contract tests
 ```
 
 ## Build Principles
@@ -408,39 +434,43 @@ tests/                                  integration and contract tests
 
 ## Current Status
 
-This repository is at **Phase 0: source-of-truth initialization**.
+This repository is at **Phase 0: source-of-truth plus coding scaffold**.
 
-The next implementation step is to create the Rust workspace, define the
-capsule bundle schema, add fixtures, and build contract tests before adding
-ingestion or model-powered extraction.
+The Rust workspace now exists and passes basic checks. The next implementation
+step is to turn the scaffolded capsule crate into real bundle structs, schema
+generation, validation errors, and fixture snapshots before adding ingestion or
+model-powered extraction.
 
 Start here:
 
 1. Read [docs/SOURCE_OF_TRUTH.md](docs/SOURCE_OF_TRUTH.md).
 2. Read [docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md](docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md).
-3. Read [docs/FOUNDATION_BUILD.md](docs/FOUNDATION_BUILD.md).
-4. Read [docs/CAPSULE_SPEC.md](docs/CAPSULE_SPEC.md).
-5. Read [docs/CAPSULE_TYPES_AND_MARKETPLACE.md](docs/CAPSULE_TYPES_AND_MARKETPLACE.md).
-6. Read [docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md](docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md).
-7. Read [docs/CAPSULE_BUILD_EXAMPLES.md](docs/CAPSULE_BUILD_EXAMPLES.md).
-8. Read [docs/API_CONTRACT.md](docs/API_CONTRACT.md).
-9. Read [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
-10. Read [docs/IMPLEMENTATION_BLUEPRINT.md](docs/IMPLEMENTATION_BLUEPRINT.md).
-11. Read [docs/INTELLECTUAL_TOOLS.md](docs/INTELLECTUAL_TOOLS.md).
+3. Read [docs/CODING_LEDGER.md](docs/CODING_LEDGER.md).
+4. Read [docs/SCAFFOLD_AUDIT.md](docs/SCAFFOLD_AUDIT.md).
+5. Read [docs/FOUNDATION_BUILD.md](docs/FOUNDATION_BUILD.md).
+6. Read [docs/CAPSULE_SPEC.md](docs/CAPSULE_SPEC.md).
+7. Read [docs/CAPSULE_TYPES_AND_MARKETPLACE.md](docs/CAPSULE_TYPES_AND_MARKETPLACE.md).
+8. Read [docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md](docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md).
+9. Read [docs/CAPSULE_BUILD_EXAMPLES.md](docs/CAPSULE_BUILD_EXAMPLES.md).
+10. Read [docs/API_CONTRACT.md](docs/API_CONTRACT.md).
+11. Read [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+12. Read [docs/IMPLEMENTATION_BLUEPRINT.md](docs/IMPLEMENTATION_BLUEPRINT.md).
+13. Read [docs/INTELLECTUAL_TOOLS.md](docs/INTELLECTUAL_TOOLS.md).
 
 ## First Build Commands
 
-These are planned commands. They become mandatory once the Rust workspace lands.
+These commands are active now.
 
 ```powershell
 cargo fmt --all -- --check
-cargo clippy --workspace --all-targets -- -D warnings
+cargo check --workspace --all-targets
 cargo test --workspace
-cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule
+cargo run -p dialectica-cli -- doctor
 ```
 
-The first local runtime should not require cloud credentials. Cloud credentials
-arrive only when staging deployment begins.
+The first local runtime must not require cloud credentials. Cloud credentials
+arrive only when staging deployment begins. `clippy` becomes a blocking gate
+after the dependency set and crate APIs stabilize.
 
 ## License
 

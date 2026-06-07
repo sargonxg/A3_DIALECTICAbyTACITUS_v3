@@ -4,7 +4,7 @@
   <rect width="1040" height="520" rx="28" fill="#0B1020"/>
   <rect x="26" y="26" width="988" height="468" rx="22" fill="#111827" stroke="#334155" stroke-width="2"/>
   <text x="64" y="74" fill="#E5E7EB" font-family=" ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="28" font-weight="700">DIALECTICA CAPSULE STACK</text>
-  <text x="64" y="104" fill="#94A3B8" font-family=" ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">source-grounded context objects for PRAXIS augmented generation</text>
+  <text x="64" y="104" fill="#94A3B8" font-family=" ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">portable knowledge objects for humans and AI agents</text>
 
   <g font-family=" ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" font-weight="700">
     <rect x="64" y="145" width="180" height="74" rx="10" fill="#172554" stroke="#60A5FA"/>

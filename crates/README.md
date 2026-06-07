@@ -2,7 +2,7 @@
 
 Rust crates will live here.
 
-Expected first crates:
+Active crates:
 
 - `dialectica-capsule`: capsule bundle types, schema, validation;
 - `dialectica-store`: PostgreSQL access and migrations;
@@ -10,4 +10,5 @@ Expected first crates:
 - `dialectica-eval`: contract and quality eval helpers;
 - `dialectica-cli`: local validation and fixture generation.
 
-Do not add crates until the capsule contract tests are planned.
+The crates are scaffolded so Cargo checks are real from the first coding pass.
+Implement them in the order listed in `docs/CODING_LEDGER.md`.

@@ -4,7 +4,7 @@ Deterministic capsule fixtures, source packs, and eval inputs will live here.
 
 Expected first fixture:
 
-- one small policy source pack;
+- one stakeholder-analysis policy source pack;
 - one expected source ledger;
 - one expected capsule bundle;
 - one review ledger with at least one correction;

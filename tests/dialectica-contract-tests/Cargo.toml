@@ -1,0 +1,14 @@
+[package]
+name = "dialectica-contract-tests"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+dialectica-capsule = { path = "../../crates/dialectica-capsule" }
+dialectica-compiler = { path = "../../crates/dialectica-compiler" }
+
+[lints]
+workspace = true

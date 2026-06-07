@@ -1,0 +1,14 @@
+[package]
+name = "dialectica-cli"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+dialectica-capsule = { path = "../dialectica-capsule" }
+dialectica-compiler = { path = "../dialectica-compiler" }
+
+[lints]
+workspace = true

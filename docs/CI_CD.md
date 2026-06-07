@@ -13,18 +13,22 @@ The repository currently includes a lightweight GitHub Actions workflow:
 .github/workflows/docs.yml
 ```
 
-It verifies required source-of-truth docs exist.
+It verifies required source-of-truth docs exist and checks the Rust workspace.
 
 ## First Code CI
 
-When Rust code lands, CI should run:
+Current code CI runs:
 
 ```powershell
 cargo fmt --all -- --check
-cargo clippy --workspace --all-targets -- -D warnings
+cargo check --workspace --all-targets
 cargo test --workspace
-cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule
+cargo run -p dialectica-cli -- doctor
 ```
+
+Add `cargo clippy --workspace --all-targets -- -D warnings` after crate APIs
+and dependency choices stabilize. Add fixture validation once
+`fixtures/golden-policy-capsule` exists.
 
 ## Later Staging CI
 

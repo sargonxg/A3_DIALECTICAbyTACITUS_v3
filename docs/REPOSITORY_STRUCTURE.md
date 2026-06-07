@@ -5,6 +5,7 @@
 ```text
 README.md
 AGENTS.md
+Cargo.toml
 LICENSE
 NOTICE
 SUPPORT.md
@@ -38,7 +39,7 @@ identity.
 
 Reusable Rust libraries.
 
-Expected crates:
+Active crates:
 
 - `dialectica-capsule`;
 - `dialectica-store`;
@@ -50,11 +51,13 @@ Expected crates:
 
 Deployable Rust service binaries.
 
-Expected services:
+Active services:
 
 - `dialectica-api`;
 - `dialectica-task-handler`;
-- optional `dialectica-worker`.
+
+Add optional `dialectica-worker` only after pull-based background processing is
+proven necessary.
 
 ## `infrastructure/`
 
@@ -72,6 +75,10 @@ Fixtures must not contain secrets or private user documents.
 ## `tests/`
 
 Cross-crate, contract, integration, and fixture tests.
+
+Active test package:
+
+- `dialectica-contract-tests`.
 
 ## `.github/`
 

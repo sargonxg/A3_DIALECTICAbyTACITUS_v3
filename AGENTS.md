@@ -9,21 +9,23 @@ Before implementation work, read:
 
 1. `docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md`
 2. `docs/SOURCE_OF_TRUTH.md`
-3. `docs/FOUNDATION_BUILD.md`
-4. `docs/TECH_BENCHMARK.md`
-5. `docs/CAPSULE_FORMAL_MODEL.md`
-6. `docs/CAPSULE_TYPES_AND_MARKETPLACE.md`
-7. `docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md`
-8. `docs/EXPERT_REVIEW_AND_MARKETPLACE.md`
-9. `docs/CAPSULE_BUILD_EXAMPLES.md`
-10. `docs/CAPSULE_SPEC.md`
-11. `docs/INTELLECTUAL_TOOLS.md`
-12. `docs/API_CONTRACT.md`
-13. `docs/DATA_MODEL.md`
-14. `docs/ARCHITECTURE.md`
-15. `docs/IMPLEMENTATION_BLUEPRINT.md`
-16. `docs/AGENTIC_WORKFLOWS.md`
-17. `docs/BUILD_LEDGER.md`
+3. `docs/CODING_LEDGER.md`
+4. `docs/SCAFFOLD_AUDIT.md`
+5. `docs/FOUNDATION_BUILD.md`
+6. `docs/TECH_BENCHMARK.md`
+7. `docs/CAPSULE_FORMAL_MODEL.md`
+8. `docs/CAPSULE_TYPES_AND_MARKETPLACE.md`
+9. `docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md`
+10. `docs/EXPERT_REVIEW_AND_MARKETPLACE.md`
+11. `docs/CAPSULE_BUILD_EXAMPLES.md`
+12. `docs/CAPSULE_SPEC.md`
+13. `docs/INTELLECTUAL_TOOLS.md`
+14. `docs/API_CONTRACT.md`
+15. `docs/DATA_MODEL.md`
+16. `docs/ARCHITECTURE.md`
+17. `docs/IMPLEMENTATION_BLUEPRINT.md`
+18. `docs/AGENTIC_WORKFLOWS.md`
+19. `docs/BUILD_LEDGER.md`
 
 ## Non-Negotiables
 
@@ -52,6 +54,13 @@ When code exists, use the repo's own commands first. Expected future checks:
 - bundle fixture validation
 - migration tests
 - docs checks
+
+Current command gate:
+
+- `cargo fmt --all -- --check`
+- `cargo check --workspace --all-targets`
+- `cargo test --workspace`
+- `cargo run -p dialectica-cli -- doctor`
 
 ## External Actions
 

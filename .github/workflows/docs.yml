@@ -15,10 +15,13 @@ jobs:
       - name: Check source-of-truth files
         run: |
           test -f README.md
+          test -f Cargo.toml
           test -f LICENSE
           test -f AGENTS.md
           test -f docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md
           test -f docs/SOURCE_OF_TRUTH.md
+          test -f docs/CODING_LEDGER.md
+          test -f docs/SCAFFOLD_AUDIT.md
           test -f docs/FOUNDATION_BUILD.md
           test -f docs/TECH_BENCHMARK.md
           test -f docs/CAPSULE_FORMAL_MODEL.md
@@ -40,3 +43,17 @@ jobs:
           test -f docs/PRAXIS_REPO_ALIGNMENT.md
           test -f docs/RESEARCH_BACKLOG.md
           test -f docs/BUILD_LEDGER.md
+
+  rust-workspace:
+    name: Rust workspace
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check formatting
+        run: cargo fmt --all -- --check
+      - name: Check workspace
+        run: cargo check --workspace --all-targets
+      - name: Test workspace
+        run: cargo test --workspace
+      - name: CLI doctor
+        run: cargo run -p dialectica-cli -- doctor

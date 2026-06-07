@@ -26,6 +26,9 @@ Actions:
 - added post-research capsule architecture expansion covering capsule types,
   embedded graph semantics, human-gated expert review, marketplace mechanics,
   and concrete policy build examples.
+- added coding-start scaffold: Rust workspace, initial crates, service
+  binaries, contract-test package, refreshed visual identity, coding ledger,
+  and scaffold audit.
 
 Evidence:
 
@@ -36,6 +39,10 @@ Evidence:
 - graph and semantic-layer direction checked against JSON-LD, SHACL, PROV-O,
   SKOS, ODRL, VC/DID, PostgreSQL JSON, pgvector, Graphiti, GraphRAG, MCP, and
   OpenAI Agents SDK sources.
+- local Rust toolchain checked with `cargo --version`.
+- workspace scaffold is expected to pass `cargo fmt --all -- --check`,
+  `cargo check --workspace --all-targets`, `cargo test --workspace`, and
+  `cargo run -p dialectica-cli -- doctor`.
 
 ## Active Decisions
 
@@ -49,16 +56,16 @@ Evidence:
 
 ## Next Build Tasks
 
-1. Create Rust workspace under `crates/` and `services/`.
-2. Define JSON schema for capsule bundle components.
-3. Add a fixture source pack under `fixtures/`.
-4. Add the stakeholder-analysis fixture from `docs/CAPSULE_BUILD_EXAMPLES.md`.
-5. Implement local capsule bundle validator.
-6. Add graph-slice and graph-constraint validators.
-7. Add contract tests.
-8. Add Dockerfile and local compose file.
-9. Add Cloud Run staging deployment skeleton.
-10. Add first PRAXIS context-pack endpoint.
+1. Implement real capsule bundle structs in `crates/dialectica-capsule`.
+2. Add JSON Schema generation and schema snapshots.
+3. Add a stakeholder-analysis fixture source pack under `fixtures/`.
+4. Implement CLI `validate` and `inspect`.
+5. Implement graph-slice and graph-constraint validators.
+6. Add SQLx migrations in `crates/dialectica-store`.
+7. Implement deterministic bundle compiler and checksums.
+8. Add API health, manifest, graph-preview, and context-pack routes.
+9. Add Dockerfile and local compose file.
+10. Add Cloud Run staging deployment skeleton.
 
 ## Open Product Questions
 
