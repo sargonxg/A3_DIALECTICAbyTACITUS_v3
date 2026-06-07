@@ -68,6 +68,8 @@ validate, inspect, and plan the ontology for a golden policy capsule.
 - Source links, academic-paper conclusions, official documentation anchors, and
   refresh triggers are now recorded in `docs/RESEARCH_LEDGER.md`.
 - Future-agent coding order is now explicit in `docs/AGENT_BUILD_GUIDE.md`.
+- Active gap-control and improvement standards are now recorded in
+  `docs/IMPROVEMENT_GUIDELINES.md`.
 - Four small example capsule envelopes exist under
   `fixtures/example-capsules/`.
 - Python tooling is auxiliary and governed by `docs/PYTHON_TOOLING.md`.

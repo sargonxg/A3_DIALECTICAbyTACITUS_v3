@@ -230,7 +230,9 @@ Cargo workspace
 Start coding from [docs/CODING_LEDGER.md](docs/CODING_LEDGER.md). Read
 [docs/SCAFFOLD_AUDIT.md](docs/SCAFFOLD_AUDIT.md) before claiming that any slice
 is functional. The next implementation sequence is in
-[docs/NEXT_CODE_BUILD_PLAN.md](docs/NEXT_CODE_BUILD_PLAN.md).
+[docs/NEXT_CODE_BUILD_PLAN.md](docs/NEXT_CODE_BUILD_PLAN.md), and the active
+gap-control standard is in
+[docs/IMPROVEMENT_GUIDELINES.md](docs/IMPROVEMENT_GUIDELINES.md).
 
 Current executable surface:
 
@@ -539,6 +541,7 @@ docs/
   RESEARCH_LEDGER.md                     source links, conclusions, and refresh triggers
   AGENT_BUILD_GUIDE.md                   practical build order for future agents
   NEXT_CODE_BUILD_PLAN.md                concrete next coding phases
+  IMPROVEMENT_GUIDELINES.md              active gaps, quality bar, and improvement protocol
   IMPLEMENTATION_PHASE_PLAN.md           active phased coding plan
   CAPSULE_STRUCTURE_GUIDE.md             bundle layers and agent guidance contract
   GITHUB_PROFILE.md                      recommended GitHub About metadata and topics
@@ -623,17 +626,18 @@ Start here:
 11. Read [docs/RESEARCH_LEDGER.md](docs/RESEARCH_LEDGER.md).
 12. Read [docs/AGENT_BUILD_GUIDE.md](docs/AGENT_BUILD_GUIDE.md).
 13. Read [docs/REPOSITORY_CONCEPT_REVIEW.md](docs/REPOSITORY_CONCEPT_REVIEW.md).
-14. Read [docs/GITHUB_PROFILE.md](docs/GITHUB_PROFILE.md).
-15. Read [docs/FOUNDATION_BUILD.md](docs/FOUNDATION_BUILD.md).
-16. Read [docs/CAPSULE_SPEC.md](docs/CAPSULE_SPEC.md).
-17. Read [docs/CAPSULE_TYPES_AND_MARKETPLACE.md](docs/CAPSULE_TYPES_AND_MARKETPLACE.md).
-18. Read [docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md](docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md).
-19. Read [docs/CAPSULE_BUILD_EXAMPLES.md](docs/CAPSULE_BUILD_EXAMPLES.md).
-20. Read [docs/API_CONTRACT.md](docs/API_CONTRACT.md).
-21. Read [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
-22. Read [docs/IMPLEMENTATION_BLUEPRINT.md](docs/IMPLEMENTATION_BLUEPRINT.md).
-23. Read [docs/INTELLECTUAL_TOOLS.md](docs/INTELLECTUAL_TOOLS.md).
-24. Use [docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md](docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md) as reference context.
+14. Read [docs/IMPROVEMENT_GUIDELINES.md](docs/IMPROVEMENT_GUIDELINES.md).
+15. Read [docs/GITHUB_PROFILE.md](docs/GITHUB_PROFILE.md).
+16. Read [docs/FOUNDATION_BUILD.md](docs/FOUNDATION_BUILD.md).
+17. Read [docs/CAPSULE_SPEC.md](docs/CAPSULE_SPEC.md).
+18. Read [docs/CAPSULE_TYPES_AND_MARKETPLACE.md](docs/CAPSULE_TYPES_AND_MARKETPLACE.md).
+19. Read [docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md](docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md).
+20. Read [docs/CAPSULE_BUILD_EXAMPLES.md](docs/CAPSULE_BUILD_EXAMPLES.md).
+21. Read [docs/API_CONTRACT.md](docs/API_CONTRACT.md).
+22. Read [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+23. Read [docs/IMPLEMENTATION_BLUEPRINT.md](docs/IMPLEMENTATION_BLUEPRINT.md).
+24. Read [docs/INTELLECTUAL_TOOLS.md](docs/INTELLECTUAL_TOOLS.md).
+25. Use [docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md](docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md) as reference context.
 
 ## First Build Commands
 

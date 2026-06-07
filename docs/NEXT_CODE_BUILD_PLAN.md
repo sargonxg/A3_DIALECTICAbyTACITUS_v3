@@ -19,6 +19,10 @@ source pack
 The next build should not add broad infrastructure. It should make one capsule
 build path executable end to end with local files and no cloud credentials.
 
+Read [Improvement Guidelines](IMPROVEMENT_GUIDELINES.md) before implementing
+this plan. That file records the active gap audit and quality bar for the
+first executable build.
+
 ## Current Executable Surface
 
 Already implemented:
@@ -68,7 +72,13 @@ Deliver:
 Acceptance:
 
 - running the writer twice over the same input produces byte-identical files;
+- canonical JSON and JSONL output uses stable field order, stable record order,
+  LF line endings, and final newlines;
+- digest calculation has an explicit scope and excludes only fields that cannot
+  be known before digest calculation;
 - missing review state blocks promoted export;
+- rejected, expired, and unreviewed objects remain in lineage but are blocked
+  from promoted PRAXIS export;
 - contract tests compare generated output to the golden expected bundle.
 
 ## Phase 2: Source-Pack Builder
@@ -78,9 +88,11 @@ Goal: stop treating the golden bundle as hand-authored output only.
 Deliver:
 
 - `fixtures/golden-policy-capsule/source-pack/source_pack.json`;
+- Rust source-pack input types;
 - normalized source-span fixture records;
 - extraction proposal fixture records;
 - human correction fixture records;
+- object-level review coverage matrix;
 - `cargo run -p dialectica-cli -- build-fixture fixtures/golden-policy-capsule`;
 - generated bundle lands in a temp/output directory before overwrite.
 
@@ -110,6 +122,9 @@ Acceptance:
   database;
 - rejected and expired objects are hidden by default;
 - stale or contested claims appear as warnings.
+- context-pack tests assert that every included claim, graph edge, language rule,
+  and output rule has source-span ids, review-action ids, or explicit expert
+  note lineage.
 
 ## Phase 4: Local API Slice
 
@@ -123,12 +138,14 @@ Deliver:
 - `GET /v1/capsules/{capsule_id}/graph-preview`;
 - `GET /v1/capsules/{capsule_id}/praxis-context-pack`;
 - local config that points at `fixtures/golden-policy-capsule/expected-bundle`.
+- deterministic response envelope and error shape.
 
 Acceptance:
 
 - API boots locally with `cargo run -p dialectica-api`;
 - health route reports fixture mode and schema version;
 - manifest, graph preview, and context pack routes return deterministic JSON;
+- error responses include code, message, details, and request id;
 - no cloud credentials are required.
 
 ## Phase 5: Store Migration Skeleton
@@ -180,5 +197,7 @@ Acceptance:
 - Keep ontology blueprints capsule-specific.
 - Keep every promoted object source-backed or review-backed.
 - Keep every code slice covered by contract tests.
+- Keep P0/P1 gaps from `docs/IMPROVEMENT_GUIDELINES.md` visible in the ledger
+  until they have command or test evidence.
 - Update `docs/CODING_LEDGER.md` and `docs/BUILD_LEDGER.md` with every new
   executable surface.

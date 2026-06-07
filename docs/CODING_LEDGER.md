@@ -218,14 +218,20 @@ when it changes:
 
 ## Current Next Action
 
-Follow [Next Code Build Plan](NEXT_CODE_BUILD_PLAN.md):
+Follow [Next Code Build Plan](NEXT_CODE_BUILD_PLAN.md) and
+[Improvement Guidelines](IMPROVEMENT_GUIDELINES.md):
 
-1. implement `dialectica-compiler` deterministic bundle writing;
-2. add source-pack records and `dialectica-cli build-fixture`;
-3. export a PRAXIS context pack from the golden bundle;
-4. turn `dialectica-api` into a local fixture-mode Axum service;
-5. add PostgreSQL migrations only after the local capsule loop is executable.
+1. define typed source-pack inputs and deterministic bundle-writing rules;
+2. implement `dialectica-compiler` deterministic bundle writing;
+3. add source-pack records and `dialectica-cli build-fixture`;
+4. export a PRAXIS context pack from the golden bundle;
+5. turn `dialectica-api` into a local fixture-mode Axum service;
+6. add PostgreSQL migrations only after the local capsule loop is executable.
 
 Do not start Cloud Run, MCP, graph-database, or PRAXIS production integration
 work until the local fixture can be generated, validated, inspected, and
 projected into a PRAXIS context pack.
+
+Gap-control rule: every P0/P1 issue in
+`docs/IMPROVEMENT_GUIDELINES.md` must be closed with a command, fixture, test,
+or ADR before the related capability is described as functional.

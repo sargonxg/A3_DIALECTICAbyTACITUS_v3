@@ -142,7 +142,7 @@ Build:
 - `GET /v1/capsules/{id}/graph-preview`;
 - `POST /v1/context-packs`;
 - `GET /v1/capsules/{id}/receipts`;
-- local auth stubs with clear production TODOs.
+- local auth stubs with clear production follow-up notes.
 
 ### Lane 6: Review And Eval Gates
 

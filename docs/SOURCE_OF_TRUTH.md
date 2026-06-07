@@ -28,18 +28,19 @@ When documents conflict, use this order:
 20. `docs/RESEARCH_LEDGER.md`
 21. `docs/AGENT_BUILD_GUIDE.md`
 22. `docs/NEXT_CODE_BUILD_PLAN.md`
-23. `docs/IMPLEMENTATION_PHASE_PLAN.md`
-24. `docs/REPOSITORY_CONCEPT_REVIEW.md`
-25. `docs/GITHUB_PROFILE.md`
-26. `docs/EXPERT_REVIEW_AND_MARKETPLACE.md`
-27. `docs/CAPSULE_BUILD_EXAMPLES.md`
-28. `docs/INTELLECTUAL_TOOLS.md`
-29. `docs/DEPLOYMENT.md`
-30. `docs/TECH_BENCHMARK.md`
-31. `docs/PYTHON_TOOLING.md`
-32. `docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md` as reference context
-33. ADRs in `docs/decisions/`
-34. Implementation notes in issues, PRs, and comments
+23. `docs/IMPROVEMENT_GUIDELINES.md`
+24. `docs/IMPLEMENTATION_PHASE_PLAN.md`
+25. `docs/REPOSITORY_CONCEPT_REVIEW.md`
+26. `docs/GITHUB_PROFILE.md`
+27. `docs/EXPERT_REVIEW_AND_MARKETPLACE.md`
+28. `docs/CAPSULE_BUILD_EXAMPLES.md`
+29. `docs/INTELLECTUAL_TOOLS.md`
+30. `docs/DEPLOYMENT.md`
+31. `docs/TECH_BENCHMARK.md`
+32. `docs/PYTHON_TOOLING.md`
+33. `docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md` as reference context
+34. ADRs in `docs/decisions/`
+35. Implementation notes in issues, PRs, and comments
 
 If an implementation contradicts a higher-priority document, update the
 document through an ADR or stop and ask for a product decision.

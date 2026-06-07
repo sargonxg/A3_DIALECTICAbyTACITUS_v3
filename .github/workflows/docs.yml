@@ -39,6 +39,7 @@ jobs:
           test -f docs/RESEARCH_LEDGER.md
           test -f docs/AGENT_BUILD_GUIDE.md
           test -f docs/NEXT_CODE_BUILD_PLAN.md
+          test -f docs/IMPROVEMENT_GUIDELINES.md
           test -f docs/IMPLEMENTATION_PHASE_PLAN.md
           test -f docs/REPOSITORY_CONCEPT_REVIEW.md
           test -f docs/GITHUB_PROFILE.md

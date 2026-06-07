@@ -52,6 +52,9 @@ Actions:
   next-code-build plan, refreshed GitHub front door, and source refresh notes
   for Cloud Run worker pools, MCP tools/auth, Graphiti/Zep, LadybugDB, and
   OpenAI Agents SDK tracing/guardrails.
+- added post-push improvement guidelines covering active gaps, quality bar,
+  improvement sequence, review checklist, research/dependency policy, and
+  gap-ledger protocol.
 
 Evidence:
 
@@ -81,6 +84,10 @@ Evidence:
   `cargo run -p dialectica-cli -- inspect fixtures/golden-policy-capsule/expected-bundle`,
   `cargo run -p dialectica-cli -- ontology-plan fixtures/golden-policy-capsule/expected-bundle`,
   and `cargo run -p dialectica-cli -- schema-export schemas/capsule-0.1.0`.
+- improvement pass reconciled `README.md`, `AGENTS.md`,
+  `docs/SOURCE_OF_TRUTH.md`, `docs/README.md`, `docs/CODING_LEDGER.md`,
+  `docs/NEXT_CODE_BUILD_PLAN.md`, and the docs CI required-file list around
+  `docs/IMPROVEMENT_GUIDELINES.md`.
 
 ## Active Decisions
 
@@ -94,18 +101,20 @@ Evidence:
 
 ## Next Build Tasks
 
-1. Implement deterministic bundle writer in `crates/dialectica-compiler`.
-2. Add `build-fixture` so the golden expected bundle is generated from
+1. Define typed source-pack inputs and canonical deterministic serialization
+   rules.
+2. Implement deterministic bundle writer in `crates/dialectica-compiler`.
+3. Add `build-fixture` so the golden expected bundle is generated from
    source-pack records and review decisions.
-3. Export the first PRAXIS context pack from the golden bundle.
-4. Validate the four example capsule envelopes against a shared top-level
+4. Export the first PRAXIS context pack from the golden bundle.
+5. Validate the four example capsule envelopes against a shared top-level
    contract.
-5. Add checksum and signature placeholders with stable diff output.
-6. Implement graph-slice and graph-constraint validators using
+6. Add checksum and signature placeholders with stable diff output.
+7. Implement graph-slice and graph-constraint validators using
    `docs/GRAPH_PROFILE_REGISTRY.md`.
-7. Turn `services/dialectica-api` into a local fixture-mode Axum service.
-8. Add SQLx migrations in `crates/dialectica-store`.
-9. Add Dockerfile and Cloud Run staging deployment skeleton after the local API
+8. Turn `services/dialectica-api` into a local fixture-mode Axum service.
+9. Add SQLx migrations in `crates/dialectica-store`.
+10. Add Dockerfile and Cloud Run staging deployment skeleton after the local API
    runs.
 
 ## Open Product Questions
