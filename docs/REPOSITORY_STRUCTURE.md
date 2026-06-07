@@ -1,0 +1,72 @@
+# Repository Structure
+
+## Top Level
+
+```text
+README.md
+AGENTS.md
+LICENSE
+NOTICE
+CONTRIBUTING.md
+SECURITY.md
+CODE_OF_CONDUCT.md
+docs/
+crates/
+services/
+infrastructure/
+fixtures/
+tests/
+.github/
+```
+
+## `docs/`
+
+Source-of-truth documentation, architecture decisions, and build plans.
+
+Changes here should explain why the system works the way it does.
+
+## `crates/`
+
+Reusable Rust libraries.
+
+Expected crates:
+
+- `dialectica-capsule`;
+- `dialectica-store`;
+- `dialectica-compiler`;
+- `dialectica-eval`;
+- `dialectica-cli`.
+
+## `services/`
+
+Deployable Rust service binaries.
+
+Expected services:
+
+- `dialectica-api`;
+- `dialectica-task-handler`;
+- optional `dialectica-worker`.
+
+## `infrastructure/`
+
+Terraform/OpenTofu, deployment manifests, and environment configs.
+
+Cloud Run is first. GKE manifests should not appear here until an ADR approves
+Kubernetes for a specific workload.
+
+## `fixtures/`
+
+Deterministic source packs, capsule bundles, and eval artifacts.
+
+Fixtures must not contain secrets or private user documents.
+
+## `tests/`
+
+Cross-crate, contract, integration, and fixture tests.
+
+## `.github/`
+
+GitHub workflows, issue templates, PR template, and CODEOWNERS.
+
+GitHub labels and branch protection should be configured in the repository UI
+after the first push.
