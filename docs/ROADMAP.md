@@ -44,7 +44,7 @@ Acceptance:
 
 - fixture data round-trips through PostgreSQL and exports a valid capsule.
 
-## Phase 3: Ingestion MVP
+## Phase 3: Ingestion foundation build
 
 Deliverables:
 

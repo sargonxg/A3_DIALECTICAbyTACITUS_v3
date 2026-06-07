@@ -8,18 +8,22 @@ When documents conflict, use this order:
 
 1. `docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md`
 2. `docs/SOURCE_OF_TRUTH.md`
-3. `docs/MVP_DEFINITION.md`
+3. `docs/FOUNDATION_BUILD.md`
 4. `docs/TECH_BENCHMARK.md`
 5. `docs/CAPSULE_FORMAL_MODEL.md`
-6. `docs/CAPSULE_SPEC.md`
-7. `docs/INTELLECTUAL_TOOLS.md`
-8. `docs/API_CONTRACT.md`
-9. `docs/DATA_MODEL.md`
-10. `docs/ARCHITECTURE.md`
-11. `docs/DEPLOYMENT.md`
-12. `docs/PRAXIS_INTEGRATION.md`
-13. ADRs in `docs/decisions/`
-14. Implementation notes in issues, PRs, and comments
+6. `docs/CAPSULE_TYPES_AND_MARKETPLACE.md`
+7. `docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md`
+8. `docs/EXPERT_REVIEW_AND_MARKETPLACE.md`
+9. `docs/CAPSULE_BUILD_EXAMPLES.md`
+10. `docs/CAPSULE_SPEC.md`
+11. `docs/INTELLECTUAL_TOOLS.md`
+12. `docs/API_CONTRACT.md`
+13. `docs/DATA_MODEL.md`
+14. `docs/ARCHITECTURE.md`
+15. `docs/DEPLOYMENT.md`
+16. `docs/PRAXIS_INTEGRATION.md`
+17. ADRs in `docs/decisions/`
+18. Implementation notes in issues, PRs, and comments
 
 If an implementation contradicts a higher-priority document, update the
 document through an ADR or stop and ask for a product decision.
@@ -35,7 +39,7 @@ DIALECTICA is the internal capsule intelligence engine that compiles portable
 PRAXIS Capsules.
 
 AGON and KAIROS are future perception subsystems. They may feed DIALECTICA
-through versioned adapters, but they are not required for the first working MVP.
+through versioned adapters, but they are not required for the first working foundation build.
 
 ## Naming Rules
 
@@ -60,22 +64,25 @@ Use these names in internal engineering docs:
 Do not market DIALECTICA as a standalone buyer-facing product until TACITUS
 makes that decision explicitly.
 
-## MVP Constraints
+## Foundation Build Constraints
 
-The MVP must prove that a capsule improves PRAXIS output compared with raw LLM
+The foundation build must prove that a capsule improves PRAXIS output compared with raw LLM
 generation.
 
-The MVP must include:
+The foundation build must include:
 
 - a portable capsule bundle;
 - source and provenance ledger;
 - temporal claim model;
 - minimal ontology and graph slices;
+- embedded graph semantics and validation constraints;
 - human review ledger;
+- rights and marketplace-readiness metadata;
+- concrete policy fixture examples;
 - PRAXIS integration contract;
 - eval fixtures that measure whether the capsule helps.
 
-The MVP must not require:
+The foundation build must not require:
 
 - Kubernetes;
 - a dedicated graph database;

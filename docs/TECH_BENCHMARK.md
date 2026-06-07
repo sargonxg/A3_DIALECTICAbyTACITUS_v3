@@ -20,6 +20,8 @@ policy-grade capsule compiler for PRAXIS.
 | LangGraph | Long-running agents need persistence, human-in-the-loop, streaming, and memory. | PRAXIS owns visible agent runs; DIALECTICA supplies durable capsule context and receipts. |
 | OpenAI Agents SDK | Specialist agents, tools, guardrails, state, tracing, and evals are now standard building blocks. | Keep agent boundaries explicit and make capsule validation/human review guardrails. |
 | Model Context Protocol | Resources/tools are becoming a standard way to expose context to agents. | Expose capsule resources later through MCP, with strict read-only defaults and provenance. |
+| JSON-LD / PROV-O / SKOS / SHACL / ODRL | Long-lived knowledge systems need portable semantics, provenance, concept schemes, validation, and rights. | Use these as design anchors for graph exports, not as mandatory runtime complexity. |
+| Verifiable Credentials / DID Core | Portable attestations and decentralized identifiers are useful for reviewer trust models. | Keep reviewer attestations optional until marketplace trust needs them. |
 
 ## Source Notes
 
@@ -44,6 +46,10 @@ policy-grade capsule compiler for PRAXIS.
   tool execution, approvals, custom storage, and state.
 - MCP resources provide URI-addressed context objects that clients can read and
   use in model interactions.
+- JSON-LD provides a JSON-compatible linked-data representation for graph
+  exports.
+- PROV-O, SKOS, SHACL, and ODRL cover provenance, controlled vocabularies,
+  graph constraints, and rights semantics.
 
 ## Design Consequences
 
@@ -56,7 +62,7 @@ component, not the whole product.
 ### 2. Temporal Graph Semantics Without Graph Lock-In
 
 Graphiti's temporal validity windows and provenance are exactly right for
-policy analysis. The MVP should encode those semantics in Postgres and bundle
+policy analysis. The foundation build should encode those semantics in Postgres and bundle
 exports before adopting a dedicated temporal graph runtime.
 
 ### 3. Human Review As The Differentiator
@@ -76,7 +82,19 @@ signatures, and ledgers.
 Graph, vector, and memory adapters should be promoted only if they improve
 source fidelity, temporal accuracy, reasoning transfer, or PRAXIS outcome evals.
 
-## MVP Recommendation
+### 6. Standards Without Standards Theater
+
+DIALECTICA should shape its graph and review metadata so it can export to
+JSON-LD, PROV-O, SKOS, SHACL-like constraints, and ODRL-style rights. It should
+not require a full RDF stack to validate a local capsule bundle.
+
+### 7. Marketplace Trust Is A Product Feature
+
+The marketplace should not sell prompts. It should list signed, versioned,
+reviewed context capsules with rights, lineage, caveats, freshness, graph
+previews, and eval snapshots.
+
+## Foundation Recommendation
 
 Build DIALECTICA v3 as:
 
@@ -110,6 +128,12 @@ Do not start with:
 - Letta memory: <https://docs.letta.com/letta-code/memory/>
 - Microsoft GraphRAG: <https://github.com/microsoft/graphrag>
 - LangGraph: <https://docs.langchain.com/langgraph>
-- OpenAI Agents SDK: <https://platform.openai.com/docs/guides/agents-sdk/>
-- Model Context Protocol: <https://github.com/modelcontextprotocol/modelcontextprotocol>
-- MCP resources: <https://modelcontextprotocol.info/docs/concepts/resources/>
+- OpenAI Agents SDK: <https://openai.github.io/openai-agents-python/>
+- Model Context Protocol specification: <https://modelcontextprotocol.io/specification/2025-06-18>
+- JSON-LD 1.1: <https://www.w3.org/TR/json-ld11/>
+- SHACL: <https://www.w3.org/TR/shacl/>
+- PROV-O: <https://www.w3.org/TR/prov-o/>
+- SKOS: <https://www.w3.org/TR/skos-reference/>
+- ODRL: <https://www.w3.org/TR/odrl-model/>
+- Verifiable Credentials Data Model 2.0: <https://www.w3.org/TR/vc-data-model-2.0/>
+- DID Core: <https://www.w3.org/TR/did-1.0/>

@@ -171,9 +171,9 @@ Each reasoning device should compile into `reasoning_playbook.json`:
 6. Ask reviewer to approve, caveat, or reject device outputs.
 7. Export accepted device guidance in the PRAXIS context pack.
 
-## MVP Device Set
+## Foundation Device Set
 
-The MVP should implement five devices:
+The foundation build should implement five devices:
 
 - sourceability check;
 - decision clock;

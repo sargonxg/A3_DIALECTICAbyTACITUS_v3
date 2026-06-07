@@ -17,12 +17,15 @@ Actions:
   security docs;
 - added ADRs for capsule bundle, Cloud Run, and PostgreSQL decisions;
 - added GitHub templates and repository hygiene files.
-- added second-pass build scaffolding docs for MVP definition, API contract,
+- added second-pass build scaffolding docs for foundation build definition, API contract,
   data model, local development, CI/CD, repository structure, and dependency
   source anchors.
 - added final pre-push polish with README diagrams, SVG mark, tech benchmark,
   formal capsule model, intellectual tools guide, agentic workflow lanes,
   PRAXIS repo alignment, research backlog, and benchmark-informed ADR.
+- added post-research capsule architecture expansion covering capsule types,
+  embedded graph semantics, human-gated expert review, marketplace mechanics,
+  and concrete policy build examples.
 
 Evidence:
 
@@ -30,6 +33,9 @@ Evidence:
 - repository was empty at clone time;
 - imported build instructions revision is dated `2026-06-07`;
 - deployment decision checked against current Google Cloud documentation.
+- graph and semantic-layer direction checked against JSON-LD, SHACL, PROV-O,
+  SKOS, ODRL, VC/DID, PostgreSQL JSON, pgvector, Graphiti, GraphRAG, MCP, and
+  OpenAI Agents SDK sources.
 
 ## Active Decisions
 
@@ -46,11 +52,13 @@ Evidence:
 1. Create Rust workspace under `crates/` and `services/`.
 2. Define JSON schema for capsule bundle components.
 3. Add a fixture source pack under `fixtures/`.
-4. Implement local capsule bundle validator.
-5. Add contract tests.
-6. Add Dockerfile and local compose file.
-7. Add Cloud Run staging deployment skeleton.
-8. Add first PRAXIS context-pack endpoint.
+4. Add the stakeholder-analysis fixture from `docs/CAPSULE_BUILD_EXAMPLES.md`.
+5. Implement local capsule bundle validator.
+6. Add graph-slice and graph-constraint validators.
+7. Add contract tests.
+8. Add Dockerfile and local compose file.
+9. Add Cloud Run staging deployment skeleton.
+10. Add first PRAXIS context-pack endpoint.
 
 ## Open Product Questions
 

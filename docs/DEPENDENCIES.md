@@ -6,7 +6,7 @@ to add every dependency immediately.
 ## Principles
 
 - Add dependencies only when they remove real implementation risk.
-- Prefer boring infrastructure for the MVP.
+- Prefer boring infrastructure for the foundation build.
 - Keep the capsule bundle readable without proprietary services.
 - Keep PostgreSQL as the first operational source of truth.
 - Treat graph, ontology, and model providers as adapters.
@@ -62,7 +62,7 @@ Source anchors:
 
 ## Cloud Dependencies
 
-| Service | MVP Role |
+| Service | Foundation Role |
 | --- | --- |
 | Cloud Run | API, task handler, jobs, optional worker pools |
 | Cloud SQL PostgreSQL | canonical operational store |
@@ -83,12 +83,12 @@ Candidate extensions:
 - `uuid-ossp` or native UUID generation strategy;
 - full-text search indexes where useful.
 
-Do not add a separate vector database for the MVP unless eval evidence proves
+Do not add a separate vector database for the foundation build unless eval evidence proves
 PostgreSQL is insufficient.
 
 ## Graph and Semantic Adapters
 
-Graph and semantic engines are future adapters, not MVP dependencies.
+Graph and semantic engines are future adapters, not foundation build dependencies.
 
 Candidate adapter classes:
 

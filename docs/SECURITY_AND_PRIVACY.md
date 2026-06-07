@@ -37,7 +37,7 @@ Initial threats:
 
 ## Controls
 
-Required MVP controls:
+Required foundation build controls:
 
 - tenant and project scoping on every record;
 - immutable source artifact hashes;

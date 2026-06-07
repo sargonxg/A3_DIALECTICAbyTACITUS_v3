@@ -19,9 +19,13 @@ jobs:
           test -f AGENTS.md
           test -f docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md
           test -f docs/SOURCE_OF_TRUTH.md
-          test -f docs/MVP_DEFINITION.md
+          test -f docs/FOUNDATION_BUILD.md
           test -f docs/TECH_BENCHMARK.md
           test -f docs/CAPSULE_FORMAL_MODEL.md
+          test -f docs/CAPSULE_TYPES_AND_MARKETPLACE.md
+          test -f docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md
+          test -f docs/EXPERT_REVIEW_AND_MARKETPLACE.md
+          test -f docs/CAPSULE_BUILD_EXAMPLES.md
           test -f docs/CAPSULE_SPEC.md
           test -f docs/INTELLECTUAL_TOOLS.md
           test -f docs/API_CONTRACT.md

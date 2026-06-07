@@ -44,7 +44,7 @@ Source anchors:
 Positive:
 
 - lower operational overhead;
-- faster MVP deployment;
+- faster foundation build deployment;
 - easier PRAXIS integration;
 - reversible container strategy;
 - built-in Google Cloud observability.

@@ -1,16 +1,17 @@
 # PRAXIS Capsule Specification
 
-Status: draft contract for MVP implementation.
+Status: draft contract for foundation build implementation.
 
 ## Definition
 
-A PRAXIS Capsule is a signed, portable analytical context object that can be
-stored, shared, reviewed, combined, and used by PRAXIS agents.
+A PRAXIS Capsule is a signed, portable knowledge-work object that can be
+stored, shared, reviewed, combined, and used by humans and PRAXIS agents.
 
-It contains both:
+It contains:
 
 - a model of the situation;
-- a model of how to think about the situation.
+- the evidence behind that model;
+- a model of how to think about and act on the situation.
 
 ## Bundle Shape
 
@@ -24,10 +25,14 @@ capsule/
   temporal_ledger.jsonl
   ontology_slice.json
   graph_slice.json
+  graph_semantics.jsonld
+  graph_constraints.json
   reasoning_playbook.json
   retrieval_pack.jsonl
   output_contracts.json
   review_ledger.jsonl
+  rights_profile.json
+  marketplace_listing.json
   capsule_health.json
   eval_report.json
   checksums.sha256
@@ -50,6 +55,11 @@ Required fields:
 - `freshness`
 - `source_count`
 - `review_state`
+- `capsule_type`
+- `rights_profile`
+- `graph_profile`
+- `reasoning_profile`
+- `compatibility_profile`
 - `bundle_digest`
 - `compiler_version`
 - `capsule_health`
@@ -165,6 +175,49 @@ Every edge must include provenance:
 - `confidence`
 - `review_state`
 
+## `graph_semantics.jsonld`
+
+Contains an optional linked-data representation of the graph and capsule
+identity. The first implementation should keep this simple and compatible with
+normal JSON processing.
+
+Design anchors:
+
+- JSON-LD for linked-data serialization;
+- PROV-O for generation and review provenance;
+- SKOS for controlled concepts;
+- ODRL for rights and usage semantics.
+
+## `graph_constraints.json`
+
+Defines the required graph profile for the capsule type.
+
+Required sections:
+
+- `node_classes`
+- `edge_classes`
+- `required_edge_fields`
+- `review_state_rules`
+- `temporal_rules`
+- `source_provenance_rules`
+- `praxis_visualization_hints`
+
+Example:
+
+```json
+{
+  "graph_profile": "actor_incentive_v1",
+  "required_node_classes": ["actor", "institution", "claim", "source", "risk"],
+  "required_edge_fields": [
+    "source_ids",
+    "source_span_ids",
+    "temporal_scope",
+    "review_state",
+    "explanation"
+  ]
+}
+```
+
 ## `reasoning_playbook.json`
 
 This is where DIALECTICA captures expert thinking, not only expert facts.
@@ -258,6 +311,46 @@ Allowed decisions:
 - `approved_with_caveats`
 - `escalated`
 
+## `rights_profile.json`
+
+Defines how the capsule may be used, shared, exported, or listed.
+
+Required sections:
+
+- `owner`
+- `allowed_workflows`
+- `prohibited_workflows`
+- `export_policy`
+- `sharing_policy`
+- `source_license_summary`
+- `sensitive_fields`
+- `redaction_rules`
+- `marketplace_policy`
+- `expires_at`
+
+## `marketplace_listing.json`
+
+Optional for private capsules, required for listed capsules.
+
+Required fields:
+
+- `listing_id`
+- `capsule_id`
+- `title`
+- `capsule_type`
+- `domain_tags`
+- `geography`
+- `language`
+- `review_level`
+- `reviewer_summary`
+- `freshness_status`
+- `source_count`
+- `rights_summary`
+- `known_caveats`
+- `compatible_capsules`
+- `fork_policy`
+- `eval_snapshot`
+
 ## `capsule_health.json`
 
 Required fields:
@@ -287,7 +380,7 @@ Capsule health is a gate. It should not be only a UI score.
 - PRAXIS must reject capsule bundles with unsupported major versions.
 - Capsule validators must produce actionable error paths.
 
-## MVP Acceptance Criteria
+## Foundation Acceptance Criteria
 
 The first implementation is acceptable when:
 

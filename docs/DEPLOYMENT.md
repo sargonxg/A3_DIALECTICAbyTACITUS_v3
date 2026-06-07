@@ -9,7 +9,7 @@ the runtime shape.
 
 ## Why Cloud Run First
 
-DIALECTICA's MVP is a set of containerized APIs, task handlers, background jobs,
+DIALECTICA's foundation build is a set of containerized APIs, task handlers, background jobs,
 and workers around PostgreSQL and object storage. Cloud Run fits that shape with
 less operational load than a Kubernetes cluster.
 
@@ -158,7 +158,7 @@ Kubernetes adds value when the engine needs:
 - sidecars and service mesh requirements;
 - stronger workload separation than Cloud Run provides.
 
-The MVP does not need those by default. Starting on Kubernetes would increase
+The foundation build does not need those by default. Starting on Kubernetes would increase
 surface area before the capsule contract, evals, and PRAXIS integration have
 proven the product.
 

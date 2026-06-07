@@ -181,6 +181,17 @@ adapters until an ADR promotes them.
 - `source_span_id`
 - `created_by_run_id`
 
+### `graph_constraints`
+
+- `id`
+- `capsule_id`
+- `graph_profile`
+- `node_classes_json`
+- `edge_classes_json`
+- `required_fields_json`
+- `validation_errors_json`
+- `created_at`
+
 ### `review_decisions`
 
 - `id`
@@ -194,6 +205,52 @@ adapters until an ADR promotes them.
 - `notes`
 - `created_at`
 - `expires_at`
+
+### `rights_profiles`
+
+- `id`
+- `capsule_id`
+- `owner_id`
+- `allowed_workflows_json`
+- `prohibited_workflows_json`
+- `export_policy`
+- `sharing_policy`
+- `source_license_summary`
+- `sensitive_fields_json`
+- `redaction_rules_json`
+- `marketplace_policy`
+- `expires_at`
+- `created_at`
+
+### `marketplace_listings`
+
+- `id`
+- `capsule_id`
+- `listing_status`
+- `review_level`
+- `reviewer_summary`
+- `domain_tags_json`
+- `geography`
+- `language`
+- `freshness_status`
+- `rights_summary`
+- `known_caveats_json`
+- `compatible_capsules_json`
+- `fork_policy`
+- `eval_snapshot_json`
+- `created_at`
+- `updated_at`
+
+### `capsule_lineage`
+
+- `id`
+- `capsule_id`
+- `parent_capsule_id`
+- `parent_bundle_digest`
+- `lineage_kind`
+- `inherited_review_json`
+- `local_change_summary`
+- `created_at`
 
 ### `reasoning_devices`
 
@@ -255,7 +312,10 @@ Initial indexes:
 - claim review state;
 - temporal status;
 - graph edge from/to node ids;
+- graph profile and validation errors;
 - review object lookup;
+- marketplace listing status;
+- capsule lineage parent lookup;
 - bundle digest.
 - capsule read receipts by capsule and PRAXIS run.
 

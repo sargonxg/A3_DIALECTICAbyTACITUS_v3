@@ -33,22 +33,22 @@ promote them.
 
 ### Required temporal graph engine
 
-Rejected for MVP. Temporal graph semantics are essential, but the runtime
+Rejected for foundation build. Temporal graph semantics are essential, but the runtime
 dependency is not. Encode semantics first in Postgres and bundle exports.
 
 ### Required memory platform
 
-Rejected for MVP. Policy capsules need reviewed memory, not uncontrolled
+Rejected for foundation build. Policy capsules need reviewed memory, not uncontrolled
 personalization.
 
 ### Required GraphRAG pipeline
 
-Rejected for MVP. GraphRAG can be expensive and batch-oriented. Use small graph
+Rejected for foundation build. GraphRAG can be expensive and batch-oriented. Use small graph
 slices and evals first.
 
 ### Required agent orchestration framework
 
-Rejected for DIALECTICA MVP. PRAXIS already owns visible agent runs and runtime
+Rejected for DIALECTICA foundation build. PRAXIS already owns visible agent runs and runtime
 proof. DIALECTICA should serve context and receipts.
 
 ## Consequences

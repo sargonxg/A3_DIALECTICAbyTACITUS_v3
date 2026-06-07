@@ -70,8 +70,28 @@ Output:
 - review state;
 - freshness;
 - source count;
+- capsule type;
+- graph preview metadata;
+- rights and sharing summary;
+- marketplace listing state when present;
 - digest;
 - compatible PRAXIS workflows.
+
+### Get Graph Preview
+
+```http
+GET /v1/capsules/{capsule_id}/graph-preview
+```
+
+Output:
+
+- node and edge counts;
+- top node types;
+- review state counts;
+- high-centrality actors, claims, sources, and risks;
+- contradiction clusters;
+- stale or unreviewed graph warnings;
+- visualization hints for PRAXIS.
 
 ### Get PRAXIS Context Pack
 
@@ -103,6 +123,8 @@ The response must include:
 - freshness warnings;
 - combined retrieval plan;
 - combined reasoning playbook summary.
+- merged graph preview;
+- rights and sharing conflicts.
 
 ## PRAXIS UI Requirements
 
@@ -111,7 +133,10 @@ PRAXIS should surface:
 - capsule title and status;
 - freshness and last compile time;
 - source count and top source types;
+- embedded graph preview;
 - human review state;
+- rights and sharing rules;
+- expert-pick or marketplace state when present;
 - warnings for stale or contested context;
 - source receipts in answer views;
 - capsule contribution in agent run receipts.
@@ -135,6 +160,7 @@ When PRAXIS uses a capsule, the agent should receive:
 - reasoning devices relevant to the requested output;
 - forbidden claims and escalation criteria;
 - output contract.
+- graph focus nodes and edge warnings.
 
 The agent should return:
 
@@ -162,6 +188,7 @@ Minimum receipt fields:
 - source ids;
 - claim ids;
 - reasoning device ids;
+- graph node and edge ids that influenced the answer;
 - warnings triggered;
 - review state at use time.
 
@@ -185,7 +212,9 @@ Capsule+ graph proposals:
 
 This integration is designed to keep PRAXIS simple:
 
-- no new top-level product surface is required for the MVP;
+- no new top-level product surface is required for the foundation build;
 - capsule status can appear inside existing Ask, workbench, or library surfaces;
 - deeper graph and ontology inspection can remain behind expert workflows;
+- marketplace discovery can live inside the capsule library rather than as a
+  separate product surface;
 - runtime proof should be truthful and based on actual capsule receipts.

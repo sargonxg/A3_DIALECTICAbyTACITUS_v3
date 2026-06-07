@@ -1,6 +1,6 @@
 # DIALECTICA v3 - Build Instructions for Codex
 
-Revision: 4
+Revision: 5
 Date: 2026-06-07
 Repo target: `github.com/sargonxg/A3_DIALECTICAbyTACITUS_v3`
 Runtime target: Google Cloud project `praxisbytacitus`, region `us-central1`
@@ -9,6 +9,17 @@ Consumer: PRAXIS at `praxis.tacitus.me`
 You are a senior engine architect building TACITUS's capsule intelligence layer for PRAXIS Augmented Generation.
 
 Read this whole file before planning. Execute one phase at a time. Do not skip acceptance criteria. Do not silently substitute dependencies, model names, storage choices, or product surfaces. When a dependency or cloud feature is volatile, verify it against the source anchors in section 20 before implementing.
+
+Normative companion pages added in Revision 5:
+
+- `docs/CAPSULE_TYPES_AND_MARKETPLACE.md` for capsule categories,
+  compatibility, marketplace listings, and expert-pick trust levels.
+- `docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md` for embedded graph files, node
+  and edge profiles, semantic export anchors, and PRAXIS visualization rules.
+- `docs/EXPERT_REVIEW_AND_MARKETPLACE.md` for human gates, review objects,
+  reviewer roles, promotion gates, forking, and marketplace safety.
+- `docs/CAPSULE_BUILD_EXAMPLES.md` for concrete stakeholder-analysis,
+  decision-clock, thinking-device, and output-capsule examples.
 
 ## 0. Executive Decision
 
@@ -31,11 +42,11 @@ The product thesis:
 
 The technical thesis:
 
-> A capsule is a signed, portable, self-describing analytical context object: a model of a situation plus a model of how to think about it.
+> A capsule is a signed, portable, self-describing knowledge-work object: a model of a situation, the evidence behind it, the reasoning tools for using it, and the rules for human and AI use.
 
 The build thesis:
 
-> Contract first, engine-less first, source-cited always. Use graph and semantic engines as adapters and caches, never as the only copy of truth.
+> Contract first, engine-light first, source-cited always. Use graph and semantic engines as adapters and caches, never as the only copy of truth.
 
 ## 1. Product Boundary and Naming
 
@@ -71,7 +82,7 @@ Product shape:
    PostgreSQL, Ladybug, Oxigraph, Graphiti, Spanner Graph, and any future graph engine may index, project, query, or accelerate a capsule. None may become the only copy of a capsule.
 
 3. Engine-less mode is mandatory.
-   A capsule must remain usable by an LLM or local Python code from the bundle alone. No graph server may be required to inspect, cite, compose, critique, improve, or apply a device to the MVP capsule.
+   A capsule must remain usable by an LLM or local Python code from the bundle alone. No graph server may be required to inspect, cite, compose, critique, improve, or apply a device to the foundation build capsule.
 
 4. PRAXIS user state is still PRAXIS-owned.
    Firestore mirrors capsule metadata and selected state for PRAXIS UX. DIALECTICA owns compiled bundle artifacts and the build/proposal/review pipeline. Durable runs and operation receipts belong in SQL tables.
@@ -86,10 +97,10 @@ Product shape:
    The composed context must explicitly tell agents how to assert, attribute, hedge, flag, or refuse based on trust layer and disputed status.
 
 8. Build the judgment layer.
-   Do not spend the MVP rebuilding generic storage, retrieval, entity resolution, or graph database infrastructure. Use adapters and narrow smoke tests.
+   Do not spend the foundation build rebuilding generic storage, retrieval, entity resolution, or graph database infrastructure. Use adapters and narrow smoke tests.
 
 9. Start boring where boring is correct.
-   For MVP operational storage, prefer Cloud SQL PostgreSQL with JSONB, relational constraints, full text search, and pgvector. Add graph engines after bundle, engine-less operations, and evaluation are working.
+   For foundation build operational storage, prefer Cloud SQL PostgreSQL with JSONB, relational constraints, full text search, and pgvector. Add graph engines after bundle, engine-less operations, and evaluation are working.
 
 10. A demo without eval is not proof.
     Build the benchmark as a first-class product artifact. PRAXIS-with-capsules must beat a generic LLM on citation coverage, temporal correctness, contradiction handling, assumption handling, and analyst usefulness.
@@ -118,7 +129,7 @@ pick(1 USER)
 + runtime contract
 ```
 
-Do not add more user-selectable top-level capsule types for MVP. If more structure is needed, add internal packs inside the four types.
+Do not add more user-selectable top-level capsule types for foundation build. If more structure is needed, add internal packs inside the four types.
 
 ## 4. Internal Packs
 
@@ -181,11 +192,11 @@ The canonical artifact is a signed capsule bundle:
     └── indexes/              # optional, regenerable
 ```
 
-Canonical records live under `records/`. `projections/graph.jsonld` is deterministic and authoritative as a semantic projection, but the simpler record files remain the primary build truth for MVP. This avoids betting the whole product on RDF edge cases while still supporting semantic interoperability.
+Canonical records live under `records/`. `projections/graph.jsonld` is deterministic and authoritative as a semantic projection, but the simpler record files remain the primary build truth for foundation build. This avoids betting the whole product on RDF edge cases while still supporting semantic interoperability.
 
 ### 5.2 Operational Store
 
-Use Cloud SQL PostgreSQL for MVP operational state:
+Use Cloud SQL PostgreSQL for foundation build operational state:
 
 - capsule metadata and versions;
 - source receipts and span indexes;
@@ -198,7 +209,7 @@ Use Cloud SQL PostgreSQL for MVP operational state:
 - embeddings via pgvector;
 - JSONB snapshots of bundle manifests and runtime contracts.
 
-Recommended MVP tables:
+Recommended foundation build tables:
 
 ```text
 capsules
@@ -245,9 +256,9 @@ Bundle writes are append-only by version. Never mutate an existing signed bundle
 
 ## 6. Graph, Ontology, and Semantic Layer
 
-### 6.1 MVP Graph Strategy
+### 6.1 foundation build Graph Strategy
 
-The MVP graph is a portable graph record set plus deterministic projections:
+The foundation build graph is a portable graph record set plus deterministic projections:
 
 - `entities.jsonl`
 - `edges.jsonl`
@@ -257,7 +268,7 @@ The MVP graph is a portable graph record set plus deterministic projections:
 - optional SQL adjacency tables
 - optional engine cache files
 
-For MVP, queries must work through:
+For foundation build, queries must work through:
 
 1. pure-Python over bundle records;
 2. PostgreSQL adjacency and full-text/vector indexes;
@@ -314,11 +325,11 @@ Each core must define:
 
 Use JSON-LD 1.1 as the semantic projection format because it is JSON-compatible, Linked Data-capable, and supports graph/dataset expression. Use SHACL for validation. Use RDF 1.2 triple terms only as an optional advanced export path until the implementation stack proves stable.
 
-MVP rule:
+foundation build rule:
 
 - Claim metadata is canonical in `claims.jsonl`.
 - JSON-LD projects claim ids, entities, edges, sources, and graph layers.
-- Do not require RDF 1.2 triple terms for MVP claim metadata.
+- Do not require RDF 1.2 triple terms for foundation build claim metadata.
 
 Named graph projection convention:
 
@@ -352,11 +363,11 @@ class CapsuleGraphBackend(Protocol):
 Backends:
 
 - `PurePythonBackend`: mandatory, offline, uses bundle records.
-- `PostgresBackend`: MVP operational store, uses SQL, full-text search, pgvector, adjacency tables.
+- `PostgresBackend`: foundation build operational store, uses SQL, full-text search, pgvector, adjacency tables.
 - `LadybugBackend`: optional embedded property graph/vector/cache after P6 smoke.
 - `OxigraphBackend`: optional RDF/SPARQL/JSON-LD validation and semantic query backend after P6 smoke.
-- `GraphitiBackend`: optional temporal/episodic substrate after P7, not required for MVP.
-- `SpannerGraphBackend`: enterprise production adapter, not MVP.
+- `GraphitiBackend`: optional temporal/episodic substrate after P7, not required for foundation build.
+- `SpannerGraphBackend`: enterprise production adapter, not foundation build.
 
 Ladybug note:
 
@@ -371,7 +382,7 @@ Graphiti note:
 
 Spanner Graph note:
 
-- Spanner Graph is powerful for production graph workloads but requires Spanner Enterprise or Enterprise Plus. Treat it as a later adapter, not the MVP path.
+- Spanner Graph is powerful for production graph workloads but requires Spanner Enterprise or Enterprise Plus. Treat it as a later adapter, not the foundation build path.
 
 ## 7. Claim, Source, and Trust Model
 
@@ -492,7 +503,7 @@ KAIROS responsibilities:
 - mark stale and superseded claims;
 - let analysts override episode segmentation.
 
-MVP diff output:
+foundation build diff output:
 
 ```json
 {
@@ -560,7 +571,7 @@ AGON extraction must not present inferred antagonism as fact. An inferred edge i
 
 USER capsules encode the role and constraints under which PRAXIS should reason and write.
 
-MVP USER category:
+foundation build USER category:
 
 - `risk_analyst`
 
@@ -586,14 +597,14 @@ USER capsules must be inspectable and editable. Do not silently infer sensitive 
 
 TOOL capsules encode expert reasoning procedures. They are not just prompts. They are executable analytical devices with input requirements, method steps, graph/retrieval needs, output schemas, and critique moves.
 
-MVP devices:
+foundation build devices:
 
 - `stakeholder_analysis`
 - `scenario_analysis`
 - `assumption_check`
 - `pre_mortem`
 
-Post-MVP devices:
+Later devices:
 
 - `analysis_of_competing_hypotheses`
 - `force_field_analysis`
@@ -643,7 +654,7 @@ Engine-backed mode can precompute device outputs with graph queries. Engine-less
 
 OUTPUT capsules specify deliverables and generation constraints.
 
-MVP OUTPUT:
+foundation build OUTPUT:
 
 - `decision_memo`
 
@@ -757,7 +768,7 @@ Operation response envelope:
 
 Verbs:
 
-| Verb | Purpose | May emit proposals? | MVP mode |
+| Verb | Purpose | May emit proposals? | foundation build mode |
 |---|---|---:|---|
 | `seek(q)` | answer a question with cited claims and sources | no | engine-less + Postgres |
 | `understand()` | summarize actors, dynamics, stakes, timeline, trust state | no | engine-less |
@@ -848,7 +859,7 @@ memo_context = compose([user_capsule, situation_capsule, stakeholder_tool, outpu
 
 ### 16.1 User Documents First
 
-MVP ingestion starts with user-provided documents and curated fixture sources.
+foundation build ingestion starts with user-provided documents and curated fixture sources.
 
 Supported initial inputs:
 
@@ -991,9 +1002,9 @@ Governance rules:
 - Canon promotion is explicit and human-only.
 - Deleting a capsule creates a tombstone; it does not rewrite history.
 
-## 19. MVP Definition
+## 19. Foundation Build
 
-The MVP is a working PRAXIS Capsule set for a country-risk / coup-style policy case.
+The foundation build is a working PRAXIS Capsule set for a country-risk / coup-style policy case.
 
 Human supplies:
 
@@ -1017,7 +1028,7 @@ Demo workflows:
 4. Update with new events and show what changed using `diff`.
 5. Run `critique` and `improve` to produce T3 proposals.
 
-MVP proof must show:
+foundation build proof must show:
 
 - source-cited output;
 - trust-calibrated generation;
@@ -1404,7 +1415,7 @@ Acceptance:
 - mutating MCP calls create proposals only;
 - `docs/PRAXIS_INTEGRATION.md` exists.
 
-### P10 - MVP Demo and Eval
+### P10 - Foundation Build Demo and Eval
 
 Deliver:
 
@@ -1439,7 +1450,7 @@ Eval dimensions:
 - operation determinism where applicable;
 - token efficiency.
 
-Suggested thresholds for MVP:
+Suggested thresholds for foundation build:
 
 ```text
 citation_coverage >= 0.95
@@ -1492,14 +1503,14 @@ Optional adapter smoke failures must not fail the whole build until the phase th
 
 ## 25. Do Not
 
-- Do not build a separate public DIALECTICA app for MVP.
+- Do not build a separate public DIALECTICA app for foundation build.
 - Do not add a new PRAXIS top-level surface unless the human explicitly asks.
 - Do not call the public object `Context Capsule`.
 - Do not use graph-engine binary files as canonical state.
-- Do not require a running graph DB for MVP operations.
+- Do not require a running graph DB for foundation build operations.
 - Do not use Graphiti as required infrastructure before engine-less operations pass.
 - Do not use Ladybug package names from stale docs; verify current install path in P0.
-- Do not rely on RDF 1.2 triple terms for MVP claim metadata.
+- Do not rely on RDF 1.2 triple terms for foundation build claim metadata.
 - Do not silently promote machine-generated claims.
 - Do not merge contradictory claims.
 - Do not ship claims without source spans and hashes.
@@ -1568,4 +1579,4 @@ DIALECTICA v3 is working when:
 - machine improvements enter a human-gated proposal loop;
 - the eval report proves the capsule advantage over raw LLM generation.
 
-That is the MVP: PRAXIS Augmented Generation with PRAXIS Capsules by TACITUS.
+That is the foundation build: PRAXIS Augmented Generation with PRAXIS Capsules by TACITUS.

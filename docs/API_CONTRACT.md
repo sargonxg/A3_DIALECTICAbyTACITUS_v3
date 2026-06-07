@@ -8,8 +8,8 @@ Status: draft for Phase 1 and Phase 2 implementation.
 - Make every long-running operation job-based.
 - Use idempotency keys for mutating requests.
 - Return source, temporal, and review warnings explicitly.
-- Never expose internal graph or model-provider details unless requested by an
-  audit endpoint.
+- Expose embedded graph previews without exposing internal graph-engine details.
+- Never expose model-provider internals unless requested by an audit endpoint.
 
 ## Common Headers
 
@@ -133,11 +133,15 @@ Response:
   "temporal_warnings": [],
   "reasoning_devices": [],
   "output_contract": {},
+  "graph_focus": [],
+  "graph_warnings": [],
   "capsule_health": {},
   "read_receipt_hints": {
     "bundle_digest": "sha256:...",
     "source_ids": [],
     "claim_ids": [],
+    "graph_node_ids": [],
+    "graph_edge_ids": [],
     "reasoning_device_ids": []
   },
   "forbidden_claims": [],
@@ -164,10 +168,37 @@ Response includes:
 
 - compatibility status;
 - combined retrieval plan;
+- merged graph preview;
 - conflicts;
 - stale claims;
 - review warnings;
+- rights and sharing conflicts;
 - recommended context budget.
+
+### Get Graph Preview
+
+```http
+GET /v1/capsules/{capsule_id}/graph-preview
+```
+
+Response:
+
+```json
+{
+  "capsule_id": "cap_123",
+  "graph_profile": "actor_incentive_v1",
+  "node_count": 84,
+  "edge_count": 196,
+  "review_state_counts": {
+    "approved": 121,
+    "approved_with_caveats": 18,
+    "needs_review": 9
+  },
+  "hotspots": [],
+  "contradiction_clusters": [],
+  "warnings": []
+}
+```
 
 ### Submit Review Decision
 
@@ -186,6 +217,41 @@ Request:
   "notes": "Use with stale-source warning."
 }
 ```
+
+### Get Marketplace Listing
+
+```http
+GET /v1/capsules/{capsule_id}/marketplace-listing
+```
+
+Response includes:
+
+- listing status;
+- capsule type;
+- review level;
+- reviewer summary;
+- freshness;
+- rights summary;
+- known caveats;
+- lineage;
+- compatible capsules;
+- eval snapshot.
+
+### Fork Capsule
+
+```http
+POST /v1/capsules/{capsule_id}/forks
+```
+
+Use when a team needs a private derivative capsule.
+
+Response includes:
+
+- fork capsule id;
+- parent capsule id;
+- parent bundle digest;
+- inherited review scope;
+- required new review gates.
 
 ### Export Bundle
 
@@ -220,6 +286,8 @@ Request:
   "bundle_digest": "sha256:...",
   "source_ids": ["source_1"],
   "claim_ids": ["claim_1"],
+  "graph_node_ids": ["actor:european-commission"],
+  "graph_edge_ids": ["edge:guidelines-constrain-subsidy"],
   "reasoning_device_ids": ["actor_incentive_map"],
   "warnings_triggered": ["stale_claim"]
 }
@@ -249,3 +317,4 @@ PRAXIS must reject:
 - capsules with failing checksum validation;
 - capsules with blocking review gates;
 - stale high-impact claims without explicit user warning.
+- graph previews with unreviewed critical edges unless explicitly marked.

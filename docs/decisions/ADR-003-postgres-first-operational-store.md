@@ -11,14 +11,14 @@ claims, temporal facts, graph edges, ontology mappings, review decisions,
 embeddings, and bundle manifests.
 
 The system may eventually use specialized graph, vector, RDF, or temporal
-stores, but requiring them too early would slow the MVP and make deployment more
+stores, but requiring them too early would slow the foundation build and make deployment more
 fragile.
 
 ## Decision
 
 Use Cloud SQL PostgreSQL as the first operational store.
 
-Use PostgreSQL tables for graph edges and ontology mappings in the MVP. Add
+Use PostgreSQL tables for graph edges and ontology mappings in the foundation build. Add
 pgvector when embeddings are needed. Treat specialized graph and semantic
 engines as derived adapters unless a later ADR promotes one.
 

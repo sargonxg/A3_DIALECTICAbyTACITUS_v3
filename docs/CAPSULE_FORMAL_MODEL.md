@@ -2,10 +2,10 @@
 
 ## Definition
 
-A PRAXIS Capsule is a portable analytical context object:
+A PRAXIS Capsule is a portable knowledge-work object for human and AI use:
 
 ```text
-C = <I, S, E, T, O, G, R, P, U, V, X>
+C = <I, S, E, T, O, G, R, P, U, V, M, X>
 ```
 
 Where:
@@ -20,11 +20,12 @@ Where:
 - `P` is PRAXIS retrieval/context pack;
 - `U` is usage and output contract;
 - `V` is human review and validation ledger;
+- `M` is marketplace, rights, compatibility, and lineage metadata;
 - `X` is export metadata, checksums, and signature.
 
 ## Capsule Layers
 
-| Layer | Question answered | MVP representation |
+| Layer | Question answered | foundation build representation |
 | --- | --- | --- |
 | Identity | Who is working, for whom, and under what mandate? | `capsule.json.identity_context` |
 | Situation | What is happening and what decision horizon matters? | `capsule.json.situation_context` |
@@ -36,6 +37,7 @@ Where:
 | Retrieval | What compact context should PRAXIS inject? | `retrieval_pack.jsonl` |
 | Output | What artifacts should be produced and under what rules? | `output_contracts.json` |
 | Review | What has a human approved, rejected, caveated, or escalated? | `review_ledger.jsonl` |
+| Market | How can the capsule be shared, forked, listed, or combined? | `rights_profile.json`, `marketplace_listing.json` |
 | Export | Is the bundle complete, signed, and compatible? | `manifest.json`, checksums, signature |
 
 ## Invariants
@@ -48,6 +50,8 @@ Every valid capsule must satisfy:
 - every retrieval record points to sources or review notes;
 - every output contract declares citation and uncertainty rules;
 - every promoted capsule has passed required review gates;
+- every marketplace capsule declares usage rights, lineage, caveats, and
+  freshness;
 - every bundle has deterministic checksums.
 
 ## Canonical Versus Derived

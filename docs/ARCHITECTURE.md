@@ -88,10 +88,12 @@ Responsibilities:
 - represent actors, institutions, claims, sources, concepts, policies, events,
   causal hypotheses, and dependencies;
 - preserve provenance for every edge;
-- export a compact capsule graph for PRAXIS agents;
+- export a compact embedded graph for PRAXIS agents and graph visualization;
+- export optional JSON-LD semantic projections for interoperability;
+- validate node/edge classes against capsule-type graph profiles;
 - support graph summaries, neighborhood retrieval, and contradiction detection.
 
-For the MVP, PostgreSQL is canonical. Graph engines may be added as derived
+For the foundation build, PostgreSQL is canonical. Graph engines may be added as derived
 adapters after the base schema and capsule export prove useful.
 
 ### Review Gate
@@ -106,13 +108,27 @@ Responsibilities:
 
 Review data is part of the capsule, not a separate admin afterthought.
 
+### Marketplace and Lineage Layer
+
+Responsibilities:
+
+- expose capsule type, review level, freshness, rights, caveats, and lineage;
+- support expert-pick and certified capsule listings;
+- preserve fork ancestry and inherited review scope;
+- prevent local forks from inheriting approval for changed content;
+- make marketplace objects inspectable before PRAXIS loads them.
+
+Marketplace data is not marketing metadata. It is a trust and compatibility
+contract for reusable capsules.
+
 ### Capsule Compiler
 
 Responsibilities:
 
 - assemble a deterministic capsule bundle;
 - include manifest, source ledger, temporal ledger, ontology slice, graph slice,
-  reasoning playbook, retrieval packs, output contracts, and review ledger;
+  graph semantics, graph constraints, reasoning playbook, retrieval packs,
+  output contracts, rights profile, marketplace metadata, and review ledger;
 - sign and checksum bundle components;
 - write bundle artifacts to storage;
 - produce PRAXIS-ready summaries and compact context packs.

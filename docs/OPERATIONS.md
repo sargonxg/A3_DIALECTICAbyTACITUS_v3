@@ -2,7 +2,7 @@
 
 ## Operational Objective
 
-DIALECTICA should be boring to operate before it becomes powerful. The MVP
+DIALECTICA should be boring to operate before it becomes powerful. The foundation build
 should favor observable, retryable, reversible workflows over clever hidden
 state.
 

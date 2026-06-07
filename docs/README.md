@@ -4,15 +4,19 @@ Start with these files:
 
 1. [DIALECTICA v3 Build Instructions](DIALECTICA_v3_BUILD_INSTRUCTIONS.md)
 2. [Source of Truth](SOURCE_OF_TRUTH.md)
-3. [MVP Definition](MVP_DEFINITION.md)
+3. [Foundation Build](FOUNDATION_BUILD.md)
 4. [Tech Benchmark](TECH_BENCHMARK.md)
 5. [Capsule Formal Model](CAPSULE_FORMAL_MODEL.md)
-6. [Capsule Specification](CAPSULE_SPEC.md)
-7. [Intellectual Tools](INTELLECTUAL_TOOLS.md)
-8. [API Contract](API_CONTRACT.md)
-9. [Data Model](DATA_MODEL.md)
-10. [Architecture](ARCHITECTURE.md)
-11. [Deployment](DEPLOYMENT.md)
+6. [Capsule Types and Marketplace](CAPSULE_TYPES_AND_MARKETPLACE.md)
+7. [Embedded Graph and Semantic Layer](EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md)
+8. [Expert Review and Marketplace](EXPERT_REVIEW_AND_MARKETPLACE.md)
+9. [Capsule Build Examples](CAPSULE_BUILD_EXAMPLES.md)
+10. [Capsule Specification](CAPSULE_SPEC.md)
+11. [Intellectual Tools](INTELLECTUAL_TOOLS.md)
+12. [API Contract](API_CONTRACT.md)
+13. [Data Model](DATA_MODEL.md)
+14. [Architecture](ARCHITECTURE.md)
+15. [Deployment](DEPLOYMENT.md)
 
 Build support:
 

@@ -1,6 +1,6 @@
 # Research Backlog
 
-This backlog keeps future research organized without blocking the MVP.
+This backlog keeps future research organized without blocking the foundation build.
 
 ## R1: Temporal Context Graphs
 
@@ -44,7 +44,7 @@ Gate:
 
 Question: Which reasoning devices create the biggest quality lift?
 
-MVP candidates:
+foundation build candidates:
 
 - sourceability check;
 - decision clock;
@@ -113,3 +113,40 @@ Initial answer:
 - only after Cloud Run limits block real workloads;
 - likely triggers are long-running graph workloads, custom autoscaling, GPUs, or
   private multi-tenant network requirements.
+
+## R8: Semantic Standards Profile
+
+Question: Which standards should become formal capsule export profiles?
+
+Initial answer:
+
+- JSON-LD for linked graph serialization;
+- PROV-O for source, model, compiler, and reviewer provenance;
+- SKOS for controlled concept schemes;
+- SHACL-inspired constraints for graph validation;
+- ODRL for permissions, prohibitions, duties, and sharing rules;
+- VC/DID-inspired reviewer attestations only when marketplace trust requires
+  portable credentials.
+
+Gate:
+
+- standard export must improve interoperability without making the local bundle
+  hard to read, validate, or debug.
+
+## R9: Capsule Visualization
+
+Question: What graph views does PRAXIS need first?
+
+Initial answer:
+
+- actor/institution map;
+- source-to-claim proof view;
+- contradiction clusters;
+- temporal timeline;
+- reasoning-device trace;
+- review-state overlay.
+
+Gate:
+
+- graph preview should help a policy user catch source, time, or reasoning risk
+  faster than a flat source list.

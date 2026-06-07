@@ -1,17 +1,18 @@
-# MVP Definition
+# Foundation Build
 
-## MVP Name
+## Foundation Build Name
 
-Internal: DIALECTICA v3 Capsule Compiler MVP.
+Internal: DIALECTICA v3 Capsule Compiler foundation build.
 
 Public PRAXIS language: PRAXIS Capsules.
 
 ## One-Sentence Goal
 
-Compile a small, source-grounded, human-reviewable policy context capsule that
-PRAXIS can use to produce a better policy artifact than raw LLM generation.
+Create a small, source-grounded, human-reviewable context capsule that both a
+policy analyst and PRAXIS can use to produce a better policy artifact than raw
+LLM generation.
 
-## MVP Demo
+## Foundation Build Demo
 
 The first demo should show this path:
 
@@ -37,10 +38,12 @@ The system must create a portable capsule bundle with:
 - temporal ledger;
 - ontology slice;
 - graph slice;
+- graph semantics and graph constraints;
 - reasoning playbook;
 - retrieval pack;
 - output contracts;
 - review ledger;
+- rights profile;
 - checksums.
 
 ### 2. Source Grounding
@@ -64,7 +67,7 @@ The capsule must distinguish:
 
 ### 4. Human Gate
 
-The MVP must support at least one reviewer decision that can block promotion.
+The foundation build must support at least one reviewer decision that can block promotion.
 
 Review states:
 
@@ -78,7 +81,7 @@ Review states:
 
 ### 5. PRAXIS Context Pack
 
-The MVP must export a compact context pack with:
+The foundation build must export a compact context pack with:
 
 - capsule summary;
 - relevant retrieval records;
@@ -90,7 +93,7 @@ The MVP must export a compact context pack with:
 
 ### 6. Evaluation
 
-The MVP must compare:
+The foundation build must compare:
 
 - raw prompt response;
 - loose-document response;
@@ -101,7 +104,7 @@ correctness, and policy reasoning.
 
 ## Explicit Non-Goals
 
-The MVP does not need:
+The foundation build does not need:
 
 - Kubernetes;
 - a required graph database;
@@ -128,12 +131,13 @@ The first fixture should include:
 
 ## Definition of Done
 
-The MVP is done when:
+The foundation build is done when:
 
 1. a local command builds a valid fixture capsule;
 2. the capsule validates against schema;
 3. source ledger references resolve;
 4. review gate can block promotion;
 5. PRAXIS can consume the context pack;
-6. eval output shows whether the capsule improved the policy answer;
-7. staging Cloud Run can compile or serve one fixture capsule.
+6. PRAXIS can load and visualize the embedded graph preview;
+7. eval output shows whether the capsule improved the policy answer;
+8. staging Cloud Run can compile or serve one fixture capsule.

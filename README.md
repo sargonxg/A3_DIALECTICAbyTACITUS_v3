@@ -11,9 +11,10 @@
 
 DIALECTICA is the internal TACITUS capsule intelligence engine for PRAXIS.
 
-Its job is to compile messy policy context into portable, source-grounded,
-reviewable **PRAXIS Capsules** that PRAXIS agents can concatenate inside
-analysis, research, drafting, scenario, and decision workflows.
+Its job is to build the context-capsule backbone for PRAXIS: durable,
+source-grounded knowledge objects that humans and AI agents can inspect, share,
+compose, and use interchangeably across policy, research, analysis, drafting,
+scenario, and decision workflows.
 
 The product thesis is:
 
@@ -21,15 +22,47 @@ The product thesis is:
 
 The technical thesis is:
 
-> A capsule is a signed, portable, self-describing analytical context object: a
-> model of a situation plus a model of how to think about it.
+> A capsule is a signed, portable, self-describing knowledge-work object: a
+> model of a situation, the evidence behind it, the reasoning tools for using
+> it, and the rules for human and AI use.
+
+```text
+             DIALECTICA by TACITUS
+
+  docs + feeds + notes + runs + expert judgement
+          |
+          v
+  source ledger -> time ledger -> semantic layer
+          |              |              |
+          v              v              v
+       claims ------ embedded graph ---- reasoning devices
+          \              |              /
+           \             v             /
+            +------ human gate -------+
+                       |
+                       v
+              signed PRAXIS Capsule
+                       |
+                       v
+             PRAXIS augmented generation
+```
 
 ## Why This Exists
 
 Generic LLM generation loses the things policy teams care about most: source
 status, time, institutional context, contested facts, tacit expert reasoning,
-review gates, and handover memory. DIALECTICA fixes that by compiling these
-elements into a portable capsule that PRAXIS can inspect and use.
+review gates, and handover memory. DIALECTICA fixes that by encoding these
+elements into a portable capsule that PRAXIS and human teams can inspect,
+share, and use.
+
+The larger vision is that capsules become the durable backbone of serious
+knowledge work. A policy analyst, expert reviewer, AI agent, and institutional
+team should be able to point to the same capsule and understand the same
+sources, graph, reasoning layer, caveats, and output rules.
+
+<p align="center">
+  <img src="assets/capsule-stack.svg" alt="DIALECTICA capsule stack" width="860">
+</p>
 
 ```mermaid
 flowchart LR
@@ -103,12 +136,12 @@ Public product language should say **PRAXIS Capsules**, **Capsules**, **Capsule
 AI**, or **Capsule Library**. Use **DIALECTICA Engine** for internal
 architecture and implementation docs.
 
-## MVP Architecture
+## Build Architecture
 
-The first working version is contract-first and engine-less before it becomes
-engine-rich. The capsule bundle format, provenance model, review ledger, and
-PRAXIS integration contract must work before advanced graph/AI adapters become
-required.
+The first working version is contract-first and engine-light before it becomes
+engine-rich. The capsule bundle format, provenance model, review ledger, graph
+slice, semantic layer, and PRAXIS integration contract must work before
+advanced graph/AI adapters become required.
 
 Core services:
 
@@ -123,7 +156,7 @@ Core services:
 - **Evaluation harness**: tests source fidelity, temporal accuracy, retrieval
   quality, reasoning transfer, and PRAXIS answer improvement.
 
-MVP promise:
+Initial runtime promise:
 
 > Given a small policy source pack and a review decision, DIALECTICA can compile
 > a valid PRAXIS Capsule bundle that PRAXIS can use to produce a more grounded,
@@ -140,12 +173,24 @@ Canonical stores:
 
 ## Capsule Formal Model
 
-At MVP scale, a capsule is:
+At initial runtime scale, a capsule is:
 
 ```text
 Capsule = Identity + Situation + Sources + Time + Ontology + Graph
         + Reasoning Devices + Retrieval Pack + Output Contracts
         + Review Ledger + Evaluation Report + Signature
+```
+
+The graph is embedded in the capsule so PRAXIS can visualize and reason over it
+without a separate graph database.
+
+```text
+source span --supports--> claim --mentions--> actor
+     |                       |                  |
+     v                       v                  v
+ provenance              valid time        incentives
+     |                       |                  |
+     +----------review state +-------> policy decision
 ```
 
 The most important distinction is between **canonical records** and **derived
@@ -163,13 +208,87 @@ flowchart LR
 ```
 
 Graph, vector, MCP, and memory planes can make retrieval better, but they do not
-replace the capsule bundle or PostgreSQL ledger in the MVP.
+replace the capsule bundle or PostgreSQL ledger in the foundation build.
+
+## Capsule Types
+
+PRAXIS should not receive one generic context object. DIALECTICA should compile
+typed capsules with clear compatibility rules:
+
+| Capsule | What it packages | Example use |
+| --- | --- | --- |
+| User Capsule | user preferences, style, mandate, prior work | personalized Ask PRAXIS |
+| Team Capsule | institutional memory and workflow standards | team briefing lane |
+| Situation Capsule | actors, claims, time, risks, sources | live policy analysis |
+| Source Capsule | document spans, trust, provenance | citation-grounded retrieval |
+| Domain Capsule | concepts, authorities, instruments | policy-domain onboarding |
+| Thinking Device Capsule | expert method and failure modes | stakeholder analysis or ACH |
+| Stakeholder Capsule | actors, incentives, constraints, influence | stakeholder maps |
+| Scenario Capsule | futures, triggers, indicators, branches | foresight and contingency |
+| Output Capsule | produced artifact plus reasoning trail | memo reuse and handover |
+| Expert Pick Capsule | reviewed capsule recommended by an expert | capsule marketplace |
+
+See [docs/CAPSULE_TYPES_AND_MARKETPLACE.md](docs/CAPSULE_TYPES_AND_MARKETPLACE.md).
+
+## Embedded Graph
+
+The embedded graph is the capsule's internal map:
+
+- nodes: actors, institutions, sources, spans, claims, events, concepts,
+  instruments, risks, decisions, reasoning devices, and review actions;
+- edges: supports, contradicts, mentions, influences, causes, depends on,
+  supersedes, uses device, reviewed by, and forbidden for;
+- every edge carries provenance, temporal scope, confidence, review state, and
+  an explanation;
+- JSON-LD, PROV-O, SKOS, SHACL, ODRL, VC/DID, and OPA are design anchors, not
+  mandatory runtime dependencies.
+
+```mermaid
+flowchart LR
+  Source["Source span"] -->|supports| Claim["Claim"]
+  Claim -->|mentions| Actor["Actor"]
+  Actor -->|influenced by| Institution["Institution"]
+  Claim -->|valid during| Time["Temporal scope"]
+  Claim -->|uses| Device["Reasoning device"]
+  Reviewer["Expert review"] -->|caveats| Claim
+  Claim --> Decision["PRAXIS decision context"]
+```
+
+See [docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md](docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md).
+
+## Human-Gated Expert Layer
+
+DIALECTICA should capture expert reasoning as structured data:
+
+- source hierarchies and citation standards;
+- tacit domain distinctions;
+- missing-actor warnings;
+- rejected causal stories;
+- reviewer caveats and expiry dates;
+- reasoning devices and failure modes;
+- rights and sharing constraints.
+
+That is how PRAXIS can guide agents to reason with expert constraints rather
+than only retrieve expert facts.
+
+```text
+machine extraction
+      |
+      v
+review queue -> expert caveat -> review ledger -> promoted capsule
+      |                              |
+      v                              v
+rejected object                 marketplace listing
+```
+
+See [docs/EXPERT_REVIEW_AND_MARKETPLACE.md](docs/EXPERT_REVIEW_AND_MARKETPLACE.md)
+and [docs/CAPSULE_BUILD_EXAMPLES.md](docs/CAPSULE_BUILD_EXAMPLES.md).
 
 ## Deployment Direction
 
 Start on **Cloud Run**, not Kubernetes.
 
-Cloud Run is the right MVP substrate because DIALECTICA needs containerized API
+Cloud Run is the right initial substrate because DIALECTICA needs containerized API
 services, event-driven workers, jobs, Cloud SQL access, managed scaling, and low
 operational overhead before it needs cluster-level control. The current Google
 Cloud docs describe Cloud Run services as managed container execution, Cloud Run
@@ -219,7 +338,7 @@ patterns:
 | --- | --- | --- |
 | Temporal context graphs | Time, provenance, and evolving facts matter for agents operating on changing facts. | Adopt temporal/provenance semantics, but keep Postgres and bundle export canonical. |
 | Agent memory layers | Agents need durable user/session/project state. | Capture memory as reviewed capsule records, not uncontrolled chat memory. |
-| GraphRAG pipelines | Graph structure improves synthesis over private corpora. | Use graph slices and evals, but avoid expensive batch graph dependency for MVP. |
+| GraphRAG pipelines | Graph structure improves synthesis over private corpora. | Use graph slices and evals, but avoid expensive batch graph dependency for foundation build. |
 | Agent orchestration runtimes | Long-running workflows need persistence, human gates, and traces. | PRAXIS owns visible agent runs; DIALECTICA supplies capsule context and receipts. |
 
 See [docs/TECH_BENCHMARK.md](docs/TECH_BENCHMARK.md) for sources and lessons
@@ -234,9 +353,13 @@ assets/
 docs/
   DIALECTICA_v3_BUILD_INSTRUCTIONS.md   imported canonical build spec
   SOURCE_OF_TRUTH.md                    document priority and working rules
-  MVP_DEFINITION.md                      first product slice and non-goals
+  FOUNDATION_BUILD.md                   first product slice and non-goals
   TECH_BENCHMARK.md                      research and ecosystem comparison
   CAPSULE_FORMAL_MODEL.md                formal capsule layers and invariants
+  CAPSULE_TYPES_AND_MARKETPLACE.md       capsule categories and market object
+  EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md   graph, ontology, and semantics
+  EXPERT_REVIEW_AND_MARKETPLACE.md       human gates and expert trust model
+  CAPSULE_BUILD_EXAMPLES.md              concrete policy capsule examples
   INTELLECTUAL_TOOLS.md                  policy reasoning devices and capture
   ARCHITECTURE.md                       system architecture and data flow
   API_CONTRACT.md                        API endpoints PRAXIS will consume
@@ -274,7 +397,7 @@ tests/                                  integration and contract tests
    or expert review.
 3. Temporal by default: policy context changes; capsules must carry dates,
    freshness, supersession, and uncertainty.
-4. Postgres first: keep the MVP operational store simple, inspectable, and
+4. Postgres first: keep the foundation build operational store simple, inspectable, and
    migratable.
 5. Graph as adapter: graph engines enrich the capsule, but they are not the only
    copy of truth.
@@ -295,12 +418,15 @@ Start here:
 
 1. Read [docs/SOURCE_OF_TRUTH.md](docs/SOURCE_OF_TRUTH.md).
 2. Read [docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md](docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md).
-3. Read [docs/MVP_DEFINITION.md](docs/MVP_DEFINITION.md).
+3. Read [docs/FOUNDATION_BUILD.md](docs/FOUNDATION_BUILD.md).
 4. Read [docs/CAPSULE_SPEC.md](docs/CAPSULE_SPEC.md).
-5. Read [docs/API_CONTRACT.md](docs/API_CONTRACT.md).
-6. Read [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
-7. Read [docs/IMPLEMENTATION_BLUEPRINT.md](docs/IMPLEMENTATION_BLUEPRINT.md).
-8. Read [docs/INTELLECTUAL_TOOLS.md](docs/INTELLECTUAL_TOOLS.md).
+5. Read [docs/CAPSULE_TYPES_AND_MARKETPLACE.md](docs/CAPSULE_TYPES_AND_MARKETPLACE.md).
+6. Read [docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md](docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md).
+7. Read [docs/CAPSULE_BUILD_EXAMPLES.md](docs/CAPSULE_BUILD_EXAMPLES.md).
+8. Read [docs/API_CONTRACT.md](docs/API_CONTRACT.md).
+9. Read [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+10. Read [docs/IMPLEMENTATION_BLUEPRINT.md](docs/IMPLEMENTATION_BLUEPRINT.md).
+11. Read [docs/INTELLECTUAL_TOOLS.md](docs/INTELLECTUAL_TOOLS.md).
 
 ## First Build Commands
 

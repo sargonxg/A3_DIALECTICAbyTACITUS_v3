@@ -8,17 +8,21 @@ Before editing behavior, read:
 
 1. `docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md`
 2. `docs/SOURCE_OF_TRUTH.md`
-3. `docs/MVP_DEFINITION.md`
+3. `docs/FOUNDATION_BUILD.md`
 4. `docs/TECH_BENCHMARK.md`
 5. `docs/CAPSULE_FORMAL_MODEL.md`
-6. `docs/CAPSULE_SPEC.md`
-7. `docs/INTELLECTUAL_TOOLS.md`
-8. `docs/API_CONTRACT.md`
-9. `docs/DATA_MODEL.md`
-10. `docs/ARCHITECTURE.md`
-11. `docs/IMPLEMENTATION_BLUEPRINT.md`
-12. `docs/AGENTIC_WORKFLOWS.md`
-13. `docs/BUILD_LEDGER.md`
+6. `docs/CAPSULE_TYPES_AND_MARKETPLACE.md`
+7. `docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md`
+8. `docs/EXPERT_REVIEW_AND_MARKETPLACE.md`
+9. `docs/CAPSULE_BUILD_EXAMPLES.md`
+10. `docs/CAPSULE_SPEC.md`
+11. `docs/INTELLECTUAL_TOOLS.md`
+12. `docs/API_CONTRACT.md`
+13. `docs/DATA_MODEL.md`
+14. `docs/ARCHITECTURE.md`
+15. `docs/IMPLEMENTATION_BLUEPRINT.md`
+16. `docs/AGENTIC_WORKFLOWS.md`
+17. `docs/BUILD_LEDGER.md`
 
 For deployment work, also read:
 
@@ -90,9 +94,21 @@ views.
 
 Constraints:
 
-- PostgreSQL remains canonical for MVP;
+- PostgreSQL remains canonical for foundation build;
 - graph engines are adapters until an ADR changes this;
 - every edge requires provenance and review state.
+- graph files must remain loadable by PRAXIS without a dedicated graph database.
+
+### Review And Marketplace Engineer
+
+Purpose: build human gates, review ledgers, promotion rules, listing metadata,
+forking, usage rights, and expert-pick flows.
+
+Constraints:
+
+- machine-generated outputs cannot be promoted without human review;
+- inherited review does not automatically approve local forks;
+- marketplace listings must expose freshness, caveats, rights, and lineage.
 
 ### Evals Engineer
 
@@ -132,7 +148,7 @@ Validation:
 - Do not skip acceptance criteria in the build instructions.
 - Do not silently change storage or deployment strategy.
 - Do not introduce Kubernetes before an ADR approves it.
-- Do not add a graph database as required infrastructure for the MVP.
+- Do not add a graph database as required infrastructure for the foundation build.
 - Do not remove source, temporal, or review fields to simplify implementation.
 - Do not use mock success in runtime proof.
 - Keep docs updated in the same PR as behavior changes.
