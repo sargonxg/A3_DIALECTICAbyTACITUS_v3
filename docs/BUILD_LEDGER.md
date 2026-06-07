@@ -57,6 +57,9 @@ Actions:
   gap-ledger protocol.
 - updated CI checkout steps to the current Node 24 runtime line after GitHub
   Actions warned that Node 20 actions are being deprecated.
+- switched the repository from a closed-source posture to Apache-2.0, added
+  TACITUS attribution in `NOTICE`, added `CITATION.cff`, and recorded the
+  decision in ADR-006.
 
 Evidence:
 
@@ -92,6 +95,8 @@ Evidence:
   `docs/IMPROVEMENT_GUIDELINES.md`.
 - latest CI warning checked against the official `actions/checkout` release
   notes, which document the Node 24 runtime line.
+- license choice checked against Apache Software Foundation guidance and
+  GitHub/Citation File Format documentation.
 
 ## Active Decisions
 
@@ -102,6 +107,7 @@ Evidence:
 | ADR-003 | PostgreSQL first operational store | accepted | `docs/decisions/ADR-003-postgres-first-operational-store.md` |
 | ADR-004 | Rust service stack: Tokio, Axum, SQLx, Serde, Schemars, tracing | accepted | `docs/decisions/ADR-004-rust-service-stack.md` |
 | ADR-005 | Benchmark-informed capsule engine posture | accepted | `docs/decisions/ADR-005-benchmark-informed-capsule-engine-posture.md` |
+| ADR-006 | Apache-2.0 open-source license with citation metadata | accepted | `docs/decisions/ADR-006-open-source-license-and-citation.md` |
 
 ## Next Build Tasks
 
@@ -124,7 +130,5 @@ Evidence:
 ## Open Product Questions
 
 - Which first policy domain should be the golden demo capsule?
-- Should the initial license remain proprietary or shift to a dual-license
-  model later?
 - Which PRAXIS surface should show capsule receipts first?
 - Which expert-review workflow is required for the first pilot?

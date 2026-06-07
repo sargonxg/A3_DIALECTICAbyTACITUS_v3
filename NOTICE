@@ -1,7 +1,21 @@
 DIALECTICA by TACITUS v3
 
-This repository contains source materials for the DIALECTICA Engine, the
-internal TACITUS capsule intelligence layer for PRAXIS Capsules.
+Copyright 2026 TACITUS.
+
+This repository contains source materials for the DIALECTICA Engine, the TACITUS
+capsule intelligence layer for PRAXIS Capsules.
+
+DIALECTICA by TACITUS v3 is licensed under the Apache License, Version 2.0.
+Redistributions and derivative works must preserve this NOTICE where required
+by that license.
+
+Citation request:
+
+If you use DIALECTICA in research, benchmarks, publications, public demos,
+products, or derivative capsule-engine work, please cite:
+
+TACITUS. DIALECTICA by TACITUS v3: Rust-first capsule engine for PRAXIS
+context capsules. 2026. https://github.com/sargonxg/A3_DIALECTICAbyTACITUS_v3
 
 All trademarks, product names, and company names belong to their respective
 owners.

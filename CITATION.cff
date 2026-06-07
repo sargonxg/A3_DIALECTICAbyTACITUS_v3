@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use DIALECTICA by TACITUS v3 in research, benchmarks, public demos, products, or derivative capsule-engine work, please cite this repository."
+type: software
+title: "DIALECTICA by TACITUS v3"
+abstract: "Rust-first capsule engine for PRAXIS context capsules: source-grounded, human-gated knowledge objects with ontology blueprints, embedded graphs, temporal state, expert reasoning, reviewed language, and agent guidance."
+authors:
+  - name: "TACITUS"
+repository-code: "https://github.com/sargonxg/A3_DIALECTICAbyTACITUS_v3"
+url: "https://tacitus.me"
+license: "Apache-2.0"
+version: "0.1.0"
+date-released: "2026-06-07"
+keywords:
+  - "context capsules"
+  - "policy analysis"
+  - "knowledge graph"
+  - "ontology"
+  - "agentic workflows"
+  - "PRAXIS"
+  - "TACITUS"

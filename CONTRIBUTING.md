@@ -1,13 +1,19 @@
 # Contributing
 
-DIALECTICA is currently proprietary TACITUS source. Contributions should be
+DIALECTICA is open source under the Apache License 2.0. Contributions should be
 scoped, documented, and tied to the capsule build plan.
+
+By submitting a contribution, you agree that it is provided under the Apache
+License 2.0 unless a separate written agreement with TACITUS says otherwise.
 
 ## Before You Start
 
 Read:
 
 - `README.md`
+- `LICENSE`
+- `NOTICE`
+- `CITATION.cff`
 - `docs/SOURCE_OF_TRUTH.md`
 - `docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md`
 - `docs/CAPSULE_SPEC.md`

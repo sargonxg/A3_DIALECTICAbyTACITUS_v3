@@ -7,7 +7,7 @@
 ![Store](https://img.shields.io/badge/store-Cloud%20SQL%20PostgreSQL-336791)
 ![Capsule](https://img.shields.io/badge/capsule-signed%20bundle-111827)
 ![PRAXIS](https://img.shields.io/badge/serves-PRAXIS%20Capsules-0F766E)
-![License](https://img.shields.io/badge/license-proprietary-lightgrey)
+![License](https://img.shields.io/badge/license-Apache--2.0-blue)
 
 DIALECTICA is the TACITUS context-capsule engine for PRAXIS.
 
@@ -524,6 +524,8 @@ assets/
   agent-build-flow.svg                   build order diagram for future agents
   research-ledger.svg                    research-memory diagram
 Cargo.toml                               Rust workspace scaffold
+CITATION.cff                             citation metadata for GitHub and research use
+NOTICE                                   TACITUS attribution and citation notice
 docs/
   DIALECTICA_v3_BUILD_INSTRUCTIONS.md   imported reference context
   ABOUT_DIALECTICA.md                   product definition and backbone story
@@ -662,5 +664,8 @@ after the dependency set and crate APIs stabilize.
 
 ## License
 
-This repository is proprietary TACITUS source unless TACITUS later chooses an
-open-source license. See [LICENSE](LICENSE).
+Licensed under the [Apache License 2.0](LICENSE).
+
+Please preserve the TACITUS attribution notice in [NOTICE](NOTICE). If you use
+DIALECTICA in research, benchmarks, public demos, products, or derivative
+capsule-engine work, cite the project using [CITATION.cff](CITATION.cff).

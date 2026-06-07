@@ -15,7 +15,7 @@ resolver = "2"
 version = "0.1.0"
 edition = "2021"
 rust-version = "1.80"
-license = "LicenseRef-Proprietary"
+license = "Apache-2.0"
 repository = "https://github.com/sargonxg/A3_DIALECTICAbyTACITUS_v3"
 
 [workspace.lints.rust]

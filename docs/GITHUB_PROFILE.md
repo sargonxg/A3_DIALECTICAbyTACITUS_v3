@@ -35,6 +35,7 @@ explains PRAXIS Capsules directly.
 tacitus
 praxis
 dialectica
+open-source
 context-capsules
 capsule-engine
 policy-ai
@@ -50,6 +51,7 @@ expert-review
 rust
 postgresql
 cloud-run
+apache-2-0
 ```
 
 ## Profile Rules
@@ -59,6 +61,8 @@ cloud-run
 - Do not imply a standalone buyer-facing product until TACITUS makes that
   decision explicitly.
 - Do say that DIALECTICA builds PRAXIS Capsules.
+- Do say that the repository is Apache-2.0 licensed and citation metadata is
+  available in `CITATION.cff`.
 - Do mention the differentiators: source ledgers, temporal state, embedded
   graph, ontology/semantic layer, expert reasoning, reviewed language, human
   gates, rights, and PRAXIS agent guidance.

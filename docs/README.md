@@ -61,3 +61,4 @@ Architecture decisions:
 - [ADR-003: PostgreSQL First Operational Store](decisions/ADR-003-postgres-first-operational-store.md)
 - [ADR-004: Rust Service Stack](decisions/ADR-004-rust-service-stack.md)
 - [ADR-005: Benchmark-Informed Capsule Engine Posture](decisions/ADR-005-benchmark-informed-capsule-engine-posture.md)
+- [ADR-006: Open Source License and Citation](decisions/ADR-006-open-source-license-and-citation.md)
