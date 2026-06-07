@@ -72,21 +72,27 @@ Temporal modeling is not optional for policy analysis.
 
 Responsibilities:
 
-- define controlled vocabularies for domains, actors, instruments, sectors, and
-  analytic frames;
+- generate capsule-specific ontology blueprints from capsule type, domain,
+  source pack, user scope, and intended PRAXIS workflow;
+- define controlled vocabularies for the capsule's actual matter: users,
+  domains, actors, instruments, sectors, source types, methods, outputs, and
+  analytic frames as needed;
 - map extracted terms to ontology nodes with confidence and review state;
 - preserve alternate frames where experts disagree;
 - expose compact ontology slices inside capsule bundles.
 
-The ontology starts pragmatic and local. It should evolve from repeated capsule
-builds and expert corrections.
+The ontology starts pragmatic and local. Actor/claim analysis is a powerful
+situation and stakeholder lens, not a universal ontology. Each capsule type
+must be able to develop its own semantic layers and then map local terms back to
+shared graph classes for PRAXIS interoperability.
 
 ### Graph Layer
 
 Responsibilities:
 
-- represent actors, institutions, claims, sources, concepts, policies, events,
-  causal hypotheses, and dependencies;
+- represent the relationship map selected by the capsule ontology blueprint:
+  actors, institutions, claims, sources, concepts, policies, events, methods,
+  outputs, rights, causal hypotheses, and dependencies where relevant;
 - preserve provenance for every edge;
 - export a compact embedded graph for PRAXIS agents and graph visualization;
 - export optional JSON-LD semantic projections for interoperability;

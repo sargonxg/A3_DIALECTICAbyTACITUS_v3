@@ -54,6 +54,8 @@ official sources + papers
 | SKOS, <https://www.w3.org/TR/skos-reference/> | 2026-06-07 | SKOS supports concept schemes, labels, semantic relations, mappings, and documentation properties. | Use SKOS-shaped ontology slices for terms, synonyms, broader/narrower links, and cross-frame mappings. | Recheck before ontology import/export. |
 | SHACL, <https://www.w3.org/TR/shacl/> | 2026-06-07 | SHACL describes and validates RDF graphs. | Use SHACL as a design anchor for graph constraints, while implementing deterministic JSON validation first. | Recheck before RDF validation adapter. |
 | ODRL, <https://www.w3.org/TR/odrl-model/> | 2026-06-07 | ODRL models permissions, prohibitions, duties, constraints, and rights policies. | Rights and marketplace rules should map to ODRL-like permission/prohibition/duty structures. | Recheck before marketplace rights enforcement. |
+| OWL 2 overview, <https://www.w3.org/TR/owl2-overview/> | 2026-06-07 | OWL treats ontologies as formalized vocabularies for specific domains and communities, with richer semantics and profiles available when needed. | Keep DIALECTICA ontology blueprints local and capsule-specific first; add OWL export or reasoning only as an adapter after JSON contracts and review gates work. | Recheck before formal ontology inference or OWL export. |
+| RDF 1.2 concepts, <https://www.w3.org/TR/rdf12-concepts/> | 2026-06-07 | RDF provides an abstract graph data model for linked data. | Preserve a path from embedded capsule graphs to RDF/JSON-LD exports, but keep signed JSON bundles canonical. | Recheck before RDF-native storage or SPARQL features. |
 | OASIS LegalDocML / Akoma Ntoso, <https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=legaldocml> | 2026-06-07 | LegalDocML/Akoma Ntoso covers legal document XML, metadata, URI-based citations, and parliamentary/court document structures. | Add `legal_document_profile` for laws, rules, judgments, bills, and public proceedings. | Recheck before legal-source ingestion. |
 | Cloud Run overview, <https://docs.cloud.google.com/run/docs/overview/what-is-cloud-run> | 2026-06-07 | Cloud Run is the first deployment target for managed container services and jobs. | Use Cloud Run for API, task handler, and jobs before considering GKE. | Recheck limits before production deployment. |
 | Cloud SQL from Cloud Run, <https://docs.cloud.google.com/sql/docs/postgres/connect-run> | 2026-06-07 | Cloud Run can connect to Cloud SQL for PostgreSQL with service account and region-aware configuration. | Use Cloud SQL PostgreSQL as the operational DIALECTICA store. | Recheck connection guidance before staging. |
@@ -65,9 +67,12 @@ official sources + papers
 ## Adopted Product Rules
 
 - A capsule is the product contract, not a prompt, cache, or chat transcript.
-- The embedded graph is mandatory because PRAXIS needs source, time, actor,
-  claim, risk, reasoning, language, review, and rights traversal without a
+- The embedded graph is mandatory because PRAXIS needs source, time,
+  relationship, reasoning, language, review, and rights traversal without a
   required graph database.
+- Actor/claim/time graphs are one important ontology profile, not the universal
+  model for every capsule. Each capsule type should generate its own ontology
+  blueprint and semantic layers before graph extraction is promoted.
 - The semantic layer should be JSON-first and standards-shaped, not standards
   theater.
 - Human review is data. Every review decision needs actor, time, scope, caveat,

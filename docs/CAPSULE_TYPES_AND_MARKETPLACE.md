@@ -10,11 +10,11 @@ reasoning tools, output rules, review history, and usage rights.
 ```text
        TACITUS / DIALECTICA
   +--------------------------------+
-  | source -> claim -> time        |
-  |              \                 |
-  |               graph -> review  |
-  |                  \             |
-  |                capsule -> PRAXIS
+  | source -> time -> ontology     |
+  |              \      \          |
+  |               proof -> graph   |
+  |                  \      \      |
+  |                   review -> PRAXIS
   +--------------------------------+
 ```
 
@@ -26,19 +26,19 @@ The marketable unit is **PRAXIS Capsule**. The internal engine is
 Capsules should be typed because policy teams do not need one generic blob.
 They need composable context objects with predictable guarantees.
 
-| Type | Main question answered | Required layers | Typical PRAXIS use |
-| --- | --- | --- | --- |
-| User Capsule | Who is the user, what do they know, and how do they work? | identity, preferences, prior outputs, review rules | personalized Ask PRAXIS, writing handover |
-| Team Capsule | What is the team mandate, workflow, and institutional memory? | identity, authorities, shared sources, output standards | team briefs, recurring analysis |
-| Situation Capsule | What is happening in this issue right now? | sources, time, actors, claims, risks, graph | policy memos, crisis updates, scenario work |
-| Source Capsule | What does this source pack actually say? | source ledger, spans, claims, trust, temporal state | grounded retrieval, citation packs |
-| Domain Capsule | What concepts, authorities, and frames define this policy domain? | ontology, semantic layer, institutions, instruments | domain onboarding, expert context |
-| Thinking Device Capsule | How should an expert reason through this class of problem? | reasoning playbook, method steps, failure modes, examples | structured analysis, red teams |
-| Stakeholder Capsule | Who matters, what do they want, and how can they act? | actors, incentives, constraints, graph, uncertainty | stakeholder maps, negotiation planning |
-| Scenario Capsule | What futures are plausible and what indicators matter? | temporal layer, causal hypotheses, signals, branches | foresight, contingency planning |
-| Output Capsule | What artifact was produced and how should it be reused? | output contract, source trail, caveats, quality checks | memo reuse, brief updates, handover |
-| Expert Pick Capsule | What has a trusted expert approved, caveated, or recommended? | review ledger, reviewer credentials, usage rights | marketplace discovery, high-trust workflows |
-| Graph/Ontology Capsule | What reusable semantic model should other capsules inherit? | ontology, graph schema, term mappings, SHACL-like constraints | visualization, cross-capsule reasoning |
+| Type | Main question answered | Ontology family | Required layers | Typical PRAXIS use |
+| --- | --- | --- | --- | --- |
+| User Capsule | Who is the user, what do they know, and how do they work? | `user_context_ontology` | identity, preferences, prior outputs, authority and review rules | personalized Ask PRAXIS, writing handover |
+| Team Capsule | What is the team mandate, workflow, and institutional memory? | `team_memory_ontology` | identity, authorities, shared sources, output standards | team briefs, recurring analysis |
+| Situation Capsule | What is happening in this issue right now? | `situation_policy_ontology` | sources, time, actors, claims, risks, graph | policy memos, crisis updates, scenario work |
+| Source Capsule | What does this source pack actually say? | `source_proof_ontology` | source ledger, spans, claims, trust, temporal state | grounded retrieval, citation packs |
+| Domain Capsule | What concepts, authorities, and frames define this policy domain? | `domain_semantic_ontology` | ontology, semantic layer, institutions, instruments | domain onboarding, expert context |
+| Thinking Device Capsule | How should an expert reason through this class of problem? | `expert_method_ontology` | reasoning playbook, method steps, failure modes, examples | structured analysis, red teams |
+| Stakeholder Capsule | Who matters, what do they want, and how can they act? | `stakeholder_power_ontology` | actors, incentives, constraints, graph, uncertainty | stakeholder maps, negotiation planning |
+| Scenario Capsule | What futures are plausible and what indicators matter? | `scenario_causality_ontology` | temporal layer, causal hypotheses, signals, branches | foresight, contingency planning |
+| Output Capsule | What artifact was produced and how should it be reused? | `output_trace_ontology` | output contract, source trail, caveats, quality checks | memo reuse, brief updates, handover |
+| Expert Pick Capsule | What has a trusted expert approved, caveated, or recommended? | `expert_trust_ontology` | review ledger, reviewer credentials, usage rights | marketplace discovery, high-trust workflows |
+| Graph/Ontology Capsule | What reusable semantic model should other capsules inherit? | `semantic_module_ontology` | ontology, graph schema, term mappings, SHACL-like constraints | visualization, cross-capsule reasoning |
 
 Capsules can be combined when their usage contracts, source policies, ontology
 versions, and review states are compatible. PRAXIS should warn when combining
@@ -51,6 +51,7 @@ Every capsule type declares:
 
 - `capsule_type`: one of the approved type names;
 - `scope`: issue, geography, time horizon, institution, and user boundary;
+- `ontology_family`: the semantic family selected by the ontology blueprint;
 - `allowed_workflows`: PRAXIS workflows where the capsule may be used;
 - `required_layers`: bundle files that must be present;
 - `graph_profile`: node and edge classes required for visualization;
@@ -59,6 +60,11 @@ Every capsule type declares:
 - `freshness_profile`: staleness and recertification rules;
 - `rights_profile`: permitted use, prohibited use, and sharing policy;
 - `compatibility_profile`: what other capsule types it may combine with.
+
+Until `ontology_blueprint.json` is promoted into the signed bundle format, the
+`ontology_blueprint` layer means an executable planner output from
+`dialectica-cli ontology-plan` or the compiler receipt that shaped the ontology
+slice and graph slice.
 
 Example:
 
@@ -74,6 +80,7 @@ Example:
   "required_layers": [
     "source_ledger",
     "temporal_ledger",
+    "ontology_blueprint",
     "ontology_slice",
     "graph_slice",
     "reasoning_playbook",
@@ -103,6 +110,11 @@ implementation source for per-type graph profiles. Summary:
 | Scenario Capsule | `scenario_graph_v1` | scenario tree |
 | Output Capsule | `output_trace_graph_v1` | artifact trace |
 | Expert Pick Capsule | `expert_pick_graph_v1` | trust receipt |
+
+Use [Ontology Blueprints](ONTOLOGY_BLUEPRINTS.md) as the planner source for
+per-type semantic layers. A graph profile tells PRAXIS how to render and
+validate relationships. An ontology family tells the compiler and reviewer what
+meaning the capsule must capture.
 
 ## Capsule Marketplace Vision
 

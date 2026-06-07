@@ -34,6 +34,7 @@ jobs:
           test -f docs/GRAPH_PROFILE_REGISTRY.md
           test -f docs/CAPSULE_STRUCTURE_GUIDE.md
           test -f docs/GRAPH_ONTOLOGY_RESEARCH_NOTES.md
+          test -f docs/ONTOLOGY_BLUEPRINTS.md
           test -f docs/RESEARCH_LEDGER.md
           test -f docs/AGENT_BUILD_GUIDE.md
           test -f docs/IMPLEMENTATION_PHASE_PLAN.md
@@ -75,6 +76,7 @@ jobs:
           test -f fixtures/golden-policy-capsule/expected-bundle/agent_guidance.json
           test -f schemas/capsule-0.1.0/manifest.schema.json
           test -f schemas/capsule-0.1.0/capsule.schema.json
+          test -f schemas/capsule-0.1.0/ontology_blueprint.schema.json
 
   rust-workspace:
     name: Rust workspace
@@ -95,6 +97,8 @@ jobs:
         run: cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule/expected-bundle
       - name: Inspect golden capsule
         run: cargo run -p dialectica-cli -- inspect fixtures/golden-policy-capsule/expected-bundle
+      - name: Plan golden capsule ontology
+        run: cargo run -p dialectica-cli -- ontology-plan fixtures/golden-policy-capsule/expected-bundle
 
   python-tools:
     name: Python tools

@@ -23,6 +23,7 @@ adapters.
 source pack
   -> source ledger
   -> temporal ledger
+  -> ontology blueprint
   -> ontology slice
   -> embedded graph
   -> reasoning devices
@@ -46,11 +47,12 @@ Before editing behavior, read these files in order:
 4. `docs/LANE_A_ACCEPTANCE.md`
 5. `docs/API_SLICE_1.md`
 6. `docs/RESEARCH_LEDGER.md`
-7. `docs/GRAPH_PROFILE_REGISTRY.md`
-8. `docs/CAPSULE_STRUCTURE_GUIDE.md`
-9. `docs/CAPSULE_SPEC.md`
-10. `docs/PRAXIS_INTEGRATION.md`
-11. `docs/SCAFFOLD_AUDIT.md`
+7. `docs/ONTOLOGY_BLUEPRINTS.md`
+8. `docs/GRAPH_PROFILE_REGISTRY.md`
+9. `docs/CAPSULE_STRUCTURE_GUIDE.md`
+10. `docs/CAPSULE_SPEC.md`
+11. `docs/PRAXIS_INTEGRATION.md`
+12. `docs/SCAFFOLD_AUDIT.md`
 
 Use `docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md` as reference context. If it
 conflicts with a higher-priority file, follow the higher-priority file and open
@@ -67,6 +69,7 @@ Build:
 - Rust structs for manifest, source ledger, temporal ledger, ontology slice,
   graph slice, reasoning devices, language profile, agent guidance, output
   contracts, review ledger, rights policy, eval report, and signature metadata.
+- Capsule-specific ontology blueprint structs and JSON Schema export.
 - JSON Schema export.
 - Fixture snapshot validation.
 - Deterministic validation errors with paths and help text.
@@ -85,6 +88,8 @@ Build:
 - at least one contested claim;
 - at least one expert caveat;
 - at least one stakeholder-analysis reasoning device;
+- one capsule-specific ontology blueprint that explains why the selected graph
+  profile fits the policy task;
 - a language profile with approved, deprecated, and blocked language;
 - an embedded graph with source-backed edges.
 
@@ -185,6 +190,7 @@ Use these roles when multiple agents work in parallel:
 | Repo cartographer | source-of-truth map, current status | `docs/SCAFFOLD_AUDIT.md` |
 | Research scout | external sources and conclusions | `docs/RESEARCH_LEDGER.md` |
 | Capsule spec engineer | bundle schema and fixtures | `docs/CAPSULE_SPEC.md`, fixtures |
+| Ontology engineer | semantic layer planner, ontology families, local term mappings | `docs/ONTOLOGY_BLUEPRINTS.md`, `docs/CAPSULE_SPEC.md` |
 | Graph engineer | graph vocabulary and constraints | `docs/GRAPH_PROFILE_REGISTRY.md` |
 | Store engineer | Postgres schema and migrations | `docs/DATA_MODEL.md` |
 | Compiler engineer | deterministic export and signatures | `docs/CODING_LEDGER.md` |
@@ -218,6 +224,7 @@ cargo check --locked --workspace --all-targets
 cargo clippy --locked --workspace --all-targets -- -D warnings
 cargo test --locked --workspace
 cargo run -p dialectica-cli -- doctor
+cargo run -p dialectica-cli -- ontology-plan fixtures/golden-policy-capsule/expected-bundle
 python -m compileall tools/python
 python -m unittest discover tools/python/tests
 ```

@@ -48,8 +48,8 @@ device applies, which words are approved, and which outputs need human review.
 | Situation | what is happening and why it matters | task-specific grounding |
 | Sources | where claims come from | citation and retrieval anchors |
 | Time | what is current, stale, superseded, or forecast | temporal answer discipline |
-| Ontology | the concepts and categories that make the issue legible | stable semantic labels |
-| Embedded graph | actors, claims, events, sources, risks, decisions | structured traversal and conflict detection |
+| Ontology | the capsule-specific concepts, categories, and expert lenses that make the work legible | stable semantic labels |
+| Embedded graph | the source-backed relationships selected by the capsule ontology | structured traversal and conflict detection |
 | Reasoning devices | expert methods, heuristics, and failure modes | guided analysis beyond retrieval |
 | Language profile | approved terminology, voice, caveats, forbidden framings | human-gated language control |
 | Review | human approval, caveats, expiry, and rejection | trust boundary and promotion gate |
@@ -69,6 +69,12 @@ PRAXIS should be able to load one or many capsules and know:
 - which capsule versions and bundle digests were used.
 
 That gives PRAXIS a stronger substrate than generic retrieval or chat memory.
+
+The ontology is not one fixed actor/claim model. Actor and claim graphs are
+essential for situation analysis, but user, source, method, output, expert-pick,
+and domain capsules need different semantic layers. DIALECTICA builds the
+capsule-specific ontology first, then maps local terms to shared graph classes
+where PRAXIS needs visualization, retrieval, or cross-capsule composition.
 
 ## What DIALECTICA Does Not Pretend
 

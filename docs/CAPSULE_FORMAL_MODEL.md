@@ -14,7 +14,7 @@ Where:
 - `S` is situation context;
 - `E` is evidence and source ledger;
 - `T` is temporal state;
-- `O` is ontology and semantic layer;
+- `O` is the ontology blueprint plus local semantic layer;
 - `G` is graph slice;
 - `R` is reasoning playbook;
 - `L` is human-gated language profile;
@@ -33,8 +33,8 @@ Where:
 | Situation | What is happening and what decision horizon matters? | `capsule.json.situation_context` |
 | Evidence | What sources support each claim? | `source_ledger.jsonl` |
 | Time | What is true now, stale, superseded, or contested? | `temporal_ledger.jsonl` |
-| Ontology | What concepts and categories make the situation legible? | `ontology_slice.json` |
-| Graph | What actors, claims, sources, events, risks, and decisions relate? | `graph_slice.json` |
+| Ontology | What concepts, categories, lenses, and local meanings make this capsule legible? | `ontology_slice.json`, `ontology-plan` CLI |
+| Graph | What source-backed objects and relationships does this capsule need PRAXIS to traverse? | `graph_slice.json` |
 | Reasoning | How should an expert think through the situation? | `reasoning_playbook.json` |
 | Language | Which terms, caveats, voice, and framings are approved? | `language_profile.json` |
 | Agent Guidance | What may PRAXIS agents do, cite, refuse, and hand off? | `agent_guidance.json` |
@@ -49,6 +49,8 @@ Where:
 Every valid capsule must satisfy:
 
 - every claim has provenance;
+- every capsule has a capsule-specific ontology blueprint before graph
+  extraction is promoted;
 - every graph edge has provenance and review state;
 - every temporal claim has at least one time dimension;
 - every retrieval record points to sources or review notes;

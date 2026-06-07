@@ -11,6 +11,26 @@ Every graph node and edge in a promoted capsule must use a registered class or
 declare an explicit local alias that maps to a registered class. Examples,
 fixtures, APIs, and UI previews should not invent edge names ad hoc.
 
+This registry is not the ontology for every capsule. It is the shared
+interoperability vocabulary that lets PRAXIS combine, preview, validate, and
+route capsules safely. The capsule-specific ontology blueprint decides which
+registered classes are relevant and which local semantic layers, terms, and
+properties must be captured for the matter at hand.
+
+Use this sequence:
+
+```text
+capsule type + workflow
+  -> ontology blueprint
+  -> local ontology slice
+  -> graph profile and aliases
+  -> PRAXIS preview/context pack
+```
+
+Actor/claim/time graphs are first-class for situation, stakeholder, source, and
+scenario capsules. They are not the default mental model for user, output,
+thinking-device, expert-pick, or future capsule categories.
+
 ## Canonical Node Classes
 
 | Node class | Required for | Meaning |
@@ -218,6 +238,10 @@ counts:
 ```
 
 ## Capsule Type Graph Profiles
+
+The profiles below are defaults. A specific capsule can tighten or extend its
+local ontology while still normalizing exported nodes and edges back to the
+registered vocabulary.
 
 | Capsule type | Graph profile | Required nodes | Required edges | PRAXIS lens |
 | --- | --- | --- | --- | --- |

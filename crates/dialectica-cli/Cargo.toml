@@ -9,6 +9,7 @@ repository.workspace = true
 [dependencies]
 dialectica-capsule = { path = "../dialectica-capsule" }
 dialectica-compiler = { path = "../dialectica-compiler" }
+serde_json = "1"
 
 [lints]
 workspace = true

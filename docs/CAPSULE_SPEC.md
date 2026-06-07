@@ -129,7 +129,24 @@ Allowed statuses:
 
 ## `ontology_slice.json`
 
-Contains the local vocabulary needed for this capsule.
+Contains the local vocabulary and semantic contract needed for this capsule.
+It is not a global taxonomy and must not assume that actor/claim analysis is the
+right ontology for every capsule.
+
+The ontology slice should be built from a capsule-specific ontology blueprint:
+
+- User Capsules emphasize role, authority, preference, privacy, and output
+  style semantics.
+- Situation Capsules emphasize actors, claims, events, risks, policy
+  instruments, source state, and decision clocks.
+- Source Capsules emphasize source-span proof, qualification, contradiction,
+  temporal status, and citation limits.
+- Thinking Device Capsules emphasize method steps, inputs, failure modes,
+  expert caveats, and review criteria.
+- Output Capsules emphasize artifact structure, claim lineage, source receipts,
+  reuse rules, and caveats.
+- New capsule types declare their own ontology family and map local terms back
+  to shared graph classes only where PRAXIS interoperability needs it.
 
 Required sections:
 
@@ -145,6 +162,8 @@ Required sections:
 - `review_notes`
 
 Every source-backed definition must point to source spans or review notes.
+Every material term must carry enough scope and review state for PRAXIS to know
+whether it can be used directly, caveated, hidden, or escalated.
 
 ## `graph_slice.json`
 
@@ -209,6 +228,11 @@ Every edge must include provenance:
 
 Use `docs/GRAPH_PROFILE_REGISTRY.md` for canonical node classes, edge classes,
 approved aliases, graph profile names, and PRAXIS preview payloads.
+
+The list above is a shared export vocabulary. The capsule-specific ontology can
+add local properties, aliases, and domain terms, but promoted graph nodes and
+edges must normalize back to registered classes or explicitly declare how PRAXIS
+should treat the local class.
 
 ## `graph_semantics.jsonld`
 

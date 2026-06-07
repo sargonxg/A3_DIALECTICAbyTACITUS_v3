@@ -24,7 +24,8 @@ backend.
 
 ```text
 dialectica-capsule
-  owns portable bundle structs, schema generation, validation, and versioning
+  owns portable bundle structs, ontology blueprint planning, schema generation,
+  validation, and versioning
 
 dialectica-compiler
   owns deterministic bundle assembly, checksums, signing hooks, and context-pack export
@@ -36,7 +37,8 @@ dialectica-eval
   owns deterministic quality checks and PRAXIS-vs-baseline comparisons
 
 dialectica-cli
-  owns local developer workflows: doctor, validate, inspect, build-fixture
+  owns local developer workflows: doctor, validate, inspect, ontology-plan,
+  build-fixture
 
 dialectica-api
   owns PRAXIS-facing HTTP endpoints
@@ -93,6 +95,7 @@ cargo test --locked --workspace
 cargo run -p dialectica-cli -- doctor
 cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule/expected-bundle
 cargo run -p dialectica-cli -- inspect fixtures/golden-policy-capsule/expected-bundle
+cargo run -p dialectica-cli -- ontology-plan fixtures/golden-policy-capsule/expected-bundle
 python -m compileall tools/python
 python -m unittest discover tools/python/tests
 ```
@@ -114,6 +117,7 @@ Do not promote a capability as functional unless:
 - Lane A: `docs/LANE_A_ACCEPTANCE.md`
 - API Slice 1: `docs/API_SLICE_1.md`
 - Graph vocabulary: `docs/GRAPH_PROFILE_REGISTRY.md`
+- Ontology blueprints: `docs/ONTOLOGY_BLUEPRINTS.md`
 - Capsule structure: `docs/CAPSULE_STRUCTURE_GUIDE.md`
 - Graph/ontology research: `docs/GRAPH_ONTOLOGY_RESEARCH_NOTES.md`
 - Implementation phases: `docs/IMPLEMENTATION_PHASE_PLAN.md`

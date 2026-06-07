@@ -1,6 +1,8 @@
 use std::path::Path;
 
-use dialectica_capsule::{export_schema_dir, CapsuleBundle, ReviewState, ValidationSeverity};
+use dialectica_capsule::{
+    export_schema_dir, CapsuleBundle, CapsuleManifest, ReviewState, ValidationSeverity,
+};
 
 fn golden_bundle_dir() -> std::path::PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR"))
@@ -72,12 +74,95 @@ fn schema_export_writes_required_snapshots() {
 
     let manifest_schema = output_dir.join("manifest.schema.json");
     let capsule_schema = output_dir.join("capsule.schema.json");
+    let ontology_blueprint_schema = output_dir.join("ontology_blueprint.schema.json");
 
     assert!(manifest_schema.exists());
     assert!(capsule_schema.exists());
+    assert!(ontology_blueprint_schema.exists());
     assert!(std::fs::read_to_string(manifest_schema)
         .expect("manifest schema should be readable")
         .contains("CapsuleManifest"));
 
     std::fs::remove_dir_all(output_dir).expect("temp schema dir should clean up");
+}
+
+#[test]
+fn situation_capsule_ontology_plan_uses_policy_lens() {
+    let bundle =
+        CapsuleBundle::load_from_dir(&golden_bundle_dir()).expect("golden bundle should load");
+
+    let blueprint = bundle.ontology_blueprint();
+
+    assert_eq!(blueprint.ontology_family, "situation_policy_ontology");
+    assert!(blueprint
+        .semantic_layers
+        .iter()
+        .any(|layer| layer.layer_id == "actor_claim_temporal_graph"));
+    assert!(blueprint
+        .praxis_context_guidance
+        .iter()
+        .any(|guidance| guidance.contains("source-backed situation graph")));
+}
+
+#[test]
+fn user_capsule_ontology_plan_does_not_use_situation_defaults() {
+    let manifest = CapsuleManifest::new(
+        "cap_user_fixture",
+        "User context fixture",
+        "user_capsule",
+        ReviewState::Approved,
+        "sha256:user",
+    );
+
+    let blueprint = manifest.ontology_blueprint();
+
+    assert_eq!(blueprint.ontology_family, "user_context_ontology");
+    assert!(!blueprint
+        .semantic_layers
+        .iter()
+        .any(|layer| layer.layer_id == "actor_claim_temporal_graph"));
+    assert!(blueprint
+        .semantic_layers
+        .iter()
+        .any(|layer| layer.layer_id == "preference_and_authority_layer"));
+}
+
+#[test]
+fn ontology_plan_covers_documented_capsule_families() {
+    let cases = [
+        ("team_capsule", "team_memory_ontology"),
+        ("tool_capsule", "expert_method_ontology"),
+        ("source_capsule", "source_proof_ontology"),
+        ("domain_capsule", "domain_semantic_ontology"),
+        ("stakeholder_capsule", "stakeholder_power_ontology"),
+        ("scenario_capsule", "scenario_causality_ontology"),
+        ("output_capsule", "output_trace_ontology"),
+        ("expert_pick_capsule", "expert_trust_ontology"),
+        ("graph_ontology_capsule", "semantic_module_ontology"),
+        ("new_capsule_type", "capsule_specific_ontology"),
+    ];
+
+    for (capsule_type, expected_family) in cases {
+        let manifest = CapsuleManifest::new(
+            "cap_family_fixture",
+            "Family fixture",
+            capsule_type,
+            ReviewState::Approved,
+            "sha256:family",
+        );
+
+        let blueprint = manifest.ontology_blueprint();
+
+        assert_eq!(
+            blueprint.ontology_family, expected_family,
+            "capsule type {capsule_type} should map to documented ontology family"
+        );
+        assert!(
+            blueprint
+                .semantic_layers
+                .iter()
+                .any(|layer| layer.layer_id == "sourceability_layer"),
+            "capsule type {capsule_type} should include universal sourceability layer"
+        );
+    }
 }

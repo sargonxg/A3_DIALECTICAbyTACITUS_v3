@@ -32,7 +32,7 @@ The first functional app is not complete until a developer can:
 | Compiler | `crates/dialectica-compiler` | scaffolded with review-gated emit check | deterministic bundle writer and checksums |
 | Store | `crates/dialectica-store` | scaffolded with migration families | SQLx migrations and repository interfaces |
 | Evals | `crates/dialectica-eval` | scaffolded with check result primitive | fixture outcome and source-fidelity evals |
-| CLI | `crates/dialectica-cli` | `doctor`, `validate`, `inspect`, and `schema-export` implemented | add `build-fixture` after compiler exists |
+| CLI | `crates/dialectica-cli` | `doctor`, `validate`, `inspect`, `ontology-plan`, and `schema-export` implemented | add `build-fixture` after compiler exists |
 | API | `services/dialectica-api` | scaffolded binary | Axum health, manifest, context-pack routes |
 | Task handler | `services/dialectica-task-handler` | scaffolded binary | Cloud Tasks HTTP handler |
 | Contract tests | `tests/dialectica-contract-tests` | scaffolded | bundle contract and graph constraint tests |
@@ -63,6 +63,7 @@ Active Lane A/B gate:
 ```powershell
 cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule/expected-bundle
 cargo run -p dialectica-cli -- inspect fixtures/golden-policy-capsule/expected-bundle
+cargo run -p dialectica-cli -- ontology-plan fixtures/golden-policy-capsule/expected-bundle
 cargo run -p dialectica-cli -- schema-export schemas/capsule-0.1.0
 ```
 
@@ -80,6 +81,7 @@ Deliver:
 - source ledger structs: implemented;
 - temporal ledger structs: implemented;
 - ontology slice structs: implemented;
+- ontology blueprint planner and schema: implemented;
 - embedded graph structs: implemented;
 - agent guidance structs: implemented;
 - review ledger structs: implemented;

@@ -63,7 +63,7 @@ The capsule is that object.
   +------------------------------------------------------+
   | PRAXIS Capsule                                      |
   |                                                      |
-  | source ledger -> temporal ledger -> semantic layer   |
+  | source ledger -> temporal ledger -> semantic plan    |
   |       |                |                 |           |
   |       v                v                 v           |
   | source spans ---- embedded graph ---- reasoning      |
@@ -119,8 +119,10 @@ DIALECTICA does not build another chatbot memory layer. It builds capsules that
 carry the durable knowledge structure that policy teams need:
 
 - the user, team, institution, mandate, audience, and decision horizon;
-- the situation, actors, constraints, incentives, claims, uncertainties, and
-  live-world changes;
+- the capsule-specific situation, user, source, tool, output, domain, or expert
+  context that matters for the workflow;
+- actors, constraints, incentives, claims, uncertainties, and live-world
+  changes when the capsule type requires them;
 - source ledgers, citations, document spans, provenance, and trust status;
 - temporal state: true now, stale, superseded, contested, predicted, or unknown;
 - ontologies, semantic layers, entity graphs, causal links, and competing
@@ -245,21 +247,31 @@ Canonical stores:
 At initial runtime scale, a capsule is:
 
 ```text
-Capsule = Identity + Situation + Sources + Time + Ontology + Graph
+Capsule = Identity + Context + Sources + Time + Ontology Blueprint + Graph
         + Reasoning Devices + Language Profile + Agent Guidance + Retrieval Pack
         + Output Contracts + Review Ledger + Evaluation Report + Signature
 ```
 
-The graph is embedded in the capsule so PRAXIS can visualize and reason over it
-without a separate graph database.
+The ontology and graph are capsule-specific. A situation capsule may need an
+actor/claim/time graph. A user capsule may need role, authority, preference,
+privacy, and output-style semantics. A thinking-device capsule may need method
+steps, inputs, failure modes, and review caveats. A source capsule may need
+source-proof semantics. DIALECTICA keeps shared graph classes for
+interoperability, but every capsule develops the semantic layers that fit its
+matter and intended PRAXIS workflows.
 
 ```text
-source span --supports--> claim --mentions--> actor
-     |                       |                  |
-     v                       v                  v
- provenance              valid time        incentives
-     |                       |                  |
-     +----------review state +-------> policy decision
+capsule type + workflow + source pack
+        |
+        v
+ontology blueprint
+        |
+        +--> local terms, frames, aliases, caveats
+        +--> graph profile and PRAXIS lens
+        +--> reasoning questions and review gates
+        |
+        v
+portable capsule context
 ```
 
 The most important distinction is between **canonical records** and **derived
@@ -315,10 +327,13 @@ for four concrete capsule examples.
 
 ## Embedded Graph
 
-The embedded graph is the capsule's internal map:
+The embedded graph is the capsule's internal map. It is shaped by the ontology
+blueprint, then normalized into shared classes that PRAXIS can render, combine,
+and audit:
 
 - nodes: actors, institutions, sources, spans, claims, events, concepts,
-  instruments, risks, decisions, reasoning devices, and review actions;
+  instruments, risks, decisions, reasoning devices, output contracts, rights
+  policies, and review actions;
 - edges: supports, contradicts, mentions, influences, causes, depends on,
   supersedes, uses device, reviewed by, and forbidden for;
 - every edge carries provenance, temporal scope, confidence, review state, and
@@ -327,17 +342,26 @@ The embedded graph is the capsule's internal map:
   mandatory runtime dependencies.
 
 ```mermaid
-flowchart LR
-  Source["Source span"] -->|supports| Claim["Claim"]
-  Claim -->|mentions| Actor["Actor"]
-  Actor -->|influenced by| Institution["Institution"]
-  Claim -->|valid during| Time["Temporal scope"]
-  Claim -->|uses| Device["Reasoning device"]
-  Reviewer["Expert review"] -->|caveats| Claim
-  Claim --> Decision["PRAXIS decision context"]
+flowchart TB
+  Type["Capsule type"] --> Planner["Ontology blueprint"]
+  Workflow["PRAXIS workflow"] --> Planner
+  Sources["Source pack"] --> Planner
+  Planner --> User["User/context ontology"]
+  Planner --> Situation["Situation policy ontology"]
+  Planner --> Method["Expert method ontology"]
+  Planner --> Output["Output trace ontology"]
+  User --> Graph["Embedded graph"]
+  Situation --> Graph
+  Method --> Graph
+  Output --> Graph
+  Graph --> Preview["PRAXIS graph preview"]
+  Graph --> Pack["PRAXIS context pack"]
+  Review["Human review"] --> Graph
 ```
 
 See [docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md](docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md).
+See [docs/ONTOLOGY_BLUEPRINTS.md](docs/ONTOLOGY_BLUEPRINTS.md) for the
+capsule-specific ontology planner and CLI command.
 
 <p align="center">
   <img src="assets/embedded-graph.svg" alt="Embedded graph inside a PRAXIS Capsule" width="860">
@@ -491,6 +515,7 @@ docs/
   FOUNDATION_BUILD.md                   first product slice and non-goals
   TECH_BENCHMARK.md                      research and ecosystem comparison
   GRAPH_ONTOLOGY_RESEARCH_NOTES.md       graph, ontology, Ladybug, and standards research
+  ONTOLOGY_BLUEPRINTS.md                 capsule-specific semantic planner
   RESEARCH_LEDGER.md                     source links, conclusions, and refresh triggers
   AGENT_BUILD_GUIDE.md                   practical build order for future agents
   IMPLEMENTATION_PHASE_PLAN.md           active phased coding plan
@@ -601,6 +626,7 @@ cargo test --locked --workspace
 cargo run -p dialectica-cli -- doctor
 cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule/expected-bundle
 cargo run -p dialectica-cli -- inspect fixtures/golden-policy-capsule/expected-bundle
+cargo run -p dialectica-cli -- ontology-plan fixtures/golden-policy-capsule/expected-bundle
 python -m compileall tools/python
 python -m unittest discover tools/python/tests
 ```

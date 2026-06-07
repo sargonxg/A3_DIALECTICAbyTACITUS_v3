@@ -2,9 +2,13 @@
 
 ## Purpose
 
-Every serious capsule needs an embedded graph. The graph is how PRAXIS sees the
-relationships inside the capsule: actors, institutions, sources, claims, events,
-risks, decisions, concepts, frames, and review actions.
+Every serious capsule needs an embedded graph, but not every capsule needs the
+same graph. The graph is how PRAXIS sees relationships, provenance, review
+state, and usable meaning inside the capsule. A situation capsule may need
+actors, institutions, claims, events, risks, and decisions. A user capsule may
+need role, authority, preference, privacy, and output-contract relationships. A
+thinking-device capsule may need method steps, required inputs, failure modes,
+and reviewer caveats.
 
 The graph is **embedded** because it travels with the capsule bundle. It can be
 visualized in PRAXIS, projected into PostgreSQL tables, exported as JSON-LD, or
@@ -13,21 +17,24 @@ served through an MCP resource without requiring a dedicated graph database.
 The canonical graph vocabulary lives in
 [Graph Profile Registry](GRAPH_PROFILE_REGISTRY.md). Use that file before
 adding node classes, edge classes, graph previews, or capsule-type graph
-profiles.
+profiles. The registry is an interoperability floor, not a universal ontology.
+The capsule-specific ontology blueprint decides which semantic layers matter for
+the capsule being built.
 
 ```text
-        sources
-          |
-          v
- claims --+-- events ---- time
-   |            |
-   v            v
- actors ---> institutions
-   |             |
-   v             v
- incentives --> decisions
-          \      /
-           risks
+          capsule type + domain + workflow
+                       |
+                       v
+              ontology blueprint
+                       |
+       +---------------+----------------+
+       |                                |
+       v                                v
+ local semantic layers           graph profile
+       |                                |
+       +---------------+----------------+
+                       v
+              embedded graph
 ```
 
 ## Design Rule
@@ -41,7 +48,7 @@ systems later.
 
 ## Graph Slice Files
 
-The capsule should carry graph information in three files:
+The capsule carries graph information in three files:
 
 ```text
 graph_slice.json          compact graph for PRAXIS runtime and UI
@@ -52,11 +59,21 @@ graph_constraints.json    validation constraints and required profiles
 `graph_slice.json` is the operational format. `graph_semantics.jsonld` is the
 semantic export. `graph_constraints.json` is the validation profile.
 
+The ontology blueprint is a planner contract generated from the manifest or
+bundle. It guides the creation of `ontology_slice.json`, `graph_slice.json`,
+`reasoning_playbook.json`, and `agent_guidance.json`. It is executable today via:
+
+```powershell
+cargo run -p dialectica-cli -- ontology-plan fixtures/golden-policy-capsule/expected-bundle
+```
+
 ## Node Classes
 
 Canonical node classes are registered in
 [Graph Profile Registry](GRAPH_PROFILE_REGISTRY.md). The list below is the
-working explanation of the same vocabulary.
+working explanation of the shared vocabulary. Capsule builders may add
+domain-specific properties and local aliases, but those aliases must map back to
+registered classes for PRAXIS interoperability.
 
 | Node class | Meaning | Required fields |
 | --- | --- | --- |
@@ -143,7 +160,16 @@ See `docs/GRAPH_PROFILE_REGISTRY.md` for the full fixture-quality example.
 ## Semantic Layer
 
 The semantic layer gives stable meaning to the graph. DIALECTICA should borrow
-from standards without forcing every capsule into a heavyweight RDF stack.
+from standards without forcing every capsule into a heavyweight RDF stack or one
+global actor/claim ontology.
+
+The required order is:
+
+1. choose the capsule type and intended PRAXIS workflow;
+2. generate an ontology blueprint;
+3. build the capsule-specific semantic layers;
+4. map local terms and graph objects to the shared registry;
+5. export standards-shaped views only where they help interoperability.
 
 | Need | Design anchor | DIALECTICA use |
 | --- | --- | --- |
@@ -160,11 +186,13 @@ It should design fields so migration to these standards is possible.
 
 See [Graph, Ontology, And Capsule Research Notes](GRAPH_ONTOLOGY_RESEARCH_NOTES.md)
 for the latest research-backed adapter and standards decisions.
+See [Ontology Blueprints](ONTOLOGY_BLUEPRINTS.md) for the capsule-specific
+planner contract.
 
 ## Ontology Slice Shape
 
-`ontology_slice.json` should be a working semantic contract, not only a list of
-topics:
+`ontology_slice.json` should be a working semantic contract for this capsule,
+not only a list of topics and not a universal taxonomy:
 
 ```json
 {
@@ -187,6 +215,11 @@ topics:
   "deprecations": []
 }
 ```
+
+The ontology slice may be compact, but it must answer what PRAXIS needs to know
+about the capsule's local meaning: approved concepts, disputed concepts,
+synonyms, broader/narrower relations, frame memberships, deprecated terms,
+jurisdiction or domain scope, and review state.
 
 ## JSON-LD Shape
 
@@ -309,7 +342,7 @@ The merge should:
 - preserve original capsule ids;
 - keep conflicting claims side by side;
 - prefer fresher approved claims over stale draft claims;
-- warn when ontologies disagree;
+- warn when ontology blueprints or local term mappings disagree;
 - avoid writing merged facts back as canonical without review.
 
 ## Graph Health

@@ -16,19 +16,20 @@ Before implementation work, read the active coding authority first:
 7. `docs/GRAPH_PROFILE_REGISTRY.md`
 8. `docs/CAPSULE_STRUCTURE_GUIDE.md`
 9. `docs/GRAPH_ONTOLOGY_RESEARCH_NOTES.md`
-10. `docs/RESEARCH_LEDGER.md`
-11. `docs/AGENT_BUILD_GUIDE.md`
-12. `docs/IMPLEMENTATION_PHASE_PLAN.md`
-13. `docs/REPOSITORY_CONCEPT_REVIEW.md`
-14. `docs/GITHUB_PROFILE.md`
-15. `docs/SCAFFOLD_AUDIT.md`
-16. `docs/CAPSULE_SPEC.md`
-17. `docs/API_CONTRACT.md`
-18. `docs/DATA_MODEL.md`
-19. `docs/ARCHITECTURE.md`
-20. `docs/IMPLEMENTATION_BLUEPRINT.md`
-21. `docs/AGENTIC_WORKFLOWS.md`
-22. `docs/BUILD_LEDGER.md`
+10. `docs/ONTOLOGY_BLUEPRINTS.md`
+11. `docs/RESEARCH_LEDGER.md`
+12. `docs/AGENT_BUILD_GUIDE.md`
+13. `docs/IMPLEMENTATION_PHASE_PLAN.md`
+14. `docs/REPOSITORY_CONCEPT_REVIEW.md`
+15. `docs/GITHUB_PROFILE.md`
+16. `docs/SCAFFOLD_AUDIT.md`
+17. `docs/CAPSULE_SPEC.md`
+18. `docs/API_CONTRACT.md`
+19. `docs/DATA_MODEL.md`
+20. `docs/ARCHITECTURE.md`
+21. `docs/IMPLEMENTATION_BLUEPRINT.md`
+22. `docs/AGENTIC_WORKFLOWS.md`
+23. `docs/BUILD_LEDGER.md`
 
 Use `docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md` as product/reference context.
 When it conflicts with the active Rust-first coding docs above, follow
@@ -50,6 +51,8 @@ When it conflicts with the active Rust-first coding docs above, follow
 - Human review gates are part of the data model.
 - Human-gated language is part of the data model.
 - Agent guidance is a first-class bundle layer for PRAXIS workflow use.
+- Ontology blueprints are capsule-specific. Actor/claim graphs are one profile,
+  not the universal ontology for all capsules.
 - Embedded graph previews must be loadable by PRAXIS from the capsule bundle.
 - Marketplace metadata must expose review level, rights, lineage, caveats, and
   freshness.
@@ -77,6 +80,7 @@ Current command gate:
 - `cargo run -p dialectica-cli -- doctor`
 - `cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule/expected-bundle`
 - `cargo run -p dialectica-cli -- inspect fixtures/golden-policy-capsule/expected-bundle`
+- `cargo run -p dialectica-cli -- ontology-plan fixtures/golden-policy-capsule/expected-bundle`
 - `python -m compileall tools/python`
 - `python -m unittest discover tools/python/tests`
 

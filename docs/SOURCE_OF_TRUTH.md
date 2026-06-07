@@ -24,20 +24,21 @@ When documents conflict, use this order:
 16. `docs/CAPSULE_TYPES_AND_MARKETPLACE.md`
 17. `docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md`
 18. `docs/GRAPH_ONTOLOGY_RESEARCH_NOTES.md`
-19. `docs/RESEARCH_LEDGER.md`
-20. `docs/AGENT_BUILD_GUIDE.md`
-21. `docs/IMPLEMENTATION_PHASE_PLAN.md`
-22. `docs/REPOSITORY_CONCEPT_REVIEW.md`
-23. `docs/GITHUB_PROFILE.md`
-24. `docs/EXPERT_REVIEW_AND_MARKETPLACE.md`
-25. `docs/CAPSULE_BUILD_EXAMPLES.md`
-26. `docs/INTELLECTUAL_TOOLS.md`
-27. `docs/DEPLOYMENT.md`
-28. `docs/TECH_BENCHMARK.md`
-29. `docs/PYTHON_TOOLING.md`
-30. `docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md` as reference context
-31. ADRs in `docs/decisions/`
-32. Implementation notes in issues, PRs, and comments
+19. `docs/ONTOLOGY_BLUEPRINTS.md`
+20. `docs/RESEARCH_LEDGER.md`
+21. `docs/AGENT_BUILD_GUIDE.md`
+22. `docs/IMPLEMENTATION_PHASE_PLAN.md`
+23. `docs/REPOSITORY_CONCEPT_REVIEW.md`
+24. `docs/GITHUB_PROFILE.md`
+25. `docs/EXPERT_REVIEW_AND_MARKETPLACE.md`
+26. `docs/CAPSULE_BUILD_EXAMPLES.md`
+27. `docs/INTELLECTUAL_TOOLS.md`
+28. `docs/DEPLOYMENT.md`
+29. `docs/TECH_BENCHMARK.md`
+30. `docs/PYTHON_TOOLING.md`
+31. `docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md` as reference context
+32. ADRs in `docs/decisions/`
+33. Implementation notes in issues, PRs, and comments
 
 If an implementation contradicts a higher-priority document, update the
 document through an ADR or stop and ask for a product decision.
@@ -93,6 +94,7 @@ The foundation build must include:
 - embedded graph semantics and validation constraints;
 - human-reviewed language profile;
 - explicit agent guidance for PRAXIS workflow use;
+- capsule-specific ontology blueprint and semantic-layer plan;
 - human review ledger;
 - rights and marketplace-readiness metadata;
 - concrete policy fixture examples;

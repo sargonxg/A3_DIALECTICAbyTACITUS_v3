@@ -24,6 +24,13 @@ fn main() {
             };
             inspect_bundle(Path::new(&path));
         }
+        "ontology-plan" => {
+            let Some(path) = args.next() else {
+                eprintln!("missing bundle directory");
+                std::process::exit(2);
+            };
+            print_ontology_plan(Path::new(&path));
+        }
         "schema-export" => {
             let Some(path) = args.next() else {
                 eprintln!("missing schema output directory");
@@ -50,6 +57,7 @@ fn print_help() {
     println!("  doctor                  print scaffold health");
     println!("  validate <bundle-dir>   validate a capsule bundle directory");
     println!("  inspect <bundle-dir>    print capsule bundle summary");
+    println!("  ontology-plan <dir>     print capsule-specific ontology blueprint");
     println!("  schema-export <dir>     export JSON Schema snapshots");
 }
 
@@ -97,6 +105,18 @@ fn inspect_bundle(path: &Path) {
     println!("graph_node_count={}", inspection.graph_node_count);
     println!("graph_edge_count={}", inspection.graph_edge_count);
     println!("warning_count={}", inspection.warning_count);
+}
+
+fn print_ontology_plan(path: &Path) {
+    let bundle = load_or_exit(path);
+    let blueprint = bundle.ontology_blueprint();
+    match serde_json::to_string_pretty(&blueprint) {
+        Ok(json) => println!("{json}"),
+        Err(error) => {
+            eprintln!("failed to serialize ontology blueprint: {error}");
+            std::process::exit(1);
+        }
+    }
 }
 
 fn load_or_exit(path: &Path) -> CapsuleBundle {

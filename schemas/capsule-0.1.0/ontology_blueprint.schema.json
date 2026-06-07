@@ -1,0 +1,115 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CapsuleOntologyBlueprint",
+  "description": "A callable plan for developing the ontology and semantic layer of a capsule.",
+  "type": "object",
+  "required": [
+    "blueprint_id",
+    "capsule_id",
+    "capsule_type",
+    "extraction_questions",
+    "graph_profile",
+    "ontology_family",
+    "praxis_context_guidance",
+    "reasoning_lenses",
+    "review_gates",
+    "semantic_layers",
+    "suggested_edge_classes",
+    "suggested_node_classes"
+  ],
+  "properties": {
+    "blueprint_id": {
+      "type": "string"
+    },
+    "capsule_id": {
+      "type": "string"
+    },
+    "capsule_type": {
+      "type": "string"
+    },
+    "extraction_questions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "graph_profile": {
+      "type": "string"
+    },
+    "ontology_family": {
+      "type": "string"
+    },
+    "praxis_context_guidance": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "reasoning_lenses": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "review_gates": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "semantic_layers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/SemanticLayerPlan"
+      }
+    },
+    "suggested_edge_classes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "suggested_node_classes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "definitions": {
+    "SemanticLayerPlan": {
+      "description": "One semantic layer that the capsule should capture or expose to PRAXIS.",
+      "type": "object",
+      "required": [
+        "captures",
+        "layer_id",
+        "praxis_use",
+        "purpose",
+        "required_evidence"
+      ],
+      "properties": {
+        "captures": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "layer_id": {
+          "type": "string"
+        },
+        "praxis_use": {
+          "type": "string"
+        },
+        "purpose": {
+          "type": "string"
+        },
+        "required_evidence": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

@@ -24,6 +24,7 @@ PRAXIS Capsule
   +-- capsule               user/team/situation/policy context
   +-- source ledger         documents, spans, hashes, provenance
   +-- temporal ledger       validity windows, stale/superseded/contested facts
+  +-- ontology blueprint    planner for capsule-specific semantic layers
   +-- ontology slice        local concepts, mappings, frames, deprecations
   +-- embedded graph        nodes, edges, communities, review state
   +-- graph semantics       JSON-LD / PROV-O / SKOS / ODRL export view
@@ -53,8 +54,9 @@ same sections so reviewers and agents can inspect the full shape quickly.
 | `capsule` | Who or what is modeled, and under what mandate, scope, and boundary? | analysts, PRAXIS Ask, reviewers |
 | `source_ledger` | Which source spans support the claims and graph edges? | citation engine, source inspector |
 | `temporal_ledger` | What is current, stale, superseded, forecast, or contested? | answer planner, decision clock |
-| `ontology_slice` | What terms, frames, and mappings make the issue legible? | graph builder, concept inspector |
-| `graph_slice` | How do actors, claims, sources, events, risks, tools, and outputs relate? | PRAXIS graph UI, context planner |
+| `ontology_blueprint` | Which semantic layers should this capsule build for its type, domain, and workflow? | compiler, graph builder, reviewer, PRAXIS context planner |
+| `ontology_slice` | What terms, frames, and mappings make this capsule legible? | graph builder, concept inspector |
+| `graph_slice` | How do this capsule's relevant objects, sources, methods, risks, tools, and outputs relate? | PRAXIS graph UI, context planner |
 | `graph_semantics` | How can the capsule be exported to linked-data systems? | interoperability adapters |
 | `graph_constraints` | Which graph classes, fields, and review rules must validate? | Rust validator, reviewer |
 | `reasoning_playbook` | Which expert method should structure the analysis? | analyst, reviewer, agent planner |
@@ -71,7 +73,8 @@ same sections so reviewers and agents can inspect the full shape quickly.
 ## Embedded Graph Requirements
 
 The embedded graph is not a decoration. It is a compact, reviewable map of the
-knowledge object. Every promoted graph object needs:
+knowledge object selected by the ontology blueprint. Every promoted graph
+object needs:
 
 - a registered node or edge class from `docs/GRAPH_PROFILE_REGISTRY.md`;
 - source spans or review actions that justify it;
@@ -97,14 +100,21 @@ The semantic layer should be practical first and standards-compatible second:
 Do not require a full RDF stack in the first validator. Design fields so a
 later RDF/OWL/SHACL adapter can be built without changing the capsule contract.
 
+Do not treat `actor`, `claim`, and `institution` as the default ontology for
+all capsules. Those classes are central for situation and stakeholder work. A
+user capsule, output capsule, thinking-device capsule, source capsule, or future
+domain-specific capsule may need different local semantic layers. The shared
+graph registry gives PRAXIS stable export names; the ontology blueprint gives
+the capsule its expert lens.
+
 ## Capsule Type Profiles
 
-| Type | Must emphasize | Graph profile | Agent behavior |
-| --- | --- | --- | --- |
-| User Capsule | preferences, expertise, voice, permission boundary | `user_context_graph_v1` | personalize only inside explicit scope |
-| Situation Capsule | live facts, actors, claims, risks, decision clock | `situation_graph_v1` | answer with temporal and source discipline |
-| Thinking Device Capsule | method steps, failure modes, examples, review criteria | `reasoning_device_graph_v1` | structure reasoning before drafting |
-| Output Capsule | artifact lineage, citations, caveats, reuse rules | `output_trace_graph_v1` | reuse or update only within contract |
+| Type | Must emphasize | Ontology family | Graph profile | Agent behavior |
+| --- | --- | --- | --- | --- |
+| User Capsule | preferences, expertise, voice, permission boundary | `user_context_ontology` | `user_context_graph_v1` | personalize only inside explicit scope |
+| Situation Capsule | live facts, actors, claims, risks, decision clock | `situation_policy_ontology` | `situation_graph_v1` | answer with temporal and source discipline |
+| Thinking Device Capsule | method steps, failure modes, examples, review criteria | `expert_method_ontology` | `reasoning_device_graph_v1` | structure reasoning before drafting |
+| Output Capsule | artifact lineage, citations, caveats, reuse rules | `output_trace_ontology` | `output_trace_graph_v1` | reuse or update only within contract |
 
 Other capsule types follow the same layer structure and specialize the profile,
 not the bundle format.
@@ -164,6 +174,7 @@ Example policies:
 source pack
   -> source ledger
   -> temporal ledger
+  -> ontology blueprint
   -> ontology slice
   -> embedded graph
   -> reasoning playbook

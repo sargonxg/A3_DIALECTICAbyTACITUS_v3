@@ -24,6 +24,7 @@ version = "0.1.0"
 dependencies = [
  "dialectica-capsule",
  "dialectica-compiler",
+ "serde_json",
 ]
 
 [[package]]

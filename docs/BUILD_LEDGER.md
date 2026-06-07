@@ -45,6 +45,9 @@ Actions:
   validation findings, bundle directory loader, JSON Schema export, CLI
   `validate`/`inspect`/`schema-export`, golden policy expected-bundle fixture,
   and Lane A contract tests.
+- added capsule-specific ontology blueprint planning to the Rust contract and
+  CLI so actor/claim graphs remain one profile rather than the universal
+  capsule ontology.
 
 Evidence:
 
@@ -72,6 +75,7 @@ Evidence:
 - first functional capsule validation was checked with
   `cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule/expected-bundle`,
   `cargo run -p dialectica-cli -- inspect fixtures/golden-policy-capsule/expected-bundle`,
+  `cargo run -p dialectica-cli -- ontology-plan fixtures/golden-policy-capsule/expected-bundle`,
   and `cargo run -p dialectica-cli -- schema-export schemas/capsule-0.1.0`.
 
 ## Active Decisions
@@ -87,19 +91,21 @@ Evidence:
 ## Next Build Tasks
 
 1. Expand Lane A validation to all cases in `docs/LANE_A_ACCEPTANCE.md`.
-2. Validate the four example capsule envelopes against a shared top-level
+2. Add ontology blueprint compatibility checks for all capsule categories and
+   example envelopes.
+3. Validate the four example capsule envelopes against a shared top-level
    contract.
-3. Add source-pack generation for the golden expected-bundle.
-4. Add checksums and deterministic compiler output.
-5. Add CLI validation for the four example capsule envelopes.
-6. Implement graph-slice and graph-constraint validators using
+4. Add source-pack generation for the golden expected-bundle.
+5. Add checksums and deterministic compiler output.
+6. Add CLI validation for the four example capsule envelopes.
+7. Implement graph-slice and graph-constraint validators using
    `docs/GRAPH_PROFILE_REGISTRY.md`.
-7. Add SQLx migrations in `crates/dialectica-store`.
-8. Implement deterministic bundle compiler and checksums.
-9. Add API Slice 1 health, manifest, graph-preview, context-pack, and receipt
+8. Add SQLx migrations in `crates/dialectica-store`.
+9. Implement deterministic bundle compiler and checksums.
+10. Add API Slice 1 health, manifest, graph-preview, context-pack, and receipt
    routes.
-10. Add Dockerfile and local compose file.
-11. Add Cloud Run staging deployment skeleton.
+11. Add Dockerfile and local compose file.
+12. Add Cloud Run staging deployment skeleton.
 
 ## Open Product Questions
 

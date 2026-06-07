@@ -24,14 +24,17 @@ Delivered in the first coding pass:
 - deterministic validation findings;
 - sourceability checks for graph edges;
 - registered graph node and edge checks;
+- capsule-specific ontology blueprint planner and JSON Schema export;
 - temporal stale-claim warnings;
 - human-review gate checks;
 - golden policy expected-bundle fixture;
 - CLI `validate`, `inspect`, and `schema-export`.
+- CLI `ontology-plan`.
 
 Remaining:
 
 - expand validation to all required Lane A cases;
+- add ontology blueprint compatibility checks for example capsule types;
 - validate the four single-file example capsules against a shared envelope
   contract;
 - add checksum and signature placeholder validation.
@@ -41,6 +44,7 @@ Verification:
 ```powershell
 cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule/expected-bundle
 cargo run -p dialectica-cli -- inspect fixtures/golden-policy-capsule/expected-bundle
+cargo run -p dialectica-cli -- ontology-plan fixtures/golden-policy-capsule/expected-bundle
 cargo run -p dialectica-cli -- schema-export schemas/capsule-0.1.0
 cargo test --locked --workspace
 ```
@@ -76,6 +80,7 @@ Deliver:
 - source-pack manifest;
 - source span normalization;
 - claim extraction input contract;
+- ontology blueprint generation before graph and reasoning extraction;
 - human review correction file;
 - reasoning-device selection file;
 - language-rule review file;

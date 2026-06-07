@@ -6,8 +6,9 @@ Readiness: **82/100 for coding readiness; not app-production readiness**.
 
 The repository has begun the first functional implementation pass. It is not
 yet a working backend, but the capsule contract is now executable: the Rust
-crate can load a bundle directory, validate core invariants, export schema
-snapshots, and the CLI can validate and inspect a golden policy capsule.
+crate can load a bundle directory, validate core invariants, generate a
+capsule-specific ontology blueprint, export schema snapshots, and the CLI can
+validate, inspect, and plan the ontology for a golden policy capsule.
 
 ## Evidence Checked
 
@@ -41,8 +42,10 @@ snapshots, and the CLI can validate and inspect a golden policy capsule.
 - Documentation has a source-of-truth order.
 - Cargo workspace is present and testable.
 - `dialectica-capsule` now owns first executable bundle structs, validation
-  findings, bundle loading, inspection summaries, and JSON Schema export.
-- `dialectica-cli` now supports `validate`, `inspect`, and `schema-export`.
+  findings, bundle loading, inspection summaries, ontology blueprints, and JSON
+  Schema export.
+- `dialectica-cli` now supports `validate`, `inspect`, `ontology-plan`, and
+  `schema-export`.
 - Golden policy capsule expected-bundle exists under
   `fixtures/golden-policy-capsule/expected-bundle/`.
 - Initial crate and service boundaries exist.
@@ -51,6 +54,9 @@ snapshots, and the CLI can validate and inspect a golden policy capsule.
 - PostgreSQL-first operational store decision is recorded.
 - Embedded graph, semantic layer, review, rights, and marketplace concepts are
   documented before implementation.
+- Capsule-specific ontology blueprints are documented in
+  `docs/ONTOLOGY_BLUEPRINTS.md`; actor/claim graphs are treated as one profile,
+  not the universal capsule ontology.
 - Command gates are defined in `docs/CODING_LEDGER.md`.
 - Lane A acceptance is explicit in `docs/LANE_A_ACCEPTANCE.md`.
 - API Slice 1 is explicit in `docs/API_SLICE_1.md`.
@@ -77,6 +83,8 @@ snapshots, and the CLI can validate and inspect a golden policy capsule.
 - API routes are scaffold binaries, not HTTP services.
 - Cloud Tasks handler is a scaffold binary, not an HTTP target.
 - Bundle signing/checksum logic is not implemented.
+- Ontology blueprint persistence inside signed bundles is not implemented; the
+  planner exists as a CLI and schema contract.
 - PRAXIS context-pack export is not implemented.
 - Evals are only planned.
 - Cloud infrastructure has no Terraform/OpenTofu state yet.
@@ -86,7 +94,8 @@ snapshots, and the CLI can validate and inspect a golden policy capsule.
 
 ## Blockers Before Calling It Functional
 
-1. Expand Lane A validation to every required acceptance case.
+1. Expand Lane A validation to every required acceptance case, including
+   ontology blueprint compatibility checks.
 2. Validate the four example capsule envelopes against a shared-envelope
    contract.
 3. Implement source-pack to expected-bundle generation.
