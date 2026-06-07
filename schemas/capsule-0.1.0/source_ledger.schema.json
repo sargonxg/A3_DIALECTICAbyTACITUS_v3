@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SourceLedgerRecord",
+  "description": "One source span or source record used by a capsule.",
+  "type": "object",
+  "required": [
+    "hash",
+    "language",
+    "license_or_access",
+    "notes",
+    "published_at",
+    "publisher",
+    "retrieved_at",
+    "source_id",
+    "source_type",
+    "span_id",
+    "span_locator",
+    "title",
+    "trust_status",
+    "uri"
+  ],
+  "properties": {
+    "hash": {
+      "type": "string"
+    },
+    "language": {
+      "type": "string"
+    },
+    "license_or_access": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "published_at": {
+      "type": "string"
+    },
+    "publisher": {
+      "type": "string"
+    },
+    "retrieved_at": {
+      "type": "string"
+    },
+    "source_id": {
+      "type": "string"
+    },
+    "source_type": {
+      "type": "string"
+    },
+    "span_id": {
+      "type": "string"
+    },
+    "span_locator": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "trust_status": {
+      "type": "string"
+    },
+    "uri": {
+      "type": "string"
+    }
+  }
+}

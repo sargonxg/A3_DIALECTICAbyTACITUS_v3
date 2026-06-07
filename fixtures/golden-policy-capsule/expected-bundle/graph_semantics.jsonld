@@ -1,0 +1,9 @@
+{
+  "@context": {
+    "praxis": "https://tacitus.me/ns/praxis#",
+    "prov": "http://www.w3.org/ns/prov#",
+    "skos": "http://www.w3.org/2004/02/skos/core#"
+  },
+  "@id": "praxis:cap_golden_energy_support_2026_q3",
+  "@type": "praxis:SituationCapsule"
+}

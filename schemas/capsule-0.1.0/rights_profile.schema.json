@@ -1,0 +1,114 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "RightsProfile",
+  "type": "object",
+  "required": [
+    "duties",
+    "permissions",
+    "prohibitions",
+    "review_state",
+    "rights_profile_id"
+  ],
+  "properties": {
+    "duties": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/RightsRule"
+      }
+    },
+    "permissions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/RightsRule"
+      }
+    },
+    "prohibitions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/RightsRule"
+      }
+    },
+    "review_state": {
+      "$ref": "#/definitions/ReviewState"
+    },
+    "rights_profile_id": {
+      "type": "string"
+    }
+  },
+  "definitions": {
+    "ReviewState": {
+      "description": "Human-review state for a capsule or one of its internal objects.",
+      "oneOf": [
+        {
+          "description": "Author-created or machine-proposed, not yet inspected.",
+          "type": "string",
+          "enum": [
+            "draft"
+          ]
+        },
+        {
+          "description": "A reviewer must inspect before promotion.",
+          "type": "string",
+          "enum": [
+            "needs_review"
+          ]
+        },
+        {
+          "description": "Approved for the recorded scope.",
+          "type": "string",
+          "enum": [
+            "approved"
+          ]
+        },
+        {
+          "description": "Approved, but caveats must travel with the capsule.",
+          "type": "string",
+          "enum": [
+            "approved_with_caveats"
+          ]
+        },
+        {
+          "description": "Blocked by review.",
+          "type": "string",
+          "enum": [
+            "rejected"
+          ]
+        },
+        {
+          "description": "Approved for PRAXIS use.",
+          "type": "string",
+          "enum": [
+            "promoted"
+          ]
+        }
+      ]
+    },
+    "RightsRule": {
+      "type": "object",
+      "required": [
+        "action",
+        "reason",
+        "rule_id",
+        "target",
+        "workflow"
+      ],
+      "properties": {
+        "action": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "rule_id": {
+          "type": "string"
+        },
+        "target": {
+          "type": "string"
+        },
+        "workflow": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

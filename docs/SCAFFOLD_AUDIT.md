@@ -2,12 +2,12 @@
 
 Date: 2026-06-07
 
-Readiness: **72/100 for coding readiness; not app-production readiness**.
+Readiness: **82/100 for coding readiness; not app-production readiness**.
 
-The repository is ready to begin the first functional implementation pass. It
-is not yet a working backend. The gap is now explicit: the workspace exists,
-docs are aligned, and command gates are available, but the domain crates still
-need real schema, storage, compiler, API, and fixture logic.
+The repository has begun the first functional implementation pass. It is not
+yet a working backend, but the capsule contract is now executable: the Rust
+crate can load a bundle directory, validate core invariants, export schema
+snapshots, and the CLI can validate and inspect a golden policy capsule.
 
 ## Evidence Checked
 
@@ -30,6 +30,8 @@ need real schema, storage, compiler, API, and fixture logic.
 - `docs/RESEARCH_LEDGER.md`
 - `docs/AGENT_BUILD_GUIDE.md`
 - `docs/BUILD_LEDGER.md`
+- `docs/IMPLEMENTATION_PHASE_PLAN.md`
+- `schemas/capsule-0.1.0/`
 
 ## Ready
 
@@ -38,6 +40,11 @@ need real schema, storage, compiler, API, and fixture logic.
 - Visual identity assets are present in `assets/`.
 - Documentation has a source-of-truth order.
 - Cargo workspace is present and testable.
+- `dialectica-capsule` now owns first executable bundle structs, validation
+  findings, bundle loading, inspection summaries, and JSON Schema export.
+- `dialectica-cli` now supports `validate`, `inspect`, and `schema-export`.
+- Golden policy capsule expected-bundle exists under
+  `fixtures/golden-policy-capsule/expected-bundle/`.
 - Initial crate and service boundaries exist.
 - Contract-test crate exists.
 - Cloud Run first deployment decision is recorded.
@@ -61,11 +68,11 @@ need real schema, storage, compiler, API, and fixture logic.
 
 ## Not Ready Yet
 
-- Capsule bundle structs are only scaffold primitives.
-- JSON Schema generation is not implemented.
-- Golden fixture source pack does not exist, though small example envelopes are
-  now present.
-- Validator commands are not implemented.
+- Capsule validation breadth is incomplete; only the first sourceability, graph
+  registry, review, rights, manifest, and temporal checks are implemented.
+- Golden fixture source pack is still only a placeholder; the expected bundle is
+  committed, but the compiler does not generate it yet.
+- Example single-file capsule envelopes still need shared-envelope validation.
 - PostgreSQL migrations do not exist.
 - API routes are scaffold binaries, not HTTP services.
 - Cloud Tasks handler is a scaffold binary, not an HTTP target.
@@ -79,10 +86,10 @@ need real schema, storage, compiler, API, and fixture logic.
 
 ## Blockers Before Calling It Functional
 
-1. Implement real capsule schema structs and validation.
-2. Validate the four example capsule envelopes, then add golden fixture source
-   pack and expected bundle.
-3. Implement CLI `validate` and `inspect`.
+1. Expand Lane A validation to every required acceptance case.
+2. Validate the four example capsule envelopes against a shared-envelope
+   contract.
+3. Implement source-pack to expected-bundle generation.
 4. Add bundle checksums and deterministic compiler output.
 5. Add store migrations for capsules, sources, claims, graph, review, rights,
    and bundle exports.
@@ -91,7 +98,7 @@ need real schema, storage, compiler, API, and fixture logic.
 
 ## High-Value Fixes
 
-- Add schema snapshots with stable diff output.
+- Add checksum and signature placeholders with stable diff output.
 - Add `justfile` or `xtask` after command flow stabilizes.
 - Add Dockerfile only after API and task handler expose real ports.
 - Add local Postgres compose only when the first migration exists.
@@ -108,6 +115,7 @@ need real schema, storage, compiler, API, and fixture logic.
 
 ## Recommendation
 
-Start coding with Lane A from `docs/CODING_LEDGER.md`: capsule contract types,
-schema generation, validation errors, and fixture snapshots. That creates the
-stable backbone needed for the store, compiler, API, and PRAXIS integration.
+Continue with Lane A/B from `docs/CODING_LEDGER.md`: broaden validators, then
+make the compiler generate the committed golden expected-bundle from source-pack
+records and review decisions. Store, API, and cloud work should wait until this
+local capsule loop is deterministic.

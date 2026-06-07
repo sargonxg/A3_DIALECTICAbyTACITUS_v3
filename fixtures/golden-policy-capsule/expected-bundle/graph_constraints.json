@@ -1,0 +1,6 @@
+{
+  "constraint_profile": "shacl_inspired_json_v1",
+  "required_edge_fields": ["id", "from_node_id", "to_node_id", "edge_type", "review_state"],
+  "provenance_rule": "each edge requires source_span_ids or review_action_ids",
+  "registered_edge_types": ["supports", "contradicts", "mentions", "regulated_by", "depends_on"]
+}

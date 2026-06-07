@@ -1,0 +1,224 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "OntologySlice",
+  "type": "object",
+  "required": [
+    "deprecations",
+    "domains",
+    "frame_memberships",
+    "language",
+    "mappings",
+    "namespace",
+    "ontology_id",
+    "review_notes",
+    "terms",
+    "version"
+  ],
+  "properties": {
+    "deprecations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "domains": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "frame_memberships": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/FrameMembership"
+      }
+    },
+    "language": {
+      "type": "string"
+    },
+    "legal_document_profile": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/LegalDocumentProfile"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "mappings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/OntologyMapping"
+      }
+    },
+    "namespace": {
+      "type": "string"
+    },
+    "ontology_id": {
+      "type": "string"
+    },
+    "review_notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "terms": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/OntologyTerm"
+      }
+    },
+    "version": {
+      "type": "string"
+    }
+  },
+  "definitions": {
+    "FrameMembership": {
+      "type": "object",
+      "required": [
+        "frame_id",
+        "term_ids"
+      ],
+      "properties": {
+        "frame_id": {
+          "type": "string"
+        },
+        "term_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "LegalDocumentProfile": {
+      "type": "object",
+      "required": [
+        "applies",
+        "authority_type",
+        "citation_style",
+        "jurisdiction"
+      ],
+      "properties": {
+        "applies": {
+          "type": "boolean"
+        },
+        "authority_type": {
+          "type": "string"
+        },
+        "citation_style": {
+          "type": "string"
+        },
+        "jurisdiction": {
+          "type": "string"
+        }
+      }
+    },
+    "OntologyMapping": {
+      "type": "object",
+      "required": [
+        "confidence",
+        "source_label",
+        "term_id"
+      ],
+      "properties": {
+        "confidence": {
+          "type": "number",
+          "format": "double"
+        },
+        "source_label": {
+          "type": "string"
+        },
+        "term_id": {
+          "type": "string"
+        }
+      }
+    },
+    "OntologyTerm": {
+      "type": "object",
+      "required": [
+        "broader",
+        "definition",
+        "label",
+        "review_state",
+        "source_span_ids",
+        "term_id"
+      ],
+      "properties": {
+        "broader": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "definition": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "review_state": {
+          "$ref": "#/definitions/ReviewState"
+        },
+        "source_span_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "term_id": {
+          "type": "string"
+        }
+      }
+    },
+    "ReviewState": {
+      "description": "Human-review state for a capsule or one of its internal objects.",
+      "oneOf": [
+        {
+          "description": "Author-created or machine-proposed, not yet inspected.",
+          "type": "string",
+          "enum": [
+            "draft"
+          ]
+        },
+        {
+          "description": "A reviewer must inspect before promotion.",
+          "type": "string",
+          "enum": [
+            "needs_review"
+          ]
+        },
+        {
+          "description": "Approved for the recorded scope.",
+          "type": "string",
+          "enum": [
+            "approved"
+          ]
+        },
+        {
+          "description": "Approved, but caveats must travel with the capsule.",
+          "type": "string",
+          "enum": [
+            "approved_with_caveats"
+          ]
+        },
+        {
+          "description": "Blocked by review.",
+          "type": "string",
+          "enum": [
+            "rejected"
+          ]
+        },
+        {
+          "description": "Approved for PRAXIS use.",
+          "type": "string",
+          "enum": [
+            "promoted"
+          ]
+        }
+      ]
+    }
+  }
+}

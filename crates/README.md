@@ -1,6 +1,6 @@
 # Crates
 
-Rust crates will live here.
+Rust crates live here.
 
 Active crates:
 
@@ -10,5 +10,8 @@ Active crates:
 - `dialectica-eval`: contract and quality eval helpers;
 - `dialectica-cli`: local validation and fixture generation.
 
-The crates are scaffolded so Cargo checks are real from the first coding pass.
-Implement them in the order listed in `docs/CODING_LEDGER.md`.
+The first executable slice is in `dialectica-capsule` and `dialectica-cli`:
+bundle structs, directory loading, validation findings, JSON Schema export, and
+CLI `validate`/`inspect`/`schema-export`.
+
+Continue implementing them in the order listed in `docs/CODING_LEDGER.md`.

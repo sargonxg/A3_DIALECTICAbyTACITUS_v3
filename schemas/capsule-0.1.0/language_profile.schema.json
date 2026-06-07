@@ -1,0 +1,157 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "LanguageProfile",
+  "type": "object",
+  "required": [
+    "approved_terms",
+    "audience_register",
+    "blocked_phrases",
+    "citation_language",
+    "deprecated_terms",
+    "framing_rules",
+    "primary_language",
+    "profile_id",
+    "review_state",
+    "secondary_languages",
+    "translation_notes",
+    "uncertainty_language"
+  ],
+  "properties": {
+    "approved_terms": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/LanguageRule"
+      }
+    },
+    "audience_register": {
+      "type": "string"
+    },
+    "blocked_phrases": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/LanguageRule"
+      }
+    },
+    "citation_language": {
+      "type": "string"
+    },
+    "deprecated_terms": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/LanguageRule"
+      }
+    },
+    "framing_rules": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/LanguageRule"
+      }
+    },
+    "primary_language": {
+      "type": "string"
+    },
+    "profile_id": {
+      "type": "string"
+    },
+    "review_state": {
+      "$ref": "#/definitions/ReviewState"
+    },
+    "secondary_languages": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "translation_notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "uncertainty_language": {
+      "type": "string"
+    }
+  },
+  "definitions": {
+    "LanguageRule": {
+      "type": "object",
+      "required": [
+        "reason",
+        "rule_id",
+        "text"
+      ],
+      "properties": {
+        "reason": {
+          "type": "string"
+        },
+        "review_action_ids": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "rule_id": {
+          "type": "string"
+        },
+        "source_span_ids": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "text": {
+          "type": "string"
+        }
+      }
+    },
+    "ReviewState": {
+      "description": "Human-review state for a capsule or one of its internal objects.",
+      "oneOf": [
+        {
+          "description": "Author-created or machine-proposed, not yet inspected.",
+          "type": "string",
+          "enum": [
+            "draft"
+          ]
+        },
+        {
+          "description": "A reviewer must inspect before promotion.",
+          "type": "string",
+          "enum": [
+            "needs_review"
+          ]
+        },
+        {
+          "description": "Approved for the recorded scope.",
+          "type": "string",
+          "enum": [
+            "approved"
+          ]
+        },
+        {
+          "description": "Approved, but caveats must travel with the capsule.",
+          "type": "string",
+          "enum": [
+            "approved_with_caveats"
+          ]
+        },
+        {
+          "description": "Blocked by review.",
+          "type": "string",
+          "enum": [
+            "rejected"
+          ]
+        },
+        {
+          "description": "Approved for PRAXIS use.",
+          "type": "string",
+          "enum": [
+            "promoted"
+          ]
+        }
+      ]
+    }
+  }
+}

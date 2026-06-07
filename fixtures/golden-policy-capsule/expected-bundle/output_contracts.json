@@ -1,0 +1,10 @@
+[
+  {
+    "output_contract_id": "output:decision-brief-v1",
+    "output_type": "decision_brief",
+    "required_sections": ["decision", "evidence", "stakeholders", "risks", "caveats", "next_questions"],
+    "source_receipts_required": true,
+    "forbidden_claims": ["support is legally approved", "budget envelope is settled"],
+    "review_state": "approved_with_caveats"
+  }
+]

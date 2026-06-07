@@ -1,0 +1,167 @@
+{
+  "schema_version": "0.1.0",
+  "capsule_id": "cap_golden_energy_support_2026_q3",
+  "graph_profile": "situation_graph_v1",
+  "nodes": [
+    {
+      "id": "institution:european-commission",
+      "node_type": "institution",
+      "label": "European Commission",
+      "review_state": "approved",
+      "review_scope": "graph_fact",
+      "review_action_ids": ["review:policy_editor:2026-06-07"],
+      "caveat_ids": [],
+      "expires_at": "2026-12-31T23:59:59Z",
+      "blocked_workflows": [],
+      "reviewed_at": "2026-06-07T00:00:00Z",
+      "source_span_ids": ["span:commission_guidance_fixture:12"],
+      "properties": { "jurisdiction": "EU" }
+    },
+    {
+      "id": "claim:state-aid-guidance-current",
+      "node_type": "claim",
+      "label": "State aid guidance is a feasibility constraint",
+      "review_state": "approved_with_caveats",
+      "review_scope": "graph_fact",
+      "review_action_ids": ["review:policy_editor:2026-06-07"],
+      "caveat_ids": ["caveat:legal-update-risk"],
+      "expires_at": "2026-12-31T23:59:59Z",
+      "blocked_workflows": ["automated_legal_opinion"],
+      "reviewed_at": "2026-06-07T00:00:00Z",
+      "source_span_ids": ["span:commission_guidance_fixture:12"],
+      "properties": { "claim_type": "procedural" }
+    },
+    {
+      "id": "actor:industry-coalition",
+      "node_type": "actor",
+      "label": "Energy-intensive industry coalition",
+      "review_state": "approved",
+      "review_scope": "graph_fact",
+      "review_action_ids": ["review:policy_editor:2026-06-07"],
+      "caveat_ids": [],
+      "expires_at": null,
+      "blocked_workflows": [],
+      "reviewed_at": "2026-06-07T00:00:00Z",
+      "source_span_ids": ["span:industry_brief_fixture:3"],
+      "properties": { "stance": "supportive" }
+    },
+    {
+      "id": "risk:budget-exposure",
+      "node_type": "risk",
+      "label": "Budget exposure",
+      "review_state": "approved_with_caveats",
+      "review_scope": "graph_fact",
+      "review_action_ids": ["review:budget_reviewer:2026-06-07"],
+      "caveat_ids": ["caveat:budget-envelope-unsettled"],
+      "expires_at": null,
+      "blocked_workflows": [],
+      "reviewed_at": "2026-06-07T00:00:00Z",
+      "source_span_ids": ["span:budget_note_fixture:2"],
+      "properties": { "severity": "medium" }
+    },
+    {
+      "id": "actor:labor-federation",
+      "node_type": "actor",
+      "label": "Labor federation",
+      "review_state": "approved_with_caveats",
+      "review_scope": "graph_fact",
+      "review_action_ids": ["review:policy_editor:2026-06-07"],
+      "caveat_ids": ["caveat:single-source-stakeholder-claim"],
+      "expires_at": null,
+      "blocked_workflows": [],
+      "reviewed_at": "2026-06-07T00:00:00Z",
+      "source_span_ids": ["span:labor_statement_fixture:4"],
+      "properties": { "stance": "conditional" }
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge:guidance-regulated-by-commission",
+      "from_node_id": "claim:state-aid-guidance-current",
+      "to_node_id": "institution:european-commission",
+      "edge_type": "regulated_by",
+      "source_span_ids": ["span:commission_guidance_fixture:12"],
+      "confidence": 0.86,
+      "review_state": "approved_with_caveats",
+      "review_scope": "graph_edge",
+      "review_action_ids": ["review:policy_editor:2026-06-07"],
+      "caveat_ids": ["caveat:legal-update-risk"],
+      "expires_at": "2026-12-31T23:59:59Z",
+      "blocked_workflows": ["automated_legal_opinion"],
+      "reviewed_at": "2026-06-07T00:00:00Z",
+      "temporal_scope": { "valid_from": "2026-01-01", "valid_until": null, "status": "current" },
+      "explanation": "Commission guidance constrains subsidy design."
+    },
+    {
+      "id": "edge:industry-supports-relief",
+      "from_node_id": "actor:industry-coalition",
+      "to_node_id": "claim:state-aid-guidance-current",
+      "edge_type": "mentions",
+      "source_span_ids": ["span:industry_brief_fixture:3"],
+      "confidence": 0.72,
+      "review_state": "approved",
+      "review_scope": "graph_edge",
+      "review_action_ids": ["review:policy_editor:2026-06-07"],
+      "caveat_ids": [],
+      "expires_at": null,
+      "blocked_workflows": [],
+      "reviewed_at": "2026-06-07T00:00:00Z",
+      "temporal_scope": { "valid_from": "2026-05-15", "valid_until": null, "status": "current" },
+      "explanation": "Industry source mentions urgency and support design."
+    },
+    {
+      "id": "edge:budget-risk-depends-on-envelope",
+      "from_node_id": "risk:budget-exposure",
+      "to_node_id": "claim:state-aid-guidance-current",
+      "edge_type": "depends_on",
+      "source_span_ids": ["span:budget_note_fixture:2"],
+      "confidence": 0.62,
+      "review_state": "approved_with_caveats",
+      "review_scope": "graph_edge",
+      "review_action_ids": ["review:budget_reviewer:2026-06-07"],
+      "caveat_ids": ["caveat:budget-envelope-unsettled"],
+      "expires_at": null,
+      "blocked_workflows": [],
+      "reviewed_at": "2026-06-07T00:00:00Z",
+      "temporal_scope": { "valid_from": "2026-06-01", "valid_until": null, "status": "contested" },
+      "explanation": "Fiscal exposure depends on the still-unsettled budget envelope."
+    },
+    {
+      "id": "edge:labor-contradicts-unconditional-relief",
+      "from_node_id": "actor:labor-federation",
+      "to_node_id": "actor:industry-coalition",
+      "edge_type": "contradicts",
+      "source_span_ids": ["span:labor_statement_fixture:4"],
+      "confidence": 0.58,
+      "review_state": "rejected",
+      "review_scope": "graph_edge",
+      "review_action_ids": ["review:policy_editor:2026-06-07"],
+      "caveat_ids": ["caveat:insufficient-second-source"],
+      "expires_at": null,
+      "blocked_workflows": ["praxis_context_pack"],
+      "reviewed_at": "2026-06-07T00:00:00Z",
+      "temporal_scope": { "valid_from": "2026-05-28", "valid_until": null, "status": "current" },
+      "explanation": "Rejected as too strong because it relies on one stakeholder statement."
+    }
+  ],
+  "communities": [
+    {
+      "id": "cluster:legal-feasibility",
+      "label": "Legal feasibility and fiscal exposure",
+      "node_ids": ["institution:european-commission", "claim:state-aid-guidance-current", "risk:budget-exposure"],
+      "why_surfaced": "Central to whether PRAXIS can draft a decision brief with legal caveats."
+    }
+  ],
+  "layout_hints": {
+    "default_lens": "stakeholder_map",
+    "ranked_focus_nodes": ["claim:state-aid-guidance-current", "risk:budget-exposure"],
+    "review_overlay": true,
+    "temporal_filter_default": "current"
+  },
+  "health": {
+    "unsupported_edge_count": 0,
+    "unreviewed_edge_count": 0,
+    "stale_edge_count": 1,
+    "contradiction_cluster_count": 1
+  }
+}

@@ -91,6 +91,8 @@ cargo check --locked --workspace --all-targets
 cargo clippy --locked --workspace --all-targets -- -D warnings
 cargo test --locked --workspace
 cargo run -p dialectica-cli -- doctor
+cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule/expected-bundle
+cargo run -p dialectica-cli -- inspect fixtures/golden-policy-capsule/expected-bundle
 python -m compileall tools/python
 python -m unittest discover tools/python/tests
 ```
@@ -114,4 +116,5 @@ Do not promote a capability as functional unless:
 - Graph vocabulary: `docs/GRAPH_PROFILE_REGISTRY.md`
 - Capsule structure: `docs/CAPSULE_STRUCTURE_GUIDE.md`
 - Graph/ontology research: `docs/GRAPH_ONTOLOGY_RESEARCH_NOTES.md`
+- Implementation phases: `docs/IMPLEMENTATION_PHASE_PLAN.md`
 - Python support: `docs/PYTHON_TOOLING.md`

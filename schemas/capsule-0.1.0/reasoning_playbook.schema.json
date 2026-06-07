@@ -1,0 +1,101 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Array_of_ReasoningDevice",
+  "type": "array",
+  "items": {
+    "$ref": "#/definitions/ReasoningDevice"
+  },
+  "definitions": {
+    "ReasoningDevice": {
+      "type": "object",
+      "required": [
+        "device_id",
+        "failure_modes",
+        "purpose",
+        "review_state",
+        "source_requirements",
+        "steps",
+        "title"
+      ],
+      "properties": {
+        "device_id": {
+          "type": "string"
+        },
+        "failure_modes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "purpose": {
+          "type": "string"
+        },
+        "review_state": {
+          "$ref": "#/definitions/ReviewState"
+        },
+        "source_requirements": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "title": {
+          "type": "string"
+        }
+      }
+    },
+    "ReviewState": {
+      "description": "Human-review state for a capsule or one of its internal objects.",
+      "oneOf": [
+        {
+          "description": "Author-created or machine-proposed, not yet inspected.",
+          "type": "string",
+          "enum": [
+            "draft"
+          ]
+        },
+        {
+          "description": "A reviewer must inspect before promotion.",
+          "type": "string",
+          "enum": [
+            "needs_review"
+          ]
+        },
+        {
+          "description": "Approved for the recorded scope.",
+          "type": "string",
+          "enum": [
+            "approved"
+          ]
+        },
+        {
+          "description": "Approved, but caveats must travel with the capsule.",
+          "type": "string",
+          "enum": [
+            "approved_with_caveats"
+          ]
+        },
+        {
+          "description": "Blocked by review.",
+          "type": "string",
+          "enum": [
+            "rejected"
+          ]
+        },
+        {
+          "description": "Approved for PRAXIS use.",
+          "type": "string",
+          "enum": [
+            "promoted"
+          ]
+        }
+      ]
+    }
+  }
+}

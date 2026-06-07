@@ -1,0 +1,46 @@
+{
+  "profile_id": "language:ministerial-briefing-v1",
+  "primary_language": "en",
+  "secondary_languages": [],
+  "audience_register": "ministerial_policy_brief",
+  "approved_terms": [
+    {
+      "rule_id": "language:approved-state-aid",
+      "text": "Use 'state aid feasibility constraint' when describing legal review requirements.",
+      "reason": "Keeps legal language precise without overclaiming.",
+      "source_span_ids": ["span:commission_guidance_fixture:12"],
+      "review_action_ids": ["review:policy_editor:2026-06-07"]
+    }
+  ],
+  "deprecated_terms": [
+    {
+      "rule_id": "language:deprecated-bailout",
+      "text": "Avoid 'bailout' unless a source uses that term directly.",
+      "reason": "Loaded framing not supported by the fixture source pack.",
+      "source_span_ids": [],
+      "review_action_ids": ["review:policy_editor:2026-06-07"]
+    }
+  ],
+  "blocked_phrases": [
+    {
+      "rule_id": "language:block-legally-approved",
+      "text": "Do not say the support is legally approved.",
+      "reason": "The fixture only supports legal feasibility review, not approval.",
+      "source_span_ids": ["span:commission_guidance_fixture:12"],
+      "review_action_ids": ["review:policy_editor:2026-06-07"]
+    }
+  ],
+  "framing_rules": [
+    {
+      "rule_id": "language:frame-caveat-budget",
+      "text": "Budget envelope statements must include uncertainty language.",
+      "reason": "Budget source is contested and reviewed with caveats.",
+      "source_span_ids": ["span:budget_note_fixture:2"],
+      "review_action_ids": ["review:budget_reviewer:2026-06-07"]
+    }
+  ],
+  "translation_notes": [],
+  "citation_language": "Use source receipts for factual, legal-sensitive, and budget claims.",
+  "uncertainty_language": "Prefer 'currently indicates', 'subject to review', and 'not yet settled' where supported.",
+  "review_state": "approved_with_caveats"
+}

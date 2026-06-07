@@ -1,14 +1,15 @@
 # Fixtures
 
-Deterministic capsule fixtures, source packs, and eval inputs will live here.
+Deterministic capsule fixtures, source packs, and eval inputs live here.
 
-Expected first fixture:
+Current golden fixture:
 
-- one stakeholder-analysis policy source pack;
-- one expected source ledger;
-- one expected capsule bundle;
-- one review ledger with at least one correction;
-- one eval baseline comparing raw and capsule-augmented PRAXIS output.
+- `golden-policy-capsule/expected-bundle/`
+
+This is the first executable bundle directory. It includes source ledger,
+temporal ledger, ontology, embedded graph, reasoning playbook, language profile,
+agent guidance, review ledger, rights profile, marketplace listing, health, and
+eval report placeholders.
 
 Fixtures must not contain secrets or private user documents.
 
@@ -20,4 +21,4 @@ Current examples:
 - `example-capsules/output-capsule.example.json`
 
 These are single-file projections of the bundle layers. They exist to make the
-shape inspectable before the full golden policy fixture is implemented.
+shape inspectable alongside the full golden policy fixture.

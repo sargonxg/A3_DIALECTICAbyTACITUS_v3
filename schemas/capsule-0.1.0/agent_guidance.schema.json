@@ -1,0 +1,124 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AgentGuidance",
+  "type": "object",
+  "required": [
+    "allowed_workflows",
+    "audit_receipts_required",
+    "citation_policy",
+    "context_budget_policy",
+    "graph_use_policy",
+    "handoff_policy",
+    "language_profile_refs",
+    "reasoning_sequence",
+    "stop_conditions",
+    "tool_policy"
+  ],
+  "properties": {
+    "allowed_workflows": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "audit_receipts_required": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "citation_policy": {
+      "$ref": "#/definitions/CitationPolicy"
+    },
+    "context_budget_policy": {
+      "type": "string"
+    },
+    "graph_use_policy": {
+      "$ref": "#/definitions/GraphUsePolicy"
+    },
+    "handoff_policy": {
+      "type": "string"
+    },
+    "language_profile_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "reasoning_sequence": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "stop_conditions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "tool_policy": {
+      "$ref": "#/definitions/ToolPolicy"
+    }
+  },
+  "definitions": {
+    "CitationPolicy": {
+      "type": "object",
+      "required": [
+        "default_style",
+        "required_for"
+      ],
+      "properties": {
+        "default_style": {
+          "type": "string"
+        },
+        "required_for": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "GraphUsePolicy": {
+      "type": "object",
+      "required": [
+        "default_lens",
+        "hide_rejected_by_default",
+        "require_reviewed_edges"
+      ],
+      "properties": {
+        "default_lens": {
+          "type": "string"
+        },
+        "hide_rejected_by_default": {
+          "type": "boolean"
+        },
+        "require_reviewed_edges": {
+          "type": "boolean"
+        }
+      }
+    },
+    "ToolPolicy": {
+      "type": "object",
+      "required": [
+        "allowed_tools",
+        "blocked_tools"
+      ],
+      "properties": {
+        "allowed_tools": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "blocked_tools": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

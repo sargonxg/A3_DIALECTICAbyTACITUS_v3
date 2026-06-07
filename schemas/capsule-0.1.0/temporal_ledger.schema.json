@@ -1,0 +1,79 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "TemporalLedgerRecord",
+  "description": "One temporal claim record.",
+  "type": "object",
+  "required": [
+    "claim_id",
+    "claim_text",
+    "confidence",
+    "observed_at",
+    "published_at",
+    "source_ids",
+    "status",
+    "superseded_by",
+    "supersedes",
+    "valid_time_start"
+  ],
+  "properties": {
+    "claim_id": {
+      "type": "string"
+    },
+    "claim_text": {
+      "type": "string"
+    },
+    "confidence": {
+      "type": "number",
+      "format": "double"
+    },
+    "observed_at": {
+      "type": "string"
+    },
+    "published_at": {
+      "type": "string"
+    },
+    "source_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "status": {
+      "$ref": "#/definitions/TemporalStatus"
+    },
+    "superseded_by": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "supersedes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "valid_time_end": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "valid_time_start": {
+      "type": "string"
+    }
+  },
+  "definitions": {
+    "TemporalStatus": {
+      "type": "string",
+      "enum": [
+        "current",
+        "stale",
+        "superseded",
+        "forecast",
+        "contested",
+        "unknown"
+      ]
+    }
+  }
+}

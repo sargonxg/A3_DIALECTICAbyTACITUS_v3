@@ -493,6 +493,7 @@ docs/
   GRAPH_ONTOLOGY_RESEARCH_NOTES.md       graph, ontology, Ladybug, and standards research
   RESEARCH_LEDGER.md                     source links, conclusions, and refresh triggers
   AGENT_BUILD_GUIDE.md                   practical build order for future agents
+  IMPLEMENTATION_PHASE_PLAN.md           active phased coding plan
   CAPSULE_STRUCTURE_GUIDE.md             bundle layers and agent guidance contract
   GITHUB_PROFILE.md                      recommended GitHub About metadata and topics
   REPOSITORY_CONCEPT_REVIEW.md            concept, narrative, and repo coherence audit
@@ -554,10 +555,12 @@ tools/                                  Python reports and local developer tooli
 
 This repository is at **Phase 0: source-of-truth plus coding scaffold**.
 
-The Rust workspace now exists and passes basic checks. The next implementation
-step is to turn the scaffolded capsule crate into real bundle structs, schema
-generation, validation errors, and fixture snapshots before adding ingestion or
-model-powered extraction.
+The Rust workspace now has its first executable capsule-contract slice. It can
+load a golden policy bundle, validate sourceability and graph/review/temporal
+invariants, inspect the capsule summary, and export JSON Schema snapshots. The
+next implementation step is to make the compiler generate the golden bundle
+deterministically from source-pack records and review decisions before adding
+storage, API routes, or model-powered extraction.
 
 Start here:
 
@@ -596,6 +599,8 @@ cargo check --locked --workspace --all-targets
 cargo clippy --locked --workspace --all-targets -- -D warnings
 cargo test --locked --workspace
 cargo run -p dialectica-cli -- doctor
+cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule/expected-bundle
+cargo run -p dialectica-cli -- inspect fixtures/golden-policy-capsule/expected-bundle
 python -m compileall tools/python
 python -m unittest discover tools/python/tests
 ```

@@ -1,0 +1,1334 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CapsuleBundle",
+  "description": "Complete local capsule bundle assembled from the canonical directory shape.",
+  "type": "object",
+  "required": [
+    "agent_guidance",
+    "capsule",
+    "capsule_health",
+    "eval_report",
+    "graph_constraints",
+    "graph_semantics",
+    "graph_slice",
+    "language_profile",
+    "manifest",
+    "marketplace_listing",
+    "ontology_slice",
+    "output_contracts",
+    "reasoning_playbook",
+    "retrieval_pack",
+    "review_ledger",
+    "rights_profile",
+    "source_ledger",
+    "temporal_ledger"
+  ],
+  "properties": {
+    "agent_guidance": {
+      "$ref": "#/definitions/AgentGuidance"
+    },
+    "capsule": true,
+    "capsule_health": {
+      "$ref": "#/definitions/CapsuleHealthReport"
+    },
+    "eval_report": true,
+    "graph_constraints": true,
+    "graph_semantics": true,
+    "graph_slice": {
+      "$ref": "#/definitions/GraphSlice"
+    },
+    "language_profile": {
+      "$ref": "#/definitions/LanguageProfile"
+    },
+    "manifest": {
+      "$ref": "#/definitions/CapsuleManifest"
+    },
+    "marketplace_listing": {
+      "$ref": "#/definitions/MarketplaceListing"
+    },
+    "ontology_slice": {
+      "$ref": "#/definitions/OntologySlice"
+    },
+    "output_contracts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/OutputContract"
+      }
+    },
+    "reasoning_playbook": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ReasoningDevice"
+      }
+    },
+    "retrieval_pack": {
+      "type": "array",
+      "items": true
+    },
+    "review_ledger": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ReviewLedgerRecord"
+      }
+    },
+    "rights_profile": {
+      "$ref": "#/definitions/RightsProfile"
+    },
+    "source_ledger": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/SourceLedgerRecord"
+      }
+    },
+    "temporal_ledger": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/TemporalLedgerRecord"
+      }
+    }
+  },
+  "definitions": {
+    "AgentGuidance": {
+      "type": "object",
+      "required": [
+        "allowed_workflows",
+        "audit_receipts_required",
+        "citation_policy",
+        "context_budget_policy",
+        "graph_use_policy",
+        "handoff_policy",
+        "language_profile_refs",
+        "reasoning_sequence",
+        "stop_conditions",
+        "tool_policy"
+      ],
+      "properties": {
+        "allowed_workflows": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "audit_receipts_required": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "citation_policy": {
+          "$ref": "#/definitions/CitationPolicy"
+        },
+        "context_budget_policy": {
+          "type": "string"
+        },
+        "graph_use_policy": {
+          "$ref": "#/definitions/GraphUsePolicy"
+        },
+        "handoff_policy": {
+          "type": "string"
+        },
+        "language_profile_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "reasoning_sequence": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "stop_conditions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "tool_policy": {
+          "$ref": "#/definitions/ToolPolicy"
+        }
+      }
+    },
+    "CapsuleHealthReport": {
+      "type": "object",
+      "required": [
+        "capsule_id",
+        "review_status",
+        "source_coverage",
+        "status",
+        "temporal_status",
+        "warnings"
+      ],
+      "properties": {
+        "capsule_id": {
+          "type": "string"
+        },
+        "review_status": {
+          "type": "string"
+        },
+        "source_coverage": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "temporal_status": {
+          "type": "string"
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "CapsuleManifest": {
+      "description": "Manifest for a portable capsule bundle.",
+      "type": "object",
+      "required": [
+        "agent_guidance_profile",
+        "bundle_digest",
+        "capsule_health",
+        "capsule_id",
+        "capsule_type",
+        "compatibility_profile",
+        "compiled_at",
+        "compiler_version",
+        "created_at",
+        "freshness",
+        "graph_profile",
+        "language_profile",
+        "project_id",
+        "reasoning_profile",
+        "review_state",
+        "rights_profile",
+        "schema_version",
+        "source_count",
+        "status",
+        "summary",
+        "tenant_id",
+        "title"
+      ],
+      "properties": {
+        "agent_guidance_profile": {
+          "type": "string"
+        },
+        "bundle_digest": {
+          "type": "string"
+        },
+        "capsule_health": {
+          "type": "string"
+        },
+        "capsule_id": {
+          "type": "string"
+        },
+        "capsule_type": {
+          "type": "string"
+        },
+        "compatibility_profile": {
+          "type": "string"
+        },
+        "compiled_at": {
+          "type": "string"
+        },
+        "compiler_version": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "freshness": {
+          "type": "string"
+        },
+        "graph_profile": {
+          "type": "string"
+        },
+        "language_profile": {
+          "type": "string"
+        },
+        "project_id": {
+          "type": "string"
+        },
+        "reasoning_profile": {
+          "type": "string"
+        },
+        "review_state": {
+          "$ref": "#/definitions/ReviewState"
+        },
+        "rights_profile": {
+          "type": "string"
+        },
+        "schema_version": {
+          "type": "string"
+        },
+        "source_count": {
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0.0
+        },
+        "status": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "tenant_id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        }
+      }
+    },
+    "CitationPolicy": {
+      "type": "object",
+      "required": [
+        "default_style",
+        "required_for"
+      ],
+      "properties": {
+        "default_style": {
+          "type": "string"
+        },
+        "required_for": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "FrameMembership": {
+      "type": "object",
+      "required": [
+        "frame_id",
+        "term_ids"
+      ],
+      "properties": {
+        "frame_id": {
+          "type": "string"
+        },
+        "term_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "GraphCommunity": {
+      "type": "object",
+      "required": [
+        "id",
+        "label",
+        "node_ids",
+        "why_surfaced"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "node_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "why_surfaced": {
+          "type": "string"
+        }
+      }
+    },
+    "GraphEdge": {
+      "type": "object",
+      "required": [
+        "confidence",
+        "edge_type",
+        "explanation",
+        "from_node_id",
+        "id",
+        "review_state",
+        "to_node_id"
+      ],
+      "properties": {
+        "blocked_workflows": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "caveat_ids": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "confidence": {
+          "type": "number",
+          "format": "double"
+        },
+        "edge_type": {
+          "type": "string"
+        },
+        "expires_at": {
+          "default": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "explanation": {
+          "type": "string"
+        },
+        "from_node_id": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "review_action_ids": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "review_scope": {
+          "default": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "review_state": {
+          "$ref": "#/definitions/ReviewState"
+        },
+        "reviewed_at": {
+          "default": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_span_ids": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "temporal_scope": {
+          "default": null,
+          "anyOf": [
+            {
+              "$ref": "#/definitions/TemporalScope"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "to_node_id": {
+          "type": "string"
+        }
+      }
+    },
+    "GraphHealth": {
+      "type": "object",
+      "required": [
+        "contradiction_cluster_count",
+        "stale_edge_count",
+        "unreviewed_edge_count",
+        "unsupported_edge_count"
+      ],
+      "properties": {
+        "contradiction_cluster_count": {
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0.0
+        },
+        "stale_edge_count": {
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0.0
+        },
+        "unreviewed_edge_count": {
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0.0
+        },
+        "unsupported_edge_count": {
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0.0
+        }
+      }
+    },
+    "GraphNode": {
+      "type": "object",
+      "required": [
+        "id",
+        "label",
+        "node_type",
+        "review_state"
+      ],
+      "properties": {
+        "blocked_workflows": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "caveat_ids": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "expires_at": {
+          "default": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "id": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "node_type": {
+          "type": "string"
+        },
+        "properties": {
+          "default": {},
+          "type": "object",
+          "additionalProperties": true
+        },
+        "review_action_ids": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "review_scope": {
+          "default": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "review_state": {
+          "$ref": "#/definitions/ReviewState"
+        },
+        "reviewed_at": {
+          "default": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_span_ids": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "GraphSlice": {
+      "type": "object",
+      "required": [
+        "capsule_id",
+        "communities",
+        "edges",
+        "graph_profile",
+        "health",
+        "layout_hints",
+        "nodes",
+        "schema_version"
+      ],
+      "properties": {
+        "capsule_id": {
+          "type": "string"
+        },
+        "communities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/GraphCommunity"
+          }
+        },
+        "edges": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/GraphEdge"
+          }
+        },
+        "graph_profile": {
+          "type": "string"
+        },
+        "health": {
+          "$ref": "#/definitions/GraphHealth"
+        },
+        "layout_hints": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "nodes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/GraphNode"
+          }
+        },
+        "schema_version": {
+          "type": "string"
+        }
+      }
+    },
+    "GraphUsePolicy": {
+      "type": "object",
+      "required": [
+        "default_lens",
+        "hide_rejected_by_default",
+        "require_reviewed_edges"
+      ],
+      "properties": {
+        "default_lens": {
+          "type": "string"
+        },
+        "hide_rejected_by_default": {
+          "type": "boolean"
+        },
+        "require_reviewed_edges": {
+          "type": "boolean"
+        }
+      }
+    },
+    "LanguageProfile": {
+      "type": "object",
+      "required": [
+        "approved_terms",
+        "audience_register",
+        "blocked_phrases",
+        "citation_language",
+        "deprecated_terms",
+        "framing_rules",
+        "primary_language",
+        "profile_id",
+        "review_state",
+        "secondary_languages",
+        "translation_notes",
+        "uncertainty_language"
+      ],
+      "properties": {
+        "approved_terms": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LanguageRule"
+          }
+        },
+        "audience_register": {
+          "type": "string"
+        },
+        "blocked_phrases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LanguageRule"
+          }
+        },
+        "citation_language": {
+          "type": "string"
+        },
+        "deprecated_terms": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LanguageRule"
+          }
+        },
+        "framing_rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LanguageRule"
+          }
+        },
+        "primary_language": {
+          "type": "string"
+        },
+        "profile_id": {
+          "type": "string"
+        },
+        "review_state": {
+          "$ref": "#/definitions/ReviewState"
+        },
+        "secondary_languages": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "translation_notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "uncertainty_language": {
+          "type": "string"
+        }
+      }
+    },
+    "LanguageRule": {
+      "type": "object",
+      "required": [
+        "reason",
+        "rule_id",
+        "text"
+      ],
+      "properties": {
+        "reason": {
+          "type": "string"
+        },
+        "review_action_ids": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "rule_id": {
+          "type": "string"
+        },
+        "source_span_ids": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "text": {
+          "type": "string"
+        }
+      }
+    },
+    "LegalDocumentProfile": {
+      "type": "object",
+      "required": [
+        "applies",
+        "authority_type",
+        "citation_style",
+        "jurisdiction"
+      ],
+      "properties": {
+        "applies": {
+          "type": "boolean"
+        },
+        "authority_type": {
+          "type": "string"
+        },
+        "citation_style": {
+          "type": "string"
+        },
+        "jurisdiction": {
+          "type": "string"
+        }
+      }
+    },
+    "MarketplaceListing": {
+      "type": "object",
+      "required": [
+        "capsule_id",
+        "caveats",
+        "freshness",
+        "listing_id",
+        "review_level",
+        "rights_summary",
+        "visibility"
+      ],
+      "properties": {
+        "capsule_id": {
+          "type": "string"
+        },
+        "caveats": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "freshness": {
+          "type": "string"
+        },
+        "listing_id": {
+          "type": "string"
+        },
+        "review_level": {
+          "type": "string"
+        },
+        "rights_summary": {
+          "type": "string"
+        },
+        "visibility": {
+          "type": "string"
+        }
+      }
+    },
+    "OntologyMapping": {
+      "type": "object",
+      "required": [
+        "confidence",
+        "source_label",
+        "term_id"
+      ],
+      "properties": {
+        "confidence": {
+          "type": "number",
+          "format": "double"
+        },
+        "source_label": {
+          "type": "string"
+        },
+        "term_id": {
+          "type": "string"
+        }
+      }
+    },
+    "OntologySlice": {
+      "type": "object",
+      "required": [
+        "deprecations",
+        "domains",
+        "frame_memberships",
+        "language",
+        "mappings",
+        "namespace",
+        "ontology_id",
+        "review_notes",
+        "terms",
+        "version"
+      ],
+      "properties": {
+        "deprecations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "domains": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "frame_memberships": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FrameMembership"
+          }
+        },
+        "language": {
+          "type": "string"
+        },
+        "legal_document_profile": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/LegalDocumentProfile"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "mappings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/OntologyMapping"
+          }
+        },
+        "namespace": {
+          "type": "string"
+        },
+        "ontology_id": {
+          "type": "string"
+        },
+        "review_notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "terms": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/OntologyTerm"
+          }
+        },
+        "version": {
+          "type": "string"
+        }
+      }
+    },
+    "OntologyTerm": {
+      "type": "object",
+      "required": [
+        "broader",
+        "definition",
+        "label",
+        "review_state",
+        "source_span_ids",
+        "term_id"
+      ],
+      "properties": {
+        "broader": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "definition": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "review_state": {
+          "$ref": "#/definitions/ReviewState"
+        },
+        "source_span_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "term_id": {
+          "type": "string"
+        }
+      }
+    },
+    "OutputContract": {
+      "type": "object",
+      "required": [
+        "forbidden_claims",
+        "output_contract_id",
+        "output_type",
+        "required_sections",
+        "review_state",
+        "source_receipts_required"
+      ],
+      "properties": {
+        "forbidden_claims": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "output_contract_id": {
+          "type": "string"
+        },
+        "output_type": {
+          "type": "string"
+        },
+        "required_sections": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "review_state": {
+          "$ref": "#/definitions/ReviewState"
+        },
+        "source_receipts_required": {
+          "type": "boolean"
+        }
+      }
+    },
+    "ReasoningDevice": {
+      "type": "object",
+      "required": [
+        "device_id",
+        "failure_modes",
+        "purpose",
+        "review_state",
+        "source_requirements",
+        "steps",
+        "title"
+      ],
+      "properties": {
+        "device_id": {
+          "type": "string"
+        },
+        "failure_modes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "purpose": {
+          "type": "string"
+        },
+        "review_state": {
+          "$ref": "#/definitions/ReviewState"
+        },
+        "source_requirements": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "title": {
+          "type": "string"
+        }
+      }
+    },
+    "ReviewLedgerRecord": {
+      "type": "object",
+      "required": [
+        "caveats",
+        "decision",
+        "object_ids",
+        "review_action_id",
+        "reviewed_at",
+        "reviewer_role"
+      ],
+      "properties": {
+        "caveats": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "decision": {
+          "$ref": "#/definitions/ReviewState"
+        },
+        "expires_at": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "object_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "review_action_id": {
+          "type": "string"
+        },
+        "reviewed_at": {
+          "type": "string"
+        },
+        "reviewer_role": {
+          "type": "string"
+        }
+      }
+    },
+    "ReviewState": {
+      "description": "Human-review state for a capsule or one of its internal objects.",
+      "oneOf": [
+        {
+          "description": "Author-created or machine-proposed, not yet inspected.",
+          "type": "string",
+          "enum": [
+            "draft"
+          ]
+        },
+        {
+          "description": "A reviewer must inspect before promotion.",
+          "type": "string",
+          "enum": [
+            "needs_review"
+          ]
+        },
+        {
+          "description": "Approved for the recorded scope.",
+          "type": "string",
+          "enum": [
+            "approved"
+          ]
+        },
+        {
+          "description": "Approved, but caveats must travel with the capsule.",
+          "type": "string",
+          "enum": [
+            "approved_with_caveats"
+          ]
+        },
+        {
+          "description": "Blocked by review.",
+          "type": "string",
+          "enum": [
+            "rejected"
+          ]
+        },
+        {
+          "description": "Approved for PRAXIS use.",
+          "type": "string",
+          "enum": [
+            "promoted"
+          ]
+        }
+      ]
+    },
+    "RightsProfile": {
+      "type": "object",
+      "required": [
+        "duties",
+        "permissions",
+        "prohibitions",
+        "review_state",
+        "rights_profile_id"
+      ],
+      "properties": {
+        "duties": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RightsRule"
+          }
+        },
+        "permissions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RightsRule"
+          }
+        },
+        "prohibitions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RightsRule"
+          }
+        },
+        "review_state": {
+          "$ref": "#/definitions/ReviewState"
+        },
+        "rights_profile_id": {
+          "type": "string"
+        }
+      }
+    },
+    "RightsRule": {
+      "type": "object",
+      "required": [
+        "action",
+        "reason",
+        "rule_id",
+        "target",
+        "workflow"
+      ],
+      "properties": {
+        "action": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "rule_id": {
+          "type": "string"
+        },
+        "target": {
+          "type": "string"
+        },
+        "workflow": {
+          "type": "string"
+        }
+      }
+    },
+    "SourceLedgerRecord": {
+      "description": "One source span or source record used by a capsule.",
+      "type": "object",
+      "required": [
+        "hash",
+        "language",
+        "license_or_access",
+        "notes",
+        "published_at",
+        "publisher",
+        "retrieved_at",
+        "source_id",
+        "source_type",
+        "span_id",
+        "span_locator",
+        "title",
+        "trust_status",
+        "uri"
+      ],
+      "properties": {
+        "hash": {
+          "type": "string"
+        },
+        "language": {
+          "type": "string"
+        },
+        "license_or_access": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "string"
+        },
+        "published_at": {
+          "type": "string"
+        },
+        "publisher": {
+          "type": "string"
+        },
+        "retrieved_at": {
+          "type": "string"
+        },
+        "source_id": {
+          "type": "string"
+        },
+        "source_type": {
+          "type": "string"
+        },
+        "span_id": {
+          "type": "string"
+        },
+        "span_locator": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "trust_status": {
+          "type": "string"
+        },
+        "uri": {
+          "type": "string"
+        }
+      }
+    },
+    "TemporalLedgerRecord": {
+      "description": "One temporal claim record.",
+      "type": "object",
+      "required": [
+        "claim_id",
+        "claim_text",
+        "confidence",
+        "observed_at",
+        "published_at",
+        "source_ids",
+        "status",
+        "superseded_by",
+        "supersedes",
+        "valid_time_start"
+      ],
+      "properties": {
+        "claim_id": {
+          "type": "string"
+        },
+        "claim_text": {
+          "type": "string"
+        },
+        "confidence": {
+          "type": "number",
+          "format": "double"
+        },
+        "observed_at": {
+          "type": "string"
+        },
+        "published_at": {
+          "type": "string"
+        },
+        "source_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "status": {
+          "$ref": "#/definitions/TemporalStatus"
+        },
+        "superseded_by": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "supersedes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "valid_time_end": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "valid_time_start": {
+          "type": "string"
+        }
+      }
+    },
+    "TemporalScope": {
+      "type": "object",
+      "required": [
+        "status",
+        "valid_from"
+      ],
+      "properties": {
+        "status": {
+          "$ref": "#/definitions/TemporalStatus"
+        },
+        "valid_from": {
+          "type": "string"
+        },
+        "valid_until": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "TemporalStatus": {
+      "type": "string",
+      "enum": [
+        "current",
+        "stale",
+        "superseded",
+        "forecast",
+        "contested",
+        "unknown"
+      ]
+    },
+    "ToolPolicy": {
+      "type": "object",
+      "required": [
+        "allowed_tools",
+        "blocked_tools"
+      ],
+      "properties": {
+        "allowed_tools": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "blocked_tools": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

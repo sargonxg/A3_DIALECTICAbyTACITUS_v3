@@ -1,0 +1,6 @@
+{
+  "eval_report_id": "eval:golden-energy-support-fixture",
+  "status": "fixture_pending",
+  "planned_checks": ["source_fidelity", "temporal_correctness", "reasoning_device_adherence", "language_rule_adherence"],
+  "notes": "Executable evals arrive after CLI validation and fixture compiler support."
+}

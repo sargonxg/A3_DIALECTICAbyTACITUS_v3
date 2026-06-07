@@ -26,17 +26,18 @@ When documents conflict, use this order:
 18. `docs/GRAPH_ONTOLOGY_RESEARCH_NOTES.md`
 19. `docs/RESEARCH_LEDGER.md`
 20. `docs/AGENT_BUILD_GUIDE.md`
-21. `docs/REPOSITORY_CONCEPT_REVIEW.md`
-22. `docs/GITHUB_PROFILE.md`
-23. `docs/EXPERT_REVIEW_AND_MARKETPLACE.md`
-24. `docs/CAPSULE_BUILD_EXAMPLES.md`
-25. `docs/INTELLECTUAL_TOOLS.md`
-26. `docs/DEPLOYMENT.md`
-27. `docs/TECH_BENCHMARK.md`
-28. `docs/PYTHON_TOOLING.md`
-29. `docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md` as reference context
-30. ADRs in `docs/decisions/`
-31. Implementation notes in issues, PRs, and comments
+21. `docs/IMPLEMENTATION_PHASE_PLAN.md`
+22. `docs/REPOSITORY_CONCEPT_REVIEW.md`
+23. `docs/GITHUB_PROFILE.md`
+24. `docs/EXPERT_REVIEW_AND_MARKETPLACE.md`
+25. `docs/CAPSULE_BUILD_EXAMPLES.md`
+26. `docs/INTELLECTUAL_TOOLS.md`
+27. `docs/DEPLOYMENT.md`
+28. `docs/TECH_BENCHMARK.md`
+29. `docs/PYTHON_TOOLING.md`
+30. `docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md` as reference context
+31. ADRs in `docs/decisions/`
+32. Implementation notes in issues, PRs, and comments
 
 If an implementation contradicts a higher-priority document, update the
 document through an ADR or stop and ask for a product decision.
@@ -137,6 +138,11 @@ Before building service code, the repo needs:
 - language profile contract;
 - deployment skeleton for local Docker and Cloud Run;
 - CI check for formatting, tests, and docs presence.
+
+Current implementation status: the first executable capsule-contract slice now
+includes Rust bundle structs, schema export, a golden expected-bundle fixture,
+and CLI `validate`, `inspect`, and `schema-export` commands. Compiler, store,
+API, task handler, and eval capabilities remain future phases.
 
 ## First Definition of Done
 

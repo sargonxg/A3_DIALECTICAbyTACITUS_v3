@@ -28,11 +28,11 @@ The first functional app is not complete until a developer can:
 | Area | Path | Current status | First real implementation |
 | --- | --- | --- | --- |
 | Workspace | `Cargo.toml` | created | keep all crates in one Cargo workspace |
-| Capsule contract | `crates/dialectica-capsule` | scaffolded with manifest/review primitives | add Serde structs and JSON Schema |
+| Capsule contract | `crates/dialectica-capsule` | first executable structs, validation, and schema export implemented | expand validators and checksum/signature contract |
 | Compiler | `crates/dialectica-compiler` | scaffolded with review-gated emit check | deterministic bundle writer and checksums |
 | Store | `crates/dialectica-store` | scaffolded with migration families | SQLx migrations and repository interfaces |
 | Evals | `crates/dialectica-eval` | scaffolded with check result primitive | fixture outcome and source-fidelity evals |
-| CLI | `crates/dialectica-cli` | scaffolded with `doctor` | `validate`, `inspect`, `build-fixture` |
+| CLI | `crates/dialectica-cli` | `doctor`, `validate`, `inspect`, and `schema-export` implemented | add `build-fixture` after compiler exists |
 | API | `services/dialectica-api` | scaffolded binary | Axum health, manifest, context-pack routes |
 | Task handler | `services/dialectica-task-handler` | scaffolded binary | Cloud Tasks HTTP handler |
 | Contract tests | `tests/dialectica-contract-tests` | scaffolded | bundle contract and graph constraint tests |
@@ -58,6 +58,14 @@ cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule
 cargo run -p dialectica-cli -- inspect fixtures/golden-policy-capsule
 ```
 
+Active Lane A/B gate:
+
+```powershell
+cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule/expected-bundle
+cargo run -p dialectica-cli -- inspect fixtures/golden-policy-capsule/expected-bundle
+cargo run -p dialectica-cli -- schema-export schemas/capsule-0.1.0
+```
+
 ## Build Lanes
 
 ### Lane A: Capsule Contract
@@ -68,22 +76,24 @@ Acceptance contract: [Lane A Acceptance](LANE_A_ACCEPTANCE.md).
 
 Deliver:
 
-- manifest structs;
-- source ledger structs;
-- temporal ledger structs;
-- ontology slice structs;
-- embedded graph structs;
-- agent guidance structs;
-- review ledger structs;
-- rights profile structs;
-- JSON Schema snapshots;
-- validator error paths.
+- manifest structs: implemented;
+- source ledger structs: implemented;
+- temporal ledger structs: implemented;
+- ontology slice structs: implemented;
+- embedded graph structs: implemented;
+- agent guidance structs: implemented;
+- review ledger structs: implemented;
+- rights profile structs: implemented;
+- JSON Schema snapshots: implemented;
+- validator error paths: implemented for the first sourceability, graph registry,
+  review, manifest, rights, and temporal checks.
 
 Done when:
 
 - fixture bundle validates locally;
 - invalid bundle reports precise paths;
-- schema snapshots are committed.
+- schema snapshots are committed;
+- remaining Lane A cases are tracked before moving to store/API work.
 
 ### Lane B: Fixture And CLI
 
@@ -91,13 +101,13 @@ Goal: make a deterministic capsule build possible without cloud credentials.
 
 Deliver:
 
-- `fixtures/golden-policy-capsule/source-pack/`;
+- `fixtures/golden-policy-capsule/source-pack/`: placeholder added;
 - `fixtures/example-capsules/*.example.json` validation;
-- expected bundle records;
+- expected bundle records: implemented for the golden policy capsule;
 - reviewer correction;
-- CLI `validate`;
-- CLI `inspect`;
-- CLI `doctor`.
+- CLI `validate`: implemented;
+- CLI `inspect`: implemented;
+- CLI `doctor`: implemented;
 
 Done when:
 
@@ -206,6 +216,6 @@ when it changes:
 
 ## Current Next Action
 
-Implement Lane A until `dialectica-capsule` owns the real bundle structs and
-schema snapshots, then implement Lane B so the CLI can validate the golden
-fixture before any cloud or PRAXIS integration work.
+Finish Lane A validation breadth, then implement the deterministic compiler so
+the golden fixture can be generated from source-pack records and review
+decisions instead of only being checked as an expected bundle.

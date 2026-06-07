@@ -1,0 +1,17 @@
+[
+  {
+    "device_id": "reasoning:stakeholder-decision-clock-v1",
+    "title": "Stakeholder decision-clock analysis",
+    "purpose": "Map actors, constraints, incentives, and decision timing before drafting.",
+    "steps": [
+      "Identify the decision that must be made.",
+      "Map actors and authority constraints.",
+      "Separate sourced facts from inferred incentives.",
+      "Flag stale or contested claims.",
+      "Draft only within reviewed language rules."
+    ],
+    "source_requirements": ["official authority source", "stakeholder source", "budget or implementation source"],
+    "failure_modes": ["inventing stakeholder motives", "treating stale claims as current", "omitting legal caveats"],
+    "review_state": "approved_with_caveats"
+  }
+]

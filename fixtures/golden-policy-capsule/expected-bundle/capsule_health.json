@@ -1,0 +1,8 @@
+{
+  "capsule_id": "cap_golden_energy_support_2026_q3",
+  "status": "usable_with_caveats",
+  "source_coverage": "five synthetic source spans",
+  "temporal_status": "current with one stale lineage claim",
+  "review_status": "approved with caveats",
+  "warnings": ["One stale temporal claim must be shown as lineage only."]
+}

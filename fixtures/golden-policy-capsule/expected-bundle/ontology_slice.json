@@ -1,0 +1,46 @@
+{
+  "ontology_id": "ontology:eu-energy-support",
+  "version": "0.1.0",
+  "namespace": "https://tacitus.me/ns/policy/eu-energy#",
+  "language": "en",
+  "domains": ["energy_policy", "state_aid", "industrial_policy"],
+  "terms": [
+    {
+      "term_id": "concept:state-aid",
+      "label": "State aid",
+      "definition": "Public support that may affect competition and require authority review.",
+      "source_span_ids": ["span:commission_guidance_fixture:12"],
+      "broader": ["concept:competition-policy"],
+      "review_state": "approved"
+    },
+    {
+      "term_id": "concept:budget-exposure",
+      "label": "Budget exposure",
+      "definition": "Potential public fiscal burden created by a support instrument.",
+      "source_span_ids": ["span:budget_note_fixture:2"],
+      "broader": ["concept:fiscal-risk"],
+      "review_state": "approved_with_caveats"
+    }
+  ],
+  "mappings": [
+    {
+      "source_label": "support package",
+      "term_id": "concept:state-aid",
+      "confidence": 0.78
+    }
+  ],
+  "frame_memberships": [
+    {
+      "frame_id": "frame:legal-feasibility",
+      "term_ids": ["concept:state-aid"]
+    }
+  ],
+  "legal_document_profile": {
+    "applies": true,
+    "citation_style": "akn_inspired",
+    "jurisdiction": "EU",
+    "authority_type": "official_guidance"
+  },
+  "deprecations": [],
+  "review_notes": ["Legal interpretation must be caveated."]
+}

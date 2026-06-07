@@ -1,0 +1,32 @@
+{
+  "identity_context": {
+    "team": "fixture policy unit",
+    "audience": "ministerial briefing team",
+    "mandate": "assess options, source gaps, and decision risk"
+  },
+  "situation_context": {
+    "issue": "industrial electricity price support",
+    "geography": "EU",
+    "sector": "energy-intensive manufacturing",
+    "time_horizon": "2026 Q3",
+    "decision_clock": "brief due within 10 working days"
+  },
+  "analytical_context": {
+    "frames": ["state aid feasibility", "fiscal exposure", "industrial competitiveness", "stakeholder legitimacy"],
+    "assumptions": ["support package would require legal review", "budget envelope remains constrained"],
+    "uncertainties": ["final legal guidance update timing", "member-state appetite", "industrial pass-through behavior"]
+  },
+  "policy_context": {
+    "instruments": ["targeted subsidy", "tax relief", "demand-reduction incentive"],
+    "authorities": ["European Commission", "member-state ministries"],
+    "tradeoffs": ["speed versus legal certainty", "relief versus market distortion", "support breadth versus fiscal exposure"]
+  },
+  "risk_context": {
+    "known_risks": ["legal challenge", "source monoculture", "labor backlash", "budget exposure"],
+    "unknowns": ["final guidance update timing", "coalition durability"]
+  },
+  "usage_context": {
+    "intended_praxis_workflows": ["decision_brief", "stakeholder_map", "scenario_update"],
+    "forbidden_uses": ["automated legal opinion", "public claim without reviewer signoff"]
+  }
+}

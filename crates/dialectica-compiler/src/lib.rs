@@ -5,7 +5,7 @@
 use dialectica_capsule::CapsuleManifest;
 
 /// Returns true when the compiler may emit a signed bundle for this manifest.
-pub fn can_emit_bundle(manifest: &CapsuleManifest<'_>) -> bool {
+pub fn can_emit_bundle(manifest: &CapsuleManifest) -> bool {
     manifest.is_export_ready()
 }
 

@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "MarketplaceListing",
+  "type": "object",
+  "required": [
+    "capsule_id",
+    "caveats",
+    "freshness",
+    "listing_id",
+    "review_level",
+    "rights_summary",
+    "visibility"
+  ],
+  "properties": {
+    "capsule_id": {
+      "type": "string"
+    },
+    "caveats": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "freshness": {
+      "type": "string"
+    },
+    "listing_id": {
+      "type": "string"
+    },
+    "review_level": {
+      "type": "string"
+    },
+    "rights_summary": {
+      "type": "string"
+    },
+    "visibility": {
+      "type": "string"
+    }
+  }
+}

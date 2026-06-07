@@ -18,16 +18,17 @@ Before implementation work, read the active coding authority first:
 9. `docs/GRAPH_ONTOLOGY_RESEARCH_NOTES.md`
 10. `docs/RESEARCH_LEDGER.md`
 11. `docs/AGENT_BUILD_GUIDE.md`
-12. `docs/REPOSITORY_CONCEPT_REVIEW.md`
-13. `docs/GITHUB_PROFILE.md`
-14. `docs/SCAFFOLD_AUDIT.md`
-15. `docs/CAPSULE_SPEC.md`
-16. `docs/API_CONTRACT.md`
-17. `docs/DATA_MODEL.md`
-18. `docs/ARCHITECTURE.md`
-19. `docs/IMPLEMENTATION_BLUEPRINT.md`
-20. `docs/AGENTIC_WORKFLOWS.md`
-21. `docs/BUILD_LEDGER.md`
+12. `docs/IMPLEMENTATION_PHASE_PLAN.md`
+13. `docs/REPOSITORY_CONCEPT_REVIEW.md`
+14. `docs/GITHUB_PROFILE.md`
+15. `docs/SCAFFOLD_AUDIT.md`
+16. `docs/CAPSULE_SPEC.md`
+17. `docs/API_CONTRACT.md`
+18. `docs/DATA_MODEL.md`
+19. `docs/ARCHITECTURE.md`
+20. `docs/IMPLEMENTATION_BLUEPRINT.md`
+21. `docs/AGENTIC_WORKFLOWS.md`
+22. `docs/BUILD_LEDGER.md`
 
 Use `docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md` as product/reference context.
 When it conflicts with the active Rust-first coding docs above, follow
@@ -74,6 +75,8 @@ Current command gate:
 - `cargo clippy --locked --workspace --all-targets -- -D warnings`
 - `cargo test --locked --workspace`
 - `cargo run -p dialectica-cli -- doctor`
+- `cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule/expected-bundle`
+- `cargo run -p dialectica-cli -- inspect fixtures/golden-policy-capsule/expected-bundle`
 - `python -m compileall tools/python`
 - `python -m unittest discover tools/python/tests`
 

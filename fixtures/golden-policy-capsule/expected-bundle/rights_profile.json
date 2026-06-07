@@ -1,0 +1,31 @@
+{
+  "rights_profile_id": "rights:team-internal-reviewed",
+  "permissions": [
+    {
+      "rule_id": "rights:allow-internal-briefing",
+      "action": "use",
+      "target": "capsule",
+      "workflow": "decision_brief",
+      "reason": "Synthetic fixture approved for internal briefing workflow tests."
+    }
+  ],
+  "prohibitions": [
+    {
+      "rule_id": "rights:block-automated-legal-opinion",
+      "action": "use",
+      "target": "capsule",
+      "workflow": "automated_legal_opinion",
+      "reason": "Legal-sensitive content requires human expert review."
+    }
+  ],
+  "duties": [
+    {
+      "rule_id": "rights:require-source-receipts",
+      "action": "display",
+      "target": "source_receipts",
+      "workflow": "decision_brief",
+      "reason": "Every material claim must carry sourceability."
+    }
+  ],
+  "review_state": "approved_with_caveats"
+}

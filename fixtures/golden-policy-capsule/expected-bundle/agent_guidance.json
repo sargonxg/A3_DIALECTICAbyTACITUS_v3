@@ -1,0 +1,22 @@
+{
+  "allowed_workflows": ["decision_brief", "stakeholder_map", "scenario_update"],
+  "tool_policy": {
+    "allowed_tools": ["capsule_search", "source_preview", "graph_preview"],
+    "blocked_tools": ["autonomous_legal_opinion"]
+  },
+  "citation_policy": {
+    "required_for": ["legal-sensitive claims", "budget claims", "stakeholder stance claims"],
+    "default_style": "source_span_receipt"
+  },
+  "graph_use_policy": {
+    "default_lens": "stakeholder_map",
+    "hide_rejected_by_default": true,
+    "require_reviewed_edges": true
+  },
+  "language_profile_refs": ["language:ministerial-briefing-v1"],
+  "reasoning_sequence": ["reasoning:stakeholder-decision-clock-v1"],
+  "context_budget_policy": "prefer reviewed current claims, then caveated claims, then stale lineage only as warning",
+  "stop_conditions": ["material_claim_missing_source", "rights_policy_blocks_workflow", "legal_claim_without_caveat"],
+  "handoff_policy": "Ask for expert review when legal feasibility or budget exposure is central.",
+  "audit_receipts_required": ["capsule_id", "bundle_digest", "source_span_ids", "graph_edge_ids", "review_action_ids"]
+}

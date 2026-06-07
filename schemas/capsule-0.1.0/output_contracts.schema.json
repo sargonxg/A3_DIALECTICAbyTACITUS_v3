@@ -1,0 +1,94 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Array_of_OutputContract",
+  "type": "array",
+  "items": {
+    "$ref": "#/definitions/OutputContract"
+  },
+  "definitions": {
+    "OutputContract": {
+      "type": "object",
+      "required": [
+        "forbidden_claims",
+        "output_contract_id",
+        "output_type",
+        "required_sections",
+        "review_state",
+        "source_receipts_required"
+      ],
+      "properties": {
+        "forbidden_claims": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "output_contract_id": {
+          "type": "string"
+        },
+        "output_type": {
+          "type": "string"
+        },
+        "required_sections": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "review_state": {
+          "$ref": "#/definitions/ReviewState"
+        },
+        "source_receipts_required": {
+          "type": "boolean"
+        }
+      }
+    },
+    "ReviewState": {
+      "description": "Human-review state for a capsule or one of its internal objects.",
+      "oneOf": [
+        {
+          "description": "Author-created or machine-proposed, not yet inspected.",
+          "type": "string",
+          "enum": [
+            "draft"
+          ]
+        },
+        {
+          "description": "A reviewer must inspect before promotion.",
+          "type": "string",
+          "enum": [
+            "needs_review"
+          ]
+        },
+        {
+          "description": "Approved for the recorded scope.",
+          "type": "string",
+          "enum": [
+            "approved"
+          ]
+        },
+        {
+          "description": "Approved, but caveats must travel with the capsule.",
+          "type": "string",
+          "enum": [
+            "approved_with_caveats"
+          ]
+        },
+        {
+          "description": "Blocked by review.",
+          "type": "string",
+          "enum": [
+            "rejected"
+          ]
+        },
+        {
+          "description": "Approved for PRAXIS use.",
+          "type": "string",
+          "enum": [
+            "promoted"
+          ]
+        }
+      ]
+    }
+  }
+}
