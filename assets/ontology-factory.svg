@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="520" viewBox="0 0 1100 520" role="img" aria-labelledby="title desc">
+  <title id="title">DIALECTICA ontology factory</title>
+  <desc id="desc">Capsule type, source pack, expert review, and PRAXIS workflow create an ontology blueprint, which produces semantic layers, graph profile, reasoning lenses, review gates, and PRAXIS context.</desc>
+  <defs>
+    <style>
+      .bg { fill: #0b1020; }
+      .panel { fill: #111827; stroke: #334155; stroke-width: 1.5; }
+      .panel2 { fill: #0f172a; stroke: #475569; stroke-width: 1.5; }
+      .accent { fill: #14b8a6; }
+      .accent2 { fill: #f59e0b; }
+      .accent3 { fill: #60a5fa; }
+      .line { stroke: #64748b; stroke-width: 2; fill: none; marker-end: url(#arrow); }
+      .dash { stroke: #475569; stroke-width: 1.5; stroke-dasharray: 6 6; fill: none; }
+      .text { fill: #e5e7eb; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 20px; }
+      .small { fill: #cbd5e1; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 15px; }
+      .tiny { fill: #94a3b8; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; }
+      .label { fill: #0b1020; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 15px; font-weight: 700; }
+    </style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+  <rect class="bg" width="1100" height="520" rx="28"/>
+  <text x="54" y="58" class="text">DIALECTICA :: capsule ontology factory</text>
+  <text x="54" y="86" class="tiny">Actor/claim/time is one profile. Every capsule gets its own semantic blueprint.</text>
+
+  <rect x="54" y="125" width="210" height="64" rx="8" class="panel"/>
+  <circle cx="84" cy="157" r="12" class="accent"/>
+  <text x="112" y="151" class="small">capsule type</text>
+  <text x="112" y="172" class="tiny">user / situation / tool / output</text>
+
+  <rect x="54" y="219" width="210" height="64" rx="8" class="panel"/>
+  <circle cx="84" cy="251" r="12" class="accent3"/>
+  <text x="112" y="245" class="small">source pack</text>
+  <text x="112" y="266" class="tiny">docs / feeds / notes / spans</text>
+
+  <rect x="54" y="313" width="210" height="64" rx="8" class="panel"/>
+  <circle cx="84" cy="345" r="12" class="accent2"/>
+  <text x="112" y="339" class="small">human gate</text>
+  <text x="112" y="360" class="tiny">expert review / caveats</text>
+
+  <rect x="54" y="407" width="210" height="64" rx="8" class="panel"/>
+  <circle cx="84" cy="439" r="12" class="accent"/>
+  <text x="112" y="433" class="small">PRAXIS workflow</text>
+  <text x="112" y="454" class="tiny">brief / map / scenario / output</text>
+
+  <rect x="398" y="181" width="280" height="190" rx="10" class="panel2"/>
+  <rect x="426" y="210" width="224" height="42" rx="6" class="accent"/>
+  <text x="449" y="237" class="label">ontology blueprint</text>
+  <text x="427" y="285" class="small">semantic layers</text>
+  <text x="427" y="313" class="small">graph profile + aliases</text>
+  <text x="427" y="341" class="small">reasoning lenses + gates</text>
+
+  <path d="M264 157 C320 157 338 220 398 220" class="line"/>
+  <path d="M264 251 C322 251 342 260 398 260" class="line"/>
+  <path d="M264 345 C322 345 342 323 398 323" class="line"/>
+  <path d="M264 439 C330 439 350 365 398 365" class="line"/>
+
+  <rect x="808" y="104" width="235" height="62" rx="8" class="panel"/>
+  <text x="833" y="137" class="small">ontology_slice.json</text>
+  <text x="833" y="156" class="tiny">local meaning contract</text>
+
+  <rect x="808" y="190" width="235" height="62" rx="8" class="panel"/>
+  <text x="833" y="223" class="small">graph_slice.json</text>
+  <text x="833" y="242" class="tiny">source-backed relationships</text>
+
+  <rect x="808" y="276" width="235" height="62" rx="8" class="panel"/>
+  <text x="833" y="309" class="small">agent_guidance.json</text>
+  <text x="833" y="328" class="tiny">tool policy + stop rules</text>
+
+  <rect x="808" y="362" width="235" height="62" rx="8" class="panel"/>
+  <text x="833" y="395" class="small">PRAXIS context pack</text>
+  <text x="833" y="414" class="tiny">receipts / warnings / lenses</text>
+
+  <path d="M678 230 C730 173 754 136 808 136" class="line"/>
+  <path d="M678 260 C731 242 754 221 808 221" class="line"/>
+  <path d="M678 304 C732 306 754 307 808 307" class="line"/>
+  <path d="M678 342 C731 381 754 393 808 393" class="line"/>
+
+  <path d="M815 463 H292 V108" class="dash"/>
+  <text x="321" y="493" class="tiny">review feedback loops update ontology terms, caveats, mappings, and capsule health</text>
+</svg>

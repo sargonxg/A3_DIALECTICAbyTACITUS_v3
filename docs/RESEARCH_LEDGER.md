@@ -64,6 +64,19 @@ official sources + papers
 | OpenAI Agents SDK tracing, <https://openai.github.io/openai-agents-python/tracing/> | 2026-06-07 | Agent tracing records runs, model calls, tool calls, guardrails, handoffs, and custom events. | Capsule compilation and PRAXIS context-pack use should emit traceable receipts when integrated with agent runtimes. | Recheck before OpenAI agent orchestration code. |
 | OpenAI Agents SDK guardrails, <https://openai.github.io/openai-agents-js/guides/guardrails/> | 2026-06-07 | Guardrails can check user input, tool invocations, and final output. | Model-powered extraction and capsule use should have tool-level guardrails and human review gates. | Recheck before tool-calling workflows. |
 
+## 2026-06-07 Final Pre-Push Source Refresh
+
+| Source | Fresh finding | DIALECTICA consequence |
+| --- | --- | --- |
+| Cloud Run overview, <https://docs.cloud.google.com/run/docs/overview/what-is-cloud-run> | Cloud Run supports services, jobs, and worker pools in the same managed container environment. Services fit request/HTTP work; jobs fit bounded work. | Keep Cloud Run first. Use services for API/task-handler and jobs for backfill/eval/reindex. |
+| Cloud Run worker pools, <https://docs.cloud.google.com/run/docs/managing/workerpools> | Worker pools are current Cloud Run docs and are useful for non-HTTP pull-based background processing, but require explicit scaling/management choices. | Treat worker pools as a later option after local task-handler and jobs prove insufficient. Do not make them the first dependency. |
+| MCP tools spec, <https://modelcontextprotocol.io/specification/2025-11-25/server/tools> | MCP tools are model-controlled, can expose structured output schemas, and the spec recommends human-visible tool exposure and confirmations for safety. | Future MCP adapters should expose capsule resources read-only first; write/promote tools require human confirmation and output schemas. |
+| MCP authorization spec, <https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization> | MCP authorization emphasizes exact redirect validation, PKCE, token audience binding, secure token storage, and SSRF-aware client metadata handling. | Do not ship an MCP server without an auth threat model, token audience checks, and server-side request controls. |
+| Zep temporal knowledge graph explainer, <https://www.getzep.com/ai-agents/temporal-knowledge-graph/> | The current framing stresses bi-temporal facts: valid time and ingestion/provenance time. | DIALECTICA temporal ledgers and graph edges should continue to model both real-world validity and learned-at/provenance time. |
+| LadybugDB docs, <https://docs.ladybugdb.com/> | Ladybug is positioned as an embedded graph database with property-graph modeling and interoperability with formats/stores such as Parquet, Arrow, and DuckDB. | Keep `ladybug_projection_v1` optional for graph exploration and analytics; signed bundles and PostgreSQL remain canonical. |
+| OpenAI Agents SDK tracing, <https://openai.github.io/openai-agents-js/guides/tracing/> | Current JS docs say tracing captures LLM generations, tool calls, handoffs, guardrails, and custom events. | Capsule compilation, context-pack generation, and PRAXIS use should emit run receipts compatible with agent trace spans. |
+| OpenAI Agents SDK guardrails, <https://openai.github.io/openai-agents-js/guides/guardrails/> | Current JS docs support input, output, and tool guardrails. | Model-powered extraction and capsule-use tools should have explicit guardrails before promotion or external actions. |
+
 ## Adopted Product Rules
 
 - A capsule is the product contract, not a prompt, cache, or chat transcript.

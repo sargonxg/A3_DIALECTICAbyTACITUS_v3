@@ -48,6 +48,10 @@ Actions:
 - added capsule-specific ontology blueprint planning to the Rust contract and
   CLI so actor/claim graphs remain one profile rather than the universal
   capsule ontology.
+- added final pre-push repository polish: ontology factory diagram,
+  next-code-build plan, refreshed GitHub front door, and source refresh notes
+  for Cloud Run worker pools, MCP tools/auth, Graphiti/Zep, LadybugDB, and
+  OpenAI Agents SDK tracing/guardrails.
 
 Evidence:
 
@@ -90,22 +94,19 @@ Evidence:
 
 ## Next Build Tasks
 
-1. Expand Lane A validation to all cases in `docs/LANE_A_ACCEPTANCE.md`.
-2. Add ontology blueprint compatibility checks for all capsule categories and
-   example envelopes.
-3. Validate the four example capsule envelopes against a shared top-level
+1. Implement deterministic bundle writer in `crates/dialectica-compiler`.
+2. Add `build-fixture` so the golden expected bundle is generated from
+   source-pack records and review decisions.
+3. Export the first PRAXIS context pack from the golden bundle.
+4. Validate the four example capsule envelopes against a shared top-level
    contract.
-4. Add source-pack generation for the golden expected-bundle.
-5. Add checksums and deterministic compiler output.
-6. Add CLI validation for the four example capsule envelopes.
-7. Implement graph-slice and graph-constraint validators using
+5. Add checksum and signature placeholders with stable diff output.
+6. Implement graph-slice and graph-constraint validators using
    `docs/GRAPH_PROFILE_REGISTRY.md`.
+7. Turn `services/dialectica-api` into a local fixture-mode Axum service.
 8. Add SQLx migrations in `crates/dialectica-store`.
-9. Implement deterministic bundle compiler and checksums.
-10. Add API Slice 1 health, manifest, graph-preview, context-pack, and receipt
-   routes.
-11. Add Dockerfile and local compose file.
-12. Add Cloud Run staging deployment skeleton.
+9. Add Dockerfile and Cloud Run staging deployment skeleton after the local API
+   runs.
 
 ## Open Product Questions
 

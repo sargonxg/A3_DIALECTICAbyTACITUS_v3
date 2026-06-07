@@ -218,6 +218,14 @@ when it changes:
 
 ## Current Next Action
 
-Finish Lane A validation breadth, then implement the deterministic compiler so
-the golden fixture can be generated from source-pack records and review
-decisions instead of only being checked as an expected bundle.
+Follow [Next Code Build Plan](NEXT_CODE_BUILD_PLAN.md):
+
+1. implement `dialectica-compiler` deterministic bundle writing;
+2. add source-pack records and `dialectica-cli build-fixture`;
+3. export a PRAXIS context pack from the golden bundle;
+4. turn `dialectica-api` into a local fixture-mode Axum service;
+5. add PostgreSQL migrations only after the local capsule loop is executable.
+
+Do not start Cloud Run, MCP, graph-database, or PRAXIS production integration
+work until the local fixture can be generated, validated, inspected, and
+projected into a PRAXIS context pack.

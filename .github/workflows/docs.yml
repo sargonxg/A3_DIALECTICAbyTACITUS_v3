@@ -23,6 +23,7 @@ jobs:
           test -f assets/capsule-stack.svg
           test -f assets/embedded-graph.svg
           test -f assets/agent-build-flow.svg
+          test -f assets/ontology-factory.svg
           test -f assets/research-ledger.svg
           test -f docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md
           test -f docs/ABOUT_DIALECTICA.md
@@ -37,6 +38,7 @@ jobs:
           test -f docs/ONTOLOGY_BLUEPRINTS.md
           test -f docs/RESEARCH_LEDGER.md
           test -f docs/AGENT_BUILD_GUIDE.md
+          test -f docs/NEXT_CODE_BUILD_PLAN.md
           test -f docs/IMPLEMENTATION_PHASE_PLAN.md
           test -f docs/REPOSITORY_CONCEPT_REVIEW.md
           test -f docs/GITHUB_PROFILE.md
@@ -99,6 +101,8 @@ jobs:
         run: cargo run -p dialectica-cli -- inspect fixtures/golden-policy-capsule/expected-bundle
       - name: Plan golden capsule ontology
         run: cargo run -p dialectica-cli -- ontology-plan fixtures/golden-policy-capsule/expected-bundle
+      - name: Export schema snapshots
+        run: cargo run -p dialectica-cli -- schema-export schemas/capsule-0.1.0
 
   python-tools:
     name: Python tools

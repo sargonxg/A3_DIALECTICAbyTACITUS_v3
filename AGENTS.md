@@ -19,17 +19,18 @@ Before implementation work, read the active coding authority first:
 10. `docs/ONTOLOGY_BLUEPRINTS.md`
 11. `docs/RESEARCH_LEDGER.md`
 12. `docs/AGENT_BUILD_GUIDE.md`
-13. `docs/IMPLEMENTATION_PHASE_PLAN.md`
-14. `docs/REPOSITORY_CONCEPT_REVIEW.md`
-15. `docs/GITHUB_PROFILE.md`
-16. `docs/SCAFFOLD_AUDIT.md`
-17. `docs/CAPSULE_SPEC.md`
-18. `docs/API_CONTRACT.md`
-19. `docs/DATA_MODEL.md`
-20. `docs/ARCHITECTURE.md`
-21. `docs/IMPLEMENTATION_BLUEPRINT.md`
-22. `docs/AGENTIC_WORKFLOWS.md`
-23. `docs/BUILD_LEDGER.md`
+13. `docs/NEXT_CODE_BUILD_PLAN.md`
+14. `docs/IMPLEMENTATION_PHASE_PLAN.md`
+15. `docs/REPOSITORY_CONCEPT_REVIEW.md`
+16. `docs/GITHUB_PROFILE.md`
+17. `docs/SCAFFOLD_AUDIT.md`
+18. `docs/CAPSULE_SPEC.md`
+19. `docs/API_CONTRACT.md`
+20. `docs/DATA_MODEL.md`
+21. `docs/ARCHITECTURE.md`
+22. `docs/IMPLEMENTATION_BLUEPRINT.md`
+23. `docs/AGENTIC_WORKFLOWS.md`
+24. `docs/BUILD_LEDGER.md`
 
 Use `docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md` as product/reference context.
 When it conflicts with the active Rust-first coding docs above, follow
@@ -81,6 +82,7 @@ Current command gate:
 - `cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule/expected-bundle`
 - `cargo run -p dialectica-cli -- inspect fixtures/golden-policy-capsule/expected-bundle`
 - `cargo run -p dialectica-cli -- ontology-plan fixtures/golden-policy-capsule/expected-bundle`
+- `cargo run -p dialectica-cli -- schema-export schemas/capsule-0.1.0`
 - `python -m compileall tools/python`
 - `python -m unittest discover tools/python/tests`
 

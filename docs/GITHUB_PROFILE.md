@@ -36,10 +36,14 @@ tacitus
 praxis
 dialectica
 context-capsules
+capsule-engine
 policy-ai
+policy-analysis
 agentic-workflows
 knowledge-graph
 semantic-layer
+ontology
+context-engineering
 provenance
 human-in-the-loop
 expert-review

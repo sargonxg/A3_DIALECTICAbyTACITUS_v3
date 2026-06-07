@@ -94,6 +94,10 @@ definition.
   <img src="assets/agent-build-flow.svg" alt="DIALECTICA agent build flow" width="900">
 </p>
 
+<p align="center">
+  <img src="assets/ontology-factory.svg" alt="DIALECTICA ontology factory" width="900">
+</p>
+
 ## TACITUS System Map
 
 ```text
@@ -225,7 +229,22 @@ Cargo workspace
 
 Start coding from [docs/CODING_LEDGER.md](docs/CODING_LEDGER.md). Read
 [docs/SCAFFOLD_AUDIT.md](docs/SCAFFOLD_AUDIT.md) before claiming that any slice
-is functional.
+is functional. The next implementation sequence is in
+[docs/NEXT_CODE_BUILD_PLAN.md](docs/NEXT_CODE_BUILD_PLAN.md).
+
+Current executable surface:
+
+```powershell
+cargo run -p dialectica-cli -- doctor
+cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule/expected-bundle
+cargo run -p dialectica-cli -- inspect fixtures/golden-policy-capsule/expected-bundle
+cargo run -p dialectica-cli -- ontology-plan fixtures/golden-policy-capsule/expected-bundle
+cargo run -p dialectica-cli -- schema-export schemas/capsule-0.1.0
+```
+
+This proves the repository is not only product copy. It already has typed Rust
+capsule contracts, validation, schema export, a golden policy fixture, and a
+capsule-specific ontology planner.
 
 Initial runtime promise:
 
@@ -419,12 +438,13 @@ for using that knowledge.
 
 Start on **Cloud Run**, not Kubernetes.
 
-Cloud Run is the right initial substrate because DIALECTICA needs containerized API
-services, event-driven workers, jobs, Cloud SQL access, managed scaling, and low
-operational overhead before it needs cluster-level control. The current Google
-Cloud docs describe Cloud Run services as managed container execution, Cloud Run
-worker pools for non-HTTP pull-based processing, and native integrations with
-Cloud SQL, Firestore, Cloud Storage, and monitoring.
+Cloud Run is the right initial substrate because DIALECTICA needs containerized
+API services, event-driven workers, jobs, Cloud SQL access, managed scaling, and
+low operational overhead before it needs cluster-level control. Current Google
+Cloud docs describe Cloud Run as a container platform with services, jobs, and
+worker pools. Services fit API and HTTP task-handler traffic. Jobs fit bounded
+backfill/eval/reindex work. Worker pools are useful later for continuous
+pull-based workers, but they should not be the first runtime dependency.
 
 Recommended first deployment:
 
@@ -518,6 +538,7 @@ docs/
   ONTOLOGY_BLUEPRINTS.md                 capsule-specific semantic planner
   RESEARCH_LEDGER.md                     source links, conclusions, and refresh triggers
   AGENT_BUILD_GUIDE.md                   practical build order for future agents
+  NEXT_CODE_BUILD_PLAN.md                concrete next coding phases
   IMPLEMENTATION_PHASE_PLAN.md           active phased coding plan
   CAPSULE_STRUCTURE_GUIDE.md             bundle layers and agent guidance contract
   GITHUB_PROFILE.md                      recommended GitHub About metadata and topics

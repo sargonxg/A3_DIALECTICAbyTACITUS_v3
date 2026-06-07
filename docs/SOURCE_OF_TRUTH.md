@@ -27,18 +27,19 @@ When documents conflict, use this order:
 19. `docs/ONTOLOGY_BLUEPRINTS.md`
 20. `docs/RESEARCH_LEDGER.md`
 21. `docs/AGENT_BUILD_GUIDE.md`
-22. `docs/IMPLEMENTATION_PHASE_PLAN.md`
-23. `docs/REPOSITORY_CONCEPT_REVIEW.md`
-24. `docs/GITHUB_PROFILE.md`
-25. `docs/EXPERT_REVIEW_AND_MARKETPLACE.md`
-26. `docs/CAPSULE_BUILD_EXAMPLES.md`
-27. `docs/INTELLECTUAL_TOOLS.md`
-28. `docs/DEPLOYMENT.md`
-29. `docs/TECH_BENCHMARK.md`
-30. `docs/PYTHON_TOOLING.md`
-31. `docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md` as reference context
-32. ADRs in `docs/decisions/`
-33. Implementation notes in issues, PRs, and comments
+22. `docs/NEXT_CODE_BUILD_PLAN.md`
+23. `docs/IMPLEMENTATION_PHASE_PLAN.md`
+24. `docs/REPOSITORY_CONCEPT_REVIEW.md`
+25. `docs/GITHUB_PROFILE.md`
+26. `docs/EXPERT_REVIEW_AND_MARKETPLACE.md`
+27. `docs/CAPSULE_BUILD_EXAMPLES.md`
+28. `docs/INTELLECTUAL_TOOLS.md`
+29. `docs/DEPLOYMENT.md`
+30. `docs/TECH_BENCHMARK.md`
+31. `docs/PYTHON_TOOLING.md`
+32. `docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md` as reference context
+33. ADRs in `docs/decisions/`
+34. Implementation notes in issues, PRs, and comments
 
 If an implementation contradicts a higher-priority document, update the
 document through an ADR or stop and ask for a product decision.
@@ -143,8 +144,8 @@ Before building service code, the repo needs:
 
 Current implementation status: the first executable capsule-contract slice now
 includes Rust bundle structs, schema export, a golden expected-bundle fixture,
-and CLI `validate`, `inspect`, and `schema-export` commands. Compiler, store,
-API, task handler, and eval capabilities remain future phases.
+and CLI `validate`, `inspect`, `ontology-plan`, and `schema-export` commands.
+Compiler, store, API, task handler, and eval capabilities remain future phases.
 
 ## First Definition of Done
 
