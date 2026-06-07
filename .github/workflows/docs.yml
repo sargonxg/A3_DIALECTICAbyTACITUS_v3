@@ -16,11 +16,21 @@ jobs:
         run: |
           test -f README.md
           test -f Cargo.toml
+          test -f rust-toolchain.toml
           test -f LICENSE
           test -f AGENTS.md
+          test -f assets/dialectica-mark.svg
+          test -f assets/capsule-stack.svg
+          test -f assets/embedded-graph.svg
           test -f docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md
+          test -f docs/ABOUT_DIALECTICA.md
           test -f docs/SOURCE_OF_TRUTH.md
           test -f docs/CODING_LEDGER.md
+          test -f docs/ENGINEERING_BASELINE.md
+          test -f docs/LANE_A_ACCEPTANCE.md
+          test -f docs/API_SLICE_1.md
+          test -f docs/GRAPH_PROFILE_REGISTRY.md
+          test -f docs/PYTHON_TOOLING.md
           test -f docs/SCAFFOLD_AUDIT.md
           test -f docs/FOUNDATION_BUILD.md
           test -f docs/TECH_BENCHMARK.md
@@ -52,8 +62,20 @@ jobs:
       - name: Check formatting
         run: cargo fmt --all -- --check
       - name: Check workspace
-        run: cargo check --workspace --all-targets
+        run: cargo check --locked --workspace --all-targets
+      - name: Lint workspace
+        run: cargo clippy --locked --workspace --all-targets -- -D warnings
       - name: Test workspace
-        run: cargo test --workspace
+        run: cargo test --locked --workspace
       - name: CLI doctor
         run: cargo run -p dialectica-cli -- doctor
+
+  python-tools:
+    name: Python tools
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile Python tools
+        run: python -m compileall tools/python
+      - name: Test Python tools
+        run: python -m unittest discover tools/python/tests

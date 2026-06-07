@@ -23,6 +23,11 @@ Rationale:
 - predictable binaries for Cloud Run;
 - strong JSON, SQL, and testing ecosystem.
 
+Python is auxiliary tooling only. Keep it under `tools/python/` for fixture
+reports, eval summaries, research utilities, and graph sanity checks. Do not
+use Python as the canonical API, compiler, store, or bundle validation runtime
+without a new ADR.
+
 ## Rust Candidates
 
 Validate current versions before adding.

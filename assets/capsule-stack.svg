@@ -3,10 +3,10 @@
   <desc id="desc">A source to capsule to PRAXIS diagram showing ledgers, graph, reasoning, review, and export layers.</desc>
   <rect width="1040" height="520" rx="28" fill="#0B1020"/>
   <rect x="26" y="26" width="988" height="468" rx="22" fill="#111827" stroke="#334155" stroke-width="2"/>
-  <text x="64" y="74" fill="#E5E7EB" font-family=" ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="28" font-weight="700">DIALECTICA CAPSULE STACK</text>
-  <text x="64" y="104" fill="#94A3B8" font-family=" ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">portable knowledge objects for humans and AI agents</text>
+  <text x="64" y="74" fill="#E5E7EB" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="28" font-weight="700">DIALECTICA CAPSULE STACK</text>
+  <text x="64" y="104" fill="#94A3B8" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">portable knowledge objects for humans and AI agents</text>
 
-  <g font-family=" ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" font-weight="700">
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" font-weight="700">
     <rect x="64" y="145" width="180" height="74" rx="10" fill="#172554" stroke="#60A5FA"/>
     <text x="88" y="176" fill="#DBEAFE">sources</text>
     <text x="88" y="198" fill="#93C5FD" font-size="12">docs feeds notes</text>
@@ -21,6 +21,14 @@
     <rect x="548" y="130" width="192" height="70" rx="10" fill="#164E63" stroke="#67E8F9"/>
     <text x="576" y="161" fill="#CFFAFE">embedded graph</text>
     <text x="576" y="183" fill="#A5F3FC" font-size="12">actors claims risks</text>
+    <g stroke="#A5F3FC" stroke-width="1.5">
+      <path d="M605 196L642 208L688 196"/>
+      <path d="M642 208L680 218"/>
+    </g>
+    <circle cx="605" cy="196" r="5" fill="#60A5FA"/>
+    <circle cx="642" cy="208" r="5" fill="#FBBF24"/>
+    <circle cx="688" cy="196" r="5" fill="#86EFAC"/>
+    <circle cx="680" cy="218" r="5" fill="#F472B6"/>
     <rect x="548" y="228" width="192" height="70" rx="10" fill="#581C87" stroke="#D8B4FE"/>
     <text x="576" y="259" fill="#F3E8FF">reasoning layer</text>
     <text x="576" y="281" fill="#E9D5FF" font-size="12">devices heuristics</text>
@@ -46,7 +54,7 @@
     <path d="M884 300V340"/>
   </g>
 
-  <g font-family=" ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13">
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13">
     <text x="64" y="438" fill="#CBD5E1">invariant: every claim, edge, reasoning device, and output contract keeps provenance, time, review state, and rights.</text>
     <text x="64" y="464" fill="#94A3B8">PostgreSQL + signed bundle stay canonical; graph/vector/MCP/memory are derived adapters until proven by evals.</text>
   </g>

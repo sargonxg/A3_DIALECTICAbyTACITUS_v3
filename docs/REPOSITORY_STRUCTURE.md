@@ -6,6 +6,7 @@
 README.md
 AGENTS.md
 Cargo.toml
+rust-toolchain.toml
 LICENSE
 NOTICE
 SUPPORT.md
@@ -19,6 +20,7 @@ services/
 infrastructure/
 fixtures/
 tests/
+tools/
 .github/
 ```
 
@@ -32,8 +34,11 @@ Changes here should explain why the system works the way it does.
 
 Lightweight repository graphics and documentation assets.
 
-The current SVG mark is for GitHub presentation, not final TACITUS brand
-identity.
+Current assets:
+
+- `dialectica-mark.svg`;
+- `capsule-stack.svg`;
+- `embedded-graph.svg`.
 
 ## `crates/`
 
@@ -79,6 +84,14 @@ Cross-crate, contract, integration, and fixture tests.
 Active test package:
 
 - `dialectica-contract-tests`.
+
+## `tools/`
+
+Auxiliary developer tools.
+
+Current tools:
+
+- `tools/python`: fixture reports, eval helpers, and graph sanity checks.
 
 ## `.github/`
 

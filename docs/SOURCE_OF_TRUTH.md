@@ -6,26 +6,31 @@ This file defines how to use the repository before implementation starts.
 
 When documents conflict, use this order:
 
-1. `docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md`
-2. `docs/SOURCE_OF_TRUTH.md`
-3. `docs/CODING_LEDGER.md`
-4. `docs/SCAFFOLD_AUDIT.md`
-5. `docs/FOUNDATION_BUILD.md`
-6. `docs/TECH_BENCHMARK.md`
-7. `docs/CAPSULE_FORMAL_MODEL.md`
-8. `docs/CAPSULE_TYPES_AND_MARKETPLACE.md`
-9. `docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md`
-10. `docs/EXPERT_REVIEW_AND_MARKETPLACE.md`
-11. `docs/CAPSULE_BUILD_EXAMPLES.md`
-12. `docs/CAPSULE_SPEC.md`
-13. `docs/INTELLECTUAL_TOOLS.md`
-14. `docs/API_CONTRACT.md`
-15. `docs/DATA_MODEL.md`
-16. `docs/ARCHITECTURE.md`
-17. `docs/DEPLOYMENT.md`
-18. `docs/PRAXIS_INTEGRATION.md`
-19. ADRs in `docs/decisions/`
-20. Implementation notes in issues, PRs, and comments
+1. `docs/SOURCE_OF_TRUTH.md`
+2. `docs/CODING_LEDGER.md`
+3. `docs/ENGINEERING_BASELINE.md`
+4. `docs/LANE_A_ACCEPTANCE.md`
+5. `docs/API_SLICE_1.md`
+6. `docs/GRAPH_PROFILE_REGISTRY.md`
+7. `docs/CAPSULE_SPEC.md`
+8. `docs/API_CONTRACT.md`
+9. `docs/DATA_MODEL.md`
+10. `docs/ARCHITECTURE.md`
+11. `docs/PRAXIS_INTEGRATION.md`
+12. `docs/ABOUT_DIALECTICA.md`
+13. `docs/FOUNDATION_BUILD.md`
+14. `docs/CAPSULE_FORMAL_MODEL.md`
+15. `docs/CAPSULE_TYPES_AND_MARKETPLACE.md`
+16. `docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md`
+17. `docs/EXPERT_REVIEW_AND_MARKETPLACE.md`
+18. `docs/CAPSULE_BUILD_EXAMPLES.md`
+19. `docs/INTELLECTUAL_TOOLS.md`
+20. `docs/DEPLOYMENT.md`
+21. `docs/TECH_BENCHMARK.md`
+22. `docs/PYTHON_TOOLING.md`
+23. `docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md` as reference context
+24. ADRs in `docs/decisions/`
+25. Implementation notes in issues, PRs, and comments
 
 If an implementation contradicts a higher-priority document, update the
 document through an ADR or stop and ask for a product decision.
@@ -37,7 +42,7 @@ TACITUS is the company.
 PRAXIS is the visible policy workbench, user cockpit, and agentic workflow
 surface.
 
-DIALECTICA is the internal capsule intelligence engine that compiles portable
+DIALECTICA is the internal capsule intelligence engine that builds portable
 PRAXIS Capsules.
 
 AGON and KAIROS are future perception subsystems. They may feed DIALECTICA
@@ -96,7 +101,9 @@ The foundation build must not require:
 ## Engineering Rules
 
 - Keep the capsule bundle canonical and portable.
-- Keep PostgreSQL as the first operational source of truth.
+- Keep PostgreSQL as the first DIALECTICA operational source of truth.
+- Keep PRAXIS Firestore canonical for PRAXIS user-facing capsule visibility and
+  cockpit state.
 - Keep graph and semantic engines as adapters, caches, or derived views until
   the capsule contract is stable.
 - Store source artifacts immutably.
@@ -115,6 +122,7 @@ Before building service code, the repo needs:
 - capsule JSON schema;
 - fixture capsule bundle;
 - contract tests for manifest, source ledger, review ledger, and export;
+- graph profile registry alignment;
 - deployment skeleton for local Docker and Cloud Run;
 - CI check for formatting, tests, and docs presence.
 

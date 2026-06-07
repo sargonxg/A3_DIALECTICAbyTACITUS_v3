@@ -191,12 +191,13 @@ Use three environments:
 
 Every environment must expose:
 
-- `/healthz`
-- `/readyz`
-- `/version`
+- `/health`: process and local API contract status;
+- `/version`: git SHA, build time, schema version, and migration version;
 - capsule schema version
-- git commit SHA
 - database migration version
+
+Add separate `/healthz` and `/readyz` endpoints only when staging or production
+probes need distinct liveness and dependency-readiness checks.
 
 ## Deployment Phases
 

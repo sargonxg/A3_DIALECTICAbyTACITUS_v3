@@ -9,7 +9,7 @@
 ![PRAXIS](https://img.shields.io/badge/serves-PRAXIS%20Capsules-0F766E)
 ![License](https://img.shields.io/badge/license-proprietary-lightgrey)
 
-DIALECTICA is the internal TACITUS capsule intelligence engine for PRAXIS.
+DIALECTICA is the TACITUS context-capsule engine for PRAXIS.
 
 Its job is to build the context-capsule backbone for PRAXIS: durable,
 source-grounded knowledge objects that humans and AI agents can inspect, share,
@@ -26,53 +26,49 @@ The technical thesis is:
 > model of a situation, the evidence behind it, the reasoning tools for using
 > it, and the rules for human and AI use.
 
-```text
-             DIALECTICA by TACITUS
+## About
 
-  docs + feeds + notes + runs + expert judgement
-          |
-          v
-  source ledger -> time ledger -> semantic layer
-          |              |              |
-          v              v              v
-       claims ------ embedded graph ---- reasoning devices
-          \              |              /
-           \             v             /
-            +------ human gate -------+
-                       |
-                       v
-              signed PRAXIS Capsule
-                       |
-                       v
-             PRAXIS augmented generation
+DIALECTICA exists because serious knowledge work needs a shared object between
+people and AI agents. Policy teams do not only need answers. They need the
+source trail, temporal status, institutional context, contested claims, expert
+reasoning, review caveats, and output rules that make an answer usable.
+
+The capsule is that object.
+
+```text
+                   DIALECTICA by TACITUS
+
+     docs + feeds + notes + interactions + expert judgement
+             |
+             v
+  +------------------------------------------------------+
+  | PRAXIS Capsule                                      |
+  |                                                      |
+  | source ledger -> temporal ledger -> semantic layer   |
+  |       |                |                 |           |
+  |       v                v                 v           |
+  | source spans ---- embedded graph ---- reasoning      |
+  |       |                |                 |           |
+  |       +---------- human review gate -----+           |
+  |                         |                            |
+  |                  output contracts                    |
+  +------------------------------------------------------+
+             |
+             v
+      PRAXIS agents, analysts, reviewers, memos, briefs
 ```
 
-## Why This Exists
-
-Generic LLM generation loses the things policy teams care about most: source
-status, time, institutional context, contested facts, tacit expert reasoning,
-review gates, and handover memory. DIALECTICA fixes that by encoding these
-elements into a portable capsule that PRAXIS and human teams can inspect,
-share, and use.
-
-The larger vision is that capsules become the durable backbone of serious
-knowledge work. A policy analyst, expert reviewer, AI agent, and institutional
-team should be able to point to the same capsule and understand the same
-sources, graph, reasoning layer, caveats, and output rules.
+The larger vision is that capsules become infrastructure for knowledge work: a
+policy analyst, expert reviewer, AI agent, and institution can point to the
+same capsule and see the same evidence, graph, reasoning layer, caveats, rights,
+and usage constraints.
 
 <p align="center">
   <img src="assets/capsule-stack.svg" alt="DIALECTICA capsule stack" width="860">
 </p>
 
-```mermaid
-flowchart LR
-  Sources["Sources<br/>docs, notes, feeds, interactions"] --> Ledger["Source ledger<br/>spans, hashes, trust"]
-  Ledger --> Situation["Situation model<br/>actors, claims, time, risks"]
-  Situation --> Reasoning["Reasoning playbook<br/>methods, lenses, heuristics"]
-  Reasoning --> Review["Human gate<br/>approve, reject, caveat"]
-  Review --> Bundle["Signed PRAXIS Capsule<br/>portable context bundle"]
-  Bundle --> Praxis["PRAXIS workflows<br/>Ask, agents, memos, handover"]
-```
+See [docs/ABOUT_DIALECTICA.md](docs/ABOUT_DIALECTICA.md) for the product
+definition.
 
 ## What DIALECTICA Builds
 
@@ -98,19 +94,21 @@ decide whether it is fit for a specific workflow.
 
 ## Relationship to PRAXIS
 
-PRAXIS remains the visible cockpit. DIALECTICA is the engine behind it.
+PRAXIS remains the visible cockpit. DIALECTICA supplies the capsule backbone.
 
 ```mermaid
 flowchart TB
   subgraph P["PRAXIS"]
     Ask["Ask PRAXIS"]
     Workbench["Capsule workbench"]
+    Firestore["Firestore visibility mirror"]
     Runs["Agent runs and receipts"]
     Memos["Memo and brief outputs"]
   end
 
   subgraph D["DIALECTICA"]
     API["Capsule API"]
+    ContextPack["Context Pack API"]
     Ingest["Ingestion workers"]
     Compiler["Capsule compiler"]
     Review["Review gate"]
@@ -132,7 +130,11 @@ flowchart TB
   Review --> Compiler
   Compiler --> GCS
   Compiler --> Eval
-  GCS --> Runs
+  Compiler --> ContextPack
+  ContextPack --> Firestore
+  ContextPack --> Ask
+  Firestore --> Workbench
+  Ask --> Runs
   Runs --> Memos
 ```
 
@@ -234,7 +236,7 @@ replace the capsule bundle or PostgreSQL ledger in the foundation build.
 
 ## Capsule Types
 
-PRAXIS should not receive one generic context object. DIALECTICA should compile
+PRAXIS should not receive one generic context object. DIALECTICA should build
 typed capsules with clear compatibility rules:
 
 | Capsule | What it packages | Example use |
@@ -249,6 +251,17 @@ typed capsules with clear compatibility rules:
 | Scenario Capsule | futures, triggers, indicators, branches | foresight and contingency |
 | Output Capsule | produced artifact plus reasoning trail | memo reuse and handover |
 | Expert Pick Capsule | reviewed capsule recommended by an expert | capsule marketplace |
+
+Example composition:
+
+```text
+Situation Capsule
+  + Source Capsule
+  + Stakeholder Capsule
+  + Thinking Device Capsule
+  + Expert Pick Capsule
+  -> PRAXIS decision brief with source receipts and graph warnings
+```
 
 See [docs/CAPSULE_TYPES_AND_MARKETPLACE.md](docs/CAPSULE_TYPES_AND_MARKETPLACE.md).
 
@@ -277,6 +290,10 @@ flowchart LR
 ```
 
 See [docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md](docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md).
+
+<p align="center">
+  <img src="assets/embedded-graph.svg" alt="Embedded graph inside a PRAXIS Capsule" width="860">
+</p>
 
 ## Human-Gated Expert Layer
 
@@ -373,11 +390,17 @@ MCP, and the OpenAI Agents SDK.
 assets/
   dialectica-mark.svg                    GitHub README mark
   capsule-stack.svg                      capsule stack diagram
+  embedded-graph.svg                     embedded graph diagram
 Cargo.toml                               Rust workspace scaffold
 docs/
-  DIALECTICA_v3_BUILD_INSTRUCTIONS.md   imported canonical build spec
+  DIALECTICA_v3_BUILD_INSTRUCTIONS.md   imported reference context
+  ABOUT_DIALECTICA.md                   product definition and backbone story
   SOURCE_OF_TRUTH.md                    document priority and working rules
   CODING_LEDGER.md                      active coding control file
+  ENGINEERING_BASELINE.md               Rust/Python ownership and command gates
+  LANE_A_ACCEPTANCE.md                  exact first schema lane acceptance
+  API_SLICE_1.md                        exact first API slice contract
+  GRAPH_PROFILE_REGISTRY.md             canonical graph vocabulary
   SCAFFOLD_AUDIT.md                     repo readiness and gap audit
   FOUNDATION_BUILD.md                   first product slice and non-goals
   TECH_BENCHMARK.md                      research and ecosystem comparison
@@ -400,6 +423,7 @@ docs/
   AGENTIC_WORKFLOWS.md                  Codex agent swarm lanes and gates
   PRAXIS_REPO_ALIGNMENT.md              integration seams from PRAXIS repo
   RESEARCH_BACKLOG.md                   research tracks for future improvement
+  PYTHON_TOOLING.md                     auxiliary Python tool boundary
   AGENT_GUIDE.md                        build lanes for future agents
   BUILD_LEDGER.md                       decisions, tasks, and evidence trail
   DEPENDENCIES.md                       dependency candidates and constraints
@@ -413,6 +437,7 @@ services/                               deployable Rust service binaries
 infrastructure/                         Terraform/OpenTofu and deployment files
 fixtures/                               test capsules, source packs, eval data
 tests/                                  workspace contract tests
+tools/                                  Python reports and local developer tooling
 ```
 
 ## Build Principles
@@ -444,18 +469,23 @@ model-powered extraction.
 Start here:
 
 1. Read [docs/SOURCE_OF_TRUTH.md](docs/SOURCE_OF_TRUTH.md).
-2. Read [docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md](docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md).
+2. Read [docs/ABOUT_DIALECTICA.md](docs/ABOUT_DIALECTICA.md).
 3. Read [docs/CODING_LEDGER.md](docs/CODING_LEDGER.md).
-4. Read [docs/SCAFFOLD_AUDIT.md](docs/SCAFFOLD_AUDIT.md).
-5. Read [docs/FOUNDATION_BUILD.md](docs/FOUNDATION_BUILD.md).
-6. Read [docs/CAPSULE_SPEC.md](docs/CAPSULE_SPEC.md).
-7. Read [docs/CAPSULE_TYPES_AND_MARKETPLACE.md](docs/CAPSULE_TYPES_AND_MARKETPLACE.md).
-8. Read [docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md](docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md).
-9. Read [docs/CAPSULE_BUILD_EXAMPLES.md](docs/CAPSULE_BUILD_EXAMPLES.md).
-10. Read [docs/API_CONTRACT.md](docs/API_CONTRACT.md).
-11. Read [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
-12. Read [docs/IMPLEMENTATION_BLUEPRINT.md](docs/IMPLEMENTATION_BLUEPRINT.md).
-13. Read [docs/INTELLECTUAL_TOOLS.md](docs/INTELLECTUAL_TOOLS.md).
+4. Read [docs/ENGINEERING_BASELINE.md](docs/ENGINEERING_BASELINE.md).
+5. Read [docs/LANE_A_ACCEPTANCE.md](docs/LANE_A_ACCEPTANCE.md).
+6. Read [docs/API_SLICE_1.md](docs/API_SLICE_1.md).
+7. Read [docs/GRAPH_PROFILE_REGISTRY.md](docs/GRAPH_PROFILE_REGISTRY.md).
+8. Read [docs/SCAFFOLD_AUDIT.md](docs/SCAFFOLD_AUDIT.md).
+9. Read [docs/FOUNDATION_BUILD.md](docs/FOUNDATION_BUILD.md).
+10. Read [docs/CAPSULE_SPEC.md](docs/CAPSULE_SPEC.md).
+11. Read [docs/CAPSULE_TYPES_AND_MARKETPLACE.md](docs/CAPSULE_TYPES_AND_MARKETPLACE.md).
+12. Read [docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md](docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md).
+13. Read [docs/CAPSULE_BUILD_EXAMPLES.md](docs/CAPSULE_BUILD_EXAMPLES.md).
+14. Read [docs/API_CONTRACT.md](docs/API_CONTRACT.md).
+15. Read [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+16. Read [docs/IMPLEMENTATION_BLUEPRINT.md](docs/IMPLEMENTATION_BLUEPRINT.md).
+17. Read [docs/INTELLECTUAL_TOOLS.md](docs/INTELLECTUAL_TOOLS.md).
+18. Use [docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md](docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md) as reference context.
 
 ## First Build Commands
 
@@ -463,9 +493,12 @@ These commands are active now.
 
 ```powershell
 cargo fmt --all -- --check
-cargo check --workspace --all-targets
-cargo test --workspace
+cargo check --locked --workspace --all-targets
+cargo clippy --locked --workspace --all-targets -- -D warnings
+cargo test --locked --workspace
 cargo run -p dialectica-cli -- doctor
+python -m compileall tools/python
+python -m unittest discover tools/python/tests
 ```
 
 The first local runtime must not require cloud credentials. Cloud credentials

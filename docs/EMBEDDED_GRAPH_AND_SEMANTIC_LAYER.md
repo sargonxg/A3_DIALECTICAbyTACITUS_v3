@@ -10,6 +10,11 @@ The graph is **embedded** because it travels with the capsule bundle. It can be
 visualized in PRAXIS, projected into PostgreSQL tables, exported as JSON-LD, or
 served through an MCP resource without requiring a dedicated graph database.
 
+The canonical graph vocabulary lives in
+[Graph Profile Registry](GRAPH_PROFILE_REGISTRY.md). Use that file before
+adding node classes, edge classes, graph previews, or capsule-type graph
+profiles.
+
 ```text
         sources
           |
@@ -49,6 +54,10 @@ semantic export. `graph_constraints.json` is the validation profile.
 
 ## Node Classes
 
+Canonical node classes are registered in
+[Graph Profile Registry](GRAPH_PROFILE_REGISTRY.md). The list below is the
+working explanation of the same vocabulary.
+
 | Node class | Meaning | Required fields |
 | --- | --- | --- |
 | `actor` | Person, organization, coalition, stakeholder group. | `id`, `label`, `actor_type`, `review_state` |
@@ -65,6 +74,10 @@ semantic export. `graph_constraints.json` is the validation profile.
 | `review_action` | Human approval, rejection, caveat, escalation, recertification. | `id`, `reviewer_id`, `decision`, `created_at` |
 
 ## Edge Classes
+
+Canonical edge classes are registered in
+[Graph Profile Registry](GRAPH_PROFILE_REGISTRY.md). Exported graph records
+must use those edge names or approved aliases.
 
 | Edge class | Meaning |
 | --- | --- |
@@ -98,6 +111,35 @@ Every edge must carry:
 - `temporal_scope`;
 - `explanation`.
 
+## Graph Slice Shape
+
+`graph_slice.json` must be renderable and validatable:
+
+```json
+{
+  "schema_version": "0.1.0",
+  "capsule_id": "cap_eu_energy_stakeholders_2026_q3",
+  "graph_profile": "stakeholder_graph_v1",
+  "nodes": [],
+  "edges": [],
+  "communities": [],
+  "layout_hints": {
+    "default_lens": "stakeholder_map",
+    "ranked_focus_nodes": [],
+    "review_overlay": true,
+    "temporal_filter_default": "current"
+  },
+  "health": {
+    "unsupported_edge_count": 0,
+    "unreviewed_edge_count": 0,
+    "stale_edge_count": 0,
+    "contradiction_cluster_count": 0
+  }
+}
+```
+
+See `docs/GRAPH_PROFILE_REGISTRY.md` for the full fixture-quality example.
+
 ## Semantic Layer
 
 The semantic layer gives stable meaning to the graph. DIALECTICA should borrow
@@ -115,6 +157,33 @@ from standards without forcing every capsule into a heavyweight RDF stack.
 
 The capsule does not need to implement all of these standards fully on day one.
 It should design fields so migration to these standards is possible.
+
+## Ontology Slice Shape
+
+`ontology_slice.json` should be a working semantic contract, not only a list of
+topics:
+
+```json
+{
+  "ontology_id": "ontology:eu-energy-policy",
+  "version": "0.1.0",
+  "namespace": "https://tacitus.me/ns/policy/eu-energy#",
+  "language": "en",
+  "terms": [
+    {
+      "term_id": "concept:state-aid",
+      "label": "State aid",
+      "definition": "Public support that may affect market competition.",
+      "source_span_ids": ["span:commission_guidance:3"],
+      "broader": ["concept:competition-policy"],
+      "review_state": "approved"
+    }
+  ],
+  "mappings": [],
+  "frame_memberships": [],
+  "deprecations": []
+}
+```
 
 ## JSON-LD Shape
 
@@ -156,32 +225,44 @@ without introducing a separate vector database.
 
 ## PRAXIS Visualization Contract
 
-PRAXIS should be able to load a graph preview from the capsule manifest:
+PRAXIS should be able to load `graph_preview_v1` from the graph preview API:
 
 ```json
 {
-  "graph_preview": {
-    "node_count": 84,
-    "edge_count": 196,
-    "top_node_types": ["actor", "claim", "source", "risk"],
-    "review_state_counts": {
-      "approved": 121,
-      "approved_with_caveats": 18,
-      "needs_review": 9
-    },
-    "hotspots": [
-      {
-        "node_id": "actor:european-commission",
-        "label": "European Commission",
-        "why_it_matters": "highest centrality across authority and funding edges"
-      }
-    ]
-  }
+  "schema_version": "graph_preview_v1",
+  "capsule_id": "cap_eu_energy_stakeholders_2026_q3",
+  "graph_profile": "stakeholder_graph_v1",
+  "nodes": [],
+  "edges": [],
+  "clusters": [],
+  "review_styles": {
+    "approved": "solid",
+    "approved_with_caveats": "dashed",
+    "needs_review": "muted",
+    "rejected": "hidden_by_default"
+  },
+  "temporal_filters": ["current", "stale", "superseded", "forecast", "contested"],
+  "source_receipt_links": [],
+  "warnings": []
 }
 ```
 
 The graph UI should make review state visible. Proposed edges should not look
 like approved edges.
+
+## Graph Review Lifecycle
+
+Graph nodes and edges are reviewable objects:
+
+```text
+proposed -> needs_review -> approved
+                         -> approved_with_caveats
+                         -> rejected
+                         -> expired
+```
+
+Every promoted graph object must carry `review_scope`, `review_action_ids`,
+`caveat_ids`, `expires_at`, and `blocked_workflows` when those fields apply.
 
 ## Cross-Capsule Graphs
 

@@ -41,6 +41,10 @@ need real schema, storage, compiler, API, and fixture logic.
 - Embedded graph, semantic layer, review, rights, and marketplace concepts are
   documented before implementation.
 - Command gates are defined in `docs/CODING_LEDGER.md`.
+- Lane A acceptance is explicit in `docs/LANE_A_ACCEPTANCE.md`.
+- API Slice 1 is explicit in `docs/API_SLICE_1.md`.
+- Graph vocabulary is centralized in `docs/GRAPH_PROFILE_REGISTRY.md`.
+- Python tooling is auxiliary and governed by `docs/PYTHON_TOOLING.md`.
 
 ## Not Ready Yet
 
@@ -55,6 +59,9 @@ need real schema, storage, compiler, API, and fixture logic.
 - PRAXIS context-pack export is not implemented.
 - Evals are only planned.
 - Cloud infrastructure has no Terraform/OpenTofu state yet.
+- API service still has no HTTP framework.
+- Python tooling is intentionally small and should not be treated as backend
+  capability.
 
 ## Blockers Before Calling It Functional
 

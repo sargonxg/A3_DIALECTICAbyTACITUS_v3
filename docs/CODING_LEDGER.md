@@ -42,26 +42,28 @@ These commands are mandatory before each commit once code exists:
 
 ```powershell
 cargo fmt --all -- --check
-cargo check --workspace --all-targets
-cargo test --workspace
+cargo check --locked --workspace --all-targets
+cargo clippy --locked --workspace --all-targets -- -D warnings
+cargo test --locked --workspace
 cargo run -p dialectica-cli -- doctor
+python -m compileall tools/python
+python -m unittest discover tools/python/tests
 ```
 
 Future gates:
 
 ```powershell
-cargo clippy --workspace --all-targets -- -D warnings
 cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule
 cargo run -p dialectica-cli -- inspect fixtures/golden-policy-capsule
 ```
-
-Do not make clippy blocking until the dependency set and crate APIs stabilize.
 
 ## Build Lanes
 
 ### Lane A: Capsule Contract
 
 Goal: make the capsule bundle schema real.
+
+Acceptance contract: [Lane A Acceptance](LANE_A_ACCEPTANCE.md).
 
 Deliver:
 
@@ -138,6 +140,8 @@ Done when:
 
 Goal: expose the first working backend surface.
 
+Acceptance contract: [API Slice 1](API_SLICE_1.md).
+
 Deliver:
 
 - `GET /health`;
@@ -145,6 +149,7 @@ Deliver:
 - `POST /v1/capsule-jobs`;
 - `GET /v1/capsule-jobs/{job_id}`;
 - `GET /v1/capsules/{capsule_id}/manifest`;
+- `GET /v1/capsules/{capsule_id}/graph-preview`;
 - `GET /v1/capsules/{capsule_id}/praxis-context-pack`;
 - task-handler endpoint for queued compile work.
 
@@ -180,6 +185,7 @@ Done when:
 - Do not add autonomous memory promotion.
 - Do not let model extraction write canonical truth without review state.
 - Do not add secrets to fixtures, logs, docs, or snapshots.
+- Do not start broad multi-agent backend implementation before Lane A merges.
 
 ## Ledger Protocol
 

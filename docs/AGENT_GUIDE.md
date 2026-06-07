@@ -78,9 +78,12 @@ Purpose: build Rust crates, API services, workers, and database integration.
 Validation:
 
 - `cargo fmt --all -- --check`
-- `cargo check --workspace --all-targets`
-- `cargo test --workspace`
+- `cargo check --locked --workspace --all-targets`
+- `cargo clippy --locked --workspace --all-targets -- -D warnings`
+- `cargo test --locked --workspace`
 - `cargo run -p dialectica-cli -- doctor`
+- `python -m compileall tools/python`
+- `python -m unittest discover tools/python/tests`
 - contract tests
 - migration tests when schema changes.
 

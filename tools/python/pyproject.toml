@@ -1,0 +1,9 @@
+[project]
+name = "dialectica-tools"
+version = "0.1.0"
+description = "Local analysis and eval tooling for DIALECTICA capsule fixtures."
+requires-python = ">=3.11"
+dependencies = []
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

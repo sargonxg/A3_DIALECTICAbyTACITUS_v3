@@ -6,6 +6,8 @@ The implementation should move in narrow, testable slices.
 
 ## Slice 1: Rust Workspace and Contract Types
 
+Acceptance contract: `docs/LANE_A_ACCEPTANCE.md`.
+
 Create:
 
 - `crates/dialectica-capsule`
@@ -22,9 +24,10 @@ Implement:
 
 Validation:
 
-- `cargo fmt`
-- `cargo clippy`
-- `cargo test`
+- `cargo fmt --all -- --check`
+- `cargo check --locked --workspace --all-targets`
+- `cargo clippy --locked --workspace --all-targets -- -D warnings`
+- `cargo test --locked --workspace`
 - schema snapshot tests.
 
 ## Slice 2: Golden Fixture
@@ -73,6 +76,8 @@ Implement:
 
 ## Slice 5: API and Task Handler
 
+Acceptance contract: `docs/API_SLICE_1.md`.
+
 Create:
 
 - `services/dialectica-api`
@@ -86,7 +91,8 @@ Implement:
 - context-pack endpoint;
 - review endpoint;
 - export endpoint;
-- health/version endpoints.
+- `GET /health`;
+- `GET /version`.
 
 ## Slice 6: Evals
 
@@ -123,18 +129,22 @@ Create:
 
 Agent A: capsule schema and CLI.
 
-Agent B: Postgres data model and migrations.
+Agent B: golden fixture expectations.
 
-Agent C: PRAXIS API contract and context pack.
+Agent C: graph profile registry and validation cases.
 
-Agent D: eval fixtures and test harness.
+Agent D: read-only store/API/eval planning against the draft schema.
 
 Merge order:
 
 1. schema and fixture;
 2. validator;
-3. store;
-4. compiler;
-5. API;
-6. evals;
-7. deployment.
+3. graph-slice validation;
+4. store migrations;
+5. compiler;
+6. API;
+7. evals;
+8. deployment.
+
+Store, API, and eval agents may research in parallel, but their code should not
+merge until Lane A is complete.

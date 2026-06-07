@@ -21,14 +21,15 @@ Current code CI runs:
 
 ```powershell
 cargo fmt --all -- --check
-cargo check --workspace --all-targets
-cargo test --workspace
+cargo check --locked --workspace --all-targets
+cargo clippy --locked --workspace --all-targets -- -D warnings
+cargo test --locked --workspace
 cargo run -p dialectica-cli -- doctor
+python -m compileall tools/python
+python -m unittest discover tools/python/tests
 ```
 
-Add `cargo clippy --workspace --all-targets -- -D warnings` after crate APIs
-and dependency choices stabilize. Add fixture validation once
-`fixtures/golden-policy-capsule` exists.
+Add fixture validation once `fixtures/golden-policy-capsule` exists.
 
 ## Later Staging CI
 
@@ -38,7 +39,9 @@ After containerization:
 - scan image;
 - push to Artifact Registry;
 - deploy to Cloud Run staging;
-- run `/healthz`, `/readyz`, `/version`;
+- run `/health`, `/version`;
+- add `/healthz` and `/readyz` only when deployment probes require separate
+  liveness and readiness checks;
 - compile or serve one fixture capsule;
 - attach eval report to release notes.
 

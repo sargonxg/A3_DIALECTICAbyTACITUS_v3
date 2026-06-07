@@ -70,17 +70,17 @@ conflict so the capsule proves temporal and contradiction handling.
 
 ```text
 European Commission
-  | regulates
+  | regulated_by
   v
 State aid guidelines
-  | constrains
+  | depends_on
   v
 Industrial electricity subsidy
-  | benefits
+  | incentivized_by
   v
 Energy-intensive industry coalition
   ^
-  | criticizes budget burden
+  | contradicts budget burden claim
 Labor union ---------> Employment risk
 ```
 
@@ -89,10 +89,10 @@ state, and an explanation.
 
 ```json
 {
-  "edge_id": "edge:guidelines-constrain-subsidy",
+  "edge_id": "edge:guidelines-depends-on-subsidy",
   "from_node_id": "policy:state-aid-guidelines",
   "to_node_id": "policy:industrial-electricity-subsidy",
-  "edge_type": "constrains",
+  "edge_type": "depends_on",
   "source_span_ids": ["span:commission_guidance:12"],
   "temporal_scope": {
     "valid_from": "2026-01-01",

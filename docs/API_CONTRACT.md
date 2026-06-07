@@ -2,6 +2,9 @@
 
 Status: draft for Phase 1 and Phase 2 implementation.
 
+API Slice 1 is defined in [API Slice 1](API_SLICE_1.md). That file is
+authoritative for the first local HTTP implementation.
+
 ## Design Principles
 
 - Keep PRAXIS-facing APIs compact.
@@ -185,17 +188,39 @@ Response:
 
 ```json
 {
+  "schema_version": "graph_preview_v1",
   "capsule_id": "cap_123",
-  "graph_profile": "actor_incentive_v1",
-  "node_count": 84,
-  "edge_count": 196,
-  "review_state_counts": {
-    "approved": 121,
-    "approved_with_caveats": 18,
-    "needs_review": 9
+  "graph_profile": "stakeholder_graph_v1",
+  "nodes": [
+    {
+      "id": "actor:european-commission",
+      "label": "European Commission",
+      "node_type": "institution",
+      "rank": 0.98,
+      "why_surfaced": "central authority node for subsidy feasibility",
+      "review_state": "approved"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge:guidelines-regulated-by-commission",
+      "from": "policy:state-aid-guidelines",
+      "to": "actor:european-commission",
+      "edge_type": "regulated_by",
+      "review_state": "approved_with_caveats",
+      "source_receipt_links": ["source:commission_guidance#span:12"],
+      "temporal_status": "current"
+    }
+  ],
+  "clusters": [],
+  "review_styles": {
+    "approved": "solid",
+    "approved_with_caveats": "dashed",
+    "needs_review": "muted",
+    "rejected": "hidden_by_default"
   },
-  "hotspots": [],
-  "contradiction_clusters": [],
+  "temporal_filters": ["current", "stale", "superseded", "forecast", "contested"],
+  "source_receipt_links": [],
   "warnings": []
 }
 ```
@@ -287,7 +312,7 @@ Request:
   "source_ids": ["source_1"],
   "claim_ids": ["claim_1"],
   "graph_node_ids": ["actor:european-commission"],
-  "graph_edge_ids": ["edge:guidelines-constrain-subsidy"],
+  "graph_edge_ids": ["edge:guidelines-regulated-by-commission"],
   "reasoning_device_ids": ["actor_incentive_map"],
   "warnings_triggered": ["stale_claim"]
 }
@@ -318,3 +343,13 @@ PRAXIS must reject:
 - capsules with blocking review gates;
 - stale high-impact claims without explicit user warning.
 - graph previews with unreviewed critical edges unless explicitly marked.
+
+## Local Health Routes
+
+The first implementation uses:
+
+- `GET /health`
+- `GET /version`
+
+Do not introduce `/healthz` or `/readyz` until deployment needs separate
+liveness and readiness probes. Keep `/health` for local development.

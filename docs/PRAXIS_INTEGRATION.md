@@ -16,6 +16,15 @@ engine can stay hidden.
 - PRAXIS must not treat a capsule as trusted unless status and review gates pass.
 - PRAXIS should expose source and review receipts when a capsule affects output.
 
+Boundary:
+
+- DIALECTICA PostgreSQL is canonical for capsule build, review, graph, export,
+  and bundle state.
+- PRAXIS Firestore remains canonical for PRAXIS user-facing capsule visibility,
+  user library state, and cockpit UX state.
+- Firestore mirrors must include the DIALECTICA `bundle_digest` and must be
+  refreshed or invalidated when the digest changes.
+
 ## Minimal API Surface
 
 ### Create Capsule Job
@@ -85,13 +94,13 @@ GET /v1/capsules/{capsule_id}/graph-preview
 
 Output:
 
-- node and edge counts;
-- top node types;
-- review state counts;
-- high-centrality actors, claims, sources, and risks;
-- contradiction clusters;
-- stale or unreviewed graph warnings;
-- visualization hints for PRAXIS.
+- `graph_preview_v1` payload;
+- renderable nodes and edges;
+- clusters;
+- review styles;
+- temporal filters;
+- source receipt links;
+- stale or unreviewed graph warnings.
 
 ### Get PRAXIS Context Pack
 
@@ -140,6 +149,56 @@ PRAXIS should surface:
 - warnings for stale or contested context;
 - source receipts in answer views;
 - capsule contribution in agent run receipts.
+
+## Load Sequence
+
+```mermaid
+sequenceDiagram
+  participant P as PRAXIS
+  participant D as DIALECTICA API
+  participant F as Firestore mirror
+  participant A as Ask/Agent run
+
+  P->>D: GET /v1/capsules/{id}/manifest
+  D-->>P: manifest + bundle_digest + review_state
+  P->>P: verify supported schema and review state
+  P->>F: upsert capsule summary mirror
+  P->>D: GET /v1/capsules/{id}/graph-preview
+  D-->>P: graph_preview_v1
+  P->>F: upsert graph preview mirror
+  A->>D: GET /v1/capsules/{id}/praxis-context-pack
+  D-->>A: context pack + read_receipt_hints
+  A->>D: POST /v1/capsules/{id}/read-receipts
+  D-->>A: receipt recorded
+```
+
+## Firestore Mirror Shape
+
+PRAXIS mirror documents should be small and reconstructable:
+
+```json
+{
+  "capsuleId": "cap_eu_energy_stakeholders_2026_q3",
+  "tenantId": "tenant_123",
+  "projectId": "project_123",
+  "title": "EU industrial electricity support stakeholder map",
+  "capsuleType": "stakeholder_capsule",
+  "reviewState": "approved_with_caveats",
+  "freshness": "current",
+  "bundleDigest": "sha256:fixture",
+  "schemaVersion": "0.1.0",
+  "graphProfile": "stakeholder_graph_v1",
+  "sourceCount": 8,
+  "warningCount": 2,
+  "compatibleWorkflows": ["stakeholder_map", "decision_brief"],
+  "updatedAt": "2026-06-07T20:00:00Z"
+}
+```
+
+Cache invalidation rule:
+
+- if `bundleDigest` changes, PRAXIS must refresh manifest, graph preview,
+  context-pack hints, and visible warnings before using the capsule.
 
 PRAXIS should avoid exposing:
 

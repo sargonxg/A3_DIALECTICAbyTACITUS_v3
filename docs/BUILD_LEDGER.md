@@ -29,6 +29,9 @@ Actions:
 - added coding-start scaffold: Rust workspace, initial crates, service
   binaries, contract-test package, refreshed visual identity, coding ledger,
   and scaffold audit.
+- added coherence pass for GitHub front door, embedded graph story, graph
+  profile registry, Lane A acceptance, API Slice 1, Python support tooling, and
+  Rust toolchain pin.
 
 Evidence:
 
@@ -41,8 +44,11 @@ Evidence:
   OpenAI Agents SDK sources.
 - local Rust toolchain checked with `cargo --version`.
 - workspace scaffold is expected to pass `cargo fmt --all -- --check`,
-  `cargo check --workspace --all-targets`, `cargo test --workspace`, and
-  `cargo run -p dialectica-cli -- doctor`.
+  `cargo check --locked --workspace --all-targets`,
+  `cargo clippy --locked --workspace --all-targets -- -D warnings`,
+  `cargo test --locked --workspace`, `cargo run -p dialectica-cli -- doctor`,
+  `python -m compileall tools/python`, and
+  `python -m unittest discover tools/python/tests`.
 
 ## Active Decisions
 
@@ -56,16 +62,19 @@ Evidence:
 
 ## Next Build Tasks
 
-1. Implement real capsule bundle structs in `crates/dialectica-capsule`.
-2. Add JSON Schema generation and schema snapshots.
-3. Add a stakeholder-analysis fixture source pack under `fixtures/`.
-4. Implement CLI `validate` and `inspect`.
-5. Implement graph-slice and graph-constraint validators.
-6. Add SQLx migrations in `crates/dialectica-store`.
-7. Implement deterministic bundle compiler and checksums.
-8. Add API health, manifest, graph-preview, and context-pack routes.
-9. Add Dockerfile and local compose file.
-10. Add Cloud Run staging deployment skeleton.
+1. Complete `docs/LANE_A_ACCEPTANCE.md`.
+2. Implement real capsule bundle structs in `crates/dialectica-capsule`.
+3. Add JSON Schema generation and schema snapshots.
+4. Add a stakeholder-analysis fixture source pack under `fixtures/`.
+5. Implement CLI `validate`, `inspect`, and `schema-export`.
+6. Implement graph-slice and graph-constraint validators using
+   `docs/GRAPH_PROFILE_REGISTRY.md`.
+7. Add SQLx migrations in `crates/dialectica-store`.
+8. Implement deterministic bundle compiler and checksums.
+9. Add API Slice 1 health, manifest, graph-preview, context-pack, and receipt
+   routes.
+10. Add Dockerfile and local compose file.
+11. Add Cloud Run staging deployment skeleton.
 
 ## Open Product Questions
 

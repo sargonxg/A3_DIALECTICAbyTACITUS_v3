@@ -129,30 +129,50 @@ Contains the local vocabulary needed for this capsule.
 
 Required sections:
 
+- `ontology_id`
+- `version`
+- `namespace`
+- `language`
 - `domains`
-- `actors`
-- `institutions`
-- `policy_instruments`
-- `concepts`
-- `frames`
-- `mapping_confidence`
+- `terms`
+- `mappings`
+- `frame_memberships`
+- `deprecations`
 - `review_notes`
+
+Every source-backed definition must point to source spans or review notes.
 
 ## `graph_slice.json`
 
 Contains the compact graph needed by PRAXIS.
 
+Top-level required sections:
+
+- `schema_version`
+- `capsule_id`
+- `graph_profile`
+- `nodes`
+- `edges`
+- `communities`
+- `layout_hints`
+- `health`
+
 Node types:
 
 - `actor`
 - `institution`
-- `policy`
+- `source`
+- `source_span`
 - `event`
 - `claim`
-- `source`
 - `concept`
+- `policy_instrument`
 - `risk`
 - `decision`
+- `reasoning_device`
+- `review_action`
+- `output_contract`
+- `rights_policy`
 
 Edge types:
 
@@ -160,12 +180,18 @@ Edge types:
 - `contradicts`
 - `causes`
 - `influences`
+- `incentivized_by`
 - `depends_on`
 - `mentions`
 - `authored_by`
+- `regulated_by`
 - `reviewed_by`
 - `supersedes`
 - `belongs_to_frame`
+- `uses_device`
+- `forbidden_for`
+- `has_output_rule`
+- `has_rights_policy`
 
 Every edge must include provenance:
 
@@ -174,6 +200,11 @@ Every edge must include provenance:
 - `created_at`
 - `confidence`
 - `review_state`
+- `temporal_scope`
+- `explanation`
+
+Use `docs/GRAPH_PROFILE_REGISTRY.md` for canonical node classes, edge classes,
+approved aliases, graph profile names, and PRAXIS preview payloads.
 
 ## `graph_semantics.jsonld`
 
@@ -206,7 +237,7 @@ Example:
 
 ```json
 {
-  "graph_profile": "actor_incentive_v1",
+  "graph_profile": "stakeholder_graph_v1",
   "required_node_classes": ["actor", "institution", "claim", "source", "risk"],
   "required_edge_fields": [
     "source_ids",

@@ -79,12 +79,30 @@ Example:
     "reasoning_playbook",
     "review_ledger"
   ],
-  "graph_profile": "actor_incentive_v1",
+  "graph_profile": "stakeholder_graph_v1",
   "reasoning_profile": "stakeholder_analysis_v1",
   "review_profile": "expert_review_required",
   "rights_profile": "team_internal_reviewed"
 }
 ```
+
+## Graph Profile Matrix
+
+Use [Graph Profile Registry](GRAPH_PROFILE_REGISTRY.md) as the canonical
+implementation source for per-type graph profiles. Summary:
+
+| Capsule type | Graph profile | PRAXIS lens |
+| --- | --- | --- |
+| User Capsule | `user_context_graph_v1` | user context |
+| Team Capsule | `team_memory_graph_v1` | team memory |
+| Situation Capsule | `situation_graph_v1` | situation map |
+| Source Capsule | `source_proof_graph_v1` | source proof |
+| Domain Capsule | `domain_ontology_graph_v1` | ontology explorer |
+| Thinking Device Capsule | `reasoning_device_graph_v1` | method trace |
+| Stakeholder Capsule | `stakeholder_graph_v1` | stakeholder map |
+| Scenario Capsule | `scenario_graph_v1` | scenario tree |
+| Output Capsule | `output_trace_graph_v1` | artifact trace |
+| Expert Pick Capsule | `expert_pick_graph_v1` | trust receipt |
 
 ## Capsule Marketplace Vision
 

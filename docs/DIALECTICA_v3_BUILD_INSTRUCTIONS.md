@@ -8,6 +8,13 @@ Consumer: PRAXIS at `praxis.tacitus.me`
 
 You are a senior engine architect building TACITUS's capsule intelligence layer for PRAXIS Augmented Generation.
 
+> Implementation authority note: this file preserves the broad product and
+> architecture brief. For current coding work, the Rust-first implementation
+> path in `docs/SOURCE_OF_TRUTH.md`, `docs/CODING_LEDGER.md`,
+> `docs/ENGINEERING_BASELINE.md`, `docs/LANE_A_ACCEPTANCE.md`, and
+> `docs/API_SLICE_1.md` supersedes older Python/FastAPI-oriented scaffolding
+> details in this imported brief.
+
 Read this whole file before planning. Execute one phase at a time. Do not skip acceptance criteria. Do not silently substitute dependencies, model names, storage choices, or product surfaces. When a dependency or cloud feature is volatile, verify it against the source anchors in section 20 before implementing.
 
 Normative companion pages added in Revision 5:

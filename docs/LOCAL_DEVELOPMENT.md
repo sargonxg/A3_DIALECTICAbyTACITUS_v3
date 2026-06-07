@@ -1,12 +1,13 @@
 # Local Development
 
-Status: planned workflow before implementation.
+Status: active scaffold workflow before full implementation.
 
 ## Requirements
 
 Expected tools:
 
-- Rust stable toolchain;
+- Rust toolchain pinned by `rust-toolchain.toml`;
+- Python 3.11+ for auxiliary tools;
 - Docker Desktop or compatible container runtime;
 - PostgreSQL for local store tests;
 - PowerShell on Windows;
@@ -23,13 +24,23 @@ Cloud credentials are only required for:
 - Cloud Storage artifact tests;
 - Secret Manager wiring.
 
-## Planned Commands
+## Current Commands
 
 ```powershell
 cargo fmt --all -- --check
-cargo clippy --workspace --all-targets -- -D warnings
-cargo test --workspace
-cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule
+cargo check --locked --workspace --all-targets
+cargo clippy --locked --workspace --all-targets -- -D warnings
+cargo test --locked --workspace
+cargo run -p dialectica-cli -- doctor
+python -m compileall tools/python
+python -m unittest discover tools/python/tests
+```
+
+Future fixture commands:
+
+```powershell
+cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule/expected-bundle
+cargo run -p dialectica-cli -- inspect fixtures/golden-policy-capsule/expected-bundle
 ```
 
 ## Planned Environment Variables

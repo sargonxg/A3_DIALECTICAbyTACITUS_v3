@@ -1,0 +1,92 @@
+<svg width="1120" height="620" viewBox="0 0 1120 620" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Embedded graph inside a PRAXIS Capsule</title>
+  <desc id="desc">A diagram showing how sources, spans, claims, actors, institutions, events, reasoning devices, reviews, and output contracts connect inside a capsule.</desc>
+  <rect width="1120" height="620" rx="28" fill="#070B12"/>
+  <rect x="26" y="26" width="1068" height="568" rx="24" fill="#0D1320" stroke="#243142" stroke-width="2"/>
+  <text x="56" y="74" fill="#E5E7EB" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="28" font-weight="800">EMBEDDED CAPSULE GRAPH</text>
+  <text x="56" y="104" fill="#94A3B8" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">not a separate graph database: a portable, reviewable graph slice inside the signed capsule bundle</text>
+
+  <g stroke="#475569" stroke-width="2" marker-end="url(#arrow)">
+    <path d="M166 184H318"/>
+    <path d="M166 284H318"/>
+    <path d="M408 184H560"/>
+    <path d="M408 284H560"/>
+    <path d="M650 184H790"/>
+    <path d="M650 284H790"/>
+    <path d="M650 384H790"/>
+    <path d="M880 184V284"/>
+    <path d="M880 344V430"/>
+    <path d="M318 384H560"/>
+    <path d="M210 444C330 540 665 540 830 468"/>
+    <path d="M620 244V344"/>
+  </g>
+
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+    <g>
+      <rect x="56" y="146" width="110" height="76" rx="12" fill="#172554" stroke="#60A5FA"/>
+      <text x="82" y="178" fill="#DBEAFE" font-size="15" font-weight="800">source</text>
+      <text x="78" y="200" fill="#93C5FD" font-size="11">document</text>
+    </g>
+    <g>
+      <rect x="56" y="246" width="110" height="76" rx="12" fill="#1E293B" stroke="#93C5FD"/>
+      <text x="76" y="278" fill="#E0F2FE" font-size="15" font-weight="800">span</text>
+      <text x="76" y="300" fill="#BAE6FD" font-size="11">page/line/hash</text>
+    </g>
+    <g>
+      <rect x="318" y="146" width="90" height="76" rx="38" fill="#3F2D0B" stroke="#FBBF24"/>
+      <text x="342" y="178" fill="#FEF3C7" font-size="15" font-weight="800">claim</text>
+      <text x="340" y="200" fill="#FDE68A" font-size="11">status/time</text>
+    </g>
+    <g>
+      <rect x="318" y="246" width="90" height="76" rx="38" fill="#134E4A" stroke="#2DD4BF"/>
+      <text x="342" y="278" fill="#CCFBF1" font-size="15" font-weight="800">event</text>
+      <text x="342" y="300" fill="#99F6E4" font-size="11">validity</text>
+    </g>
+    <g>
+      <rect x="560" y="146" width="90" height="76" rx="12" fill="#111827" stroke="#CBD5E1"/>
+      <text x="584" y="178" fill="#F8FAFC" font-size="15" font-weight="800">actor</text>
+      <text x="580" y="200" fill="#CBD5E1" font-size="11">incentive</text>
+    </g>
+    <g>
+      <rect x="560" y="246" width="90" height="76" rx="12" fill="#312E81" stroke="#A5B4FC"/>
+      <text x="570" y="278" fill="#E0E7FF" font-size="15" font-weight="800">institution</text>
+      <text x="582" y="300" fill="#C7D2FE" font-size="11">authority</text>
+    </g>
+    <g>
+      <rect x="560" y="346" width="90" height="76" rx="12" fill="#4A044E" stroke="#F0ABFC"/>
+      <text x="586" y="378" fill="#FAE8FF" font-size="15" font-weight="800">risk</text>
+      <text x="582" y="400" fill="#F5D0FE" font-size="11">warning</text>
+    </g>
+    <g>
+      <rect x="790" y="146" width="180" height="76" rx="12" fill="#581C87" stroke="#D8B4FE"/>
+      <text x="828" y="178" fill="#F3E8FF" font-size="15" font-weight="800">reasoning device</text>
+      <text x="828" y="200" fill="#E9D5FF" font-size="11">method + failure modes</text>
+    </g>
+    <g>
+      <rect x="790" y="246" width="180" height="98" rx="12" fill="#7F1D1D" stroke="#FCA5A5"/>
+      <text x="842" y="282" fill="#FEE2E2" font-size="15" font-weight="800">review gate</text>
+      <text x="828" y="306" fill="#FECACA" font-size="11">approved / caveated / blocked</text>
+      <text x="828" y="324" fill="#FECACA" font-size="11">scope + expiry + reviewer</text>
+    </g>
+    <g>
+      <rect x="790" y="430" width="180" height="76" rx="12" fill="#14532D" stroke="#86EFAC"/>
+      <text x="836" y="462" fill="#DCFCE7" font-size="15" font-weight="800">output contract</text>
+      <text x="828" y="484" fill="#BBF7D0" font-size="11">memo / brief / agent pack</text>
+    </g>
+    <g>
+      <rect x="56" y="384" width="262" height="74" rx="12" fill="#111827" stroke="#334155"/>
+      <text x="84" y="416" fill="#E5E7EB" font-size="15" font-weight="800">edge invariant</text>
+      <text x="84" y="438" fill="#94A3B8" font-size="11">source span + time + confidence + review state</text>
+    </g>
+  </g>
+
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13">
+    <text x="56" y="552" fill="#CBD5E1">PRAXIS loads this graph to show what grounded the answer, what is stale or contested, and which expert method was applied.</text>
+  </g>
+
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#64748B"/>
+    </marker>
+  </defs>
+</svg>

@@ -10,9 +10,11 @@ state.
 
 Every deployable service must expose:
 
-- `/healthz`: process is alive;
-- `/readyz`: dependencies are reachable;
+- `/health`: process and local API contract status;
 - `/version`: git SHA, build time, schema version, migration version.
+
+Split `/healthz` and `/readyz` only when a deployed environment needs separate
+liveness and dependency-readiness probes.
 
 ## Observability
 

@@ -5,34 +5,38 @@ for PRAXIS.
 
 ## Start Here
 
-Before implementation work, read:
+Before implementation work, read the active coding authority first:
 
-1. `docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md`
-2. `docs/SOURCE_OF_TRUTH.md`
+1. `docs/SOURCE_OF_TRUTH.md`
+2. `docs/ABOUT_DIALECTICA.md`
 3. `docs/CODING_LEDGER.md`
-4. `docs/SCAFFOLD_AUDIT.md`
-5. `docs/FOUNDATION_BUILD.md`
-6. `docs/TECH_BENCHMARK.md`
-7. `docs/CAPSULE_FORMAL_MODEL.md`
-8. `docs/CAPSULE_TYPES_AND_MARKETPLACE.md`
-9. `docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md`
-10. `docs/EXPERT_REVIEW_AND_MARKETPLACE.md`
-11. `docs/CAPSULE_BUILD_EXAMPLES.md`
-12. `docs/CAPSULE_SPEC.md`
-13. `docs/INTELLECTUAL_TOOLS.md`
-14. `docs/API_CONTRACT.md`
-15. `docs/DATA_MODEL.md`
-16. `docs/ARCHITECTURE.md`
-17. `docs/IMPLEMENTATION_BLUEPRINT.md`
-18. `docs/AGENTIC_WORKFLOWS.md`
-19. `docs/BUILD_LEDGER.md`
+4. `docs/ENGINEERING_BASELINE.md`
+5. `docs/LANE_A_ACCEPTANCE.md`
+6. `docs/API_SLICE_1.md`
+7. `docs/GRAPH_PROFILE_REGISTRY.md`
+8. `docs/SCAFFOLD_AUDIT.md`
+9. `docs/CAPSULE_SPEC.md`
+10. `docs/API_CONTRACT.md`
+11. `docs/DATA_MODEL.md`
+12. `docs/ARCHITECTURE.md`
+13. `docs/IMPLEMENTATION_BLUEPRINT.md`
+14. `docs/AGENTIC_WORKFLOWS.md`
+15. `docs/BUILD_LEDGER.md`
+
+Use `docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md` as product/reference context.
+When it conflicts with the active Rust-first coding docs above, follow
+`docs/SOURCE_OF_TRUTH.md`, `docs/CODING_LEDGER.md`, and
+`docs/ENGINEERING_BASELINE.md`.
 
 ## Non-Negotiables
 
 - PRAXIS is the visible product surface.
 - DIALECTICA is the internal engine.
 - The capsule bundle is the portable contract.
-- PostgreSQL is the first operational source of truth.
+- PostgreSQL is the first DIALECTICA operational source of truth for build,
+  review, graph, export, and bundle state.
+- PRAXIS Firestore remains canonical for PRAXIS user-facing capsule visibility,
+  user library state, and cockpit UX state.
 - Cloud Run is the first deployment target.
 - Graph and semantic engines are adapters until an ADR changes that.
 - Every derived claim needs provenance.
@@ -58,9 +62,12 @@ When code exists, use the repo's own commands first. Expected future checks:
 Current command gate:
 
 - `cargo fmt --all -- --check`
-- `cargo check --workspace --all-targets`
-- `cargo test --workspace`
+- `cargo check --locked --workspace --all-targets`
+- `cargo clippy --locked --workspace --all-targets -- -D warnings`
+- `cargo test --locked --workspace`
 - `cargo run -p dialectica-cli -- doctor`
+- `python -m compileall tools/python`
+- `python -m unittest discover tools/python/tests`
 
 ## External Actions
 

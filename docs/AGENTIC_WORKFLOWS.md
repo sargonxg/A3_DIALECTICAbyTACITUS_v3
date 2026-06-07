@@ -108,6 +108,9 @@ Owns:
 - API changes require PRAXIS alignment updates.
 - Deployment changes require operations and security updates.
 - No agent promotes optional graph or memory adapters without an ADR.
+- Store, compiler, API, and eval implementation must not merge before Lane A
+  acceptance is complete.
+- Graph vocabulary changes must update `docs/GRAPH_PROFILE_REGISTRY.md`.
 
 ## Done Conditions
 
@@ -122,8 +125,12 @@ Every agent handoff should include:
 ## First Parallel Work Plan
 
 1. Spec engineer builds capsule Rust types and schema snapshots.
-2. Eval engineer creates golden fixture expectations.
-3. Store engineer creates migrations against the draft data model.
-4. API engineer stubs manifest/context-pack routes against fixture data.
-5. Security reviewer audits source and capsule export boundaries.
-6. Deployment engineer creates local Docker and Cloud Run staging skeleton.
+2. Eval engineer drafts golden fixture expectations without merging runtime code.
+3. Graph engineer aligns graph profiles, aliases, and validation cases.
+4. Store engineer plans migrations against the draft data model.
+5. API engineer plans manifest, graph-preview, and context-pack routes.
+6. Security reviewer audits source and capsule export boundaries.
+7. Deployment engineer drafts local Docker and Cloud Run staging skeleton.
+
+Merge order remains schema, fixture, validator, graph validation, store,
+compiler, API, evals, deployment.
