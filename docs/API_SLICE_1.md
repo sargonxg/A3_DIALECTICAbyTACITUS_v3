@@ -115,6 +115,7 @@ Response must include:
 - temporal warnings;
 - graph focus nodes and edge warnings;
 - reasoning devices;
+- agent guidance policy;
 - output contract;
 - forbidden claims;
 - read receipt hints.
@@ -133,6 +134,7 @@ Request:
   "graph_node_ids": ["actor:european-commission"],
   "graph_edge_ids": ["edge:guidelines-regulated-by-commission"],
   "reasoning_device_ids": ["stakeholder_analysis_v1"],
+  "agent_guidance_ids": ["agent_guidance:decision_brief_v1"],
   "warnings_triggered": ["approved_with_caveats"]
 }
 ```

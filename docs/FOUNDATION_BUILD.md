@@ -22,7 +22,7 @@ fixture source pack
   -> extracted entities, claims, dates, and frames
   -> human review decision
   -> signed capsule bundle
-  -> PRAXIS context pack
+  -> agent guidance and PRAXIS context pack
   -> capsule-augmented policy answer with citations and warnings
 ```
 
@@ -40,6 +40,7 @@ The system must create a portable capsule bundle with:
 - graph slice;
 - graph semantics and graph constraints;
 - reasoning playbook;
+- agent guidance;
 - retrieval pack;
 - output contracts;
 - review ledger;
@@ -88,6 +89,7 @@ The foundation build must export a compact context pack with:
 - citation hints;
 - temporal warnings;
 - reasoning devices;
+- agent guidance policy;
 - output contract;
 - forbidden claims or cautions.
 

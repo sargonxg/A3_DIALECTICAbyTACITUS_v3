@@ -1,0 +1,337 @@
+{
+  "example_note": "Single-file projection of the production bundle files for a synthetic Thinking Device Capsule.",
+  "manifest": {
+    "capsule_id": "cap_tool_stakeholder_analysis_fixture",
+    "schema_version": "0.1.0",
+    "title": "Stakeholder Analysis Thinking Device",
+    "summary": "Synthetic expert reasoning tool for mapping actors, incentives, constraints, and review risks.",
+    "created_at": "2026-06-07T00:00:00Z",
+    "compiled_at": "2026-06-07T00:00:00Z",
+    "tenant_id": "tenant_fixture",
+    "project_id": "project_fixture",
+    "status": "example",
+    "freshness": "current",
+    "source_count": 2,
+    "review_state": "approved",
+    "capsule_type": "thinking_device_capsule",
+    "rights_profile": "shareable_method_fixture",
+    "graph_profile": "reasoning_device_graph_v1",
+    "reasoning_profile": "stakeholder_analysis_v1",
+    "compatibility_profile": "may_combine_with_user_situation_output",
+    "bundle_digest": "sha256:fixture-thinking-device",
+    "compiler_version": "dialectica-compiler/0.1.0",
+    "capsule_health": "usable"
+  },
+  "capsule": {
+    "identity_context": {
+      "method_owner": "TACITUS fixture",
+      "reviewer_role": "policy_method_reviewer",
+      "audience": "policy analysts and PRAXIS agents"
+    },
+    "situation_context": {
+      "issue_classes": ["stakeholder mapping", "negotiation planning", "implementation risk"],
+      "geography": "any",
+      "time_horizon": "workflow-specific"
+    },
+    "analytical_context": {
+      "frames": ["power", "incentives", "constraints", "veto points", "missing actors"],
+      "assumptions": ["actors have mixed incentives", "formal authority and informal power differ"]
+    },
+    "policy_context": {
+      "usable_for": ["policy design", "briefing", "red team"],
+      "not_sufficient_for": ["legal determination", "polling forecast"]
+    },
+    "risk_context": {
+      "known_risks": ["mind-reading", "elite-source bias", "missing affected groups"]
+    },
+    "usage_context": {
+      "intended_praxis_workflows": ["stakeholder_map", "decision_brief", "red_team"],
+      "forbidden_uses": ["attribute motives without source caveat"]
+    }
+  },
+  "source_ledger": [
+    {
+      "source_id": "source:method_note_fixture",
+      "source_type": "method_note",
+      "title": "Synthetic stakeholder method note",
+      "uri": "fixture://sources/stakeholder-method",
+      "publisher": "TACITUS fixture",
+      "published_at": "2026-06-01T00:00:00Z",
+      "retrieved_at": "2026-06-07T00:00:00Z",
+      "language": "en",
+      "license_or_access": "fixture",
+      "trust_status": "reviewed_fixture",
+      "span_id": "span:method_note_fixture:1",
+      "span_locator": "section:method",
+      "hash": "sha256:tool-span-1",
+      "notes": "Synthetic method source."
+    },
+    {
+      "source_id": "source:review_note_fixture",
+      "source_type": "expert_review_note",
+      "title": "Synthetic method review note",
+      "uri": "fixture://sources/stakeholder-method-review",
+      "publisher": "TACITUS fixture",
+      "published_at": "2026-06-05T00:00:00Z",
+      "retrieved_at": "2026-06-07T00:00:00Z",
+      "language": "en",
+      "license_or_access": "fixture",
+      "trust_status": "reviewed_fixture",
+      "span_id": "span:review_note_fixture:1",
+      "span_locator": "review:1",
+      "hash": "sha256:tool-span-2",
+      "notes": "Synthetic reviewer caveat."
+    }
+  ],
+  "temporal_ledger": [
+    {
+      "claim_id": "claim:stakeholder-method-current",
+      "claim_text": "Stakeholder analysis method v1 is approved for structured actor mapping.",
+      "valid_time_start": "2026-06-07T00:00:00Z",
+      "valid_time_end": null,
+      "published_at": "2026-06-07T00:00:00Z",
+      "observed_at": "2026-06-07T00:00:00Z",
+      "status": "current",
+      "confidence": 0.92,
+      "supersedes": [],
+      "superseded_by": [],
+      "source_ids": ["source:review_note_fixture"]
+    }
+  ],
+  "ontology_slice": {
+    "ontology_id": "ontology:policy-methods",
+    "version": "0.1.0",
+    "namespace": "https://tacitus.me/ns/policy/method#",
+    "language": "en",
+    "domains": ["policy_method", "stakeholder_analysis"],
+    "terms": [
+      {
+        "term_id": "concept:veto-point",
+        "label": "Veto point",
+        "definition": "A formal or informal point where an actor can block or materially delay action.",
+        "source_span_ids": ["span:method_note_fixture:1"],
+        "broader": ["concept:institutional-constraint"],
+        "review_state": "approved"
+      }
+    ],
+    "mappings": [],
+    "frame_memberships": [
+      {
+        "frame_id": "frame:actor-power",
+        "term_ids": ["concept:veto-point"]
+      }
+    ],
+    "legal_document_profile": null,
+    "deprecations": [],
+    "review_notes": ["Attribute motives only as hypotheses unless source-backed."]
+  },
+  "graph_slice": {
+    "schema_version": "0.1.0",
+    "capsule_id": "cap_tool_stakeholder_analysis_fixture",
+    "graph_profile": "reasoning_device_graph_v1",
+    "nodes": [
+      {
+        "id": "reasoning_device:stakeholder_analysis_v1",
+        "node_type": "reasoning_device",
+        "label": "Stakeholder analysis",
+        "review_state": "approved",
+        "source_span_ids": ["span:method_note_fixture:1"],
+        "properties": {
+          "device_type": "policy_method"
+        }
+      },
+      {
+        "id": "concept:veto-point",
+        "node_type": "concept",
+        "label": "Veto point",
+        "review_state": "approved",
+        "source_span_ids": ["span:method_note_fixture:1"],
+        "properties": {
+          "scheme_id": "ontology:policy-methods"
+        }
+      },
+      {
+        "id": "risk:mind-reading",
+        "node_type": "risk",
+        "label": "Mind-reading risk",
+        "review_state": "approved",
+        "source_span_ids": ["span:review_note_fixture:1"],
+        "properties": {
+          "severity": "high"
+        }
+      }
+    ],
+    "edges": [
+      {
+        "id": "edge:method-belongs-to-actor-power-frame",
+        "from_node_id": "reasoning_device:stakeholder_analysis_v1",
+        "to_node_id": "concept:veto-point",
+        "edge_type": "belongs_to_frame",
+        "source_span_ids": ["span:method_note_fixture:1"],
+        "confidence": 0.9,
+        "review_state": "approved",
+        "temporal_scope": {
+          "valid_from": "2026-06-07T00:00:00Z",
+          "valid_until": null,
+          "status": "current"
+        },
+        "explanation": "Veto points are a core concept in the method."
+      },
+      {
+        "id": "edge:method-depends-on-source-caveat",
+        "from_node_id": "reasoning_device:stakeholder_analysis_v1",
+        "to_node_id": "risk:mind-reading",
+        "edge_type": "depends_on",
+        "source_span_ids": ["span:review_note_fixture:1"],
+        "confidence": 0.84,
+        "review_state": "approved",
+        "temporal_scope": {
+          "valid_from": "2026-06-07T00:00:00Z",
+          "valid_until": null,
+          "status": "current"
+        },
+        "explanation": "The method is only safe when actor motives are caveated."
+      }
+    ],
+    "communities": [
+      {
+        "id": "cluster:stakeholder-method",
+        "label": "Stakeholder method",
+        "node_ids": ["reasoning_device:stakeholder_analysis_v1", "concept:veto-point", "risk:mind-reading"],
+        "why_surfaced": "Defines the expert method and its failure mode."
+      }
+    ],
+    "layout_hints": {
+      "default_lens": "method_trace",
+      "ranked_focus_nodes": ["reasoning_device:stakeholder_analysis_v1"],
+      "review_overlay": true,
+      "temporal_filter_default": "current"
+    },
+    "health": {
+      "unsupported_edge_count": 0,
+      "unreviewed_edge_count": 0,
+      "stale_edge_count": 0,
+      "contradiction_cluster_count": 0
+    }
+  },
+  "graph_semantics": {
+    "@context": {
+      "dc": "http://purl.org/dc/terms/",
+      "prov": "http://www.w3.org/ns/prov#",
+      "skos": "http://www.w3.org/2004/02/skos/core#",
+      "odrl": "http://www.w3.org/ns/odrl/2/",
+      "dialectica": "https://tacitus.me/ns/dialectica#"
+    },
+    "@id": "urn:praxis:capsule:cap_tool_stakeholder_analysis_fixture",
+    "@type": "dialectica:ThinkingDeviceCapsule",
+    "dc:title": "Stakeholder Analysis Thinking Device",
+    "prov:wasGeneratedBy": "urn:dialectica:compile-run:fixture-thinking-device"
+  },
+  "graph_constraints": {
+    "graph_profile": "reasoning_device_graph_v1",
+    "adapter_profiles": ["embedded_graph_v1", "postgres_projection_v1", "jsonld_projection_v1"],
+    "required_node_classes": ["reasoning_device", "concept", "risk", "output_contract"],
+    "required_edge_classes": ["uses_device", "depends_on", "belongs_to_frame", "has_output_rule"],
+    "required_edge_fields": ["source_span_ids", "temporal_scope", "review_state", "explanation"],
+    "review_state_rules": {
+      "method_usable": ["approved"]
+    }
+  },
+  "reasoning_playbook": {
+    "reasoning_profile": "stakeholder_analysis_v1",
+    "devices": [
+      {
+        "device_id": "stakeholder_analysis_v1",
+        "label": "Stakeholder analysis",
+        "purpose": "Map actors, incentives, constraints, influence, missing voices, and likely objections.",
+        "inputs_required": ["actors", "institutions", "source_spans", "policy_instruments"],
+        "method_steps": ["List actors", "Separate formal authority from informal influence", "Map incentives", "Identify veto points", "Name missing affected groups", "Record confidence and caveats"],
+        "failure_modes": ["mind-reading", "single-actor bias", "missing informal power", "ignoring source quality"],
+        "review_gate": "policy_method_reviewer",
+        "output_hooks": ["stakeholder_map", "decision_brief"]
+      }
+    ]
+  },
+  "agent_guidance": {
+    "allowed_workflows": ["stakeholder_map", "decision_brief", "red_team"],
+    "tool_policy": {
+      "allowed_tools": ["graph_preview", "source_preview", "stakeholder_table"],
+      "blocked_tools": ["sentiment_claim_without_source"]
+    },
+    "citation_policy": "cite source spans for every actor incentive and constraint claim",
+    "graph_use_policy": "use this capsule to structure reasoning, not to invent actors",
+    "reasoning_sequence": ["stakeholder_analysis_v1", "sourceability_check_v1"],
+    "context_budget_policy": "allocate context to actors, incentives, constraints, and caveats before prose",
+    "stop_conditions": ["actor_motive_without_source", "missing_affected_group_noted_but_unresolved"],
+    "handoff_policy": "ask reviewer when stakeholder claims drive a public recommendation",
+    "audit_receipts_required": ["device_id", "method_step_ids", "source_span_ids"]
+  },
+  "retrieval_pack": [
+    {
+      "retrieval_id": "ret:method-steps-1",
+      "source_span_id": "span:method_note_fixture:1",
+      "text": "Synthetic method span: list actors, incentives, constraints, veto points, and missing voices.",
+      "rank": 0.98
+    }
+  ],
+  "output_contracts": {
+    "contracts": [
+      {
+        "contract_id": "output_contract:stakeholder-map",
+        "artifact_type": "stakeholder_map",
+        "allowed": true,
+        "required_sections": ["actor", "interest", "influence", "constraint", "source", "confidence"],
+        "forbidden_content": ["uncited motive assertion"]
+      }
+    ]
+  },
+  "review_ledger": [
+    {
+      "review_id": "review:thinking-device:fixture",
+      "reviewer_role": "policy_method_reviewer",
+      "decision": "approved",
+      "reviewed_at": "2026-06-07T00:00:00Z",
+      "object_ids": ["cap_tool_stakeholder_analysis_fixture"],
+      "caveats": ["Actor motives require source or explicit uncertainty label."],
+      "expires_at": "2027-06-07T00:00:00Z"
+    }
+  ],
+  "rights_profile": {
+    "rights_profile_id": "shareable_method_fixture",
+    "permissions": ["use_in_private_workflows", "fork_with_attribution"],
+    "prohibitions": ["sell_as_certified_method"],
+    "duties": ["preserve_review_caveat"]
+  },
+  "marketplace_listing": {
+    "listing_state": "example_listable",
+    "domain_tags": ["policy_method", "stakeholder_analysis"],
+    "review_level": "reviewed"
+  },
+  "capsule_health": {
+    "status": "usable",
+    "warnings": ["method must not infer motives without sources"],
+    "coverage": {
+      "source_count": 2,
+      "review_count": 1,
+      "graph_edge_count": 2
+    }
+  },
+  "eval_report": {
+    "eval_id": "eval:thinking-device-fixture",
+    "status": "example_only",
+    "checks": [
+      {
+        "name": "method_steps_present",
+        "result": "pass"
+      }
+    ]
+  },
+  "checksums": {
+    "manifest": "sha256:fixture-thinking-device-manifest",
+    "graph_slice": "sha256:fixture-thinking-device-graph"
+  },
+  "signature": {
+    "signature_state": "unsigned_fixture",
+    "algorithm": "none"
+  }
+}

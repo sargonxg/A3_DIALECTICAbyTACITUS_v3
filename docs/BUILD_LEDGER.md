@@ -32,6 +32,9 @@ Actions:
 - added coherence pass for GitHub front door, embedded graph story, graph
   profile registry, Lane A acceptance, API Slice 1, Python support tooling, and
   Rust toolchain pin.
+- added research-backed graph/ontology pass covering LadybugDB projection,
+  W3C semantic anchors, explicit `agent_guidance.json`, capsule structure
+  guide, and four example capsule envelopes.
 
 Evidence:
 
@@ -42,6 +45,9 @@ Evidence:
 - graph and semantic-layer direction checked against JSON-LD, SHACL, PROV-O,
   SKOS, ODRL, VC/DID, PostgreSQL JSON, pgvector, Graphiti, GraphRAG, MCP, and
   OpenAI Agents SDK sources.
+- updated research checked against LadybugDB, RDF 1.2, JSON-LD 1.1, PROV-O,
+  SKOS, SHACL 1.2, ODRL, OWL, OASIS LegalDocML/Akoma Ntoso, Microsoft
+  GraphRAG, Graphiti, Cloud Run, and Cloud Tasks sources.
 - local Rust toolchain checked with `cargo --version`.
 - workspace scaffold is expected to pass `cargo fmt --all -- --check`,
   `cargo check --locked --workspace --all-targets`,
@@ -66,15 +72,16 @@ Evidence:
 2. Implement real capsule bundle structs in `crates/dialectica-capsule`.
 3. Add JSON Schema generation and schema snapshots.
 4. Add a stakeholder-analysis fixture source pack under `fixtures/`.
-5. Implement CLI `validate`, `inspect`, and `schema-export`.
-6. Implement graph-slice and graph-constraint validators using
+5. Add CLI validation for the four example capsule envelopes.
+6. Implement CLI `validate`, `inspect`, and `schema-export`.
+7. Implement graph-slice and graph-constraint validators using
    `docs/GRAPH_PROFILE_REGISTRY.md`.
-7. Add SQLx migrations in `crates/dialectica-store`.
-8. Implement deterministic bundle compiler and checksums.
-9. Add API Slice 1 health, manifest, graph-preview, context-pack, and receipt
+8. Add SQLx migrations in `crates/dialectica-store`.
+9. Implement deterministic bundle compiler and checksums.
+10. Add API Slice 1 health, manifest, graph-preview, context-pack, and receipt
    routes.
-10. Add Dockerfile and local compose file.
-11. Add Cloud Run staging deployment skeleton.
+11. Add Dockerfile and local compose file.
+12. Add Cloud Run staging deployment skeleton.
 
 ## Open Product Questions
 

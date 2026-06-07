@@ -1477,7 +1477,7 @@ Baseline:
 Output:
 
 ```text
-backend/eval/reports/{timestamp}-mvp-eval.md
+backend/eval/reports/{timestamp}-readiness-eval.md
 ```
 
 The eval report must include failures. Do not hide weak results.

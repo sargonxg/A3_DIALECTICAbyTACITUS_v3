@@ -14,14 +14,16 @@ Before implementation work, read the active coding authority first:
 5. `docs/LANE_A_ACCEPTANCE.md`
 6. `docs/API_SLICE_1.md`
 7. `docs/GRAPH_PROFILE_REGISTRY.md`
-8. `docs/SCAFFOLD_AUDIT.md`
-9. `docs/CAPSULE_SPEC.md`
-10. `docs/API_CONTRACT.md`
-11. `docs/DATA_MODEL.md`
-12. `docs/ARCHITECTURE.md`
-13. `docs/IMPLEMENTATION_BLUEPRINT.md`
-14. `docs/AGENTIC_WORKFLOWS.md`
-15. `docs/BUILD_LEDGER.md`
+8. `docs/CAPSULE_STRUCTURE_GUIDE.md`
+9. `docs/GRAPH_ONTOLOGY_RESEARCH_NOTES.md`
+10. `docs/SCAFFOLD_AUDIT.md`
+11. `docs/CAPSULE_SPEC.md`
+12. `docs/API_CONTRACT.md`
+13. `docs/DATA_MODEL.md`
+14. `docs/ARCHITECTURE.md`
+15. `docs/IMPLEMENTATION_BLUEPRINT.md`
+16. `docs/AGENTIC_WORKFLOWS.md`
+17. `docs/BUILD_LEDGER.md`
 
 Use `docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md` as product/reference context.
 When it conflicts with the active Rust-first coding docs above, follow
@@ -41,6 +43,7 @@ When it conflicts with the active Rust-first coding docs above, follow
 - Graph and semantic engines are adapters until an ADR changes that.
 - Every derived claim needs provenance.
 - Human review gates are part of the data model.
+- Agent guidance is a first-class bundle layer for PRAXIS workflow use.
 - Embedded graph previews must be loadable by PRAXIS from the capsule bundle.
 - Marketplace metadata must expose review level, rights, lineage, caveats, and
   freshness.
@@ -68,6 +71,9 @@ Current command gate:
 - `cargo run -p dialectica-cli -- doctor`
 - `python -m compileall tools/python`
 - `python -m unittest discover tools/python/tests`
+
+Example capsule envelopes under `fixtures/example-capsules/` must keep the
+same top-level bundle sections.
 
 ## External Actions
 

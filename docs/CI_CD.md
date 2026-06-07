@@ -27,9 +27,13 @@ cargo test --locked --workspace
 cargo run -p dialectica-cli -- doctor
 python -m compileall tools/python
 python -m unittest discover tools/python/tests
+python -m json.tool fixtures/example-capsules/user-capsule.example.json
+python -m json.tool fixtures/example-capsules/situation-capsule.example.json
+python -m json.tool fixtures/example-capsules/thinking-device-capsule.example.json
+python -m json.tool fixtures/example-capsules/output-capsule.example.json
 ```
 
-Add fixture validation once `fixtures/golden-policy-capsule` exists.
+Add full fixture validation once `fixtures/golden-policy-capsule` exists.
 
 ## Later Staging CI
 

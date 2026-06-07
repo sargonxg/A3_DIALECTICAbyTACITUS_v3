@@ -201,8 +201,8 @@ At initial runtime scale, a capsule is:
 
 ```text
 Capsule = Identity + Situation + Sources + Time + Ontology + Graph
-        + Reasoning Devices + Retrieval Pack + Output Contracts
-        + Review Ledger + Evaluation Report + Signature
+        + Reasoning Devices + Agent Guidance + Retrieval Pack
+        + Output Contracts + Review Ledger + Evaluation Report + Signature
 ```
 
 The graph is embedded in the capsule so PRAXIS can visualize and reason over it
@@ -264,6 +264,9 @@ Situation Capsule
 ```
 
 See [docs/CAPSULE_TYPES_AND_MARKETPLACE.md](docs/CAPSULE_TYPES_AND_MARKETPLACE.md).
+See [docs/CAPSULE_STRUCTURE_GUIDE.md](docs/CAPSULE_STRUCTURE_GUIDE.md) for the
+bundle layer guide and [fixtures/example-capsules](fixtures/example-capsules)
+for four concrete capsule examples.
 
 ## Embedded Graph
 
@@ -404,6 +407,8 @@ docs/
   SCAFFOLD_AUDIT.md                     repo readiness and gap audit
   FOUNDATION_BUILD.md                   first product slice and non-goals
   TECH_BENCHMARK.md                      research and ecosystem comparison
+  GRAPH_ONTOLOGY_RESEARCH_NOTES.md       graph, ontology, Ladybug, and standards research
+  CAPSULE_STRUCTURE_GUIDE.md             bundle layers and agent guidance contract
   CAPSULE_FORMAL_MODEL.md                formal capsule layers and invariants
   CAPSULE_TYPES_AND_MARKETPLACE.md       capsule categories and market object
   EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md   graph, ontology, and semantics
@@ -436,6 +441,7 @@ crates/                                 Rust library and CLI crates
 services/                               deployable Rust service binaries
 infrastructure/                         Terraform/OpenTofu and deployment files
 fixtures/                               test capsules, source packs, eval data
+  example-capsules/                      small user/situation/tool/output examples
 tests/                                  workspace contract tests
 tools/                                  Python reports and local developer tooling
 ```
@@ -476,16 +482,18 @@ Start here:
 6. Read [docs/API_SLICE_1.md](docs/API_SLICE_1.md).
 7. Read [docs/GRAPH_PROFILE_REGISTRY.md](docs/GRAPH_PROFILE_REGISTRY.md).
 8. Read [docs/SCAFFOLD_AUDIT.md](docs/SCAFFOLD_AUDIT.md).
-9. Read [docs/FOUNDATION_BUILD.md](docs/FOUNDATION_BUILD.md).
-10. Read [docs/CAPSULE_SPEC.md](docs/CAPSULE_SPEC.md).
-11. Read [docs/CAPSULE_TYPES_AND_MARKETPLACE.md](docs/CAPSULE_TYPES_AND_MARKETPLACE.md).
-12. Read [docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md](docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md).
-13. Read [docs/CAPSULE_BUILD_EXAMPLES.md](docs/CAPSULE_BUILD_EXAMPLES.md).
-14. Read [docs/API_CONTRACT.md](docs/API_CONTRACT.md).
-15. Read [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
-16. Read [docs/IMPLEMENTATION_BLUEPRINT.md](docs/IMPLEMENTATION_BLUEPRINT.md).
-17. Read [docs/INTELLECTUAL_TOOLS.md](docs/INTELLECTUAL_TOOLS.md).
-18. Use [docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md](docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md) as reference context.
+9. Read [docs/CAPSULE_STRUCTURE_GUIDE.md](docs/CAPSULE_STRUCTURE_GUIDE.md).
+10. Read [docs/GRAPH_ONTOLOGY_RESEARCH_NOTES.md](docs/GRAPH_ONTOLOGY_RESEARCH_NOTES.md).
+11. Read [docs/FOUNDATION_BUILD.md](docs/FOUNDATION_BUILD.md).
+12. Read [docs/CAPSULE_SPEC.md](docs/CAPSULE_SPEC.md).
+13. Read [docs/CAPSULE_TYPES_AND_MARKETPLACE.md](docs/CAPSULE_TYPES_AND_MARKETPLACE.md).
+14. Read [docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md](docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md).
+15. Read [docs/CAPSULE_BUILD_EXAMPLES.md](docs/CAPSULE_BUILD_EXAMPLES.md).
+16. Read [docs/API_CONTRACT.md](docs/API_CONTRACT.md).
+17. Read [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+18. Read [docs/IMPLEMENTATION_BLUEPRINT.md](docs/IMPLEMENTATION_BLUEPRINT.md).
+19. Read [docs/INTELLECTUAL_TOOLS.md](docs/INTELLECTUAL_TOOLS.md).
+20. Use [docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md](docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md) as reference context.
 
 ## First Build Commands
 

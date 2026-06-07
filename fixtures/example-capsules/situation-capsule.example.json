@@ -1,0 +1,420 @@
+{
+  "example_note": "Single-file projection of the production bundle files for a synthetic Situation Capsule.",
+  "manifest": {
+    "capsule_id": "cap_situation_energy_support_fixture",
+    "schema_version": "0.1.0",
+    "title": "EU Industrial Electricity Support Situation",
+    "summary": "Synthetic situation model for a policy team assessing industrial electricity price support.",
+    "created_at": "2026-06-07T00:00:00Z",
+    "compiled_at": "2026-06-07T00:00:00Z",
+    "tenant_id": "tenant_fixture",
+    "project_id": "project_fixture",
+    "status": "example",
+    "freshness": "current",
+    "source_count": 3,
+    "review_state": "approved_with_caveats",
+    "capsule_type": "situation_capsule",
+    "rights_profile": "team_internal_reviewed",
+    "graph_profile": "situation_graph_v1",
+    "reasoning_profile": "decision_clock_and_stakeholder_scan_v1",
+    "compatibility_profile": "may_combine_with_user_tool_output",
+    "bundle_digest": "sha256:fixture-situation",
+    "compiler_version": "dialectica-compiler/0.1.0",
+    "capsule_health": "usable_with_caveats"
+  },
+  "capsule": {
+    "identity_context": {
+      "team": "fixture policy unit",
+      "audience": "ministerial briefing team",
+      "mandate": "assess options and risks"
+    },
+    "situation_context": {
+      "issue": "industrial electricity price support",
+      "geography": "EU",
+      "sector": "energy-intensive manufacturing",
+      "time_horizon": "2026 Q3",
+      "decision_clock": "brief due within 10 working days"
+    },
+    "analytical_context": {
+      "frames": ["state aid feasibility", "fiscal exposure", "industrial competitiveness"],
+      "assumptions": ["support package would require legal review"],
+      "uncertainties": ["budget envelope", "member-state appetite"]
+    },
+    "policy_context": {
+      "instruments": ["targeted subsidy", "tax relief", "demand-reduction incentive"],
+      "authorities": ["European Commission", "member-state ministries"],
+      "tradeoffs": ["speed versus legal certainty", "relief versus market distortion"]
+    },
+    "risk_context": {
+      "known_risks": ["legal challenge", "source monoculture", "labor backlash"],
+      "unknowns": ["final guidance update timing"]
+    },
+    "usage_context": {
+      "intended_praxis_workflows": ["decision_brief", "stakeholder_map", "scenario_update"],
+      "forbidden_uses": ["automated legal opinion"]
+    }
+  },
+  "source_ledger": [
+    {
+      "source_id": "source:commission_guidance_fixture",
+      "source_type": "official_guidance",
+      "title": "Synthetic Commission guidance summary",
+      "uri": "fixture://sources/commission-guidance",
+      "publisher": "TACITUS fixture",
+      "published_at": "2026-01-01T00:00:00Z",
+      "retrieved_at": "2026-06-07T00:00:00Z",
+      "language": "en",
+      "license_or_access": "fixture",
+      "trust_status": "trusted_fixture",
+      "span_id": "span:commission_guidance_fixture:12",
+      "span_locator": "section:12",
+      "hash": "sha256:situation-span-1",
+      "notes": "Synthetic legal feasibility anchor."
+    },
+    {
+      "source_id": "source:industry_brief_fixture",
+      "source_type": "stakeholder_brief",
+      "title": "Synthetic industry coalition note",
+      "uri": "fixture://sources/industry-brief",
+      "publisher": "TACITUS fixture",
+      "published_at": "2026-05-15T00:00:00Z",
+      "retrieved_at": "2026-06-07T00:00:00Z",
+      "language": "en",
+      "license_or_access": "fixture",
+      "trust_status": "stakeholder_fixture",
+      "span_id": "span:industry_brief_fixture:3",
+      "span_locator": "paragraph:3",
+      "hash": "sha256:situation-span-2",
+      "notes": "Synthetic stakeholder claim."
+    },
+    {
+      "source_id": "source:budget_note_fixture",
+      "source_type": "internal_budget_note",
+      "title": "Synthetic budget risk note",
+      "uri": "fixture://sources/budget-note",
+      "publisher": "TACITUS fixture",
+      "published_at": "2026-06-01T00:00:00Z",
+      "retrieved_at": "2026-06-07T00:00:00Z",
+      "language": "en",
+      "license_or_access": "fixture",
+      "trust_status": "review_required_fixture",
+      "span_id": "span:budget_note_fixture:2",
+      "span_locator": "line:2",
+      "hash": "sha256:situation-span-3",
+      "notes": "Synthetic fiscal risk evidence."
+    }
+  ],
+  "temporal_ledger": [
+    {
+      "claim_id": "claim:state-aid-guidance-current",
+      "claim_text": "State aid guidance is currently a feasibility constraint.",
+      "valid_time_start": "2026-01-01T00:00:00Z",
+      "valid_time_end": null,
+      "published_at": "2026-01-01T00:00:00Z",
+      "observed_at": "2026-06-07T00:00:00Z",
+      "status": "current",
+      "confidence": 0.86,
+      "supersedes": [],
+      "superseded_by": [],
+      "source_ids": ["source:commission_guidance_fixture"]
+    },
+    {
+      "claim_id": "claim:budget-envelope-uncertain",
+      "claim_text": "The available budget envelope is not yet settled.",
+      "valid_time_start": "2026-06-01T00:00:00Z",
+      "valid_time_end": null,
+      "published_at": "2026-06-01T00:00:00Z",
+      "observed_at": "2026-06-07T00:00:00Z",
+      "status": "contested",
+      "confidence": 0.62,
+      "supersedes": [],
+      "superseded_by": [],
+      "source_ids": ["source:budget_note_fixture"]
+    }
+  ],
+  "ontology_slice": {
+    "ontology_id": "ontology:eu-energy-support",
+    "version": "0.1.0",
+    "namespace": "https://tacitus.me/ns/policy/eu-energy#",
+    "language": "en",
+    "domains": ["energy_policy", "state_aid", "industrial_policy"],
+    "terms": [
+      {
+        "term_id": "concept:state-aid",
+        "label": "State aid",
+        "definition": "Public support that may affect competition and require authority review.",
+        "source_span_ids": ["span:commission_guidance_fixture:12"],
+        "broader": ["concept:competition-policy"],
+        "review_state": "approved"
+      },
+      {
+        "term_id": "concept:budget-exposure",
+        "label": "Budget exposure",
+        "definition": "Potential public fiscal burden created by a support instrument.",
+        "source_span_ids": ["span:budget_note_fixture:2"],
+        "broader": ["concept:fiscal-risk"],
+        "review_state": "approved_with_caveats"
+      }
+    ],
+    "mappings": [
+      {
+        "source_label": "support package",
+        "term_id": "concept:state-aid",
+        "confidence": 0.78
+      }
+    ],
+    "frame_memberships": [
+      {
+        "frame_id": "frame:legal-feasibility",
+        "term_ids": ["concept:state-aid"]
+      }
+    ],
+    "legal_document_profile": {
+      "applies": true,
+      "citation_style": "akn_inspired",
+      "jurisdiction": "EU",
+      "authority_type": "official_guidance"
+    },
+    "deprecations": [],
+    "review_notes": ["Legal interpretation must be caveated."]
+  },
+  "graph_slice": {
+    "schema_version": "0.1.0",
+    "capsule_id": "cap_situation_energy_support_fixture",
+    "graph_profile": "situation_graph_v1",
+    "nodes": [
+      {
+        "id": "institution:european-commission",
+        "node_type": "institution",
+        "label": "European Commission",
+        "review_state": "approved",
+        "source_span_ids": ["span:commission_guidance_fixture:12"],
+        "properties": {
+          "jurisdiction": "EU"
+        }
+      },
+      {
+        "id": "claim:state-aid-guidance-current",
+        "node_type": "claim",
+        "label": "State aid guidance is a constraint",
+        "review_state": "approved_with_caveats",
+        "source_span_ids": ["span:commission_guidance_fixture:12"],
+        "properties": {
+          "claim_type": "procedural"
+        }
+      },
+      {
+        "id": "risk:budget-exposure",
+        "node_type": "risk",
+        "label": "Budget exposure",
+        "review_state": "needs_review",
+        "source_span_ids": ["span:budget_note_fixture:2"],
+        "properties": {
+          "severity": "medium"
+        }
+      },
+      {
+        "id": "actor:industry-coalition",
+        "node_type": "actor",
+        "label": "Energy-intensive industry coalition",
+        "review_state": "approved",
+        "source_span_ids": ["span:industry_brief_fixture:3"],
+        "properties": {
+          "actor_type": "stakeholder_group"
+        }
+      }
+    ],
+    "edges": [
+      {
+        "id": "edge:guidance-regulated-by-commission",
+        "from_node_id": "claim:state-aid-guidance-current",
+        "to_node_id": "institution:european-commission",
+        "edge_type": "regulated_by",
+        "source_span_ids": ["span:commission_guidance_fixture:12"],
+        "confidence": 0.86,
+        "review_state": "approved_with_caveats",
+        "temporal_scope": {
+          "valid_from": "2026-01-01T00:00:00Z",
+          "valid_until": null,
+          "status": "current"
+        },
+        "explanation": "Feasibility analysis depends on Commission authority."
+      },
+      {
+        "id": "edge:industry-incentivized-by-support",
+        "from_node_id": "actor:industry-coalition",
+        "to_node_id": "claim:state-aid-guidance-current",
+        "edge_type": "incentivized_by",
+        "source_span_ids": ["span:industry_brief_fixture:3"],
+        "confidence": 0.72,
+        "review_state": "approved",
+        "temporal_scope": {
+          "valid_from": "2026-05-15T00:00:00Z",
+          "valid_until": null,
+          "status": "current"
+        },
+        "explanation": "The stakeholder has an incentive to support relief."
+      },
+      {
+        "id": "edge:budget-risk-contradicts-speed-frame",
+        "from_node_id": "risk:budget-exposure",
+        "to_node_id": "claim:state-aid-guidance-current",
+        "edge_type": "contradicts",
+        "source_span_ids": ["span:budget_note_fixture:2"],
+        "confidence": 0.61,
+        "review_state": "needs_review",
+        "temporal_scope": {
+          "valid_from": "2026-06-01T00:00:00Z",
+          "valid_until": null,
+          "status": "contested"
+        },
+        "explanation": "Budget uncertainty may weaken fast support options."
+      }
+    ],
+    "communities": [
+      {
+        "id": "cluster:legal-and-fiscal-feasibility",
+        "label": "Legal and fiscal feasibility",
+        "node_ids": ["institution:european-commission", "claim:state-aid-guidance-current", "risk:budget-exposure"],
+        "why_surfaced": "Controls whether a support proposal can become a decision brief."
+      }
+    ],
+    "layout_hints": {
+      "default_lens": "situation_map",
+      "ranked_focus_nodes": ["claim:state-aid-guidance-current", "risk:budget-exposure"],
+      "review_overlay": true,
+      "temporal_filter_default": "current"
+    },
+    "health": {
+      "unsupported_edge_count": 0,
+      "unreviewed_edge_count": 1,
+      "stale_edge_count": 0,
+      "contradiction_cluster_count": 1
+    }
+  },
+  "graph_semantics": {
+    "@context": {
+      "dc": "http://purl.org/dc/terms/",
+      "prov": "http://www.w3.org/ns/prov#",
+      "skos": "http://www.w3.org/2004/02/skos/core#",
+      "odrl": "http://www.w3.org/ns/odrl/2/",
+      "dialectica": "https://tacitus.me/ns/dialectica#"
+    },
+    "@id": "urn:praxis:capsule:cap_situation_energy_support_fixture",
+    "@type": "dialectica:SituationCapsule",
+    "dc:title": "EU Industrial Electricity Support Situation",
+    "prov:wasGeneratedBy": "urn:dialectica:compile-run:fixture-situation"
+  },
+  "graph_constraints": {
+    "graph_profile": "situation_graph_v1",
+    "adapter_profiles": ["embedded_graph_v1", "postgres_projection_v1", "jsonld_projection_v1", "ladybug_projection_v1"],
+    "required_node_classes": ["actor", "institution", "claim", "risk"],
+    "required_edge_classes": ["supports", "mentions", "contradicts", "depends_on", "regulated_by", "incentivized_by"],
+    "required_edge_fields": ["source_span_ids", "temporal_scope", "review_state", "explanation"],
+    "review_state_rules": {
+      "hide_by_default": ["rejected"],
+      "warn": ["needs_review", "approved_with_caveats"]
+    }
+  },
+  "reasoning_playbook": {
+    "reasoning_profile": "decision_clock_and_stakeholder_scan_v1",
+    "devices": [
+      {
+        "device_id": "decision_clock_v1",
+        "label": "Decision clock",
+        "purpose": "Separate immediate decision needs from later research.",
+        "method_steps": ["Name deadline", "Identify blocking facts", "List decisions possible now"],
+        "failure_modes": ["treating stale information as current", "overloading first brief"]
+      },
+      {
+        "device_id": "stakeholder_scan_v1",
+        "label": "Stakeholder scan",
+        "purpose": "Map actors, incentives, constraints, and likely objections.",
+        "method_steps": ["List actors", "Map incentives", "Find veto points", "Record unknowns"],
+        "failure_modes": ["mind-reading", "missing informal power"]
+      }
+    ]
+  },
+  "agent_guidance": {
+    "allowed_workflows": ["decision_brief", "stakeholder_map", "scenario_update"],
+    "tool_policy": {
+      "allowed_tools": ["capsule_search", "graph_preview", "source_preview", "citation_pack"],
+      "blocked_tools": ["automated_legal_opinion"]
+    },
+    "citation_policy": "cite source spans for all factual, legal, fiscal, and actor-incentive claims",
+    "graph_use_policy": "prefer approved current edges; show needs_review edges as warnings",
+    "reasoning_sequence": ["decision_clock_v1", "stakeholder_scan_v1"],
+    "context_budget_policy": "include graph focus nodes, contested claims, and current source spans first",
+    "stop_conditions": ["legal_opinion_requested", "material_claim_missing_source"],
+    "handoff_policy": "ask reviewer before public or legal-sensitive output",
+    "audit_receipts_required": ["capsule_id", "bundle_digest", "claim_ids", "graph_edge_ids"]
+  },
+  "retrieval_pack": [
+    {
+      "retrieval_id": "ret:situation-guidance-1",
+      "source_span_id": "span:commission_guidance_fixture:12",
+      "text": "Synthetic guidance span: state aid feasibility requires authority review.",
+      "rank": 0.96
+    }
+  ],
+  "output_contracts": {
+    "contracts": [
+      {
+        "contract_id": "output_contract:situation-decision-brief",
+        "artifact_type": "decision_brief",
+        "allowed": true,
+        "required_sections": ["issue", "current facts", "options", "risks", "source receipts"],
+        "forbidden_content": ["uncaveated legal conclusion"]
+      }
+    ]
+  },
+  "review_ledger": [
+    {
+      "review_id": "review:situation:fixture",
+      "reviewer_role": "policy_editor",
+      "decision": "approved_with_caveats",
+      "reviewed_at": "2026-06-07T00:00:00Z",
+      "object_ids": ["cap_situation_energy_support_fixture", "edge:guidance-regulated-by-commission"],
+      "caveats": ["Legal interpretation must remain caveated."],
+      "expires_at": "2026-09-30T23:59:59Z"
+    }
+  ],
+  "rights_profile": {
+    "rights_profile_id": "team_internal_reviewed",
+    "permissions": ["use_in_team_workflows", "combine_with_private_user_capsule"],
+    "prohibitions": ["public_release_without_review", "automated_legal_opinion"],
+    "duties": ["cite_source_spans", "record_read_receipt"]
+  },
+  "marketplace_listing": {
+    "listing_state": "draft_private",
+    "domain_tags": ["energy", "industrial_policy", "state_aid"],
+    "review_level": "reviewed_with_caveats"
+  },
+  "capsule_health": {
+    "status": "usable_with_caveats",
+    "warnings": ["one needs_review edge", "legal conclusion blocked"],
+    "coverage": {
+      "source_count": 3,
+      "review_count": 1,
+      "graph_edge_count": 3
+    }
+  },
+  "eval_report": {
+    "eval_id": "eval:situation-fixture",
+    "status": "example_only",
+    "checks": [
+      {
+        "name": "contested_claim_visible",
+        "result": "pass"
+      }
+    ]
+  },
+  "checksums": {
+    "manifest": "sha256:fixture-situation-manifest",
+    "graph_slice": "sha256:fixture-situation-graph"
+  },
+  "signature": {
+    "signature_state": "unsigned_fixture",
+    "algorithm": "none"
+  }
+}

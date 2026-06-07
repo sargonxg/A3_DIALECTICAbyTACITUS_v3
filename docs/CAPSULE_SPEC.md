@@ -28,6 +28,7 @@ capsule/
   graph_semantics.jsonld
   graph_constraints.json
   reasoning_playbook.json
+  agent_guidance.json
   retrieval_pack.jsonl
   output_contracts.json
   review_ledger.jsonl
@@ -59,6 +60,7 @@ Required fields:
 - `rights_profile`
 - `graph_profile`
 - `reasoning_profile`
+- `agent_guidance_profile`
 - `compatibility_profile`
 - `bundle_digest`
 - `compiler_version`
@@ -276,6 +278,44 @@ Examples:
 - game-theoretic actor response;
 - path dependency;
 - epistemic humility and uncertainty disclosure.
+
+## `agent_guidance.json`
+
+This is the model-facing execution contract for PRAXIS agents. It is separate
+from the reasoning playbook because a method can be reusable across many
+workflows while agent permissions, tool policy, citation rules, stop
+conditions, and handoff rules can differ by capsule.
+
+Required sections:
+
+- `allowed_workflows`
+- `tool_policy`
+- `citation_policy`
+- `graph_use_policy`
+- `reasoning_sequence`
+- `context_budget_policy`
+- `stop_conditions`
+- `handoff_policy`
+- `audit_receipts_required`
+
+Example:
+
+```json
+{
+  "allowed_workflows": ["decision_brief", "stakeholder_map"],
+  "tool_policy": {
+    "allowed_tools": ["capsule_search", "source_preview", "graph_preview"],
+    "blocked_tools": ["automated_legal_opinion"]
+  },
+  "citation_policy": "cite_source_span_for_every_nontrivial_claim",
+  "graph_use_policy": "prefer approved current edges; show needs_review edges as warnings",
+  "reasoning_sequence": ["decision_clock_v1", "stakeholder_scan_v1"],
+  "context_budget_policy": "include graph focus nodes and contested claims first",
+  "stop_conditions": ["material_claim_missing_source", "rights_policy_blocks_workflow"],
+  "handoff_policy": "ask reviewer before public or legal-sensitive output",
+  "audit_receipts_required": ["capsule_id", "bundle_digest", "source_span_ids", "graph_edge_ids"]
+}
+```
 
 ## `retrieval_pack.jsonl`
 

@@ -17,6 +17,7 @@ schemas/
 fixtures/golden-policy-capsule/
 docs/CAPSULE_SPEC.md
 docs/GRAPH_PROFILE_REGISTRY.md
+docs/CAPSULE_STRUCTURE_GUIDE.md
 docs/CODING_LEDGER.md
 docs/BUILD_LEDGER.md
 ```
@@ -48,6 +49,10 @@ infrastructure/
 - `GraphCommunity`;
 - `GraphHealth`;
 - `ReasoningDevice`;
+- `AgentGuidance`;
+- `ToolPolicy`;
+- `CitationPolicy`;
+- `GraphUsePolicy`;
 - `OutputContract`;
 - `ReviewLedgerRecord`;
 - `RightsProfile`;
@@ -75,6 +80,7 @@ schemas/capsule-0.1.0/temporal_ledger.schema.json
 schemas/capsule-0.1.0/ontology_slice.schema.json
 schemas/capsule-0.1.0/graph_slice.schema.json
 schemas/capsule-0.1.0/reasoning_playbook.schema.json
+schemas/capsule-0.1.0/agent_guidance.schema.json
 schemas/capsule-0.1.0/output_contracts.schema.json
 schemas/capsule-0.1.0/review_ledger.schema.json
 schemas/capsule-0.1.0/rights_profile.schema.json
@@ -98,6 +104,7 @@ fixtures/golden-policy-capsule/
     graph_semantics.jsonld
     graph_constraints.json
     reasoning_playbook.json
+    agent_guidance.json
     retrieval_pack.jsonl
     output_contracts.json
     review_ledger.jsonl
@@ -116,6 +123,7 @@ The fixture must include:
 - at least one graph edge in `approved_with_caveats`;
 - at least one rejected or blocked graph object;
 - at least one reasoning device;
+- at least one agent guidance policy;
 - at least one output contract;
 - at least one rights rule that blocks a workflow.
 
@@ -174,6 +182,8 @@ Required tests:
 - stale temporal claim produces warning;
 - rejected review object remains in lineage but is blocked from context pack;
 - schema export is deterministic.
+- example capsules under `fixtures/example-capsules/` parse and share the same
+  top-level bundle sections.
 
 ## Completion Gate
 

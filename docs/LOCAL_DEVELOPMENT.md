@@ -34,6 +34,10 @@ cargo test --locked --workspace
 cargo run -p dialectica-cli -- doctor
 python -m compileall tools/python
 python -m unittest discover tools/python/tests
+python -m json.tool fixtures/example-capsules/user-capsule.example.json > $null
+python -m json.tool fixtures/example-capsules/situation-capsule.example.json > $null
+python -m json.tool fixtures/example-capsules/thinking-device-capsule.example.json > $null
+python -m json.tool fixtures/example-capsules/output-capsule.example.json > $null
 ```
 
 Future fixture commands:
@@ -69,10 +73,11 @@ Allowed fixture content:
 
 1. Run formatter.
 2. Run unit tests.
-3. Validate golden fixture.
-4. Inspect bundle output.
-5. Run source and temporal evals.
-6. Update docs if contract behavior changed.
+3. Parse example capsule envelopes.
+4. Validate golden fixture.
+5. Inspect bundle output.
+6. Run source and temporal evals.
+7. Update docs if contract behavior changed.
 
 ## Windows Notes
 

@@ -15,12 +15,13 @@ The first functional app is not complete until a developer can:
 1. ingest a deterministic source pack;
 2. build source, temporal, ontology, graph, reasoning, review, and rights
    records;
-3. validate the bundle contract;
-4. block promotion when review is missing;
-5. emit a PRAXIS context pack;
-6. run a local API health check;
-7. run a task-handler path without cloud credentials;
-8. prove the result with contract tests and fixture evals.
+3. build agent guidance records for PRAXIS workflows;
+4. validate the bundle contract;
+5. block promotion when review is missing;
+6. emit a PRAXIS context pack;
+7. run a local API health check;
+8. run a task-handler path without cloud credentials;
+9. prove the result with contract tests and fixture evals.
 
 ## Active Scaffold
 
@@ -72,6 +73,7 @@ Deliver:
 - temporal ledger structs;
 - ontology slice structs;
 - embedded graph structs;
+- agent guidance structs;
 - review ledger structs;
 - rights profile structs;
 - JSON Schema snapshots;
@@ -90,6 +92,7 @@ Goal: make a deterministic capsule build possible without cloud credentials.
 Deliver:
 
 - `fixtures/golden-policy-capsule/source-pack/`;
+- `fixtures/example-capsules/*.example.json` validation;
 - expected bundle records;
 - reviewer correction;
 - CLI `validate`;

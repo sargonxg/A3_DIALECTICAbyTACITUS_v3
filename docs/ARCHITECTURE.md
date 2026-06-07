@@ -127,11 +127,13 @@ Responsibilities:
 
 - assemble a deterministic capsule bundle;
 - include manifest, source ledger, temporal ledger, ontology slice, graph slice,
-  graph semantics, graph constraints, reasoning playbook, retrieval packs,
-  output contracts, rights profile, marketplace metadata, and review ledger;
+  graph semantics, graph constraints, reasoning playbook, agent guidance,
+  retrieval packs, output contracts, rights profile, marketplace metadata, and
+  review ledger;
 - sign and checksum bundle components;
 - write bundle artifacts to storage;
-- produce PRAXIS-ready summaries and compact context packs.
+- produce PRAXIS-ready summaries, compact context packs, and model-facing
+  agent guidance.
 
 The compiler must be deterministic enough for test fixtures and reproducible
 bundle checks.

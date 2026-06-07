@@ -231,3 +231,30 @@ counts:
 | Scenario Capsule | `scenario_graph_v1` | `event`, `claim`, `risk`, `decision`, `source_span` | `causes`, `depends_on`, `supersedes`, `supports` | scenario tree |
 | Output Capsule | `output_trace_graph_v1` | `output_contract`, `claim`, `source_span`, `reasoning_device`, `review_action` | `supports`, `uses_device`, `reviewed_by`, `has_output_rule` | artifact trace |
 | Expert Pick Capsule | `expert_pick_graph_v1` | `review_action`, `source`, `claim`, `rights_policy` | `reviewed_by`, `supports`, `has_rights_policy`, `forbidden_for` | trust receipt |
+
+## Graph Adapter Profiles
+
+Graph adapters are projections of the embedded graph, not canonical state.
+
+| Adapter profile | Status | Use |
+| --- | --- | --- |
+| `embedded_graph_v1` | required | compact graph inside the signed bundle |
+| `postgres_projection_v1` | required for runtime | relational graph tables plus JSONB extension fields |
+| `jsonld_projection_v1` | required for export compatibility | JSON-LD semantic export |
+| `ladybug_projection_v1` | optional | embedded graph database projection for local graph exploration, algorithms, and large capsule graph analysis |
+| `graphiti_projection_v1` | optional | temporal graph research and future memory adapter |
+| `graphrag_projection_v1` | optional | corpus-level community summaries and large-source synthesis |
+
+Adapters may cache, rank, project, or visualize graph records. They must not
+promote new canonical graph facts without source spans and review ledger state.
+
+## Semantic Export Profiles
+
+| Profile | Standard anchor | Bundle role |
+| --- | --- | --- |
+| `jsonld_semantics_v1` | JSON-LD | linked-data serialization for capsule graph and identity |
+| `prov_lineage_v1` | PROV-O | source, extraction, review, and compile provenance |
+| `skos_concepts_v1` | SKOS | controlled policy concepts, synonyms, broader/narrower terms |
+| `shacl_constraints_v1` | SHACL inspiration | graph and ontology validation constraints |
+| `odrl_rights_v1` | ODRL | permissions, prohibitions, duties, and reuse policy |
+| `owl_inference_v1` | OWL, optional | richer consistency checks or inferred relations after the JSON contract works |

@@ -77,6 +77,13 @@ Deterministic source packs, capsule bundles, and eval artifacts.
 
 Fixtures must not contain secrets or private user documents.
 
+Current examples:
+
+- `fixtures/example-capsules/user-capsule.example.json`;
+- `fixtures/example-capsules/situation-capsule.example.json`;
+- `fixtures/example-capsules/thinking-device-capsule.example.json`;
+- `fixtures/example-capsules/output-capsule.example.json`.
+
 ## `tests/`
 
 Cross-crate, contract, integration, and fixture tests.

@@ -158,6 +158,9 @@ from standards without forcing every capsule into a heavyweight RDF stack.
 The capsule does not need to implement all of these standards fully on day one.
 It should design fields so migration to these standards is possible.
 
+See [Graph, Ontology, And Capsule Research Notes](GRAPH_ONTOLOGY_RESEARCH_NOTES.md)
+for the latest research-backed adapter and standards decisions.
+
 ## Ontology Slice Shape
 
 `ontology_slice.json` should be a working semantic contract, not only a list of
@@ -222,6 +225,32 @@ ontology_mappings(id, capsule_id, entity_id, term_id, confidence, review_state)
 
 JSONB columns can store extension fields. pgvector can support semantic search
 without introducing a separate vector database.
+
+## LadybugDB Projection Adapter
+
+LadybugDB is a candidate adapter for capsule graph exploration, not canonical
+state. Its useful fit is:
+
+- local or service-side projected graph analysis;
+- Cypher query workflows for graph inspectors;
+- influence, community, and centrality algorithms over selected capsule graphs;
+- large embedded graph previews where PostgreSQL traversal becomes awkward.
+
+The adapter should read from `graph_slice.json` or PostgreSQL graph tables and
+write projection receipts. It must not write promoted capsule facts without the
+normal source-span and review-ledger path.
+
+Initial adapter profile:
+
+```json
+{
+  "adapter_profile": "ladybug_projection_v1",
+  "source": "graph_slice.json",
+  "mode": "derived_projection",
+  "allowed_outputs": ["algorithm_scores", "layout_hints", "query_receipts"],
+  "forbidden_outputs": ["canonical_claim", "review_promotion"]
+}
+```
 
 ## PRAXIS Visualization Contract
 

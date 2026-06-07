@@ -192,6 +192,22 @@ adapters until an ADR promotes them.
 - `validation_errors_json`
 - `created_at`
 
+### `agent_guidance_policies`
+
+- `id`
+- `capsule_id`
+- `allowed_workflows_json`
+- `tool_policy_json`
+- `citation_policy`
+- `graph_use_policy`
+- `reasoning_sequence_json`
+- `context_budget_policy`
+- `stop_conditions_json`
+- `handoff_policy`
+- `audit_receipts_required_json`
+- `review_state`
+- `created_at`
+
 ### `review_decisions`
 
 - `id`

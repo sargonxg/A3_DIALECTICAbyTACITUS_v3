@@ -102,6 +102,8 @@ Candidate adapter classes:
 - property graph export adapter;
 - temporal graph summarizer;
 - ontology mapping service.
+- LadybugDB projection adapter for embedded graph exploration and graph
+  algorithms after the embedded graph contract is validated.
 
 Promotion rule:
 
@@ -111,6 +113,16 @@ An adapter becomes required infrastructure only after:
 - it improves capsule quality in evals;
 - it has operational runbooks;
 - an ADR approves the dependency.
+
+Current adapter posture:
+
+| Adapter | Status | Reason |
+| --- | --- | --- |
+| PostgreSQL projection | required | keeps runtime simple and deployable on Cloud SQL |
+| JSON-LD export | required | preserves standards-compatible semantic layer |
+| LadybugDB | optional research adapter | promising embedded property graph engine, but not needed before Lane A/B validation |
+| Graphiti | optional research adapter | useful temporal graph pattern, but would add Python/service dependencies |
+| GraphRAG | optional research adapter | useful for corpus-level community summaries after small deterministic graph slices work |
 
 ## Model Providers
 

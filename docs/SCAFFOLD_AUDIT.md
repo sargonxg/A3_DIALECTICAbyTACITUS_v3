@@ -44,13 +44,20 @@ need real schema, storage, compiler, API, and fixture logic.
 - Lane A acceptance is explicit in `docs/LANE_A_ACCEPTANCE.md`.
 - API Slice 1 is explicit in `docs/API_SLICE_1.md`.
 - Graph vocabulary is centralized in `docs/GRAPH_PROFILE_REGISTRY.md`.
+- Capsule bundle layers and agent guidance are explained in
+  `docs/CAPSULE_STRUCTURE_GUIDE.md`.
+- Research-backed graph and ontology adapter decisions are recorded in
+  `docs/GRAPH_ONTOLOGY_RESEARCH_NOTES.md`.
+- Four small example capsule envelopes exist under
+  `fixtures/example-capsules/`.
 - Python tooling is auxiliary and governed by `docs/PYTHON_TOOLING.md`.
 
 ## Not Ready Yet
 
 - Capsule bundle structs are only scaffold primitives.
 - JSON Schema generation is not implemented.
-- Golden fixture source pack does not exist.
+- Golden fixture source pack does not exist, though small example envelopes are
+  now present.
 - Validator commands are not implemented.
 - PostgreSQL migrations do not exist.
 - API routes are scaffold binaries, not HTTP services.
@@ -66,7 +73,8 @@ need real schema, storage, compiler, API, and fixture logic.
 ## Blockers Before Calling It Functional
 
 1. Implement real capsule schema structs and validation.
-2. Add golden fixture source pack and expected bundle.
+2. Validate the four example capsule envelopes, then add golden fixture source
+   pack and expected bundle.
 3. Implement CLI `validate` and `inspect`.
 4. Add bundle checksums and deterministic compiler output.
 5. Add store migrations for capsules, sources, claims, graph, review, rights,

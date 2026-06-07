@@ -17,6 +17,7 @@ policy-grade capsule compiler for PRAXIS.
 | Khoj | Personal "second brain" systems emphasize user-owned docs, local/cloud access, and chat over personal knowledge. | Learn from the UX loop, but make DIALECTICA team/policy-grade with review, provenance, and portable capsules. |
 | Letta MemFS | Git-backed context repositories and reflection agents make memory inspectable and versioned. | Use versioned capsule bundles, review ledgers, and build agents that can propose doc updates. |
 | Microsoft GraphRAG | Graph extraction over private text can improve synthesis, but indexing can be costly and prompt tuning matters. | Start with small deterministic graph slices and evals before large indexing. |
+| LadybugDB | Embedded property graph projection with Cypher, Rust/Python/Node access, and graph algorithms is attractive for local graph analysis. | Treat as optional `ladybug_projection_v1`, not canonical state, until evals and runbooks justify it. |
 | LangGraph | Long-running agents need persistence, human-in-the-loop, streaming, and memory. | PRAXIS owns visible agent runs; DIALECTICA supplies durable capsule context and receipts. |
 | OpenAI Agents SDK | Specialist agents, tools, guardrails, state, tracing, and evals are now standard building blocks. | Keep agent boundaries explicit and make capsule validation/human review guardrails. |
 | Model Context Protocol | Resources/tools are becoming a standard way to expose context to agents. | Expose capsule resources later through MCP, with strict read-only defaults and provenance. |
@@ -40,6 +41,8 @@ policy-grade capsule compiler for PRAXIS.
 - Microsoft GraphRAG is a graph-based RAG pipeline for extracting structured
   data from unstructured text, with explicit warnings about indexing cost,
   prompt tuning, versioning, and responsible AI.
+- LadybugDB is an embedded graph database candidate for projected capsule graph
+  exploration, Cypher query workflows, and graph algorithms.
 - LangGraph is a low-level orchestration runtime for long-running stateful
   agents with persistence, human-in-the-loop, memory, and tracing.
 - The OpenAI Agents SDK is appropriate when an application owns orchestration,
@@ -94,6 +97,13 @@ The marketplace should not sell prompts. It should list signed, versioned,
 reviewed context capsules with rights, lineage, caveats, freshness, graph
 previews, and eval snapshots.
 
+### 8. Graph Adapters Must Stay Derived Until Proven
+
+LadybugDB and similar engines are valuable because they can make graph
+exploration and algorithms practical. They should read capsule graph records and
+write projection receipts, not become the source of promoted claims or review
+state.
+
 ## Foundation Recommendation
 
 Build DIALECTICA v3 as:
@@ -127,6 +137,8 @@ Do not start with:
 - Khoj docs: <https://docs.khoj.dev/>
 - Letta memory: <https://docs.letta.com/letta-code/memory/>
 - Microsoft GraphRAG: <https://github.com/microsoft/graphrag>
+- LadybugDB: <https://github.com/LadybugDB/ladybug>
+- LadybugDB docs: <https://docs.ladybugdb.com/>
 - LangGraph: <https://docs.langchain.com/langgraph>
 - OpenAI Agents SDK: <https://openai.github.io/openai-agents-python/>
 - Model Context Protocol specification: <https://modelcontextprotocol.io/specification/2025-06-18>

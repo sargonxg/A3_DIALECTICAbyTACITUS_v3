@@ -1,0 +1,335 @@
+{
+  "example_note": "Single-file projection of the production bundle files for a synthetic User Capsule.",
+  "manifest": {
+    "capsule_id": "cap_user_policy_director_fixture",
+    "schema_version": "0.1.0",
+    "title": "Policy Director Working Context",
+    "summary": "Synthetic user context for PRAXIS answer style, authority boundary, and preferred reasoning devices.",
+    "created_at": "2026-06-07T00:00:00Z",
+    "compiled_at": "2026-06-07T00:00:00Z",
+    "tenant_id": "tenant_fixture",
+    "project_id": "project_fixture",
+    "status": "example",
+    "freshness": "current",
+    "source_count": 2,
+    "review_state": "approved_with_caveats",
+    "capsule_type": "user_capsule",
+    "rights_profile": "private_user_context",
+    "graph_profile": "user_context_graph_v1",
+    "reasoning_profile": "sourceability_and_decision_clock_v1",
+    "compatibility_profile": "may_combine_with_team_situation_output",
+    "bundle_digest": "sha256:fixture-user",
+    "compiler_version": "dialectica-compiler/0.1.0",
+    "capsule_health": "usable_with_caveats"
+  },
+  "capsule": {
+    "identity_context": {
+      "user_role": "policy_director",
+      "institution": "fixture public policy team",
+      "expertise": ["energy policy", "public finance", "stakeholder negotiation"],
+      "voice_preferences": ["concise", "source-led", "decision-oriented"]
+    },
+    "situation_context": {
+      "issue_focus": "industrial electricity support",
+      "geography": "EU",
+      "time_horizon": "2026 Q3"
+    },
+    "analytical_context": {
+      "preferred_frames": ["legal feasibility", "political feasibility", "distributional impact"],
+      "known_blind_spots": ["labor market second-order effects"]
+    },
+    "policy_context": {
+      "allowed_authority": "analysis and briefing only",
+      "forbidden_authority": "automated legal opinion"
+    },
+    "risk_context": {
+      "escalation_triggers": ["public release", "legal interpretation", "high uncertainty"]
+    },
+    "usage_context": {
+      "intended_praxis_workflows": ["decision_brief", "source_review", "memo_update"],
+      "forbidden_uses": ["public attribution", "automated legal opinion"]
+    }
+  },
+  "source_ledger": [
+    {
+      "source_id": "source:user_interview_fixture",
+      "source_type": "user_interview_note",
+      "title": "Synthetic user onboarding note",
+      "uri": "fixture://user/onboarding-note",
+      "publisher": "TACITUS fixture",
+      "published_at": "2026-06-01T00:00:00Z",
+      "retrieved_at": "2026-06-07T00:00:00Z",
+      "language": "en",
+      "license_or_access": "fixture",
+      "trust_status": "reviewed_fixture",
+      "span_id": "span:user_interview_fixture:1",
+      "span_locator": "note:1",
+      "hash": "sha256:user-span-1",
+      "notes": "Synthetic preference note."
+    },
+    {
+      "source_id": "source:user_output_history_fixture",
+      "source_type": "prior_output_summary",
+      "title": "Synthetic prior output summary",
+      "uri": "fixture://user/output-history",
+      "publisher": "TACITUS fixture",
+      "published_at": "2026-06-02T00:00:00Z",
+      "retrieved_at": "2026-06-07T00:00:00Z",
+      "language": "en",
+      "license_or_access": "fixture",
+      "trust_status": "reviewed_fixture",
+      "span_id": "span:user_output_history_fixture:1",
+      "span_locator": "summary:1",
+      "hash": "sha256:user-span-2",
+      "notes": "Synthetic output preference evidence."
+    }
+  ],
+  "temporal_ledger": [
+    {
+      "claim_id": "claim:user-prefers-source-led-briefs",
+      "claim_text": "The user prefers source-led decision briefs.",
+      "valid_time_start": "2026-06-01T00:00:00Z",
+      "valid_time_end": null,
+      "published_at": "2026-06-01T00:00:00Z",
+      "observed_at": "2026-06-07T00:00:00Z",
+      "status": "current",
+      "confidence": 0.9,
+      "supersedes": [],
+      "superseded_by": [],
+      "source_ids": ["source:user_interview_fixture"]
+    }
+  ],
+  "ontology_slice": {
+    "ontology_id": "ontology:user-policy-work",
+    "version": "0.1.0",
+    "namespace": "https://tacitus.me/ns/praxis/user#",
+    "language": "en",
+    "domains": ["policy_workflow", "writing_preference"],
+    "terms": [
+      {
+        "term_id": "concept:decision-brief",
+        "label": "Decision brief",
+        "definition": "A concise source-led artifact that frames options and tradeoffs.",
+        "source_span_ids": ["span:user_interview_fixture:1"],
+        "broader": ["concept:policy-output"],
+        "review_state": "approved"
+      }
+    ],
+    "mappings": [],
+    "frame_memberships": [
+      {
+        "frame_id": "frame:user-working-style",
+        "term_ids": ["concept:decision-brief"]
+      }
+    ],
+    "legal_document_profile": null,
+    "deprecations": [],
+    "review_notes": ["User context is private and must not be exposed in public outputs."]
+  },
+  "graph_slice": {
+    "schema_version": "0.1.0",
+    "capsule_id": "cap_user_policy_director_fixture",
+    "graph_profile": "user_context_graph_v1",
+    "nodes": [
+      {
+        "id": "actor:user-policy-director",
+        "node_type": "actor",
+        "label": "Policy director fixture user",
+        "review_state": "approved",
+        "source_span_ids": ["span:user_interview_fixture:1"],
+        "properties": {
+          "actor_type": "user"
+        }
+      },
+      {
+        "id": "concept:decision-brief",
+        "node_type": "concept",
+        "label": "Decision brief",
+        "review_state": "approved",
+        "source_span_ids": ["span:user_interview_fixture:1"],
+        "properties": {
+          "scheme_id": "ontology:user-policy-work"
+        }
+      },
+      {
+        "id": "output_contract:user-decision-brief",
+        "node_type": "output_contract",
+        "label": "User decision brief contract",
+        "review_state": "approved",
+        "source_span_ids": ["span:user_output_history_fixture:1"],
+        "properties": {
+          "artifact_type": "decision_brief"
+        }
+      }
+    ],
+    "edges": [
+      {
+        "id": "edge:user-uses-sourceability",
+        "from_node_id": "actor:user-policy-director",
+        "to_node_id": "concept:decision-brief",
+        "edge_type": "uses_device",
+        "source_span_ids": ["span:user_interview_fixture:1"],
+        "confidence": 0.88,
+        "review_state": "approved_with_caveats",
+        "temporal_scope": {
+          "valid_from": "2026-06-01T00:00:00Z",
+          "valid_until": null,
+          "status": "current"
+        },
+        "explanation": "The user prefers source-led brief structures."
+      },
+      {
+        "id": "edge:user-has-output-rule",
+        "from_node_id": "actor:user-policy-director",
+        "to_node_id": "output_contract:user-decision-brief",
+        "edge_type": "has_output_rule",
+        "source_span_ids": ["span:user_output_history_fixture:1"],
+        "confidence": 0.84,
+        "review_state": "approved",
+        "temporal_scope": {
+          "valid_from": "2026-06-02T00:00:00Z",
+          "valid_until": null,
+          "status": "current"
+        },
+        "explanation": "The user prefers concise output with explicit tradeoffs."
+      }
+    ],
+    "communities": [
+      {
+        "id": "cluster:user-working-style",
+        "label": "Working style",
+        "node_ids": ["actor:user-policy-director", "concept:decision-brief"],
+        "why_surfaced": "Guides PRAXIS answer format."
+      }
+    ],
+    "layout_hints": {
+      "default_lens": "user_context",
+      "ranked_focus_nodes": ["actor:user-policy-director"],
+      "review_overlay": true,
+      "temporal_filter_default": "current"
+    },
+    "health": {
+      "unsupported_edge_count": 0,
+      "unreviewed_edge_count": 0,
+      "stale_edge_count": 0,
+      "contradiction_cluster_count": 0
+    }
+  },
+  "graph_semantics": {
+    "@context": {
+      "dc": "http://purl.org/dc/terms/",
+      "prov": "http://www.w3.org/ns/prov#",
+      "skos": "http://www.w3.org/2004/02/skos/core#",
+      "odrl": "http://www.w3.org/ns/odrl/2/",
+      "dialectica": "https://tacitus.me/ns/dialectica#"
+    },
+    "@id": "urn:praxis:capsule:cap_user_policy_director_fixture",
+    "@type": "dialectica:UserCapsule",
+    "dc:title": "Policy Director Working Context",
+    "prov:wasGeneratedBy": "urn:dialectica:compile-run:fixture-user"
+  },
+  "graph_constraints": {
+    "graph_profile": "user_context_graph_v1",
+    "adapter_profiles": ["embedded_graph_v1", "postgres_projection_v1", "jsonld_projection_v1"],
+    "required_node_classes": ["actor", "concept", "output_contract"],
+    "required_edge_classes": ["uses_device", "has_output_rule"],
+    "required_edge_fields": ["source_span_ids", "temporal_scope", "review_state", "explanation"],
+    "review_state_rules": {
+      "context_pack_allowed": ["approved", "approved_with_caveats"]
+    }
+  },
+  "reasoning_playbook": {
+    "reasoning_profile": "sourceability_and_decision_clock_v1",
+    "devices": [
+      {
+        "device_id": "sourceability_check_v1",
+        "label": "Sourceability check",
+        "purpose": "Keep nontrivial claims tied to source spans.",
+        "method_steps": ["Identify claim", "Find source span", "Flag unsupported claim"],
+        "failure_modes": ["unsupported personalization", "overfitting to old preference"],
+        "review_gate": "user_context_reviewer"
+      }
+    ]
+  },
+  "agent_guidance": {
+    "allowed_workflows": ["decision_brief", "memo_update", "source_review"],
+    "tool_policy": {
+      "allowed_tools": ["capsule_search", "source_preview", "graph_preview"],
+      "blocked_tools": ["public_posting", "legal_advice_generator"]
+    },
+    "citation_policy": "cite source spans for user-specific preferences when they affect output style",
+    "graph_use_policy": "use approved current user preference edges; do not expose private user graph in public artifacts",
+    "reasoning_sequence": ["sourceability_check_v1"],
+    "context_budget_policy": "prefer compact style and output rules before long prior-output history",
+    "stop_conditions": ["rights_policy_blocks_workflow", "request_for_public_user_attribution"],
+    "handoff_policy": "ask a human reviewer before exporting private user context",
+    "audit_receipts_required": ["capsule_id", "bundle_digest", "source_span_ids", "graph_edge_ids"]
+  },
+  "retrieval_pack": [
+    {
+      "retrieval_id": "ret:user-style-1",
+      "source_span_id": "span:user_interview_fixture:1",
+      "text": "Synthetic note: user prefers source-led decision briefs.",
+      "rank": 0.95
+    }
+  ],
+  "output_contracts": {
+    "contracts": [
+      {
+        "contract_id": "output_contract:user-decision-brief",
+        "artifact_type": "decision_brief",
+        "allowed": true,
+        "required_sections": ["decision", "evidence", "tradeoffs", "next step"],
+        "forbidden_content": ["private user profile details"]
+      }
+    ]
+  },
+  "review_ledger": [
+    {
+      "review_id": "review:user-context:fixture",
+      "reviewer_role": "privacy_reviewer",
+      "decision": "approved_with_caveats",
+      "reviewed_at": "2026-06-07T00:00:00Z",
+      "object_ids": ["cap_user_policy_director_fixture"],
+      "caveats": ["Do not reveal private preference graph in public outputs."],
+      "expires_at": "2026-12-31T23:59:59Z"
+    }
+  ],
+  "rights_profile": {
+    "rights_profile_id": "private_user_context",
+    "permissions": ["use_in_private_praxis_workflows"],
+    "prohibitions": ["public_listing", "third_party_export"],
+    "duties": ["log_read_receipt"]
+  },
+  "marketplace_listing": {
+    "listing_state": "not_listed",
+    "reason": "Private user context is not marketplace content."
+  },
+  "capsule_health": {
+    "status": "usable_with_caveats",
+    "warnings": ["private user context"],
+    "coverage": {
+      "source_count": 2,
+      "review_count": 1,
+      "graph_edge_count": 2
+    }
+  },
+  "eval_report": {
+    "eval_id": "eval:user-context-fixture",
+    "status": "example_only",
+    "checks": [
+      {
+        "name": "private_context_not_public",
+        "result": "pass"
+      }
+    ]
+  },
+  "checksums": {
+    "manifest": "sha256:fixture-user-manifest",
+    "graph_slice": "sha256:fixture-user-graph"
+  },
+  "signature": {
+    "signature_state": "unsigned_fixture",
+    "algorithm": "none"
+  }
+}

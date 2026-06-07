@@ -114,6 +114,7 @@ Output:
 - selected retrieval records;
 - source hints;
 - reasoning playbook subset;
+- agent guidance policy;
 - output contracts;
 - warnings.
 
@@ -217,6 +218,7 @@ When PRAXIS uses a capsule, the agent should receive:
 - source and citation hints;
 - temporal warnings;
 - reasoning devices relevant to the requested output;
+- agent guidance rules used by the model;
 - forbidden claims and escalation criteria;
 - output contract.
 - graph focus nodes and edge warnings.

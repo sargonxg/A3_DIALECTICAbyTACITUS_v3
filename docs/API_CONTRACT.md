@@ -135,6 +135,7 @@ Response:
   "citation_hints": [],
   "temporal_warnings": [],
   "reasoning_devices": [],
+  "agent_guidance": {},
   "output_contract": {},
   "graph_focus": [],
   "graph_warnings": [],
@@ -145,7 +146,8 @@ Response:
     "claim_ids": [],
     "graph_node_ids": [],
     "graph_edge_ids": [],
-    "reasoning_device_ids": []
+    "reasoning_device_ids": [],
+    "agent_guidance_ids": []
   },
   "forbidden_claims": [],
   "review_state": "approved"
@@ -314,6 +316,7 @@ Request:
   "graph_node_ids": ["actor:european-commission"],
   "graph_edge_ids": ["edge:guidelines-regulated-by-commission"],
   "reasoning_device_ids": ["actor_incentive_map"],
+  "agent_guidance_ids": ["agent_guidance:decision_brief_v1"],
   "warnings_triggered": ["stale_claim"]
 }
 ```

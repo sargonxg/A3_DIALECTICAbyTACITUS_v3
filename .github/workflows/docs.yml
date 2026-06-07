@@ -30,6 +30,8 @@ jobs:
           test -f docs/LANE_A_ACCEPTANCE.md
           test -f docs/API_SLICE_1.md
           test -f docs/GRAPH_PROFILE_REGISTRY.md
+          test -f docs/CAPSULE_STRUCTURE_GUIDE.md
+          test -f docs/GRAPH_ONTOLOGY_RESEARCH_NOTES.md
           test -f docs/PYTHON_TOOLING.md
           test -f docs/SCAFFOLD_AUDIT.md
           test -f docs/FOUNDATION_BUILD.md
@@ -53,6 +55,11 @@ jobs:
           test -f docs/PRAXIS_REPO_ALIGNMENT.md
           test -f docs/RESEARCH_BACKLOG.md
           test -f docs/BUILD_LEDGER.md
+          test -f fixtures/example-capsules/README.md
+          test -f fixtures/example-capsules/user-capsule.example.json
+          test -f fixtures/example-capsules/situation-capsule.example.json
+          test -f fixtures/example-capsules/thinking-device-capsule.example.json
+          test -f fixtures/example-capsules/output-capsule.example.json
 
   rust-workspace:
     name: Rust workspace
@@ -79,3 +86,9 @@ jobs:
         run: python -m compileall tools/python
       - name: Test Python tools
         run: python -m unittest discover tools/python/tests
+      - name: Validate example capsule JSON
+        run: |
+          python -m json.tool fixtures/example-capsules/user-capsule.example.json > /dev/null
+          python -m json.tool fixtures/example-capsules/situation-capsule.example.json > /dev/null
+          python -m json.tool fixtures/example-capsules/thinking-device-capsule.example.json > /dev/null
+          python -m json.tool fixtures/example-capsules/output-capsule.example.json > /dev/null

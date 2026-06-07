@@ -112,4 +112,6 @@ Do not promote a capability as functional unless:
 - Lane A: `docs/LANE_A_ACCEPTANCE.md`
 - API Slice 1: `docs/API_SLICE_1.md`
 - Graph vocabulary: `docs/GRAPH_PROFILE_REGISTRY.md`
+- Capsule structure: `docs/CAPSULE_STRUCTURE_GUIDE.md`
+- Graph/ontology research: `docs/GRAPH_ONTOLOGY_RESEARCH_NOTES.md`
 - Python support: `docs/PYTHON_TOOLING.md`

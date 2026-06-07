@@ -1,0 +1,376 @@
+{
+  "example_note": "Single-file projection of the production bundle files for a synthetic Output Capsule.",
+  "manifest": {
+    "capsule_id": "cap_output_energy_brief_fixture",
+    "schema_version": "0.1.0",
+    "title": "Energy Support Decision Brief Output Trace",
+    "summary": "Synthetic output capsule capturing a decision brief, cited claims, reasoning steps, caveats, and reuse limits.",
+    "created_at": "2026-06-07T00:00:00Z",
+    "compiled_at": "2026-06-07T00:00:00Z",
+    "tenant_id": "tenant_fixture",
+    "project_id": "project_fixture",
+    "status": "example",
+    "freshness": "current",
+    "source_count": 3,
+    "review_state": "approved_with_caveats",
+    "capsule_type": "output_capsule",
+    "rights_profile": "team_internal_reviewed",
+    "graph_profile": "output_trace_graph_v1",
+    "reasoning_profile": "brief_trace_v1",
+    "compatibility_profile": "may_combine_with_user_situation_tool",
+    "bundle_digest": "sha256:fixture-output",
+    "compiler_version": "dialectica-compiler/0.1.0",
+    "capsule_health": "usable_with_caveats"
+  },
+  "capsule": {
+    "identity_context": {
+      "artifact_owner": "fixture policy unit",
+      "audience": "internal decision team",
+      "artifact_type": "decision_brief"
+    },
+    "situation_context": {
+      "issue": "industrial electricity price support",
+      "geography": "EU",
+      "time_horizon": "2026 Q3"
+    },
+    "analytical_context": {
+      "frames_used": ["legal feasibility", "budget exposure", "stakeholder incentive"],
+      "assumptions": ["legal review remains required before public recommendation"]
+    },
+    "policy_context": {
+      "recommendation_state": "options framed, no final legal conclusion",
+      "decision_owner": "fixture decision team"
+    },
+    "risk_context": {
+      "caveats": ["budget envelope contested", "legal interpretation blocked"]
+    },
+    "usage_context": {
+      "intended_praxis_workflows": ["memo_update", "brief_reuse", "source_audit"],
+      "forbidden_uses": ["publish_as_final_position", "legal_opinion"]
+    }
+  },
+  "source_ledger": [
+    {
+      "source_id": "source:output_brief_fixture",
+      "source_type": "generated_output",
+      "title": "Synthetic PRAXIS decision brief",
+      "uri": "fixture://outputs/energy-brief",
+      "publisher": "TACITUS fixture",
+      "published_at": "2026-06-07T00:00:00Z",
+      "retrieved_at": "2026-06-07T00:00:00Z",
+      "language": "en",
+      "license_or_access": "fixture",
+      "trust_status": "reviewed_fixture",
+      "span_id": "span:output_brief_fixture:1",
+      "span_locator": "brief:summary",
+      "hash": "sha256:output-span-1",
+      "notes": "Synthetic output text."
+    },
+    {
+      "source_id": "source:commission_guidance_fixture",
+      "source_type": "official_guidance",
+      "title": "Synthetic Commission guidance summary",
+      "uri": "fixture://sources/commission-guidance",
+      "publisher": "TACITUS fixture",
+      "published_at": "2026-01-01T00:00:00Z",
+      "retrieved_at": "2026-06-07T00:00:00Z",
+      "language": "en",
+      "license_or_access": "fixture",
+      "trust_status": "trusted_fixture",
+      "span_id": "span:commission_guidance_fixture:12",
+      "span_locator": "section:12",
+      "hash": "sha256:output-span-2",
+      "notes": "Synthetic legal feasibility anchor."
+    },
+    {
+      "source_id": "source:budget_note_fixture",
+      "source_type": "internal_budget_note",
+      "title": "Synthetic budget risk note",
+      "uri": "fixture://sources/budget-note",
+      "publisher": "TACITUS fixture",
+      "published_at": "2026-06-01T00:00:00Z",
+      "retrieved_at": "2026-06-07T00:00:00Z",
+      "language": "en",
+      "license_or_access": "fixture",
+      "trust_status": "review_required_fixture",
+      "span_id": "span:budget_note_fixture:2",
+      "span_locator": "line:2",
+      "hash": "sha256:output-span-3",
+      "notes": "Synthetic fiscal risk evidence."
+    }
+  ],
+  "temporal_ledger": [
+    {
+      "claim_id": "claim:brief-needs-legal-caveat",
+      "claim_text": "The brief can frame options but must not state a final legal conclusion.",
+      "valid_time_start": "2026-06-07T00:00:00Z",
+      "valid_time_end": null,
+      "published_at": "2026-06-07T00:00:00Z",
+      "observed_at": "2026-06-07T00:00:00Z",
+      "status": "current",
+      "confidence": 0.91,
+      "supersedes": [],
+      "superseded_by": [],
+      "source_ids": ["source:output_brief_fixture", "source:commission_guidance_fixture"]
+    }
+  ],
+  "ontology_slice": {
+    "ontology_id": "ontology:policy-output",
+    "version": "0.1.0",
+    "namespace": "https://tacitus.me/ns/policy/output#",
+    "language": "en",
+    "domains": ["policy_output", "decision_brief"],
+    "terms": [
+      {
+        "term_id": "concept:source-receipt",
+        "label": "Source receipt",
+        "definition": "A machine-readable record of sources, spans, claims, and graph edges used by an output.",
+        "source_span_ids": ["span:output_brief_fixture:1"],
+        "broader": ["concept:output-lineage"],
+        "review_state": "approved"
+      }
+    ],
+    "mappings": [],
+    "frame_memberships": [
+      {
+        "frame_id": "frame:output-traceability",
+        "term_ids": ["concept:source-receipt"]
+      }
+    ],
+    "legal_document_profile": null,
+    "deprecations": [],
+    "review_notes": ["Reuse must preserve caveats and source receipts."]
+  },
+  "graph_slice": {
+    "schema_version": "0.1.0",
+    "capsule_id": "cap_output_energy_brief_fixture",
+    "graph_profile": "output_trace_graph_v1",
+    "nodes": [
+      {
+        "id": "output_contract:energy-decision-brief",
+        "node_type": "output_contract",
+        "label": "Energy decision brief contract",
+        "review_state": "approved",
+        "source_span_ids": ["span:output_brief_fixture:1"],
+        "properties": {
+          "artifact_type": "decision_brief"
+        }
+      },
+      {
+        "id": "claim:brief-needs-legal-caveat",
+        "node_type": "claim",
+        "label": "Brief requires legal caveat",
+        "review_state": "approved_with_caveats",
+        "source_span_ids": ["span:commission_guidance_fixture:12"],
+        "properties": {
+          "claim_type": "output_constraint"
+        }
+      },
+      {
+        "id": "reasoning_device:stakeholder_analysis_v1",
+        "node_type": "reasoning_device",
+        "label": "Stakeholder analysis",
+        "review_state": "approved",
+        "source_span_ids": ["span:output_brief_fixture:1"],
+        "properties": {
+          "device_type": "policy_method"
+        }
+      },
+      {
+        "id": "review_action:brief-review",
+        "node_type": "review_action",
+        "label": "Brief review",
+        "review_state": "approved",
+        "source_span_ids": ["span:output_brief_fixture:1"],
+        "properties": {
+          "decision": "approved_with_caveats"
+        }
+      }
+    ],
+    "edges": [
+      {
+        "id": "edge:brief-supports-caveat",
+        "from_node_id": "output_contract:energy-decision-brief",
+        "to_node_id": "claim:brief-needs-legal-caveat",
+        "edge_type": "supports",
+        "source_span_ids": ["span:commission_guidance_fixture:12"],
+        "confidence": 0.91,
+        "review_state": "approved_with_caveats",
+        "temporal_scope": {
+          "valid_from": "2026-06-07T00:00:00Z",
+          "valid_until": null,
+          "status": "current"
+        },
+        "explanation": "The output contract requires legal caveats."
+      },
+      {
+        "id": "edge:brief-used-stakeholder-device",
+        "from_node_id": "output_contract:energy-decision-brief",
+        "to_node_id": "reasoning_device:stakeholder_analysis_v1",
+        "edge_type": "uses_device",
+        "source_span_ids": ["span:output_brief_fixture:1"],
+        "confidence": 0.87,
+        "review_state": "approved",
+        "temporal_scope": {
+          "valid_from": "2026-06-07T00:00:00Z",
+          "valid_until": null,
+          "status": "current"
+        },
+        "explanation": "The brief used stakeholder analysis as one reasoning layer."
+      },
+      {
+        "id": "edge:brief-reviewed-by-action",
+        "from_node_id": "output_contract:energy-decision-brief",
+        "to_node_id": "review_action:brief-review",
+        "edge_type": "reviewed_by",
+        "source_span_ids": ["span:output_brief_fixture:1"],
+        "confidence": 1.0,
+        "review_state": "approved",
+        "temporal_scope": {
+          "valid_from": "2026-06-07T00:00:00Z",
+          "valid_until": "2026-09-30T23:59:59Z",
+          "status": "current"
+        },
+        "explanation": "The output was reviewed and caveated."
+      }
+    ],
+    "communities": [
+      {
+        "id": "cluster:output-lineage",
+        "label": "Output lineage",
+        "node_ids": ["output_contract:energy-decision-brief", "claim:brief-needs-legal-caveat", "review_action:brief-review"],
+        "why_surfaced": "Shows why this output can be reused only with caveats."
+      }
+    ],
+    "layout_hints": {
+      "default_lens": "artifact_trace",
+      "ranked_focus_nodes": ["output_contract:energy-decision-brief"],
+      "review_overlay": true,
+      "temporal_filter_default": "current"
+    },
+    "health": {
+      "unsupported_edge_count": 0,
+      "unreviewed_edge_count": 0,
+      "stale_edge_count": 0,
+      "contradiction_cluster_count": 0
+    }
+  },
+  "graph_semantics": {
+    "@context": {
+      "dc": "http://purl.org/dc/terms/",
+      "prov": "http://www.w3.org/ns/prov#",
+      "skos": "http://www.w3.org/2004/02/skos/core#",
+      "odrl": "http://www.w3.org/ns/odrl/2/",
+      "dialectica": "https://tacitus.me/ns/dialectica#"
+    },
+    "@id": "urn:praxis:capsule:cap_output_energy_brief_fixture",
+    "@type": "dialectica:OutputCapsule",
+    "dc:title": "Energy Support Decision Brief Output Trace",
+    "prov:wasGeneratedBy": "urn:dialectica:compile-run:fixture-output"
+  },
+  "graph_constraints": {
+    "graph_profile": "output_trace_graph_v1",
+    "adapter_profiles": ["embedded_graph_v1", "postgres_projection_v1", "jsonld_projection_v1"],
+    "required_node_classes": ["output_contract", "claim", "source_span", "reasoning_device", "review_action"],
+    "required_edge_classes": ["supports", "uses_device", "reviewed_by", "has_output_rule"],
+    "required_edge_fields": ["source_span_ids", "temporal_scope", "review_state", "explanation"],
+    "review_state_rules": {
+      "reuse_allowed": ["approved", "approved_with_caveats"]
+    }
+  },
+  "reasoning_playbook": {
+    "reasoning_profile": "brief_trace_v1",
+    "devices": [
+      {
+        "device_id": "source_receipt_trace_v1",
+        "label": "Source receipt trace",
+        "purpose": "Preserve sources, graph edges, and reasoning devices behind an output.",
+        "method_steps": ["List claims", "Attach sources", "Attach graph edges", "Attach review action", "Record caveats"],
+        "failure_modes": ["citation drift", "lost caveat", "reuse outside rights"],
+        "review_gate": "output_reviewer"
+      }
+    ]
+  },
+  "agent_guidance": {
+    "allowed_workflows": ["memo_update", "brief_reuse", "source_audit"],
+    "tool_policy": {
+      "allowed_tools": ["source_preview", "graph_preview", "read_receipt_writer"],
+      "blocked_tools": ["publish_final_position", "legal_opinion_generator"]
+    },
+    "citation_policy": "preserve original source receipts when reusing the output",
+    "graph_use_policy": "show output trace graph before adapting conclusions",
+    "reasoning_sequence": ["source_receipt_trace_v1"],
+    "context_budget_policy": "include output caveats, source receipts, and review action before full prose",
+    "stop_conditions": ["rights_policy_blocks_workflow", "caveat_removed", "public_release_requested"],
+    "handoff_policy": "ask reviewer before public reuse or legal-sensitive update",
+    "audit_receipts_required": ["output_contract_id", "review_id", "source_ids", "graph_edge_ids"]
+  },
+  "retrieval_pack": [
+    {
+      "retrieval_id": "ret:output-summary-1",
+      "source_span_id": "span:output_brief_fixture:1",
+      "text": "Synthetic output span: decision brief frames options but blocks final legal conclusion.",
+      "rank": 0.97
+    }
+  ],
+  "output_contracts": {
+    "contracts": [
+      {
+        "contract_id": "output_contract:energy-decision-brief",
+        "artifact_type": "decision_brief",
+        "allowed": true,
+        "required_sections": ["summary", "evidence", "caveats", "reuse note"],
+        "forbidden_content": ["final legal conclusion", "public release without review"]
+      }
+    ]
+  },
+  "review_ledger": [
+    {
+      "review_id": "review:output-brief:fixture",
+      "reviewer_role": "policy_editor",
+      "decision": "approved_with_caveats",
+      "reviewed_at": "2026-06-07T00:00:00Z",
+      "object_ids": ["cap_output_energy_brief_fixture", "output_contract:energy-decision-brief"],
+      "caveats": ["Reuse only with legal caveat and source receipt."],
+      "expires_at": "2026-09-30T23:59:59Z"
+    }
+  ],
+  "rights_profile": {
+    "rights_profile_id": "team_internal_reviewed",
+    "permissions": ["reuse_in_team_workflows", "combine_with_situation_capsule"],
+    "prohibitions": ["public_release_without_review", "legal_opinion"],
+    "duties": ["preserve_source_receipts", "record_read_receipt"]
+  },
+  "marketplace_listing": {
+    "listing_state": "private_output",
+    "domain_tags": ["energy", "decision_brief", "output_trace"],
+    "review_level": "reviewed_with_caveats"
+  },
+  "capsule_health": {
+    "status": "usable_with_caveats",
+    "warnings": ["legal caveat required", "public release blocked"],
+    "coverage": {
+      "source_count": 3,
+      "review_count": 1,
+      "graph_edge_count": 3
+    }
+  },
+  "eval_report": {
+    "eval_id": "eval:output-fixture",
+    "status": "example_only",
+    "checks": [
+      {
+        "name": "source_receipts_preserved",
+        "result": "pass"
+      }
+    ]
+  },
+  "checksums": {
+    "manifest": "sha256:fixture-output-manifest",
+    "graph_slice": "sha256:fixture-output-graph"
+  },
+  "signature": {
+    "signature_state": "unsigned_fixture",
+    "algorithm": "none"
+  }
+}

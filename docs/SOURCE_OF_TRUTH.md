@@ -12,25 +12,27 @@ When documents conflict, use this order:
 4. `docs/LANE_A_ACCEPTANCE.md`
 5. `docs/API_SLICE_1.md`
 6. `docs/GRAPH_PROFILE_REGISTRY.md`
-7. `docs/CAPSULE_SPEC.md`
-8. `docs/API_CONTRACT.md`
-9. `docs/DATA_MODEL.md`
-10. `docs/ARCHITECTURE.md`
-11. `docs/PRAXIS_INTEGRATION.md`
-12. `docs/ABOUT_DIALECTICA.md`
-13. `docs/FOUNDATION_BUILD.md`
-14. `docs/CAPSULE_FORMAL_MODEL.md`
-15. `docs/CAPSULE_TYPES_AND_MARKETPLACE.md`
-16. `docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md`
-17. `docs/EXPERT_REVIEW_AND_MARKETPLACE.md`
-18. `docs/CAPSULE_BUILD_EXAMPLES.md`
-19. `docs/INTELLECTUAL_TOOLS.md`
-20. `docs/DEPLOYMENT.md`
-21. `docs/TECH_BENCHMARK.md`
-22. `docs/PYTHON_TOOLING.md`
-23. `docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md` as reference context
-24. ADRs in `docs/decisions/`
-25. Implementation notes in issues, PRs, and comments
+7. `docs/CAPSULE_STRUCTURE_GUIDE.md`
+8. `docs/CAPSULE_SPEC.md`
+9. `docs/API_CONTRACT.md`
+10. `docs/DATA_MODEL.md`
+11. `docs/ARCHITECTURE.md`
+12. `docs/PRAXIS_INTEGRATION.md`
+13. `docs/ABOUT_DIALECTICA.md`
+14. `docs/FOUNDATION_BUILD.md`
+15. `docs/CAPSULE_FORMAL_MODEL.md`
+16. `docs/CAPSULE_TYPES_AND_MARKETPLACE.md`
+17. `docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md`
+18. `docs/GRAPH_ONTOLOGY_RESEARCH_NOTES.md`
+19. `docs/EXPERT_REVIEW_AND_MARKETPLACE.md`
+20. `docs/CAPSULE_BUILD_EXAMPLES.md`
+21. `docs/INTELLECTUAL_TOOLS.md`
+22. `docs/DEPLOYMENT.md`
+23. `docs/TECH_BENCHMARK.md`
+24. `docs/PYTHON_TOOLING.md`
+25. `docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md` as reference context
+26. ADRs in `docs/decisions/`
+27. Implementation notes in issues, PRs, and comments
 
 If an implementation contradicts a higher-priority document, update the
 document through an ADR or stop and ask for a product decision.
@@ -83,6 +85,7 @@ The foundation build must include:
 - temporal claim model;
 - minimal ontology and graph slices;
 - embedded graph semantics and validation constraints;
+- explicit agent guidance for PRAXIS workflow use;
 - human review ledger;
 - rights and marketplace-readiness metadata;
 - concrete policy fixture examples;
@@ -121,6 +124,8 @@ Before building service code, the repo needs:
 - Rust workspace scaffold;
 - capsule JSON schema;
 - fixture capsule bundle;
+- typed example capsules for user, situation, thinking-device, and output
+  profiles;
 - contract tests for manifest, source ledger, review ledger, and export;
 - graph profile registry alignment;
 - deployment skeleton for local Docker and Cloud Run;

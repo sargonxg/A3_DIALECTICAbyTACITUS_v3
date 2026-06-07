@@ -72,6 +72,7 @@ Implement:
 - deterministic bundle assembly;
 - checksums;
 - manifest generation;
+- agent guidance generation;
 - PRAXIS context pack generation.
 
 ## Slice 5: API and Task Handler
