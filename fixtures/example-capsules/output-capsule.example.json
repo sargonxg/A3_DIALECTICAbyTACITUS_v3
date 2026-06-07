@@ -291,6 +291,33 @@
       }
     ]
   },
+  "language_profile": {
+    "profile_id": "language:output-trace-en-v1",
+    "primary_language": "en",
+    "secondary_languages": [],
+    "audience_register": "reuse_and_audit_note",
+    "approved_terms": [
+      {
+        "term_id": "term:source-receipt",
+        "label": "source receipt",
+        "definition": "A traceable reference from output language back to source spans, graph edges, or review actions.",
+        "review_state": "approved"
+      }
+    ],
+    "deprecated_terms": ["final legal conclusion"],
+    "blocked_phrases": ["safe to publish as final", "legally cleared"],
+    "framing_rules": [
+      {
+        "rule_id": "language:preserve-caveat",
+        "rule": "Preserve caveats and review limits when adapting this output.",
+        "review_state": "approved"
+      }
+    ],
+    "translation_notes": [],
+    "citation_language": "Preserve original citation labels and source receipts.",
+    "uncertainty_language": "Carry forward caveats before adding new synthesis.",
+    "review_state": "approved"
+  },
   "agent_guidance": {
     "allowed_workflows": ["memo_update", "brief_reuse", "source_audit"],
     "tool_policy": {
@@ -299,6 +326,7 @@
     },
     "citation_policy": "preserve original source receipts when reusing the output",
     "graph_use_policy": "show output trace graph before adapting conclusions",
+    "language_profile_refs": ["language:output-trace-en-v1"],
     "reasoning_sequence": ["source_receipt_trace_v1"],
     "context_budget_policy": "include output caveats, source receipts, and review action before full prose",
     "stop_conditions": ["rights_policy_blocks_workflow", "caveat_removed", "public_release_requested"],

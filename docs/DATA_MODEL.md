@@ -208,6 +208,23 @@ adapters until an ADR promotes them.
 - `review_state`
 - `created_at`
 
+### `language_profiles`
+
+- `id`
+- `capsule_id`
+- `primary_language`
+- `secondary_languages_json`
+- `audience_register`
+- `approved_terms_json`
+- `deprecated_terms_json`
+- `blocked_phrases_json`
+- `framing_rules_json`
+- `translation_notes_json`
+- `citation_language`
+- `uncertainty_language`
+- `review_state`
+- `created_at`
+
 ### `review_decisions`
 
 - `id`

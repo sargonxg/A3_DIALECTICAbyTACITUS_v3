@@ -16,6 +16,7 @@ REQUIRED_SECTIONS = {
     "graph_semantics",
     "graph_constraints",
     "reasoning_playbook",
+    "language_profile",
     "agent_guidance",
     "retrieval_pack",
     "output_contracts",
@@ -45,6 +46,7 @@ class ExampleCapsuleTests(unittest.TestCase):
                     payload["graph_slice"]["capsule_id"],
                 )
                 self.assertTrue(payload["agent_guidance"]["allowed_workflows"])
+                self.assertTrue(payload["language_profile"]["primary_language"])
                 self.assertTrue(payload["graph_slice"]["nodes"])
                 self.assertTrue(payload["graph_slice"]["edges"])
 

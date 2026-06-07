@@ -35,6 +35,9 @@ Actions:
 - added research-backed graph/ontology pass covering LadybugDB projection,
   W3C semantic anchors, explicit `agent_guidance.json`, capsule structure
   guide, and four example capsule envelopes.
+- added repository concept review, GitHub profile guidance, and first-class
+  `language_profile.json` support across README, capsule spec, examples,
+  PRAXIS context-pack docs, and Lane A acceptance.
 
 Evidence:
 

@@ -12,6 +12,8 @@ authoritative for the first local HTTP implementation.
 - Use idempotency keys for mutating requests.
 - Return source, temporal, and review warnings explicitly.
 - Expose embedded graph previews without exposing internal graph-engine details.
+- Expose reviewed language profiles so PRAXIS can enforce terms, caveats, and
+  audience register.
 - Never expose model-provider internals unless requested by an audit endpoint.
 
 ## Common Headers
@@ -135,6 +137,7 @@ Response:
   "citation_hints": [],
   "temporal_warnings": [],
   "reasoning_devices": [],
+  "language_profile": {},
   "agent_guidance": {},
   "output_contract": {},
   "graph_focus": [],
@@ -147,6 +150,7 @@ Response:
     "graph_node_ids": [],
     "graph_edge_ids": [],
     "reasoning_device_ids": [],
+    "language_rule_ids": [],
     "agent_guidance_ids": []
   },
   "forbidden_claims": [],
@@ -316,6 +320,7 @@ Request:
   "graph_node_ids": ["actor:european-commission"],
   "graph_edge_ids": ["edge:guidelines-regulated-by-commission"],
   "reasoning_device_ids": ["actor_incentive_map"],
+  "language_rule_ids": ["language:caveat-legal-status"],
   "agent_guidance_ids": ["agent_guidance:decision_brief_v1"],
   "warnings_triggered": ["stale_claim"]
 }

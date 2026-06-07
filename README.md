@@ -26,12 +26,31 @@ The technical thesis is:
 > model of a situation, the evidence behind it, the reasoning tools for using
 > it, and the rules for human and AI use.
 
+## Why This Matters
+
+Generic LLMs are good at producing plausible text from loose context.
+DIALECTICA is built for the harder problem: preserving the context that makes a
+policy answer usable after the chat window closes.
+
+- **For policy teams**: a capsule keeps sources, dates, caveats, reasoning
+  method, reviewed language, and output scope together.
+- **For engineers**: a capsule is a typed, signed, testable contract with
+  provenance, graph slices, review gates, and PRAXIS-facing APIs.
+- **For investors and operators**: capsules create a defensible knowledge layer
+  for PRAXIS, where expert-reviewed context, methods, and language can become a
+  reusable library rather than one-off prompt work.
+
+The ambition is not just better retrieval. It is a backbone for knowledge work:
+human-gated knowledge, tacit expert reasoning, and reviewed language that can be
+handed to agentic workflows without losing provenance or judgment.
+
 ## About
 
 DIALECTICA exists because serious knowledge work needs a shared object between
 people and AI agents. Policy teams do not only need answers. They need the
 source trail, temporal status, institutional context, contested claims, expert
-reasoning, review caveats, and output rules that make an answer usable.
+reasoning, reviewed language, review caveats, and output rules that make an
+answer usable.
 
 The capsule is that object.
 
@@ -48,6 +67,7 @@ The capsule is that object.
   |       |                |                 |           |
   |       v                v                 v           |
   | source spans ---- embedded graph ---- reasoning      |
+  |       |                |          language profile   |
   |       |                |                 |           |
   |       +---------- human review gate -----+           |
   |                         |                            |
@@ -70,6 +90,25 @@ and usage constraints.
 See [docs/ABOUT_DIALECTICA.md](docs/ABOUT_DIALECTICA.md) for the product
 definition.
 
+## TACITUS System Map
+
+```text
+TACITUS
+  |
+  +-- PRAXIS       visible cockpit for policy work and agentic workflows
+  |
+  +-- DIALECTICA   context-capsule engine that builds PRAXIS Capsules
+  |
+  +-- AGON         future perception and signal subsystem
+  |
+  +-- KAIROS       future temporal/situational timing subsystem
+```
+
+PRAXIS is what users operate. DIALECTICA is the engine that makes PRAXIS
+answers more inspectable, source-faithful, temporally aware, and expert-shaped.
+The repo therefore optimizes for a backend that can build, improve, validate,
+sign, store, combine, and serve capsules.
+
 ## What DIALECTICA Builds
 
 DIALECTICA does not build another chatbot memory layer. It builds capsules that
@@ -84,6 +123,8 @@ carry the durable knowledge structure that policy teams need:
   frames;
 - expert reasoning devices, policy heuristics, philosophical lenses, analytic
   tradecraft, and review notes;
+- reviewed language profiles: approved terms, audience register, voice,
+  forbidden framings, translation notes, and diplomatic constraints;
 - output contracts for memos, briefings, scenarios, plans, model cards, and
   PRAXIS agent workflows;
 - human review gates, audit receipts, and capsule version history.
@@ -201,7 +242,7 @@ At initial runtime scale, a capsule is:
 
 ```text
 Capsule = Identity + Situation + Sources + Time + Ontology + Graph
-        + Reasoning Devices + Agent Guidance + Retrieval Pack
+        + Reasoning Devices + Language Profile + Agent Guidance + Retrieval Pack
         + Output Contracts + Review Ledger + Evaluation Report + Signature
 ```
 
@@ -304,6 +345,7 @@ DIALECTICA should capture expert reasoning as structured data:
 
 - source hierarchies and citation standards;
 - tacit domain distinctions;
+- approved terminology and forbidden framings;
 - missing-actor warnings;
 - rejected causal stories;
 - reviewer caveats and expiry dates;
@@ -325,6 +367,25 @@ rejected object                 marketplace listing
 
 See [docs/EXPERT_REVIEW_AND_MARKETPLACE.md](docs/EXPERT_REVIEW_AND_MARKETPLACE.md)
 and [docs/CAPSULE_BUILD_EXAMPLES.md](docs/CAPSULE_BUILD_EXAMPLES.md).
+
+## Human-Gated Language
+
+Policy work often fails through language before it fails through facts. A
+capsule therefore carries a language profile, not just an output style hint.
+
+The language profile can include:
+
+- approved terms and definitions;
+- terms that require caveats or jurisdictional qualifiers;
+- forbidden framings, euphemisms, overclaims, and misleading labels;
+- preferred audience register for ministers, analysts, executives, or public
+  communication;
+- multilingual terminology and translation notes;
+- quote, citation, and uncertainty language rules;
+- reviewer decisions that approve, caveat, or reject language choices.
+
+This lets PRAXIS hand the model both the knowledge and the disciplined language
+for using that knowledge.
 
 ## Deployment Direction
 
@@ -409,6 +470,8 @@ docs/
   TECH_BENCHMARK.md                      research and ecosystem comparison
   GRAPH_ONTOLOGY_RESEARCH_NOTES.md       graph, ontology, Ladybug, and standards research
   CAPSULE_STRUCTURE_GUIDE.md             bundle layers and agent guidance contract
+  GITHUB_PROFILE.md                      recommended GitHub About metadata and topics
+  REPOSITORY_CONCEPT_REVIEW.md            concept, narrative, and repo coherence audit
   CAPSULE_FORMAL_MODEL.md                formal capsule layers and invariants
   CAPSULE_TYPES_AND_MARKETPLACE.md       capsule categories and market object
   EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md   graph, ontology, and semantics
@@ -484,16 +547,18 @@ Start here:
 8. Read [docs/SCAFFOLD_AUDIT.md](docs/SCAFFOLD_AUDIT.md).
 9. Read [docs/CAPSULE_STRUCTURE_GUIDE.md](docs/CAPSULE_STRUCTURE_GUIDE.md).
 10. Read [docs/GRAPH_ONTOLOGY_RESEARCH_NOTES.md](docs/GRAPH_ONTOLOGY_RESEARCH_NOTES.md).
-11. Read [docs/FOUNDATION_BUILD.md](docs/FOUNDATION_BUILD.md).
-12. Read [docs/CAPSULE_SPEC.md](docs/CAPSULE_SPEC.md).
-13. Read [docs/CAPSULE_TYPES_AND_MARKETPLACE.md](docs/CAPSULE_TYPES_AND_MARKETPLACE.md).
-14. Read [docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md](docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md).
-15. Read [docs/CAPSULE_BUILD_EXAMPLES.md](docs/CAPSULE_BUILD_EXAMPLES.md).
-16. Read [docs/API_CONTRACT.md](docs/API_CONTRACT.md).
-17. Read [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
-18. Read [docs/IMPLEMENTATION_BLUEPRINT.md](docs/IMPLEMENTATION_BLUEPRINT.md).
-19. Read [docs/INTELLECTUAL_TOOLS.md](docs/INTELLECTUAL_TOOLS.md).
-20. Use [docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md](docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md) as reference context.
+11. Read [docs/REPOSITORY_CONCEPT_REVIEW.md](docs/REPOSITORY_CONCEPT_REVIEW.md).
+12. Read [docs/GITHUB_PROFILE.md](docs/GITHUB_PROFILE.md).
+13. Read [docs/FOUNDATION_BUILD.md](docs/FOUNDATION_BUILD.md).
+14. Read [docs/CAPSULE_SPEC.md](docs/CAPSULE_SPEC.md).
+15. Read [docs/CAPSULE_TYPES_AND_MARKETPLACE.md](docs/CAPSULE_TYPES_AND_MARKETPLACE.md).
+16. Read [docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md](docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md).
+17. Read [docs/CAPSULE_BUILD_EXAMPLES.md](docs/CAPSULE_BUILD_EXAMPLES.md).
+18. Read [docs/API_CONTRACT.md](docs/API_CONTRACT.md).
+19. Read [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+20. Read [docs/IMPLEMENTATION_BLUEPRINT.md](docs/IMPLEMENTATION_BLUEPRINT.md).
+21. Read [docs/INTELLECTUAL_TOOLS.md](docs/INTELLECTUAL_TOOLS.md).
+22. Use [docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md](docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md) as reference context.
 
 ## First Build Commands
 

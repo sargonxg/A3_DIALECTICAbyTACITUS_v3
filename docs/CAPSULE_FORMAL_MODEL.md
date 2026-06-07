@@ -5,7 +5,7 @@
 A PRAXIS Capsule is a portable knowledge-work object for human and AI use:
 
 ```text
-C = <I, S, E, T, O, G, R, A, P, U, V, M, X>
+C = <I, S, E, T, O, G, R, L, A, P, U, V, M, X>
 ```
 
 Where:
@@ -17,6 +17,7 @@ Where:
 - `O` is ontology and semantic layer;
 - `G` is graph slice;
 - `R` is reasoning playbook;
+- `L` is human-gated language profile;
 - `A` is agent guidance;
 - `P` is PRAXIS retrieval/context pack;
 - `U` is usage and output contract;
@@ -35,6 +36,7 @@ Where:
 | Ontology | What concepts and categories make the situation legible? | `ontology_slice.json` |
 | Graph | What actors, claims, sources, events, risks, and decisions relate? | `graph_slice.json` |
 | Reasoning | How should an expert think through the situation? | `reasoning_playbook.json` |
+| Language | Which terms, caveats, voice, and framings are approved? | `language_profile.json` |
 | Agent Guidance | What may PRAXIS agents do, cite, refuse, and hand off? | `agent_guidance.json` |
 | Retrieval | What compact context should PRAXIS inject? | `retrieval_pack.jsonl` |
 | Output | What artifacts should be produced and under what rules? | `output_contracts.json` |
@@ -52,6 +54,7 @@ Every valid capsule must satisfy:
 - every retrieval record points to sources or review notes;
 - every agent guidance policy names allowed workflows, tool rules, graph-use
   rules, stop conditions, and required receipts;
+- every promoted language rule has review state, scope, and rationale;
 - every output contract declares citation and uncertainty rules;
 - every promoted capsule has passed required review gates;
 - every marketplace capsule declares usage rights, lineage, caveats, and
@@ -91,6 +94,7 @@ Capsule health should be computed from:
 - review coverage;
 - output contract completeness;
 - agent guidance completeness;
+- language profile completeness;
 - PRAXIS eval performance.
 
 Health is not a cosmetic score. It decides whether PRAXIS can rely on a capsule

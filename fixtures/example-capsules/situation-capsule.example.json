@@ -335,6 +335,38 @@
       }
     ]
   },
+  "language_profile": {
+    "profile_id": "language:eu-energy-situation-en-v1",
+    "primary_language": "en",
+    "secondary_languages": ["fr"],
+    "audience_register": "policy_decision_brief",
+    "approved_terms": [
+      {
+        "term_id": "term:state-aid",
+        "label": "state aid",
+        "definition": "Public support that may affect competition and may require authority review.",
+        "review_state": "approved_with_caveats"
+      }
+    ],
+    "deprecated_terms": ["guaranteed subsidy clearance"],
+    "blocked_phrases": ["definitely legal", "guaranteed approval"],
+    "framing_rules": [
+      {
+        "rule_id": "language:caveat-legal-status",
+        "rule": "Use 'may require authority review' instead of stating legal clearance.",
+        "review_state": "approved"
+      }
+    ],
+    "translation_notes": [
+      {
+        "term_id": "term:state-aid",
+        "note": "Do not translate into broader generic subsidy language without jurisdiction caveat."
+      }
+    ],
+    "citation_language": "Use source receipts for factual, legal-sensitive, and actor-incentive claims.",
+    "uncertainty_language": "State unresolved evidence gaps and needs_review edges explicitly.",
+    "review_state": "approved_with_caveats"
+  },
   "agent_guidance": {
     "allowed_workflows": ["decision_brief", "stakeholder_map", "scenario_update"],
     "tool_policy": {
@@ -343,6 +375,7 @@
     },
     "citation_policy": "cite source spans for all factual, legal, fiscal, and actor-incentive claims",
     "graph_use_policy": "prefer approved current edges; show needs_review edges as warnings",
+    "language_profile_refs": ["language:eu-energy-situation-en-v1"],
     "reasoning_sequence": ["decision_clock_v1", "stakeholder_scan_v1"],
     "context_budget_policy": "include graph focus nodes, contested claims, and current source spans first",
     "stop_conditions": ["legal_opinion_requested", "material_claim_missing_source"],

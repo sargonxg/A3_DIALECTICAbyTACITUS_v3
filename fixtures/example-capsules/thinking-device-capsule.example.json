@@ -252,6 +252,33 @@
       }
     ]
   },
+  "language_profile": {
+    "profile_id": "language:stakeholder-method-en-v1",
+    "primary_language": "en",
+    "secondary_languages": [],
+    "audience_register": "analyst_method_note",
+    "approved_terms": [
+      {
+        "term_id": "term:stakeholder",
+        "label": "stakeholder",
+        "definition": "Actor or affected group with interests, influence, constraints, or exposure to policy effects.",
+        "review_state": "approved"
+      }
+    ],
+    "deprecated_terms": ["motive certainty"],
+    "blocked_phrases": ["they obviously want", "their real motive is"],
+    "framing_rules": [
+      {
+        "rule_id": "language:hypothesis-not-motive",
+        "rule": "Frame actor incentives as hypotheses unless directly sourced.",
+        "review_state": "approved"
+      }
+    ],
+    "translation_notes": [],
+    "citation_language": "Attach source spans to actor incentive and constraint language.",
+    "uncertainty_language": "Use confidence and caveat language for inferred influence.",
+    "review_state": "approved"
+  },
   "agent_guidance": {
     "allowed_workflows": ["stakeholder_map", "decision_brief", "red_team"],
     "tool_policy": {
@@ -260,6 +287,7 @@
     },
     "citation_policy": "cite source spans for every actor incentive and constraint claim",
     "graph_use_policy": "use this capsule to structure reasoning, not to invent actors",
+    "language_profile_refs": ["language:stakeholder-method-en-v1"],
     "reasoning_sequence": ["stakeholder_analysis_v1", "sourceability_check_v1"],
     "context_budget_policy": "allocate context to actors, incentives, constraints, and caveats before prose",
     "stop_conditions": ["actor_motive_without_source", "missing_affected_group_noted_but_unresolved"],

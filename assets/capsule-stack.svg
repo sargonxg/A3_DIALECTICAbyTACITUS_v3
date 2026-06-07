@@ -1,6 +1,6 @@
 <svg width="1040" height="520" viewBox="0 0 1040 520" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
   <title id="title">DIALECTICA capsule stack</title>
-  <desc id="desc">A source to capsule to PRAXIS diagram showing ledgers, graph, reasoning, review, and export layers.</desc>
+  <desc id="desc">A source to capsule to PRAXIS diagram showing ledgers, graph, reasoning, language, review, and export layers.</desc>
   <rect width="1040" height="520" rx="28" fill="#0B1020"/>
   <rect x="26" y="26" width="988" height="468" rx="22" fill="#111827" stroke="#334155" stroke-width="2"/>
   <text x="64" y="74" fill="#E5E7EB" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="28" font-weight="700">DIALECTICA CAPSULE STACK</text>
@@ -31,7 +31,7 @@
     <circle cx="680" cy="218" r="5" fill="#F472B6"/>
     <rect x="548" y="228" width="192" height="70" rx="10" fill="#581C87" stroke="#D8B4FE"/>
     <text x="576" y="259" fill="#F3E8FF">reasoning layer</text>
-    <text x="576" y="281" fill="#E9D5FF" font-size="12">devices heuristics</text>
+    <text x="576" y="281" fill="#E9D5FF" font-size="12">devices language</text>
 
     <rect x="800" y="140" width="168" height="60" rx="10" fill="#7F1D1D" stroke="#FCA5A5"/>
     <text x="824" y="176" fill="#FEE2E2">human gate</text>
@@ -55,7 +55,7 @@
   </g>
 
   <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13">
-    <text x="64" y="438" fill="#CBD5E1">invariant: every claim, edge, reasoning device, and output contract keeps provenance, time, review state, and rights.</text>
+    <text x="64" y="438" fill="#CBD5E1">invariant: every claim, edge, reasoning device, language rule, and output contract keeps provenance, time, review state, and rights.</text>
     <text x="64" y="464" fill="#94A3B8">PostgreSQL + signed bundle stay canonical; graph/vector/MCP/memory are derived adapters until proven by evals.</text>
   </g>
 

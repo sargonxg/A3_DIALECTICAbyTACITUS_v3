@@ -114,6 +114,7 @@ Output:
 - selected retrieval records;
 - source hints;
 - reasoning playbook subset;
+- language profile rules;
 - agent guidance policy;
 - output contracts;
 - warnings.
@@ -145,6 +146,7 @@ PRAXIS should surface:
 - source count and top source types;
 - embedded graph preview;
 - human review state;
+- human-gated language profile;
 - rights and sharing rules;
 - expert-pick or marketplace state when present;
 - warnings for stale or contested context;

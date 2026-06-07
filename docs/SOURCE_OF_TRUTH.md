@@ -24,15 +24,17 @@ When documents conflict, use this order:
 16. `docs/CAPSULE_TYPES_AND_MARKETPLACE.md`
 17. `docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md`
 18. `docs/GRAPH_ONTOLOGY_RESEARCH_NOTES.md`
-19. `docs/EXPERT_REVIEW_AND_MARKETPLACE.md`
-20. `docs/CAPSULE_BUILD_EXAMPLES.md`
-21. `docs/INTELLECTUAL_TOOLS.md`
-22. `docs/DEPLOYMENT.md`
-23. `docs/TECH_BENCHMARK.md`
-24. `docs/PYTHON_TOOLING.md`
-25. `docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md` as reference context
-26. ADRs in `docs/decisions/`
-27. Implementation notes in issues, PRs, and comments
+19. `docs/REPOSITORY_CONCEPT_REVIEW.md`
+20. `docs/GITHUB_PROFILE.md`
+21. `docs/EXPERT_REVIEW_AND_MARKETPLACE.md`
+22. `docs/CAPSULE_BUILD_EXAMPLES.md`
+23. `docs/INTELLECTUAL_TOOLS.md`
+24. `docs/DEPLOYMENT.md`
+25. `docs/TECH_BENCHMARK.md`
+26. `docs/PYTHON_TOOLING.md`
+27. `docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md` as reference context
+28. ADRs in `docs/decisions/`
+29. Implementation notes in issues, PRs, and comments
 
 If an implementation contradicts a higher-priority document, update the
 document through an ADR or stop and ask for a product decision.
@@ -69,6 +71,7 @@ Use these names in internal engineering docs:
 - review ledger
 - semantic layer
 - temporal layer
+- language profile
 
 Do not market DIALECTICA as a standalone buyer-facing product until TACITUS
 makes that decision explicitly.
@@ -85,6 +88,7 @@ The foundation build must include:
 - temporal claim model;
 - minimal ontology and graph slices;
 - embedded graph semantics and validation constraints;
+- human-reviewed language profile;
 - explicit agent guidance for PRAXIS workflow use;
 - human review ledger;
 - rights and marketplace-readiness metadata;
@@ -128,6 +132,7 @@ Before building service code, the repo needs:
   profiles;
 - contract tests for manifest, source ledger, review ledger, and export;
 - graph profile registry alignment;
+- language profile contract;
 - deployment skeleton for local Docker and Cloud Run;
 - CI check for formatting, tests, and docs presence.
 

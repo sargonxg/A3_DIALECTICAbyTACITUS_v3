@@ -251,6 +251,33 @@
       }
     ]
   },
+  "language_profile": {
+    "profile_id": "language:user-context-en-v1",
+    "primary_language": "en",
+    "secondary_languages": [],
+    "audience_register": "executive_policy_brief",
+    "approved_terms": [
+      {
+        "term_id": "term:source-led",
+        "label": "source-led",
+        "definition": "Output should foreground source receipts before unsupported synthesis.",
+        "review_state": "approved"
+      }
+    ],
+    "deprecated_terms": [],
+    "blocked_phrases": ["as an AI language model", "the user always prefers"],
+    "framing_rules": [
+      {
+        "rule_id": "language:user-private-boundary",
+        "rule": "Do not reveal private user preference details in public outputs.",
+        "review_state": "approved"
+      }
+    ],
+    "translation_notes": [],
+    "citation_language": "Cite preference source spans when user-specific style materially shapes the answer.",
+    "uncertainty_language": "Say when a preference is inferred from limited examples.",
+    "review_state": "approved_with_caveats"
+  },
   "agent_guidance": {
     "allowed_workflows": ["decision_brief", "memo_update", "source_review"],
     "tool_policy": {
@@ -259,6 +286,7 @@
     },
     "citation_policy": "cite source spans for user-specific preferences when they affect output style",
     "graph_use_policy": "use approved current user preference edges; do not expose private user graph in public artifacts",
+    "language_profile_refs": ["language:user-context-en-v1"],
     "reasoning_sequence": ["sourceability_check_v1"],
     "context_budget_policy": "prefer compact style and output rules before long prior-output history",
     "stop_conditions": ["rights_policy_blocks_workflow", "request_for_public_user_attribution"],

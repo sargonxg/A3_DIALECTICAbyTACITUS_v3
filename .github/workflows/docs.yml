@@ -32,6 +32,8 @@ jobs:
           test -f docs/GRAPH_PROFILE_REGISTRY.md
           test -f docs/CAPSULE_STRUCTURE_GUIDE.md
           test -f docs/GRAPH_ONTOLOGY_RESEARCH_NOTES.md
+          test -f docs/REPOSITORY_CONCEPT_REVIEW.md
+          test -f docs/GITHUB_PROFILE.md
           test -f docs/PYTHON_TOOLING.md
           test -f docs/SCAFFOLD_AUDIT.md
           test -f docs/FOUNDATION_BUILD.md

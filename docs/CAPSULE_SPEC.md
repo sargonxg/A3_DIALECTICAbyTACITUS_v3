@@ -28,6 +28,7 @@ capsule/
   graph_semantics.jsonld
   graph_constraints.json
   reasoning_playbook.json
+  language_profile.json
   agent_guidance.json
   retrieval_pack.jsonl
   output_contracts.json
@@ -60,6 +61,7 @@ Required fields:
 - `rights_profile`
 - `graph_profile`
 - `reasoning_profile`
+- `language_profile`
 - `agent_guidance_profile`
 - `compatibility_profile`
 - `bundle_digest`
@@ -279,6 +281,66 @@ Examples:
 - path dependency;
 - epistemic humility and uncertainty disclosure.
 
+## `language_profile.json`
+
+This is where DIALECTICA captures human-gated language. It is separate from
+`output_contracts.json` because the same language rules can apply across
+briefs, memos, stakeholder maps, scenario updates, and agent handoffs.
+
+Required sections:
+
+- `profile_id`
+- `primary_language`
+- `secondary_languages`
+- `audience_register`
+- `approved_terms`
+- `deprecated_terms`
+- `blocked_phrases`
+- `framing_rules`
+- `translation_notes`
+- `citation_language`
+- `uncertainty_language`
+- `review_state`
+
+Every material term or framing rule should include:
+
+- a stable rule or term id;
+- the approved wording or blocked wording;
+- rationale;
+- source span ids or review action ids;
+- valid scope;
+- review state.
+
+Example:
+
+```json
+{
+  "profile_id": "language:policy-brief-en-v1",
+  "primary_language": "en",
+  "secondary_languages": ["fr", "es"],
+  "audience_register": "ministerial_decision_brief",
+  "approved_terms": [
+    {
+      "term_id": "term:state-aid",
+      "label": "state aid",
+      "definition": "Public support that may affect competition and requires jurisdiction-specific caveats.",
+      "review_state": "approved_with_caveats"
+    }
+  ],
+  "blocked_phrases": ["guaranteed legal compliance"],
+  "framing_rules": [
+    {
+      "rule_id": "language:caveat-legal-status",
+      "rule": "Use 'may require authority review' instead of stating legal clearance.",
+      "review_state": "approved"
+    }
+  ],
+  "citation_language": "Use source receipts for factual and legal-sensitive claims.",
+  "uncertainty_language": "State confidence and unresolved evidence gaps plainly.",
+  "review_state": "approved_with_caveats"
+}
+```
+
 ## `agent_guidance.json`
 
 This is the model-facing execution contract for PRAXIS agents. It is separate
@@ -292,6 +354,7 @@ Required sections:
 - `tool_policy`
 - `citation_policy`
 - `graph_use_policy`
+- `language_profile_refs`
 - `reasoning_sequence`
 - `context_budget_policy`
 - `stop_conditions`
@@ -309,6 +372,7 @@ Example:
   },
   "citation_policy": "cite_source_span_for_every_nontrivial_claim",
   "graph_use_policy": "prefer approved current edges; show needs_review edges as warnings",
+  "language_profile_refs": ["language:policy-brief-en-v1"],
   "reasoning_sequence": ["decision_clock_v1", "stakeholder_scan_v1"],
   "context_budget_policy": "include graph focus nodes and contested claims first",
   "stop_conditions": ["material_claim_missing_source", "rights_policy_blocks_workflow"],

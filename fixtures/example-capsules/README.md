@@ -23,6 +23,7 @@ Every example includes:
 - `graph_semantics`
 - `graph_constraints`
 - `reasoning_playbook`
+- `language_profile`
 - `agent_guidance`
 - `retrieval_pack`
 - `output_contracts`

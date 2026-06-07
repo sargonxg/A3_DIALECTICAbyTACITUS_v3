@@ -113,16 +113,34 @@ Design consequence:
 
 ## Updated Capsule Layer Decision
 
-Add `agent_guidance.json` as an explicit bundle layer. Reasoning playbooks are
-for method transfer; output contracts are for artifact shape; agent guidance is
-for model execution policy.
+Add `language_profile.json` and `agent_guidance.json` as explicit bundle
+layers. Reasoning playbooks are for method transfer; language profiles are for
+human-reviewed terminology, caveats, translation, voice, and framing rules;
+output contracts are for artifact shape; agent guidance is for model execution
+policy.
 
-Required fields:
+Required `language_profile.json` fields:
+
+- `profile_id`;
+- `primary_language`;
+- `secondary_languages`;
+- `audience_register`;
+- `approved_terms`;
+- `deprecated_terms`;
+- `blocked_phrases`;
+- `framing_rules`;
+- `translation_notes`;
+- `citation_language`;
+- `uncertainty_language`;
+- `review_state`.
+
+Required `agent_guidance.json` fields:
 
 - `allowed_workflows`;
 - `tool_policy`;
 - `citation_policy`;
 - `graph_use_policy`;
+- `language_profile_refs`;
 - `reasoning_sequence`;
 - `context_budget_policy`;
 - `stop_conditions`;
@@ -160,6 +178,8 @@ Every capsule with policy content should include:
 
 Lane A should produce Rust structs for:
 
+- `LanguageProfile`;
+- `LanguageRule`;
 - `AgentGuidance`;
 - `ToolPolicy`;
 - `CitationPolicy`;

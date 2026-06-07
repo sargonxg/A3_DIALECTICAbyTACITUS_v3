@@ -29,6 +29,7 @@ PRAXIS Capsule
   +-- graph semantics       JSON-LD / PROV-O / SKOS / ODRL export view
   +-- graph constraints     SHACL-like profile and graph validation rules
   +-- reasoning playbook    expert methods, steps, failure modes
+  +-- language profile      reviewed terms, voice, framing, translation rules
   +-- agent guidance        model-facing instructions and tool policy
   +-- retrieval pack        ranked source/context snippets
   +-- output contracts      allowed artifacts and refusal rules
@@ -57,6 +58,7 @@ same sections so reviewers and agents can inspect the full shape quickly.
 | `graph_semantics` | How can the capsule be exported to linked-data systems? | interoperability adapters |
 | `graph_constraints` | Which graph classes, fields, and review rules must validate? | Rust validator, reviewer |
 | `reasoning_playbook` | Which expert method should structure the analysis? | analyst, reviewer, agent planner |
+| `language_profile` | Which terms, voice, caveats, and framings are approved or blocked? | analyst, reviewer, PRAXIS agents |
 | `agent_guidance` | What may the model do, cite, ask, refuse, and hand off? | PRAXIS agents |
 | `retrieval_pack` | Which compact source/context units should enter the model context? | retrieval and context pack API |
 | `output_contracts` | Which artifacts are allowed and how must they be shaped? | memo/brief builders |
@@ -107,6 +109,28 @@ later RDF/OWL/SHACL adapter can be built without changing the capsule contract.
 Other capsule types follow the same layer structure and specialize the profile,
 not the bundle format.
 
+## Language Profile Contract
+
+`language_profile.json` captures the human-gated language layer. It should not
+be reduced to "tone." Policy work needs reviewed terminology and framing rules
+because words can imply legal status, responsibility, certainty, legitimacy, or
+scope.
+
+The profile should include:
+
+- primary language and supported secondary languages;
+- approved terms, aliases, definitions, and deprecated terms;
+- terms that require caveats, jurisdictions, or date ranges;
+- forbidden framings, overclaims, euphemisms, or identity labels;
+- audience register, voice, and institutional style rules;
+- translation notes and terms that must not be translated literally;
+- citation and uncertainty language;
+- review state for every material language rule.
+
+Agents must treat rejected or unreviewed language rules the same way they treat
+unreviewed graph edges: visible in audit views, blocked from promoted outputs
+unless a workflow explicitly asks for draft material.
+
 ## Agent Guidance Contract
 
 `agent_guidance.json` should tell PRAXIS agents:
@@ -116,6 +140,7 @@ not the bundle format.
 - which claims require source citation;
 - how to traverse the embedded graph;
 - which reasoning devices to apply first;
+- which language profile rules to enforce;
 - which output contract controls the answer;
 - which warnings block or downgrade the answer;
 - when to ask a human reviewer instead of proceeding.
@@ -127,6 +152,7 @@ Example policies:
   "allowed_workflows": ["decision_brief", "stakeholder_map"],
   "citation_policy": "cite_source_span_for_every_nontrivial_claim",
   "graph_use_policy": "prefer approved current edges; hide rejected edges unless asked for audit",
+  "language_profile_refs": ["language:policy-brief-en-v1"],
   "stop_conditions": ["missing_source_for_material_claim", "rights_policy_blocks_workflow"],
   "handoff_policy": "ask reviewer for approval when output would become public"
 }
@@ -141,6 +167,7 @@ source pack
   -> ontology slice
   -> embedded graph
   -> reasoning playbook
+  -> language profile
   -> agent guidance
   -> review gate
   -> signed bundle

@@ -49,6 +49,8 @@ infrastructure/
 - `GraphCommunity`;
 - `GraphHealth`;
 - `ReasoningDevice`;
+- `LanguageProfile`;
+- `LanguageRule`;
 - `AgentGuidance`;
 - `ToolPolicy`;
 - `CitationPolicy`;
@@ -80,6 +82,7 @@ schemas/capsule-0.1.0/temporal_ledger.schema.json
 schemas/capsule-0.1.0/ontology_slice.schema.json
 schemas/capsule-0.1.0/graph_slice.schema.json
 schemas/capsule-0.1.0/reasoning_playbook.schema.json
+schemas/capsule-0.1.0/language_profile.schema.json
 schemas/capsule-0.1.0/agent_guidance.schema.json
 schemas/capsule-0.1.0/output_contracts.schema.json
 schemas/capsule-0.1.0/review_ledger.schema.json
@@ -104,6 +107,7 @@ fixtures/golden-policy-capsule/
     graph_semantics.jsonld
     graph_constraints.json
     reasoning_playbook.json
+    language_profile.json
     agent_guidance.json
     retrieval_pack.jsonl
     output_contracts.json
@@ -123,6 +127,7 @@ The fixture must include:
 - at least one graph edge in `approved_with_caveats`;
 - at least one rejected or blocked graph object;
 - at least one reasoning device;
+- at least one human-reviewed language rule;
 - at least one agent guidance policy;
 - at least one output contract;
 - at least one rights rule that blocks a workflow.
