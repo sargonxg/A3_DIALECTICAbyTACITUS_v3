@@ -11,7 +11,7 @@ jobs:
     name: Required docs exist
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Check source-of-truth files
         run: |
           test -f README.md
@@ -85,7 +85,7 @@ jobs:
     name: Rust workspace
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Check formatting
         run: cargo fmt --all -- --check
       - name: Check workspace
@@ -109,7 +109,7 @@ jobs:
     name: Python tools
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Compile Python tools
         run: python -m compileall tools/python
       - name: Test Python tools

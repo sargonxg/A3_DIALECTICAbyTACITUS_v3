@@ -55,6 +55,8 @@ Actions:
 - added post-push improvement guidelines covering active gaps, quality bar,
   improvement sequence, review checklist, research/dependency policy, and
   gap-ledger protocol.
+- updated CI checkout steps to the current Node 24 runtime line after GitHub
+  Actions warned that Node 20 actions are being deprecated.
 
 Evidence:
 
@@ -88,6 +90,8 @@ Evidence:
   `docs/SOURCE_OF_TRUTH.md`, `docs/README.md`, `docs/CODING_LEDGER.md`,
   `docs/NEXT_CODE_BUILD_PLAN.md`, and the docs CI required-file list around
   `docs/IMPROVEMENT_GUIDELINES.md`.
+- latest CI warning checked against the official `actions/checkout` release
+  notes, which document the Node 24 runtime line.
 
 ## Active Decisions
 
