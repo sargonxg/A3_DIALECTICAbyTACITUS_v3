@@ -1,6 +1,6 @@
 # Tech Benchmark
 
-Date: 2026-06-07
+Date: 2026-06-08
 
 This document records the final pre-build research pass. The conclusion is not
 that DIALECTICA should copy any single memory or RAG product. The conclusion is
@@ -17,6 +17,9 @@ policy-grade capsule compiler for PRAXIS.
 | Khoj | Personal "second brain" systems emphasize user-owned docs, local/cloud access, and chat over personal knowledge. | Learn from the UX loop, but make DIALECTICA team/policy-grade with review, provenance, and portable capsules. |
 | Letta MemFS | Git-backed context repositories and reflection agents make memory inspectable and versioned. | Use versioned capsule bundles, review ledgers, and build agents that can propose doc updates. |
 | Microsoft GraphRAG | Graph extraction over private text can improve synthesis, but indexing can be costly and prompt tuning matters. | Start with small deterministic graph slices and evals before large indexing. |
+| Awesome Graph Universe | The graph ecosystem is broad: property graphs, RDF stores, ETL, visualization, GraphRAG infrastructure, and graph stream processors. | Use as a discovery index, not as a reason to reopen stack selection. Evaluate one adapter class at a time. |
+| GraphGeeks Agentic Graph RAG workshop | Hybrid graph, vector, and full-text retrieval needs extraction evals, observability, and guardrails. | Use as a reference for future PRAXIS context-pack retrieval and eval design after deterministic capsule export works. |
+| Gemma/Unsloth LoRA extractor pattern | Small fine-tuned models can become schema-faithful extraction adapters when trained on reviewed examples. | Capture as a future distillation lane; do not add fine-tuned models before source-pack, review, and eval data exist. |
 | LadybugDB | Embedded property graph projection with Cypher, Rust/Python/Node access, and graph algorithms is attractive for local graph analysis. | Treat as optional `ladybug_projection_v1`, not canonical state, until evals and runbooks justify it. |
 | LangGraph | Long-running agents need persistence, human-in-the-loop, streaming, and memory. | PRAXIS owns visible agent runs; DIALECTICA supplies durable capsule context and receipts. |
 | OpenAI Agents SDK | Specialist agents, tools, guardrails, state, tracing, and evals are now standard building blocks. | Keep agent boundaries explicit and make capsule validation/human review guardrails. |
@@ -41,6 +44,14 @@ policy-grade capsule compiler for PRAXIS.
 - Microsoft GraphRAG is a graph-based RAG pipeline for extracting structured
   data from unstructured text, with explicit warnings about indexing cost,
   prompt tuning, versioning, and responsible AI.
+- Awesome Graph Universe is useful for awareness across graph database, ETL,
+  visualization, GraphRAG, and streaming categories, but it should not become a
+  shopping list for the foundation build.
+- The GraphGeeks Agentic Graph RAG workshop is useful because it shows
+  extraction, graph, vector, full-text search, guardrails, tracing, and evals
+  in one practical workflow.
+- Gemma/Unsloth-style LoRA fine-tuning maps well to typed extraction proposals,
+  but only after DIALECTICA has reviewed capsule data and a benchmark gate.
 - LadybugDB is an embedded graph database candidate for projected capsule graph
   exploration, Cypher query workflows, and graph algorithms.
 - LangGraph is a low-level orchestration runtime for long-running stateful
@@ -137,6 +148,11 @@ Do not start with:
 - Khoj docs: <https://docs.khoj.dev/>
 - Letta memory: <https://docs.letta.com/letta-code/memory/>
 - Microsoft GraphRAG: <https://github.com/microsoft/graphrag>
+- Awesome Graph Universe: <https://github.com/graphgeeks-lab/awesome-graph-universe>
+- GraphGeeks Agentic Graph RAG workshop: <https://github.com/graphgeeks-lab/odsc-agentic-ai-summit-2025>
+- Gemma 4 12B Developer Guide: <https://developers.googleblog.com/gemma-4-12b-the-developer-guide/>
+- Gemma 4 12B model card: <https://huggingface.co/google/gemma-4-12B>
+- Unsloth notebooks: <https://unsloth.ai/docs/get-started/unsloth-notebooks>
 - LadybugDB: <https://github.com/LadybugDB/ladybug>
 - LadybugDB docs: <https://docs.ladybugdb.com/>
 - LangGraph: <https://docs.langchain.com/langgraph>

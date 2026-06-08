@@ -123,6 +123,7 @@ Current adapter posture:
 | LadybugDB | optional research adapter | promising embedded property graph engine, but not needed before Lane A/B validation |
 | Graphiti | optional research adapter | useful temporal graph pattern, but would add Python/service dependencies |
 | GraphRAG | optional research adapter | useful for corpus-level community summaries after small deterministic graph slices work |
+| Kuzu/LanceDB/BAML/Opik-style hybrid RAG | optional research pattern | useful as a reference for graph + vector + full-text retrieval, extraction observability, and guardrail evaluation after PRAXIS context-pack export works |
 
 ## Model Providers
 
@@ -137,3 +138,46 @@ Required behavior:
 - preserve source grounding;
 - support replay or fixture mode for tests;
 - fail closed when citation requirements are not met.
+
+## Extractor Distillation
+
+Fine-tuned open models can become useful after DIALECTICA has enough reviewed
+capsule data, but they are not foundation build dependencies.
+
+Candidate pattern:
+
+```text
+teacher model + capsule schema
+  -> machine extraction proposals
+  -> human corrections and promotion decisions
+  -> reviewed training rows
+  -> LoRA/QLoRA extractor adapter
+  -> benchmark gate
+  -> optional extraction provider
+```
+
+Training-row shape:
+
+- system: capsule extraction grammar, schema version, ontology blueprint, and
+  review policy;
+- user: source chunk, source metadata, prior span ids, and allowed output
+  object types;
+- assistant: typed proposal records only, never promoted truth.
+
+Promotion rule:
+
+A fine-tuned extractor can propose capsule records only after it beats the
+prompted baseline on schema validity, source-span grounding, temporal
+classification, graph-edge validity, rights/language rule extraction, and
+reviewer acceptance. The teacher model remains the fallback until the eval
+evidence and an ADR promote the adapter.
+
+Current stance:
+
+- treat Gemma-class LoRA/QLoRA recipes and Unsloth notebooks as implementation
+  references, not architecture decisions;
+- keep model ids and provider aliases out of core crates until provider
+  interfaces exist;
+- record model, adapter, dataset digest, prompt/template version, and eval
+  report in every extraction receipt;
+- never allow model output to self-promote without human review state.

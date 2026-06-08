@@ -82,6 +82,31 @@ Score:
 - concision;
 - reviewer acceptance.
 
+### Extractor Distillation Evals
+
+Check whether a fine-tuned extractor adapter is better than the prompted
+teacher baseline before it can propose records for promoted capsules.
+
+Examples:
+
+- JSON/schema validity on source-pack chunks;
+- source-span grounding for every proposed claim, term, edge, and language
+  rule;
+- temporal status classification;
+- graph node and edge class validity;
+- ontology-blueprint compatibility;
+- review action coverage;
+- rejected/unsupported object suppression;
+- reviewer acceptance rate and correction distance.
+
+Minimum gate:
+
+- the fine-tuned extractor must beat the prompted baseline on the golden
+  fixture and at least one held-out policy fixture;
+- failures must be visible in the eval artifact;
+- teacher model fallback remains available;
+- no fine-tuned output can self-promote without human review state.
+
 ## Golden Fixture
 
 The first golden fixture should be a small policy analysis problem with:
@@ -134,3 +159,15 @@ Each eval run should produce:
 - reviewer notes;
 - run timestamp;
 - git commit SHA.
+
+Extractor eval artifacts should also include:
+
+- teacher model alias;
+- student model alias;
+- adapter id;
+- training dataset digest;
+- held-out dataset digest;
+- prompt/template version;
+- schema version;
+- confusion matrix for object classes and temporal statuses;
+- reviewer correction summary.

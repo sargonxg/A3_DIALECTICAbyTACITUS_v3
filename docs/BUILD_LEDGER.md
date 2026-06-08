@@ -122,6 +122,32 @@ Evidence:
   proprietary-license, or placeholder-marker language in the checked repository
   scope.
 
+## 2026-06-08 - Fine-Tuning And Graph Universe Intake
+
+Status: research captured; no dependency promotion.
+
+Actions:
+
+- recorded Gemma/Unsloth-style LoRA fine-tuning as a future extractor
+  distillation lane, not a foundation build requirement;
+- recorded Awesome Graph Universe as a discovery index rather than a stack
+  decision;
+- recorded the GraphGeeks Agentic Graph RAG workshop as a future reference for
+  hybrid graph/vector/full-text retrieval, observability, guardrails, and evals;
+- updated dependency policy, eval criteria, research backlog, foundation
+  non-goals, and research ledger.
+
+Evidence:
+
+- local repo and remote GitHub repo checked; the repository is no longer empty
+  and contains the current Rust/docs/fixtures/scaffold on `main`;
+- Google Gemma 4 12B developer guide and Hugging Face model card checked for
+  current model/fine-tuning and multimodal claims;
+- Unsloth notebook index checked as the implementation-reference source for
+  fine-tuning workflows;
+- GraphGeeks `awesome-graph-universe` and `odsc-agentic-ai-summit-2025`
+  checked for graph registry and hybrid GraphRAG patterns.
+
 ## Active Decisions
 
 | ID | Decision | Status | Where |

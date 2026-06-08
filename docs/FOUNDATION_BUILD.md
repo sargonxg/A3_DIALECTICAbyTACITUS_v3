@@ -117,6 +117,8 @@ The foundation build does not need:
 - full AGON or KAIROS services;
 - enterprise multi-region deployment;
 - fine-tuned models.
+- fine-tuned extraction adapters;
+- hybrid GraphRAG infrastructure.
 
 ## Golden Policy Fixture
 

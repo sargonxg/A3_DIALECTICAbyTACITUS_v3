@@ -1,6 +1,6 @@
 # Research Ledger
 
-Date: 2026-06-07
+Date: 2026-06-08
 
 Status: durable source memory for DIALECTICA design decisions.
 
@@ -76,6 +76,11 @@ official sources + papers
 | LadybugDB docs, <https://docs.ladybugdb.com/> | Ladybug is positioned as an embedded graph database with property-graph modeling and interoperability with formats/stores such as Parquet, Arrow, and DuckDB. | Keep `ladybug_projection_v1` optional for graph exploration and analytics; signed bundles and PostgreSQL remain canonical. |
 | OpenAI Agents SDK tracing, <https://openai.github.io/openai-agents-js/guides/tracing/> | Current JS docs say tracing captures LLM generations, tool calls, handoffs, guardrails, and custom events. | Capsule compilation, context-pack generation, and PRAXIS use should emit run receipts compatible with agent trace spans. |
 | OpenAI Agents SDK guardrails, <https://openai.github.io/openai-agents-js/guides/guardrails/> | Current JS docs support input, output, and tool guardrails. | Model-powered extraction and capsule-use tools should have explicit guardrails before promotion or external actions. |
+| Gemma 4 12B Developer Guide, <https://developers.googleblog.com/gemma-4-12b-the-developer-guide/> | Google describes Gemma 4 12B as a unified multimodal model where downstream adapters such as LoRA can tune the shared multimodal token loop in one pass. | Treat Gemma-class fine-tuning as a future extractor-distillation option, especially for structured extraction over text, scanned documents, images, audio, and video. Do not make it a foundation dependency. |
+| Gemma 4 12B model card, <https://huggingface.co/google/gemma-4-12B> | The model card describes encoder-free multimodal flow, 256K context for Gemma 4 12B, multimodal prompt ordering, visual token budgets, audio/video limits, and safety notes. | Useful later for document/OCR/audio/video extraction experiments. Treat hardware and quality claims as benchmark hypotheses until reproduced in DIALECTICA evals. |
+| Unsloth notebooks, <https://unsloth.ai/docs/get-started/unsloth-notebooks> | Unsloth maintains fine-tuning notebooks for Gemma-family models and other open models. | Capture Unsloth/LoRA as a possible training route for extractor adapters after DIALECTICA has reviewed training data. |
+| Awesome Graph Universe, <https://github.com/graphgeeks-lab/awesome-graph-universe> | The list is a broad registry of graph databases, graph engines, graph ETL, graph visualization, GraphRAG infrastructure, and stream processors. | Use as a discovery index only. It confirms the adapter posture but should not restart stack selection. |
+| GraphGeeks Agentic Graph RAG workshop, <https://github.com/graphgeeks-lab/odsc-agentic-ai-summit-2025> | The workshop combines structured extraction, Kuzu graph storage, LanceDB vector/full-text search, hybrid retrieval, observability, guardrails, and evaluation. | Useful reference for future hybrid retrieval and observability patterns. Do not copy the stack into the foundation build; map ideas to capsule receipts and evals first. |
 
 ## Adopted Product Rules
 
@@ -108,6 +113,9 @@ Refresh these sources immediately before implementation:
 4. Firestore data model in PRAXIS before writing the mirror adapter.
 5. OpenAI Agents SDK docs before agent orchestration integration.
 6. Graphiti/Zep docs before temporal graph adapter work.
+7. Gemma/Unsloth/model-card docs before adding an extractor fine-tuning lane.
+8. GraphGeeks/Kuzu/LanceDB/BAML/Opik docs before hybrid GraphRAG
+   experiments.
 
 ## Future Research Questions
 
@@ -118,3 +126,7 @@ Refresh these sources immediately before implementation:
 - What minimum expert-review metadata is required for a capsule marketplace?
 - Which capsule rights model is strong enough for enterprise and public-sector
   teams without slowing the foundation build?
+- What extractor benchmark would justify replacing a prompted teacher model
+  with a fine-tuned open-model adapter?
+- Which hybrid retrieval pattern, if any, improves PRAXIS context packs beyond
+  deterministic capsule graph slices plus source ledgers?

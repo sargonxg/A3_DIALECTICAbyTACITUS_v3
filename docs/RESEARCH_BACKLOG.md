@@ -150,3 +150,44 @@ Gate:
 
 - graph preview should help a policy user catch source, time, or reasoning risk
   faster than a flat source list.
+
+## R10: Extractor Distillation
+
+Question: When should DIALECTICA use a fine-tuned open model for extraction?
+
+Initial answer:
+
+- only after the local source-pack to bundle loop is deterministic;
+- only after the repository has reviewed training rows from real capsule
+  builds;
+- use teacher-model outputs as proposals, not truth;
+- train on source chunk plus extraction grammar plus expected typed proposal;
+- keep human review as the promotion gate;
+- keep prompted teacher fallback until evals prove the adapter is better.
+
+Gate:
+
+- a fine-tuned extractor must beat the prompted baseline on schema validity,
+  source-span grounding, temporal classification, graph-edge validity,
+  ontology compatibility, and reviewer acceptance;
+- the adapter needs an ADR before it becomes a required service dependency.
+
+## R11: Hybrid Graph Retrieval Patterns
+
+Question: Which GraphRAG ideas should influence PRAXIS context-pack retrieval?
+
+Initial answer:
+
+- use the GraphGeeks-style pattern as a reference: structured extraction,
+  graph traversal, vector search, full-text search, tracing, guardrails, and
+  evals;
+- do not copy a workshop stack into DIALECTICA;
+- keep the capsule graph and source ledger canonical;
+- experiment with hybrid retrieval only after context-pack export exists.
+
+Gate:
+
+- hybrid retrieval must improve PRAXIS context-pack outcome evals over capsule
+  graph slices plus source-ledger retrieval;
+- every retrieval result must preserve capsule id, source span, review state,
+  temporal status, and rights constraints.
