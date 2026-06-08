@@ -65,7 +65,7 @@ Request:
 ```json
 {
   "title": "Energy security decision brief",
-  "capsule_type": "policy_analysis",
+  "capsule_type": "situation_capsule",
   "intended_workflows": ["decision_brief", "stakeholder_map"],
   "sources": [
     {
@@ -196,7 +196,8 @@ Response:
 {
   "schema_version": "graph_preview_v1",
   "capsule_id": "cap_123",
-  "graph_profile": "stakeholder_graph_v1",
+  "graph_profile": "situation_graph_v1",
+  "graph_lens": "stakeholder_power_lens",
   "nodes": [
     {
       "id": "actor:european-commission",

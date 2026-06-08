@@ -10,6 +10,8 @@ Current assets:
 
 - `dialectica-mark.svg`: accessible README masthead mark with title and
   description metadata.
+- `four-capsule-model.svg`: User, Situation, Tool, and Output Capsule model.
+- `capsule-anatomy.svg`: internal capsule bundle anatomy.
 - `capsule-stack.svg`: capsule layer stack.
 - `agent-build-flow.svg`: source-to-capsule build flow.
 - `ontology-factory.svg`: capsule-specific ontology blueprint flow.

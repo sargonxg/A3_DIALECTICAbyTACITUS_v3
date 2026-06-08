@@ -1,0 +1,70 @@
+<svg width="1120" height="620" viewBox="0 0 1120 620" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">DIALECTICA four capsule model</title>
+  <desc id="desc">User, Situation, Tool, and Output Capsules combine into a PRAXIS context pack with source, time, ontology, graph, reasoning, language, review, and rights layers.</desc>
+  <rect width="1120" height="620" rx="28" fill="#FAF8F1"/>
+  <rect x="24" y="24" width="1072" height="572" rx="22" fill="#FFFEFA" stroke="#D8D2C5" stroke-width="2"/>
+
+  <style>
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .title { font-size: 42px; font-weight: 850; fill: #111827; }
+    .sub { font-size: 17px; font-weight: 650; fill: #4B5563; }
+    .label { font-size: 28px; font-weight: 850; fill: #111827; }
+    .small { font-size: 14px; font-weight: 650; fill: #374151; }
+    .micro { font-size: 12px; font-weight: 650; fill: #6B7280; }
+  </style>
+
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0 0L10 5L0 10Z" fill="#334155"/>
+    </marker>
+  </defs>
+
+  <text class="mono title" x="64" y="82">FOUR CAPSULE CLASSES</text>
+  <text class="mono sub" x="66" y="116">PRAXIS imports four stable context objects. Everything else is a layer, lens, or review signal inside them.</text>
+
+  <rect x="398" y="214" width="324" height="194" rx="18" fill="#111827" stroke="#27342F" stroke-width="3"/>
+  <text class="mono" x="446" y="267" fill="#FFFEFA" font-size="28" font-weight="850">PRAXIS</text>
+  <text class="mono" x="446" y="304" fill="#9FE8D6" font-size="22" font-weight="800">CONTEXT PACK</text>
+  <text class="mono" x="446" y="346" fill="#E5E7EB" font-size="14" font-weight="650">source / time / ontology / graph</text>
+  <text class="mono" x="446" y="372" fill="#E5E7EB" font-size="14" font-weight="650">reasoning / language / review / rights</text>
+
+  <g transform="translate(74 168)">
+    <rect width="268" height="148" rx="14" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
+    <text class="mono label" x="24" y="42">USER</text>
+    <text class="mono small" x="24" y="74">analyst, team, org</text>
+    <text class="mono small" x="24" y="98">mandate, voice, rights</text>
+    <text class="mono micro" x="24" y="126">who thinks + where PRAXIS stops</text>
+  </g>
+
+  <g transform="translate(778 168)">
+    <rect width="268" height="148" rx="14" fill="#ECFDF5" stroke="#0F766E" stroke-width="2"/>
+    <text class="mono label" x="24" y="42">SITUATION</text>
+    <text class="mono small" x="24" y="74">sources, claims, time</text>
+    <text class="mono small" x="24" y="98">actors, caveats, ontology</text>
+    <text class="mono micro" x="24" y="126">what is true, disputed, live</text>
+  </g>
+
+  <g transform="translate(74 384)">
+    <rect width="268" height="148" rx="14" fill="#FFF7ED" stroke="#B45309" stroke-width="2"/>
+    <text class="mono label" x="24" y="42">TOOL</text>
+    <text class="mono small" x="24" y="74">methods, lenses, steps</text>
+    <text class="mono small" x="24" y="98">failure modes, examples</text>
+    <text class="mono micro" x="24" y="126">how experts reason</text>
+  </g>
+
+  <g transform="translate(778 384)">
+    <rect width="268" height="148" rx="14" fill="#F5F3FF" stroke="#7C3AED" stroke-width="2"/>
+    <text class="mono label" x="24" y="42">OUTPUT</text>
+    <text class="mono small" x="24" y="74">memo, brief, map, log</text>
+    <text class="mono small" x="24" y="98">citations, reuse, caveats</text>
+    <text class="mono micro" x="24" y="126">what was produced + why</text>
+  </g>
+
+  <path d="M342 242C374 252 382 274 398 290" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+  <path d="M778 242C746 252 738 274 722 290" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+  <path d="M342 458C374 448 382 426 398 404" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+  <path d="M778 458C746 448 738 426 722 404" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <text class="mono micro" x="424" y="462">source packs / stakeholder maps / scenarios / expert picks</text>
+  <text class="mono micro" x="452" y="486">are internal lenses, not extra capsule classes</text>
+</svg>

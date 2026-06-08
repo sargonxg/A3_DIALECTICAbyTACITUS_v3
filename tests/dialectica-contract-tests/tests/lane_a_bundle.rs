@@ -130,16 +130,10 @@ fn user_capsule_ontology_plan_does_not_use_situation_defaults() {
 #[test]
 fn ontology_plan_covers_documented_capsule_families() {
     let cases = [
-        ("team_capsule", "team_memory_ontology"),
-        ("tool_capsule", "expert_method_ontology"),
-        ("source_capsule", "source_proof_ontology"),
-        ("domain_capsule", "domain_semantic_ontology"),
-        ("stakeholder_capsule", "stakeholder_power_ontology"),
-        ("scenario_capsule", "scenario_causality_ontology"),
+        ("user_capsule", "user_context_ontology"),
+        ("situation_capsule", "situation_policy_ontology"),
+        ("tool_capsule", "tool_method_ontology"),
         ("output_capsule", "output_trace_ontology"),
-        ("expert_pick_capsule", "expert_trust_ontology"),
-        ("graph_ontology_capsule", "semantic_module_ontology"),
-        ("new_capsule_type", "capsule_specific_ontology"),
     ];
 
     for (capsule_type, expected_family) in cases {
@@ -165,4 +159,19 @@ fn ontology_plan_covers_documented_capsule_families() {
             "capsule type {capsule_type} should include universal sourceability layer"
         );
     }
+}
+
+#[test]
+fn unsupported_top_level_capsule_type_fails_validation() {
+    let mut bundle =
+        CapsuleBundle::load_from_dir(&golden_bundle_dir()).expect("golden bundle should load");
+    bundle.manifest.capsule_type = "stakeholder_capsule".to_owned();
+
+    let report = bundle.validate();
+
+    assert!(report.findings.iter().any(|finding| {
+        finding.code == "unsupported_capsule_type"
+            && finding.severity == ValidationSeverity::Error
+            && finding.path == "manifest.capsule_type"
+    }));
 }

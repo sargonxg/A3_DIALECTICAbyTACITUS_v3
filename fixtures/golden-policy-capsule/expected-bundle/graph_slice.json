@@ -153,7 +153,7 @@
     }
   ],
   "layout_hints": {
-    "default_lens": "stakeholder_map",
+    "default_lens": "stakeholder_power_lens",
     "ranked_focus_nodes": ["claim:state-aid-guidance-current", "risk:budget-exposure"],
     "review_overlay": true,
     "temporal_filter_default": "current"

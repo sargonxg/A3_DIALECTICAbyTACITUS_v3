@@ -5,7 +5,7 @@ types:
 
 - `user-capsule.example.json`
 - `situation-capsule.example.json`
-- `thinking-device-capsule.example.json`
+- `tool-capsule.example.json`
 - `output-capsule.example.json`
 
 The production bundle stores each layer as a separate file. These examples use

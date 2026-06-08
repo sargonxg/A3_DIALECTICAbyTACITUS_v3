@@ -122,9 +122,16 @@ sign, store, combine, and serve capsules.
 DIALECTICA does not build another chatbot memory layer. It builds capsules that
 carry the durable knowledge structure that policy teams need:
 
-- the user, team, institution, mandate, audience, and decision horizon;
-- the capsule-specific situation, user, source, tool, output, domain, or expert
-  context that matters for the workflow;
+- one of four PRAXIS-importable capsule classes: User, Situation, Tool, or
+  Output;
+- the user, organization, mandate, audience, and decision horizon when building
+  User Capsules;
+- the situation, source base, conflict state, stakeholder structure, caveats,
+  domain meaning, and decision context when building Situation Capsules;
+- the intellectual tools, philosophical lenses, analytical methods, and failure
+  modes that guide reasoning when building Tool Capsules;
+- the artifact lineage, citations, reuse rules, caveats, and handoff context
+  when building Output Capsules;
 - actors, constraints, incentives, claims, uncertainties, and live-world
   changes when the capsule type requires them;
 - source ledgers, citations, document spans, provenance, and trust status;
@@ -273,13 +280,29 @@ Capsule = Identity + Context + Sources + Time + Ontology Blueprint + Graph
         + Output Contracts + Review Ledger + Evaluation Report + Signature
 ```
 
-The ontology and graph are capsule-specific. A situation capsule may need an
-actor/claim/time graph. A user capsule may need role, authority, preference,
-privacy, and output-style semantics. A thinking-device capsule may need method
-steps, inputs, failure modes, and review caveats. A source capsule may need
-source-proof semantics. DIALECTICA keeps shared graph classes for
-interoperability, but every capsule develops the semantic layers that fit its
-matter and intended PRAXIS workflows.
+The PRAXIS-facing capsule classes are fixed:
+
+```text
+User + Situation + Tool + Output
+```
+
+The ontology and graph inside each capsule are capsule-specific. A conflict
+Situation Capsule may need source proof, stakeholder power, domain semantics,
+scenario causality, and temporal caveats. A User Capsule may need role,
+authority, privacy, preference, and language semantics. A Tool Capsule may need
+method steps, required inputs, philosophical distinctions, failure modes, and
+review caveats. An Output Capsule may need artifact sections, claim lineage,
+source receipts, reuse rules, and reviewer caveats. DIALECTICA keeps shared
+graph classes for interoperability, but every capsule develops the semantic
+layers that fit its matter and intended PRAXIS workflows.
+
+<p align="center">
+  <img src="assets/four-capsule-model.svg" alt="The four DIALECTICA capsule classes: User, Situation, Tool, Output" width="900">
+</p>
+
+<p align="center">
+  <img src="assets/capsule-anatomy.svg" alt="The internal anatomy of a PRAXIS Capsule" width="900">
+</p>
 
 ```text
 capsule type + workflow + source pack
@@ -314,31 +337,30 @@ replace the capsule bundle or PostgreSQL ledger in the foundation build.
 
 ## Capsule Types
 
-PRAXIS should not receive one generic context object. DIALECTICA should build
-typed capsules with clear compatibility rules:
+PRAXIS should not receive one generic context object, and it should not receive
+an expanding list of overlapping capsule products. DIALECTICA builds exactly
+four top-level capsule classes with clear compatibility rules:
 
 | Capsule | What it packages | Example use |
 | --- | --- | --- |
-| User Capsule | user preferences, style, mandate, prior work | personalized Ask PRAXIS |
-| Team Capsule | institutional memory and workflow standards | team briefing lane |
-| Situation Capsule | actors, claims, time, risks, sources | live policy analysis |
-| Source Capsule | document spans, trust, provenance | citation-grounded retrieval |
-| Domain Capsule | concepts, authorities, instruments | policy-domain onboarding |
-| Thinking Device Capsule | expert method and failure modes | stakeholder analysis or ACH |
-| Stakeholder Capsule | actors, incentives, constraints, influence | stakeholder maps |
-| Scenario Capsule | futures, triggers, indicators, branches | foresight and contingency |
+| User Capsule | user, analyst, team, organization, mandate, voice, permissions, privacy | personalized Ask PRAXIS and team handover |
+| Situation Capsule | sources, time, actors, claims, caveats, domain semantics, stakeholder and scenario lenses | live policy analysis, conflict map, decision brief |
+| Tool Capsule | intellectual tools, expert methods, philosophical lenses, method steps, failure modes | stakeholder analysis, conflict mapping, ACH, red team |
 | Output Capsule | produced artifact plus reasoning trail | memo reuse and handover |
-| Expert Pick Capsule | reviewed capsule recommended by an expert | capsule marketplace |
+
+Source packs, domain ontologies, stakeholder maps, scenario branches, expert
+picks, and graph modules are internal layers, lenses, or marketplace metadata
+inside those four classes. They are not top-level capsule types.
 
 Example composition:
 
 ```text
-Situation Capsule
-  + Source Capsule
-  + Stakeholder Capsule
-  + Thinking Device Capsule
-  + Expert Pick Capsule
-  -> PRAXIS decision brief with source receipts and graph warnings
+User Capsule
+  + Situation Capsule
+  + Tool Capsule
+  + Output Capsule
+  -> PRAXIS decision brief with source receipts, graph warnings, method trace,
+     language rules, and reuse caveats
 ```
 
 See [docs/CAPSULE_TYPES_AND_MARKETPLACE.md](docs/CAPSULE_TYPES_AND_MARKETPLACE.md).
@@ -369,7 +391,7 @@ flowchart TB
   Sources["Source pack"] --> Planner
   Planner --> User["User/context ontology"]
   Planner --> Situation["Situation policy ontology"]
-  Planner --> Method["Expert method ontology"]
+  Planner --> Method["Tool method ontology"]
   Planner --> Output["Output trace ontology"]
   User --> Graph["Embedded graph"]
   Situation --> Graph

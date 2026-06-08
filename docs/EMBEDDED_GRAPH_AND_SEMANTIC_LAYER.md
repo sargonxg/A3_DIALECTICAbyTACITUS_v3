@@ -7,8 +7,9 @@ same graph. The graph is how PRAXIS sees relationships, provenance, review
 state, and usable meaning inside the capsule. A situation capsule may need
 actors, institutions, claims, events, risks, and decisions. A user capsule may
 need role, authority, preference, privacy, and output-contract relationships. A
-thinking-device capsule may need method steps, required inputs, failure modes,
-and reviewer caveats.
+tool capsule may need method steps, required inputs, philosophical lenses,
+failure modes, and reviewer caveats. An output capsule may need artifact
+sections, source receipts, review caveats, and reuse rules.
 
 The graph is **embedded** because it travels with the capsule bundle. It can be
 visualized in PRAXIS, projected into PostgreSQL tables, exported as JSON-LD, or
@@ -22,7 +23,7 @@ The capsule-specific ontology blueprint decides which semantic layers matter for
 the capsule being built.
 
 ```text
-          capsule type + domain + workflow
+          capsule class + domain + workflow
                        |
                        v
               ontology blueprint
@@ -135,13 +136,13 @@ Every edge must carry:
 ```json
 {
   "schema_version": "0.1.0",
-  "capsule_id": "cap_eu_energy_stakeholders_2026_q3",
-  "graph_profile": "stakeholder_graph_v1",
+  "capsule_id": "cap_eu_energy_situation_2026_q3",
+  "graph_profile": "situation_graph_v1",
   "nodes": [],
   "edges": [],
   "communities": [],
   "layout_hints": {
-    "default_lens": "stakeholder_map",
+    "default_lens": "stakeholder_power_lens",
     "ranked_focus_nodes": [],
     "review_overlay": true,
     "temporal_filter_default": "current"
@@ -292,8 +293,9 @@ PRAXIS should be able to load `graph_preview_v1` from the graph preview API:
 ```json
 {
   "schema_version": "graph_preview_v1",
-  "capsule_id": "cap_eu_energy_stakeholders_2026_q3",
-  "graph_profile": "stakeholder_graph_v1",
+  "capsule_id": "cap_eu_energy_situation_2026_q3",
+  "graph_profile": "situation_graph_v1",
+  "graph_lens": "stakeholder_power_lens",
   "nodes": [],
   "edges": [],
   "clusters": [],

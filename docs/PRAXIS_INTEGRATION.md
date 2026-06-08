@@ -181,19 +181,20 @@ PRAXIS mirror documents should be small and reconstructable:
 
 ```json
 {
-  "capsuleId": "cap_eu_energy_stakeholders_2026_q3",
+  "capsuleId": "cap_eu_energy_situation_2026_q3",
   "tenantId": "tenant_123",
   "projectId": "project_123",
-  "title": "EU industrial electricity support stakeholder map",
-  "capsuleType": "stakeholder_capsule",
+  "title": "EU industrial electricity support situation",
+  "capsuleType": "situation_capsule",
   "reviewState": "approved_with_caveats",
   "freshness": "current",
   "bundleDigest": "sha256:fixture",
   "schemaVersion": "0.1.0",
-  "graphProfile": "stakeholder_graph_v1",
+  "graphProfile": "situation_graph_v1",
   "sourceCount": 8,
   "warningCount": 2,
   "compatibleWorkflows": ["stakeholder_map", "decision_brief"],
+  "graphLenses": ["stakeholder_power_lens", "source_proof_lens"],
   "updatedAt": "2026-06-07T20:00:00Z"
 }
 ```

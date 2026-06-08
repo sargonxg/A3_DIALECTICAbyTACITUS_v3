@@ -9,7 +9,7 @@
     "default_style": "source_span_receipt"
   },
   "graph_use_policy": {
-    "default_lens": "stakeholder_map",
+    "default_lens": "stakeholder_power_lens",
     "hide_rejected_by_default": true,
     "require_reviewed_edges": true
   },

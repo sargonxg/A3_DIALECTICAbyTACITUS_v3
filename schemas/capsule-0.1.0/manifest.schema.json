@@ -41,7 +41,8 @@
       "type": "string"
     },
     "capsule_type": {
-      "type": "string"
+      "type": "string",
+      "pattern": "^(user_capsule|situation_capsule|tool_capsule|output_capsule)$"
     },
     "compatibility_profile": {
       "type": "string"

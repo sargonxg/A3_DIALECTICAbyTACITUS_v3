@@ -1,14 +1,16 @@
 # Ontology Blueprints
 
-Date: 2026-06-07
+Date: 2026-06-08
 
 Status: active contract for capsule-specific semantic planning.
 
 ## Purpose
 
 DIALECTICA must not force every capsule into one actor-claim ontology. Actor,
-claim, event, risk, and decision graphs are appropriate for a situation
-capsule, but they are only one profile.
+claim, event, risk, stakeholder, source-proof, and scenario structures are
+essential for many Situation Capsules, but they are only one family of meaning.
+A User Capsule, Tool Capsule, and Output Capsule need different semantic
+layers.
 
 Every capsule needs its own ontology blueprint: a concise plan for what meaning
 must be captured, what evidence is required, what reasoning lenses apply, and
@@ -16,11 +18,20 @@ how PRAXIS should use the capsule in an agentic workflow.
 
 ## Core Rule
 
-The embedded graph registry gives shared interoperability classes. It is not the
-whole ontology.
+The PRAXIS-importable capsule classes are fixed:
+
+- `user_capsule`
+- `situation_capsule`
+- `tool_capsule`
+- `output_capsule`
+
+The embedded graph registry gives shared interoperability classes. It is not
+the whole ontology. Specialized source, domain, stakeholder, scenario, expert,
+and graph concepts are created as capsule-specific semantic layers, graph
+lenses, local terms, and review metadata inside the four classes.
 
 ```text
-capsule type + source pack + expert review + intended PRAXIS workflow
+capsule class + workflow + source pack + expert review
   -> ontology blueprint
   -> ontology_slice.json
   -> graph_slice.json
@@ -31,8 +42,8 @@ capsule type + source pack + expert review + intended PRAXIS workflow
 ```
 
 The blueprint is generated before or during capsule build so an LLM, human
-reviewer, or compiler can decide which semantic layers matter for this
-specific capsule.
+reviewer, or compiler can decide which semantic layers matter for this specific
+capsule.
 
 ## Executable Tool
 
@@ -53,35 +64,87 @@ It loads a bundle and returns a JSON `CapsuleOntologyBlueprint` with:
 - `praxis_context_guidance`;
 - `review_gates`.
 
-This is deliberately generic enough to support user capsules, situation
-capsules, thinking-device capsules, output capsules, source capsules, domain
-capsules, expert-pick capsules, and future capsule categories.
-
 Current implementation note: the blueprint is generated from the manifest or
 bundle and exported as `ontology_blueprint.schema.json`. It is not yet a
 required signed bundle file. The deterministic compiler should later decide
 whether to persist `ontology_blueprint.json` or store it as a compile receipt.
 
-## Capsule-Specific Ontology Families
+## Four Ontology Families
 
-| Capsule type | Ontology family | Primary semantic concern |
+| Capsule class | Ontology family | Primary semantic concern |
 | --- | --- | --- |
-| User Capsule | `user_context_ontology` | role, preferences, authority boundaries, privacy, output style |
-| Team Capsule | `team_memory_ontology` | mandate, shared sources, output standards, review authority |
-| Situation Capsule | `situation_policy_ontology` | actors, claims, risks, events, decision clocks, temporal state |
-| Source Capsule | `source_proof_ontology` | what the source supports, contradicts, qualifies, or does not prove |
-| Domain Capsule | `domain_semantic_ontology` | concepts, authorities, instruments, frames, synonyms, mappings |
-| Thinking Device or Tool Capsule | `expert_method_ontology` | method steps, required inputs, failure modes, review caveats |
-| Stakeholder Capsule | `stakeholder_power_ontology` | incentives, constraints, influence, legitimacy, missing actors |
-| Scenario Capsule | `scenario_causality_ontology` | assumptions, indicators, causal hypotheses, branches, triggers |
-| Output Capsule | `output_trace_ontology` | artifact sections, claim lineage, reuse rules, source receipts |
-| Expert Pick Capsule | `expert_trust_ontology` | reviewer judgment, caveats, freshness, rights, marketplace trust |
-| Graph/Ontology Capsule | `semantic_module_ontology` | reusable terms, aliases, mappings, constraints, compatibility |
-| Unknown or new capsule type | `capsule_specific_ontology` | the local meaning map needed for that capsule's workflows |
+| User Capsule | `user_context_ontology` | role, preferences, authority boundaries, privacy, output style, organization context |
+| Situation Capsule | `situation_policy_ontology` | sources, actors, claims, risks, events, domain meaning, stakeholder power, causal hypotheses, temporal state |
+| Tool Capsule | `tool_method_ontology` | intellectual tool, method steps, input requirements, failure modes, expert caveats, philosophical lens |
+| Output Capsule | `output_trace_ontology` | artifact sections, claim lineage, reuse rules, source receipts, caveats, review state |
+
+## Situation Capsule Semantic Layers
+
+A conflict or policy Situation Capsule can carry many specialized layers while
+remaining one `situation_capsule`:
+
+| Layer | Captures | Why PRAXIS needs it |
+| --- | --- | --- |
+| `source_proof_layer` | source spans, claim support, contradictions, trust state, scope of proof | prevents unsupported synthesis |
+| `actor_claim_temporal_graph` | actors, institutions, claims, events, risks, decisions, valid-time state | keeps the situation inspectable and current |
+| `domain_semantic_layer` | local terms, authorities, instruments, frames, contested meanings | lets PRAXIS understand the issue's vocabulary |
+| `stakeholder_power_layer` | incentives, constraints, influence, legitimacy, missing affected groups | supports stakeholder analysis and conflict mapping |
+| `scenario_causality_layer` | causal hypotheses, assumptions, indicators, branches, triggers | separates current facts from possible futures |
+| `policy_instrument_layer` | instruments, authority, implementation constraints, tradeoffs | supports feasibility and policy design |
+| `risk_and_decision_layer` | uncertainty, escalation triggers, decision clocks, review risks | tells PRAXIS when to caveat or hand off |
+
+For example, a conflict capsule may need actors, armed groups, agencies,
+international organizations, field reports, negotiations, ceasefire events,
+jurisdictional labels, humanitarian constraints, confidence levels, and
+language rules. Those are all internal ontology objects and graph lenses of the
+Situation Capsule.
+
+## Tool Capsule Semantic Layers
+
+A Tool Capsule captures how experts think through a class of work. It may model:
+
+- required inputs;
+- method sequence;
+- source standards;
+- epistemic stance;
+- philosophical or legal distinctions;
+- failure modes and anti-patterns;
+- output hooks;
+- review criteria;
+- examples and counterexamples.
+
+Examples include stakeholder analysis, conflict mapping, ACH, red-team review,
+legitimacy analysis, proportionality analysis, decision-clock analysis,
+feasibility analysis, sourceability audit, and narrative-risk review.
+
+Tool Capsules should guide reasoning without inventing situation facts. A Tool
+Capsule becomes powerful when paired with a Situation Capsule.
+
+## User And Output Ontology Layers
+
+User Capsules can model:
+
+- person, team, or organization identity;
+- mandate and authority boundary;
+- confidentiality and privacy rules;
+- preferred artifacts and review habits;
+- language and register preferences;
+- institutional memory that is approved for this user context.
+
+Output Capsules can model:
+
+- artifact sections;
+- claims and supporting sources;
+- methods used;
+- reviewer caveats;
+- reuse scope;
+- update requirements;
+- audience and language constraints;
+- downstream handoff rules.
 
 ## Universal Layers
 
-All capsule ontologies must carry these layers:
+All capsule ontologies must carry these safeguards:
 
 - sourceability layer: source ids, source spans, hashes, review actions;
 - temporal validity layer: current, stale, superseded, forecast, contested, or
@@ -93,50 +156,17 @@ All capsule ontologies must carry these layers:
 - PRAXIS agent guidance layer: allowed workflows, tool policy, citation policy,
   stop conditions, handoff rules.
 
-These universal layers are safeguards. They do not replace the local ontology.
-The local ontology is what tells PRAXIS that a capsule is about a user's
-authority boundary, a budget-rule interpretation, a stakeholder map, a source
-pack, a reasoning method, or an output lineage.
-
-## Situation Graph Is One Profile
-
-The actor/claim/time graph is valuable for situation and stakeholder work:
-
-```text
-source span -> claim -> actor -> risk -> decision
-      |          |        |       |
-      v          v        v       v
-  provenance   time   incentives caveats
-```
-
-But a user capsule may instead need:
-
-```text
-user role -> authority boundary -> output preference -> language rule
-```
-
-A thinking-device capsule may need:
-
-```text
-method input -> reasoning step -> failure mode -> output rule
-```
-
-An output capsule may need:
-
-```text
-artifact section -> claim -> source receipt -> review caveat -> reuse rule
-```
-
-The shared graph classes make these profiles interoperable. The ontology
-blueprint decides which profile is correct for the capsule.
+These universal layers do not replace the local ontology. The local ontology is
+what tells PRAXIS that a capsule is about a user's authority boundary, a live
+conflict, a stakeholder-analysis method, or a memo's reuse lineage.
 
 ## LLM Build Guidance
 
 When an LLM helps build a capsule, it should use the ontology blueprint before
 extracting or drafting:
 
-1. Identify capsule type and intended PRAXIS workflows.
-2. Select ontology family and semantic layers.
+1. Identify one of the four capsule classes and intended PRAXIS workflows.
+2. Select the ontology family and capsule-specific semantic layers.
 3. Ask extraction questions from the blueprint.
 4. Propose ontology terms, graph nodes, graph edges, reasoning lenses, and
    language rules.
@@ -144,8 +174,8 @@ extracting or drafting:
 6. Mark missing evidence as a gap, not a generated fact.
 7. Stop or hand off when review gates fail.
 
-The ontology blueprint is therefore a planning tool for the LLM and a contract
-for the compiler.
+The ontology blueprint is therefore both a planning tool for the LLM and a
+contract for the compiler.
 
 ## Standards Posture
 
@@ -159,8 +189,9 @@ The blueprint should stay JSON-first and standards-shaped:
   rules;
 - ODRL-shaped rights for permissions, prohibitions, duties, and sharing
   constraints;
-- OWL/RDF/JSON-LD export only when a downstream adapter needs formal semantic
-  interoperability.
+- JSON-LD export for linked-data interoperability;
+- OWL/RDF inference only when a downstream adapter needs formal semantic
+  reasoning.
 
 This preserves a path to serious semantic systems without making the first
 capsule engine depend on a full RDF stack.
@@ -172,9 +203,10 @@ blueprint to decide:
 
 - which semantic layers enter context;
 - which graph lens to display;
-- which reasoning devices to apply first;
+- which Tool Capsule reasoning devices to apply first;
 - which language rules govern output;
-- which stale, rejected, or rights-blocked objects must be hidden or warned;
+- which stale, rejected, unsupported, or rights-blocked objects must be hidden
+  or warned;
 - which review gates require human handoff.
 
 This is how DIALECTICA hands PRAXIS a meaningful knowledge object rather than a

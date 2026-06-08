@@ -18,6 +18,18 @@ use serde_json::Value;
 /// Current capsule schema version used by scaffold fixtures and API contracts.
 pub const CAPSULE_SCHEMA_VERSION: &str = "0.1.0";
 
+/// PRAXIS-importable capsule classes.
+///
+/// More specialized concepts such as sources, stakeholders, scenarios,
+/// domains, expert picks, and graph ontologies are modeled as internal
+/// semantic layers or graph lenses inside these four classes.
+pub const APPROVED_CAPSULE_TYPES: &[&str] = &[
+    "user_capsule",
+    "situation_capsule",
+    "tool_capsule",
+    "output_capsule",
+];
+
 const REGISTERED_NODE_TYPES: &[&str] = &[
     "actor",
     "institution",
@@ -53,6 +65,12 @@ const REGISTERED_EDGE_TYPES: &[&str] = &[
     "has_output_rule",
     "has_rights_policy",
 ];
+
+/// Returns true when the capsule type is part of the PRAXIS-importable contract.
+pub fn is_approved_capsule_type(capsule_type: &str) -> bool {
+    let capsule_type = capsule_type.trim();
+    APPROVED_CAPSULE_TYPES.contains(&capsule_type)
+}
 
 /// Human-review state for a capsule or one of its internal objects.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
@@ -194,6 +212,7 @@ pub struct CapsuleManifest {
     pub freshness: String,
     pub source_count: usize,
     pub review_state: ReviewState,
+    #[schemars(regex(pattern = "^(user_capsule|situation_capsule|tool_capsule|output_capsule)$"))]
     pub capsule_type: String,
     pub rights_profile: String,
     pub graph_profile: String,
@@ -249,9 +268,15 @@ impl CapsuleManifest {
             && !self.schema_version.trim().is_empty()
     }
 
+    /// Returns true when the manifest uses a PRAXIS-importable capsule class.
+    pub fn has_approved_capsule_type(&self) -> bool {
+        is_approved_capsule_type(&self.capsule_type)
+    }
+
     /// Returns true when the manifest can be exported as a PRAXIS-visible bundle.
     pub fn is_export_ready(&self) -> bool {
         self.has_required_identity()
+            && self.has_approved_capsule_type()
             && self.review_state.allows_praxis_use()
             && !self.bundle_digest.trim().is_empty()
     }
@@ -678,6 +703,7 @@ impl CapsuleBundle {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 pub struct CapsuleInspection {
     pub capsule_id: String,
+    #[schemars(regex(pattern = "^(user_capsule|situation_capsule|tool_capsule|output_capsule)$"))]
     pub capsule_type: String,
     pub review_state: ReviewState,
     pub source_count: usize,
@@ -692,6 +718,7 @@ pub struct CapsuleInspection {
 pub struct CapsuleOntologyBlueprint {
     pub blueprint_id: String,
     pub capsule_id: String,
+    #[schemars(regex(pattern = "^(user_capsule|situation_capsule|tool_capsule|output_capsule)$"))]
     pub capsule_type: String,
     pub ontology_family: String,
     pub graph_profile: String,
@@ -880,59 +907,36 @@ fn capsule_type_blueprint(manifest: &CapsuleManifest) -> CapsuleOntologyBlueprin
             ]),
             review_gates: Vec::new(),
         },
-        "team_capsule" => CapsuleOntologyBlueprint {
+        "tool_capsule" => CapsuleOntologyBlueprint {
             blueprint_id: format!("ontology-blueprint:{}", manifest.capsule_id),
             capsule_id: manifest.capsule_id.clone(),
             capsule_type: manifest.capsule_type.clone(),
-            ontology_family: "team_memory_ontology".to_owned(),
-            graph_profile: default_graph_profile(manifest, "team_memory_graph_v1"),
-            semantic_layers: vec![semantic_layer(
-                "team_authority_and_memory_layer",
-                "Capture team mandate, shared sources, recurring decisions, output standards, and review authority.",
-                ["team mandate", "shared sources", "output standards", "review roles"],
-                ["team-approved notes", "review ledger", "source ledger"],
-                "Let PRAXIS use team memory without collapsing it into a single user's preferences.",
-            )],
-            suggested_node_classes: strings(["actor", "institution", "source", "output_contract"]),
-            suggested_edge_classes: strings([
-                "authored_by",
-                "supports",
-                "reviewed_by",
-                "has_output_rule",
-            ]),
-            reasoning_lenses: strings(["institutional memory check", "review authority check"]),
-            extraction_questions: strings([
-                "What belongs to the team rather than one user's private context?",
-                "Which output standards and review authorities govern this team?",
-            ]),
-            praxis_context_guidance: strings([
-                "Use team ontology as shared workflow context with explicit review authority.",
-            ]),
-            review_gates: Vec::new(),
-        },
-        "thinking_device_capsule" | "tool_capsule" => CapsuleOntologyBlueprint {
-            blueprint_id: format!("ontology-blueprint:{}", manifest.capsule_id),
-            capsule_id: manifest.capsule_id.clone(),
-            capsule_type: manifest.capsule_type.clone(),
-            ontology_family: "expert_method_ontology".to_owned(),
-            graph_profile: default_graph_profile(manifest, "reasoning_device_graph_v1"),
+            ontology_family: "tool_method_ontology".to_owned(),
+            graph_profile: default_graph_profile(manifest, "tool_method_graph_v1"),
             semantic_layers: vec![semantic_layer(
                 "method_trace_layer",
-                "Capture the expert method, its inputs, steps, outputs, and failure modes.",
-                ["method steps", "input requirements", "failure modes", "review caveats"],
-                ["expert review", "method examples", "source requirements"],
-                "Tell PRAXIS how to reason, not only what facts to retrieve.",
+                "Capture the intellectual tool, philosophical lens, source requirements, steps, outputs, and failure modes.",
+                ["method steps", "input requirements", "failure modes", "review caveats", "epistemic stance"],
+                ["expert review", "method examples", "source requirements", "counterexamples"],
+                "Tell PRAXIS how to reason through a class of work, not only what facts to retrieve.",
             )],
             suggested_node_classes: strings(["reasoning_device", "claim", "risk", "output_contract"]),
             suggested_edge_classes: strings(["uses_device", "depends_on", "has_output_rule"]),
-            reasoning_lenses: strings(["method transfer", "failure-mode scan", "sourceability check"]),
+            reasoning_lenses: strings([
+                "method transfer",
+                "failure-mode scan",
+                "sourceability check",
+                "expert-lens alignment",
+            ]),
             extraction_questions: strings([
                 "What are the method's required inputs?",
                 "Which reasoning steps must happen in order?",
                 "What would make this method unsafe or misleading?",
+                "Which tacit expert distinctions must the agent preserve?",
             ]),
             praxis_context_guidance: strings([
-                "Use the method ontology to sequence PRAXIS reasoning before drafting.",
+                "Use the tool ontology to sequence PRAXIS reasoning before drafting.",
+                "Do not let the tool invent situation facts; combine it with a Situation Capsule for evidence.",
             ]),
             review_gates: Vec::new(),
         },
@@ -964,181 +968,6 @@ fn capsule_type_blueprint(manifest: &CapsuleManifest) -> CapsuleOntologyBlueprin
             ]),
             praxis_context_guidance: strings([
                 "Use output ontology as artifact memory, not as fresh situation truth.",
-            ]),
-            review_gates: Vec::new(),
-        },
-        "source_capsule" => CapsuleOntologyBlueprint {
-            blueprint_id: format!("ontology-blueprint:{}", manifest.capsule_id),
-            capsule_id: manifest.capsule_id.clone(),
-            capsule_type: manifest.capsule_type.clone(),
-            ontology_family: "source_proof_ontology".to_owned(),
-            graph_profile: default_graph_profile(manifest, "source_proof_graph_v1"),
-            semantic_layers: vec![semantic_layer(
-                "source_proof_layer",
-                "Capture what the source actually says, where it says it, and what it does not prove.",
-                ["source spans", "claims", "definitions", "contradictions", "trust status"],
-                ["source ledger", "hashes", "span locators", "review notes"],
-                "Give PRAXIS precise receipts before it synthesizes or drafts.",
-            )],
-            suggested_node_classes: strings(["source", "source_span", "claim", "concept"]),
-            suggested_edge_classes: strings(["supports", "mentions", "contradicts", "supersedes"]),
-            reasoning_lenses: strings(["sourceability check", "scope-of-proof check"]),
-            extraction_questions: strings([
-                "What does this source directly support?",
-                "Which claims are outside the source scope?",
-            ]),
-            praxis_context_guidance: strings([
-                "Use source ontology to ground claims and prevent unsupported synthesis.",
-            ]),
-            review_gates: Vec::new(),
-        },
-        "domain_capsule" => CapsuleOntologyBlueprint {
-            blueprint_id: format!("ontology-blueprint:{}", manifest.capsule_id),
-            capsule_id: manifest.capsule_id.clone(),
-            capsule_type: manifest.capsule_type.clone(),
-            ontology_family: "domain_semantic_ontology".to_owned(),
-            graph_profile: default_graph_profile(manifest, "domain_ontology_graph_v1"),
-            semantic_layers: vec![semantic_layer(
-                "domain_vocabulary_layer",
-                "Capture domain terms, authorities, instruments, frames, mappings, and contested meanings.",
-                ["concepts", "synonyms", "authorities", "policy instruments", "frame memberships"],
-                ["domain sources", "expert definitions", "reviewed mappings"],
-                "Let PRAXIS understand domain meaning before answering domain-specific questions.",
-            )],
-            suggested_node_classes: strings(["concept", "institution", "policy_instrument", "source"]),
-            suggested_edge_classes: strings(["belongs_to_frame", "regulated_by", "mentions"]),
-            reasoning_lenses: strings(["definition check", "frame conflict check", "authority map"]),
-            extraction_questions: strings([
-                "Which terms carry domain-specific meaning?",
-                "Which authorities define or contest those terms?",
-            ]),
-            praxis_context_guidance: strings([
-                "Use domain ontology as semantic grounding for all downstream capsules.",
-            ]),
-            review_gates: Vec::new(),
-        },
-        "stakeholder_capsule" => CapsuleOntologyBlueprint {
-            blueprint_id: format!("ontology-blueprint:{}", manifest.capsule_id),
-            capsule_id: manifest.capsule_id.clone(),
-            capsule_type: manifest.capsule_type.clone(),
-            ontology_family: "stakeholder_power_ontology".to_owned(),
-            graph_profile: default_graph_profile(manifest, "stakeholder_graph_v1"),
-            semantic_layers: vec![semantic_layer(
-                "stakeholder_power_layer",
-                "Capture actors, incentives, constraints, influence channels, legitimacy, and uncertainty.",
-                ["actors", "incentives", "constraints", "influence", "legitimacy"],
-                ["source spans", "expert caveats", "review actions"],
-                "Help PRAXIS reason about who matters, what they can do, and where evidence is weak.",
-            )],
-            suggested_node_classes: strings([
-                "actor",
-                "institution",
-                "claim",
-                "risk",
-                "policy_instrument",
-            ]),
-            suggested_edge_classes: strings([
-                "influences",
-                "incentivized_by",
-                "regulated_by",
-                "supports",
-                "contradicts",
-            ]),
-            reasoning_lenses: strings([
-                "stakeholder analysis",
-                "incentive map",
-                "missing-actor scan",
-            ]),
-            extraction_questions: strings([
-                "Which actors have formal authority, informal influence, or implementation capacity?",
-                "Which incentive claims are sourced and which are expert caveats?",
-            ]),
-            praxis_context_guidance: strings([
-                "Use stakeholder ontology to surface influence, incentives, and missing actors with caveats.",
-            ]),
-            review_gates: Vec::new(),
-        },
-        "scenario_capsule" => CapsuleOntologyBlueprint {
-            blueprint_id: format!("ontology-blueprint:{}", manifest.capsule_id),
-            capsule_id: manifest.capsule_id.clone(),
-            capsule_type: manifest.capsule_type.clone(),
-            ontology_family: "scenario_causality_ontology".to_owned(),
-            graph_profile: default_graph_profile(manifest, "scenario_graph_v1"),
-            semantic_layers: vec![semantic_layer(
-                "scenario_branch_layer",
-                "Capture plausible futures, indicators, causal hypotheses, assumptions, and decision triggers.",
-                ["events", "signals", "assumptions", "risks", "decision triggers"],
-                ["source spans", "temporal ledger", "scenario review notes"],
-                "Let PRAXIS reason over futures without presenting forecasts as settled facts.",
-            )],
-            suggested_node_classes: strings(["event", "claim", "risk", "decision", "source_span"]),
-            suggested_edge_classes: strings(["causes", "depends_on", "supersedes", "supports"]),
-            reasoning_lenses: strings(["scenario tree", "indicator watch", "assumption audit"]),
-            extraction_questions: strings([
-                "Which assumptions separate one scenario branch from another?",
-                "Which indicators would update or invalidate this branch?",
-            ]),
-            praxis_context_guidance: strings([
-                "Use scenario ontology to distinguish plausible futures from current facts.",
-            ]),
-            review_gates: Vec::new(),
-        },
-        "expert_pick_capsule" => CapsuleOntologyBlueprint {
-            blueprint_id: format!("ontology-blueprint:{}", manifest.capsule_id),
-            capsule_id: manifest.capsule_id.clone(),
-            capsule_type: manifest.capsule_type.clone(),
-            ontology_family: "expert_trust_ontology".to_owned(),
-            graph_profile: default_graph_profile(manifest, "expert_pick_graph_v1"),
-            semantic_layers: vec![semantic_layer(
-                "expert_trust_layer",
-                "Capture reviewer judgment, caveats, freshness, scope, rights, and marketplace trust signals.",
-                ["reviewer judgment", "caveats", "freshness", "rights", "scope"],
-                ["review ledger", "rights profile", "marketplace listing"],
-                "Let PRAXIS know why this capsule is recommended and where that recommendation stops.",
-            )],
-            suggested_node_classes: strings(["review_action", "source", "claim", "rights_policy"]),
-            suggested_edge_classes: strings([
-                "reviewed_by",
-                "supports",
-                "has_rights_policy",
-                "forbidden_for",
-            ]),
-            reasoning_lenses: strings(["trust receipt", "scope check", "freshness check"]),
-            extraction_questions: strings([
-                "What exactly did the expert approve, caveat, or recommend?",
-                "Where does the expert-pick scope expire or require escalation?",
-            ]),
-            praxis_context_guidance: strings([
-                "Use expert-pick ontology as trust metadata, not as replacement for source receipts.",
-            ]),
-            review_gates: Vec::new(),
-        },
-        "graph_ontology_capsule" => CapsuleOntologyBlueprint {
-            blueprint_id: format!("ontology-blueprint:{}", manifest.capsule_id),
-            capsule_id: manifest.capsule_id.clone(),
-            capsule_type: manifest.capsule_type.clone(),
-            ontology_family: "semantic_module_ontology".to_owned(),
-            graph_profile: default_graph_profile(manifest, "domain_ontology_graph_v1"),
-            semantic_layers: vec![semantic_layer(
-                "semantic_module_layer",
-                "Capture reusable terms, aliases, constraints, mappings, and graph-profile guidance for other capsules.",
-                ["terms", "aliases", "constraints", "mappings", "graph profiles"],
-                ["domain sources", "expert review", "schema constraints"],
-                "Let PRAXIS and DIALECTICA reuse a reviewed semantic module across compatible capsules.",
-            )],
-            suggested_node_classes: strings(["concept", "institution", "policy_instrument", "source"]),
-            suggested_edge_classes: strings(["belongs_to_frame", "regulated_by", "mentions"]),
-            reasoning_lenses: strings([
-                "semantic compatibility",
-                "mapping review",
-                "constraint check",
-            ]),
-            extraction_questions: strings([
-                "Which local terms can be reused across capsules?",
-                "Which mappings or aliases require expert review before inheritance?",
-            ]),
-            praxis_context_guidance: strings([
-                "Use graph/ontology capsules as semantic modules with compatibility checks.",
             ]),
             review_gates: Vec::new(),
         },
@@ -1174,11 +1003,39 @@ fn capsule_type_blueprint(manifest: &CapsuleManifest) -> CapsuleOntologyBlueprin
         blueprint.graph_profile = default_graph_profile(manifest, "situation_graph_v1");
         blueprint.semantic_layers = vec![
             semantic_layer(
+                "source_proof_layer",
+                "Capture what each source directly supports, contradicts, qualifies, or does not prove.",
+                ["source spans", "claim support", "contradictions", "trust status", "scope of proof"],
+                ["source ledger", "hashes", "span locators", "review notes"],
+                "Give PRAXIS precise receipts before it synthesizes situation context.",
+            ),
+            semantic_layer(
                 "actor_claim_temporal_graph",
                 "Capture the situation's actors, claims, events, risks, decisions, and valid-time state.",
                 ["actors", "claims", "events", "risks", "decisions", "temporal status"],
                 ["source spans", "temporal ledger", "review actions"],
                 "Use the source-backed situation graph to guide PRAXIS analysis and warnings.",
+            ),
+            semantic_layer(
+                "domain_semantic_layer",
+                "Capture the domain terms, authorities, instruments, frames, and contested meanings that define the issue.",
+                ["concepts", "synonyms", "authorities", "policy instruments", "frame memberships"],
+                ["domain sources", "expert definitions", "reviewed mappings"],
+                "Help PRAXIS interpret source language through the right policy vocabulary.",
+            ),
+            semantic_layer(
+                "stakeholder_power_layer",
+                "Capture actors, incentives, constraints, influence channels, legitimacy, missing affected groups, and uncertainty.",
+                ["actors", "incentives", "constraints", "influence", "legitimacy", "missing actors"],
+                ["source spans", "expert caveats", "review actions"],
+                "Surface who matters, what they can do, and where actor reasoning is weak or speculative.",
+            ),
+            semantic_layer(
+                "scenario_causality_layer",
+                "Capture causal hypotheses, plausible branches, assumptions, indicators, and triggers without turning forecasts into facts.",
+                ["events", "signals", "assumptions", "risks", "decision triggers", "causal claims"],
+                ["source spans", "temporal ledger", "scenario review notes"],
+                "Let PRAXIS reason about possible futures while preserving current-fact boundaries.",
             ),
             semantic_layer(
                 "policy_instrument_layer",
@@ -1212,9 +1069,16 @@ fn capsule_type_blueprint(manifest: &CapsuleManifest) -> CapsuleOntologyBlueprin
             "supersedes",
             "depends_on",
             "regulated_by",
+            "influences",
+            "incentivized_by",
+            "causes",
         ]);
         blueprint.reasoning_lenses = strings([
             "stakeholder analysis",
+            "conflict mapping",
+            "scenario tree",
+            "definition check",
+            "scope-of-proof check",
             "decision-clock analysis",
             "sourceability check",
             "temporal freshness check",
@@ -1222,6 +1086,9 @@ fn capsule_type_blueprint(manifest: &CapsuleManifest) -> CapsuleOntologyBlueprin
         blueprint.extraction_questions = strings([
             "Which actors, institutions, claims, risks, and decisions define the situation?",
             "Which claims are current, stale, superseded, forecast, contested, or unknown?",
+            "Which terms, authorities, and instruments carry domain-specific meaning?",
+            "Which actor incentives or constraints are sourced, inferred, or disputed?",
+            "Which causal hypotheses and scenario branches require explicit uncertainty?",
             "Which causal or feasibility claims need explicit caveats?",
         ]);
         blueprint.praxis_context_guidance = strings([
@@ -1350,6 +1217,20 @@ fn validate_manifest(bundle: &CapsuleBundle, report: &mut ValidationReport) {
             ),
             Some(bundle.manifest.capsule_id.clone()),
             "Export with the current schema version or add a migration.",
+        ));
+    }
+
+    if !bundle.manifest.has_approved_capsule_type() {
+        report.push(ValidationFinding::error(
+            "unsupported_capsule_type",
+            "manifest.capsule_type",
+            format!(
+                "Capsule type '{}' is not PRAXIS-importable. Use one of: {}.",
+                bundle.manifest.capsule_type,
+                APPROVED_CAPSULE_TYPES.join(", ")
+            ),
+            Some(bundle.manifest.capsule_id.clone()),
+            "Model specialized source, stakeholder, domain, scenario, expert-pick, or graph concepts as semantic layers inside a user, situation, tool, or output capsule.",
         ));
     }
 
@@ -1637,9 +1518,9 @@ mod tests {
     #[test]
     fn approved_manifest_with_digest_is_export_ready() {
         let manifest = CapsuleManifest::new(
-            "cap_stakeholder_001",
-            "Stakeholder capsule",
-            "stakeholder_capsule",
+            "cap_situation_001",
+            "Situation capsule",
+            "situation_capsule",
             ReviewState::Approved,
             "sha256:test",
         );
@@ -1650,13 +1531,27 @@ mod tests {
     #[test]
     fn draft_manifest_is_not_export_ready() {
         let manifest = CapsuleManifest::new(
-            "cap_stakeholder_001",
-            "Stakeholder capsule",
-            "stakeholder_capsule",
+            "cap_tool_001",
+            "Tool capsule",
+            "tool_capsule",
             ReviewState::Draft,
             "sha256:test",
         );
 
         assert!(!manifest.is_export_ready());
+    }
+
+    #[test]
+    fn unsupported_capsule_type_is_not_export_ready() {
+        let manifest = CapsuleManifest::new(
+            "cap_source_001",
+            "Source pack",
+            "source_capsule",
+            ReviewState::Approved,
+            "sha256:test",
+        );
+
+        assert!(!manifest.is_export_ready());
+        assert!(!manifest.has_approved_capsule_type());
     }
 }

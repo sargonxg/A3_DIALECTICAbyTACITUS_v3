@@ -135,7 +135,7 @@ Before building service code, the repo needs:
 - Rust workspace scaffold;
 - capsule JSON schema;
 - fixture capsule bundle;
-- typed example capsules for user, situation, thinking-device, and output
+- typed example capsules for user, situation, tool, and output
   profiles;
 - contract tests for manifest, source ledger, review ledger, and export;
 - graph profile registry alignment;

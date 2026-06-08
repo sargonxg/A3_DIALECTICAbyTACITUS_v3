@@ -32,7 +32,7 @@ explicitly while coding.
 | P1 | Evals are scheduled too late in the plan. | If evals wait until the end, the compiler may optimize for valid structure instead of better policy output. | Add fixture eval scaffolding as soon as context-pack export exists, even before model-powered extraction. |
 | P1 | Checksums and signatures are placeholders. | This is the trust boundary for portable capsules and marketplace-style reuse. | Add digest verification before signing; signing can remain placeholder until key management is designed. |
 | P1 | Store migrations may pull the team into infrastructure early. | PostgreSQL matters, but it should not block local capsule proof. | Keep migrations after fixture build and context pack; design repository traits so local fixture mode remains first-class. |
-| P2 | Example capsules are not yet validated by one shared envelope. | Examples can drift into marketing samples instead of executable contracts. | Add one validator path for user, situation, thinking-device, and output examples. |
+| P2 | Example capsules are not yet validated by one shared envelope. | Examples can drift into marketing samples instead of executable contracts. | Add one validator path for user, situation, tool, and output examples. |
 | P2 | Research ledger is strong but not yet release-gated. | Future agents may add graph or memory adapters because they look attractive. | Require an ADR and eval evidence before promoting any graph, memory, vector, or MCP adapter to a required dependency. |
 
 ## Improvement Series

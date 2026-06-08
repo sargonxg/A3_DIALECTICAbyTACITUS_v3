@@ -21,7 +21,7 @@ Every capsule should be useful to three readers:
 PRAXIS Capsule
   |
   +-- manifest              identity, type, status, digest, compatibility
-  +-- capsule               user/team/situation/policy context
+  +-- capsule               user/situation/tool/output context
   +-- source ledger         documents, spans, hashes, provenance
   +-- temporal ledger       validity windows, stale/superseded/contested facts
   +-- ontology blueprint    planner for capsule-specific semantic layers
@@ -84,7 +84,9 @@ object needs:
 - PRAXIS visualization hints.
 
 Graph engines such as LadybugDB may accelerate projection, exploration, and
-graph algorithms, but the signed bundle and PostgreSQL ledger remain canonical.
+graph algorithms, but they are optional adapters. The signed bundle, embedded
+graph, source ledger, review ledger, and runtime database projection remain the
+canonical state.
 
 ## Semantic Layer Requirements
 
@@ -101,23 +103,28 @@ Do not require a full RDF stack in the first validator. Design fields so a
 later RDF/OWL/SHACL adapter can be built without changing the capsule contract.
 
 Do not treat `actor`, `claim`, and `institution` as the default ontology for
-all capsules. Those classes are central for situation and stakeholder work. A
-user capsule, output capsule, thinking-device capsule, source capsule, or future
-domain-specific capsule may need different local semantic layers. The shared
-graph registry gives PRAXIS stable export names; the ontology blueprint gives
-the capsule its expert lens.
+all capsules. Those classes are central for situation and conflict work. A user
+capsule, tool capsule, and output capsule need different local semantic layers.
+The shared graph registry gives PRAXIS stable export names; the ontology
+blueprint gives each capsule its expert lens.
 
 ## Capsule Type Profiles
+
+PRAXIS imports exactly four top-level capsule classes. Specialized structures
+such as sources, stakeholders, scenarios, domain ontologies, expert picks, and
+graph modules are layers, lenses, or metadata inside those four classes.
 
 | Type | Must emphasize | Ontology family | Graph profile | Agent behavior |
 | --- | --- | --- | --- | --- |
 | User Capsule | preferences, expertise, voice, permission boundary | `user_context_ontology` | `user_context_graph_v1` | personalize only inside explicit scope |
-| Situation Capsule | live facts, actors, claims, risks, decision clock | `situation_policy_ontology` | `situation_graph_v1` | answer with temporal and source discipline |
-| Thinking Device Capsule | method steps, failure modes, examples, review criteria | `expert_method_ontology` | `reasoning_device_graph_v1` | structure reasoning before drafting |
+| Situation Capsule | sources, live facts, actors, claims, stakeholders, risks, caveats, domain meaning, decision clock | `situation_policy_ontology` | `situation_graph_v1` | answer with temporal and source discipline |
+| Tool Capsule | method steps, intellectual lenses, failure modes, examples, review criteria | `tool_method_ontology` | `tool_method_graph_v1` | structure reasoning before drafting |
 | Output Capsule | artifact lineage, citations, caveats, reuse rules | `output_trace_ontology` | `output_trace_graph_v1` | reuse or update only within contract |
 
-Other capsule types follow the same layer structure and specialize the profile,
-not the bundle format.
+All other labels are internal specialization. For example, a conflict Situation
+Capsule may contain a `stakeholder_power_layer`, `scenario_causality_layer`,
+`source_proof_layer`, and `domain_semantic_layer`; it is still a
+`situation_capsule`.
 
 ## Language Profile Contract
 
@@ -194,7 +201,7 @@ Use these examples when implementing Lane A and Lane B:
 
 - `fixtures/example-capsules/user-capsule.example.json`
 - `fixtures/example-capsules/situation-capsule.example.json`
-- `fixtures/example-capsules/thinking-device-capsule.example.json`
+- `fixtures/example-capsules/tool-capsule.example.json`
 - `fixtures/example-capsules/output-capsule.example.json`
 
 They are intentionally small. Their purpose is to lock the shape before larger

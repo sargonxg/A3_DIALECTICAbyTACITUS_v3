@@ -38,6 +38,8 @@ Lightweight repository graphics and documentation assets.
 Current assets:
 
 - `dialectica-mark.svg`;
+- `four-capsule-model.svg`;
+- `capsule-anatomy.svg`;
 - `capsule-stack.svg`;
 - `embedded-graph.svg`;
 - `agent-build-flow.svg`;
@@ -84,7 +86,7 @@ Current examples:
 
 - `fixtures/example-capsules/user-capsule.example.json`;
 - `fixtures/example-capsules/situation-capsule.example.json`;
-- `fixtures/example-capsules/thinking-device-capsule.example.json`;
+- `fixtures/example-capsules/tool-capsule.example.json`;
 - `fixtures/example-capsules/output-capsule.example.json`.
 - `fixtures/golden-policy-capsule/expected-bundle/`.
 

@@ -36,7 +36,7 @@ python -m compileall tools/python
 python -m unittest discover tools/python/tests
 python -m json.tool fixtures/example-capsules/user-capsule.example.json > $null
 python -m json.tool fixtures/example-capsules/situation-capsule.example.json > $null
-python -m json.tool fixtures/example-capsules/thinking-device-capsule.example.json > $null
+python -m json.tool fixtures/example-capsules/tool-capsule.example.json > $null
 python -m json.tool fixtures/example-capsules/output-capsule.example.json > $null
 ```
 

@@ -27,28 +27,30 @@ capsule type + workflow
   -> PRAXIS preview/context pack
 ```
 
-Actor/claim/time graphs are first-class for situation, stakeholder, source, and
-scenario capsules. They are not the default mental model for user, output,
-thinking-device, expert-pick, or future capsule categories.
+Actor/claim/time graphs are first-class for Situation Capsules, especially
+conflict and policy matters. They are not the default mental model for User,
+Tool, or Output Capsules. Source proof, stakeholder maps, scenario trees,
+domain semantics, expert picks, and graph modules are graph lenses or metadata
+inside the four PRAXIS-importable capsule classes.
 
 ## Canonical Node Classes
 
 | Node class | Required for | Meaning |
 | --- | --- | --- |
-| `actor` | stakeholder, situation, scenario | person, organization, coalition, stakeholder group |
-| `institution` | stakeholder, domain, situation | public body, agency, court, firm, NGO, platform |
-| `source` | all source-backed capsules | source document, dataset, interview, note, feed item |
-| `source_span` | all source-backed capsules | passage, page, table, paragraph, timestamp, or cell |
-| `claim` | situation, source, scenario | factual, causal, normative, forecast, or procedural claim |
-| `event` | situation, scenario, decision-clock | dated occurrence or procedural milestone |
-| `concept` | domain, ontology, situation | ontology term or frame concept |
-| `policy_instrument` | domain, situation, stakeholder | law, rule, subsidy, tax, sanction, target, procedure |
-| `risk` | situation, scenario, output | analytical, legal, implementation, political, ethical risk |
-| `decision` | situation, output, scenario | choice point, recommendation, review decision, output action |
-| `reasoning_device` | thinking-device, situation | method used to reason through the issue |
+| `actor` | situation, user | person, organization, coalition, stakeholder group |
+| `institution` | situation, user | public body, agency, court, firm, NGO, platform |
+| `source` | situation, tool, output | source document, dataset, interview, note, feed item |
+| `source_span` | situation, tool, output | passage, page, table, paragraph, timestamp, or cell |
+| `claim` | situation, output | factual, causal, normative, forecast, or procedural claim |
+| `event` | situation, output | dated occurrence or procedural milestone |
+| `concept` | situation, tool, user | ontology term or frame concept |
+| `policy_instrument` | situation, tool | law, rule, subsidy, tax, sanction, target, procedure |
+| `risk` | situation, tool, output | analytical, legal, implementation, political, ethical risk |
+| `decision` | situation, output | choice point, recommendation, review decision, output action |
+| `reasoning_device` | tool, situation, output | method used to reason through the issue |
 | `review_action` | all promoted capsules | approval, rejection, caveat, escalation, recertification |
 | `output_contract` | output, situation | rules for memo, brief, graph preview, or agent context pack |
-| `rights_policy` | marketplace, expert-pick | permissions, prohibitions, duties, export/sharing rules |
+| `rights_policy` | all promoted capsules | permissions, prohibitions, duties, export/sharing rules |
 
 ## Canonical Edge Classes
 
@@ -119,8 +121,8 @@ but PRAXIS should not use them silently for workflow grounding.
 ```json
 {
   "schema_version": "0.1.0",
-  "capsule_id": "cap_eu_energy_stakeholders_2026_q3",
-  "graph_profile": "stakeholder_graph_v1",
+  "capsule_id": "cap_eu_energy_situation_2026_q3",
+  "graph_profile": "situation_graph_v1",
   "nodes": [
     {
       "id": "actor:european-commission",
@@ -172,7 +174,7 @@ but PRAXIS should not use them silently for workflow grounding.
     }
   ],
   "layout_hints": {
-    "default_lens": "stakeholder_map",
+    "default_lens": "stakeholder_power_lens",
     "ranked_focus_nodes": ["actor:european-commission"],
     "review_overlay": true,
     "temporal_filter_default": "current"
@@ -194,8 +196,8 @@ counts:
 ```json
 {
   "schema_version": "graph_preview_v1",
-  "capsule_id": "cap_eu_energy_stakeholders_2026_q3",
-  "graph_profile": "stakeholder_graph_v1",
+  "capsule_id": "cap_eu_energy_situation_2026_q3",
+  "graph_profile": "situation_graph_v1",
   "nodes": [
     {
       "id": "actor:european-commission",
@@ -246,15 +248,22 @@ registered vocabulary.
 | Capsule type | Graph profile | Required nodes | Required edges | PRAXIS lens |
 | --- | --- | --- | --- | --- |
 | User Capsule | `user_context_graph_v1` | `actor`, `concept`, `output_contract`, `rights_policy` | `uses_device`, `has_output_rule`, `has_rights_policy` | user context |
-| Team Capsule | `team_memory_graph_v1` | `actor`, `institution`, `source`, `output_contract` | `authored_by`, `supports`, `reviewed_by` | team memory |
-| Situation Capsule | `situation_graph_v1` | `actor`, `institution`, `claim`, `event`, `risk`, `source_span` | `supports`, `mentions`, `contradicts`, `supersedes`, `depends_on` | situation map |
-| Source Capsule | `source_proof_graph_v1` | `source`, `source_span`, `claim`, `concept` | `supports`, `mentions`, `contradicts`, `supersedes` | source proof |
-| Domain Capsule | `domain_ontology_graph_v1` | `concept`, `institution`, `policy_instrument`, `source` | `belongs_to_frame`, `regulated_by`, `mentions` | ontology explorer |
-| Thinking Device Capsule | `reasoning_device_graph_v1` | `reasoning_device`, `claim`, `risk`, `output_contract` | `uses_device`, `depends_on`, `has_output_rule` | method trace |
-| Stakeholder Capsule | `stakeholder_graph_v1` | `actor`, `institution`, `claim`, `risk`, `policy_instrument` | `influences`, `incentivized_by`, `regulated_by`, `supports`, `contradicts` | stakeholder map |
-| Scenario Capsule | `scenario_graph_v1` | `event`, `claim`, `risk`, `decision`, `source_span` | `causes`, `depends_on`, `supersedes`, `supports` | scenario tree |
+| Situation Capsule | `situation_graph_v1` | `actor`, `institution`, `claim`, `event`, `risk`, `source`, `source_span`, `concept`, `policy_instrument` | `supports`, `mentions`, `contradicts`, `supersedes`, `depends_on`, `regulated_by`, `influences`, `incentivized_by`, `causes` | situation map with source, stakeholder, scenario, and domain lenses |
+| Tool Capsule | `tool_method_graph_v1` | `reasoning_device`, `claim`, `risk`, `output_contract`, `concept` | `uses_device`, `depends_on`, `has_output_rule`, `belongs_to_frame`, `supports` | method trace |
 | Output Capsule | `output_trace_graph_v1` | `output_contract`, `claim`, `source_span`, `reasoning_device`, `review_action` | `supports`, `uses_device`, `reviewed_by`, `has_output_rule` | artifact trace |
-| Expert Pick Capsule | `expert_pick_graph_v1` | `review_action`, `source`, `claim`, `rights_policy` | `reviewed_by`, `supports`, `has_rights_policy`, `forbidden_for` | trust receipt |
+
+### Situation Graph Lenses
+
+| Lens | Uses | Typical purpose |
+| --- | --- | --- |
+| `source_proof_lens` | `source`, `source_span`, `claim`, `supports`, `contradicts`, `supersedes` | prove what the source does and does not support |
+| `domain_semantic_lens` | `concept`, `institution`, `policy_instrument`, `belongs_to_frame`, `regulated_by` | make local terms, authorities, and instruments legible |
+| `stakeholder_power_lens` | `actor`, `institution`, `risk`, `influences`, `incentivized_by` | map actors, incentives, constraints, legitimacy, and missing groups |
+| `scenario_causality_lens` | `event`, `claim`, `risk`, `decision`, `causes`, `depends_on` | separate current facts from assumptions, indicators, branches, and triggers |
+
+These lenses do not create new capsule classes. They are visualization,
+retrieval, and reasoning views over the embedded graph inside a Situation
+Capsule.
 
 ## Graph Adapter Profiles
 

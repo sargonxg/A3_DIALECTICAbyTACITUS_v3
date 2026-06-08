@@ -25,8 +25,8 @@ Normative companion pages added in Revision 5:
   and edge profiles, semantic export anchors, and PRAXIS visualization rules.
 - `docs/EXPERT_REVIEW_AND_MARKETPLACE.md` for human gates, review objects,
   reviewer roles, promotion gates, forking, and marketplace safety.
-- `docs/CAPSULE_BUILD_EXAMPLES.md` for concrete stakeholder-analysis,
-  decision-clock, thinking-device, and output-capsule examples.
+- `docs/CAPSULE_BUILD_EXAMPLES.md` for concrete situation, decision-clock
+  lens, tool-capsule, and output-capsule examples.
 
 ## 0. Executive Decision
 

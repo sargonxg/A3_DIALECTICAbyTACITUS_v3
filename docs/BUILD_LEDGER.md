@@ -118,6 +118,33 @@ Evidence:
 - remote GitHub About metadata checked with `gh repo view`; description,
   homepage, topics, default branch, and Apache-2.0 license match the repository
   profile guidance;
+
+## 2026-06-08 - Four Capsule Contract
+
+Status: active taxonomy and validation contract.
+
+Actions:
+
+- fixed the PRAXIS-importable capsule classes to User, Situation, Tool, and
+  Output;
+- moved source proof, domain semantics, stakeholder maps, scenario branches,
+  expert picks, and graph modules into internal semantic layers, graph lenses,
+  review metadata, or marketplace metadata;
+- renamed the legacy method fixture to `tool-capsule.example.json`;
+- added README diagrams for the four capsule model and capsule anatomy;
+- added Rust validation and schema pattern guidance for the four allowed
+  `capsule_type` values;
+- updated API, graph, ontology, data-model, local-development, CI, and example
+  docs to prevent the old taxonomy from reappearing.
+
+Evidence:
+
+- stale taxonomy search now leaves only intentional negative tests for
+  unsupported old types;
+- graph registry keeps the broad node and edge vocabulary while narrowing the
+  top-level capsule API;
+- LadybugDB remains documented as an optional projection adapter, not canonical
+  state.
 - terminology scan found no banned product-shortcut, messy-context,
   proprietary-license, or placeholder-marker language in the checked repository
   scope.

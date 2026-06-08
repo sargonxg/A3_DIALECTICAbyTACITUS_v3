@@ -17,7 +17,7 @@ Current examples:
 
 - `example-capsules/user-capsule.example.json`
 - `example-capsules/situation-capsule.example.json`
-- `example-capsules/thinking-device-capsule.example.json`
+- `example-capsules/tool-capsule.example.json`
 - `example-capsules/output-capsule.example.json`
 
 These are single-file projections of the bundle layers. They exist to make the

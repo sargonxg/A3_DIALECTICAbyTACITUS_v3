@@ -53,6 +53,18 @@ adapters until an ADR promotes them.
 - `created_at`
 - `updated_at`
 
+`capsule_type` must be one of:
+
+- `user_capsule`
+- `situation_capsule`
+- `tool_capsule`
+- `output_capsule`
+
+Specialized structures such as source packs, stakeholder maps, scenario
+branches, domain ontologies, and expert recommendations should be modeled in
+semantic-layer, graph-lens, review, and marketplace tables linked to one of
+these four capsule rows.
+
 ### `sources`
 
 - `id`

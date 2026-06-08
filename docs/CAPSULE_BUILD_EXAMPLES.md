@@ -5,10 +5,56 @@
 This page shows how real policy capsules are built. The examples are concrete
 enough to guide implementation and broad enough to scale across policy domains.
 
-## Example 1: Stakeholder Analysis Capsule
+## Example 1: User Capsule For An Analyst Or Organization
 
-Goal: build a capsule that helps PRAXIS generate a stakeholder map and decision
-brief for an industrial electricity price-support policy.
+Goal: build a User Capsule that tells PRAXIS who is doing the work, what their
+mandate is, which language and review rules apply, and where the agent must
+stop.
+
+Typical inputs:
+
+```text
+user_context/
+  onboarding_notes.md
+  approved_writing_samples/
+  team_mandate.md
+  confidentiality_rules.md
+  prior_review_actions.jsonl
+  preferred_output_contracts.json
+```
+
+The User Capsule should not become surveillance memory. It should contain
+reviewed, explicit, scope-bound context:
+
+```json
+{
+  "capsule_type": "user_capsule",
+  "identity_context": {
+    "user_role": "policy analyst",
+    "organization": "synthetic public-policy unit",
+    "mandate": "prepare source-grounded decision support for senior reviewers",
+    "authority_boundary": "may draft analysis, must not approve public recommendations"
+  },
+  "language_profile": {
+    "audience_register": "senior_policy_brief",
+    "approved_terms": ["source-backed", "reviewed caveat", "current as of"],
+    "blocked_phrases": ["obviously", "guarantees", "proves intent"]
+  },
+  "agent_guidance": {
+    "allowed_workflows": ["ask_praxis", "brief_draft", "source_gap_review"],
+    "stop_conditions": ["public_release_without_reviewer", "private_context_leakage"],
+    "handoff_policy": "ask reviewer before external publication"
+  }
+}
+```
+
+PRAXIS uses this capsule as personalization and authority context. It must not
+treat the user's preferences as facts about the world.
+
+## Example 2: Situation Capsule With Stakeholder Lens
+
+Goal: build a Situation Capsule that helps PRAXIS generate a stakeholder map and
+decision brief for an industrial electricity price-support policy.
 
 ### Inputs
 
@@ -33,9 +79,10 @@ conflict so the capsule proves temporal and contradiction handling.
 1. ingest source pack
 2. normalize source spans
 3. extract actors, claims, dates, and policy instruments
-4. map actors to incentives and constraints
+4. create the situation ontology with source-proof, stakeholder, domain, and
+   temporal lenses
 5. build embedded graph
-6. apply stakeholder-analysis reasoning device
+6. link compatible Tool Capsules, such as stakeholder analysis
 7. identify source gaps and contested claims
 8. request expert review
 9. compile signed capsule bundle
@@ -105,9 +152,11 @@ state, and an explanation.
 }
 ```
 
-### Thinking Device: Stakeholder Analysis
+### Tool Link: Stakeholder Analysis
 
-The stakeholder-analysis device captures tacit policy method.
+The stakeholder-analysis Tool Capsule captures tacit policy method. The
+Situation Capsule records that this tool is compatible and should be applied
+when PRAXIS builds the stakeholder map or decision brief.
 
 ```json
 {
@@ -162,6 +211,7 @@ PRAXIS should receive a compact pack:
 ```json
 {
   "capsule_id": "cap_eu_energy_stakeholders_2026_q3",
+  "capsule_type": "situation_capsule",
   "task_fit": ["stakeholder_map", "decision_brief", "risk_register"],
   "summary": "Stakeholder context for industrial electricity price support.",
   "must_use_sources": ["source:commission_guidance", "source:budget_note"],
@@ -181,10 +231,12 @@ PRAXIS should receive a compact pack:
 }
 ```
 
-## Example 2: Decision Clock Capsule
+## Example 3: Decision Clock Lens Or Tool
 
-Goal: tell PRAXIS what deadlines, review moments, source expiry dates, and
-decision gates matter.
+Goal: model deadlines, review moments, source expiry dates, and decision gates.
+This is usually a temporal lens inside a Situation Capsule. It can also be
+captured as a Tool Capsule when the reusable method is "decision-clock
+analysis."
 
 Typical contents:
 
@@ -206,10 +258,10 @@ Source publication -> Claim validity -> Review expiry -> Decision deadline
   source node         temporal fact      review action       decision node
 ```
 
-Use this capsule when PRAXIS must answer, "What is true now, what changed, and
+Use this lens when PRAXIS must answer, "What is true now, what changed, and
 what must be decided before the next gate?"
 
-## Example 3: Thinking Device Capsule
+## Example 4: Tool Capsule
 
 Goal: package a reusable intellectual tool, such as ACH, red-team review, or
 distributional analysis.
@@ -228,7 +280,7 @@ Contents:
 This capsule can be combined with a Situation Capsule. PRAXIS then gets both
 the issue context and the method for reasoning about it.
 
-## Example 4: Output Capsule
+## Example 5: Output Capsule
 
 Goal: preserve a completed memo, brief, risk register, or scenario analysis as
 a reusable source-grounded object.

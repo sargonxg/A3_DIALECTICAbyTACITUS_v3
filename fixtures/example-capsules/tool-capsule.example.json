@@ -1,9 +1,9 @@
 {
-  "example_note": "Single-file projection of the production bundle files for a synthetic Thinking Device Capsule.",
+  "example_note": "Single-file projection of the production bundle files for a synthetic Tool Capsule.",
   "manifest": {
     "capsule_id": "cap_tool_stakeholder_analysis_fixture",
     "schema_version": "0.1.0",
-    "title": "Stakeholder Analysis Thinking Device",
+    "title": "Stakeholder Analysis Tool",
     "summary": "Synthetic expert reasoning tool for mapping actors, incentives, constraints, and review risks.",
     "created_at": "2026-06-07T00:00:00Z",
     "compiled_at": "2026-06-07T00:00:00Z",
@@ -13,12 +13,12 @@
     "freshness": "current",
     "source_count": 2,
     "review_state": "approved",
-    "capsule_type": "thinking_device_capsule",
+    "capsule_type": "tool_capsule",
     "rights_profile": "shareable_method_fixture",
-    "graph_profile": "reasoning_device_graph_v1",
+    "graph_profile": "tool_method_graph_v1",
     "reasoning_profile": "stakeholder_analysis_v1",
     "compatibility_profile": "may_combine_with_user_situation_output",
-    "bundle_digest": "sha256:fixture-thinking-device",
+    "bundle_digest": "sha256:fixture-tool",
     "compiler_version": "dialectica-compiler/0.1.0",
     "capsule_health": "usable"
   },
@@ -128,7 +128,7 @@
   "graph_slice": {
     "schema_version": "0.1.0",
     "capsule_id": "cap_tool_stakeholder_analysis_fixture",
-    "graph_profile": "reasoning_device_graph_v1",
+    "graph_profile": "tool_method_graph_v1",
     "nodes": [
       {
         "id": "reasoning_device:stakeholder_analysis_v1",
@@ -223,12 +223,12 @@
       "dialectica": "https://tacitus.me/ns/dialectica#"
     },
     "@id": "urn:praxis:capsule:cap_tool_stakeholder_analysis_fixture",
-    "@type": "dialectica:ThinkingDeviceCapsule",
-    "dc:title": "Stakeholder Analysis Thinking Device",
-    "prov:wasGeneratedBy": "urn:dialectica:compile-run:fixture-thinking-device"
+    "@type": "dialectica:ToolCapsule",
+    "dc:title": "Stakeholder Analysis Tool",
+    "prov:wasGeneratedBy": "urn:dialectica:compile-run:fixture-tool"
   },
   "graph_constraints": {
-    "graph_profile": "reasoning_device_graph_v1",
+    "graph_profile": "tool_method_graph_v1",
     "adapter_profiles": ["embedded_graph_v1", "postgres_projection_v1", "jsonld_projection_v1"],
     "required_node_classes": ["reasoning_device", "concept", "risk", "output_contract"],
     "required_edge_classes": ["uses_device", "depends_on", "belongs_to_frame", "has_output_rule"],
@@ -315,7 +315,7 @@
   },
   "review_ledger": [
     {
-      "review_id": "review:thinking-device:fixture",
+      "review_id": "review:tool:fixture",
       "reviewer_role": "policy_method_reviewer",
       "decision": "approved",
       "reviewed_at": "2026-06-07T00:00:00Z",
@@ -345,7 +345,7 @@
     }
   },
   "eval_report": {
-    "eval_id": "eval:thinking-device-fixture",
+    "eval_id": "eval:tool-fixture",
     "status": "example_only",
     "checks": [
       {
@@ -355,8 +355,8 @@
     ]
   },
   "checksums": {
-    "manifest": "sha256:fixture-thinking-device-manifest",
-    "graph_slice": "sha256:fixture-thinking-device-graph"
+    "manifest": "sha256:fixture-tool-manifest",
+    "graph_slice": "sha256:fixture-tool-graph"
   },
   "signature": {
     "signature_state": "unsigned_fixture",

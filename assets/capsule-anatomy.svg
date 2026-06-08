@@ -1,0 +1,79 @@
+<svg width="1120" height="660" viewBox="0 0 1120 660" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">DIALECTICA capsule anatomy</title>
+  <desc id="desc">A PRAXIS Capsule contains identity, scope, sources, time, ontology, semantic layers, embedded graph, reasoning, language, review, rights, agent guidance, retrieval, outputs, health, and signature.</desc>
+  <rect width="1120" height="660" rx="28" fill="#F7F5EE"/>
+  <rect x="24" y="24" width="1072" height="612" rx="22" fill="#FFFEFA" stroke="#D8D2C5" stroke-width="2"/>
+
+  <style>
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .title { font-size: 40px; font-weight: 850; fill: #111827; }
+    .sub { font-size: 16px; font-weight: 650; fill: #4B5563; }
+    .layer { font-size: 17px; font-weight: 800; fill: #111827; }
+    .note { font-size: 12px; font-weight: 650; fill: #4B5563; }
+  </style>
+
+  <text class="mono title" x="64" y="78">CAPSULE ANATOMY</text>
+  <text class="mono sub" x="66" y="110">Every User, Situation, Tool, and Output Capsule uses the same portable stack.</text>
+
+  <g transform="translate(88 148)">
+    <rect x="0" y="0" width="944" height="408" rx="18" fill="#111827" stroke="#27342F" stroke-width="3"/>
+    <text class="mono" x="36" y="48" fill="#FFFEFA" font-size="24" font-weight="850">signed PRAXIS capsule bundle</text>
+    <text class="mono" x="36" y="78" fill="#9FE8D6" font-size="14" font-weight="700">portable JSON / JSONL layers + checksums + review receipts</text>
+
+    <g transform="translate(36 112)">
+      <rect width="260" height="58" rx="10" fill="#EFF6FF" stroke="#93C5FD"/>
+      <text class="mono layer" x="18" y="26">identity + scope</text>
+      <text class="mono note" x="18" y="46">class, tenant, project, workflow</text>
+    </g>
+
+    <g transform="translate(342 112)">
+      <rect width="260" height="58" rx="10" fill="#ECFDF5" stroke="#99F6E4"/>
+      <text class="mono layer" x="18" y="26">source + time</text>
+      <text class="mono note" x="18" y="46">spans, provenance, validity</text>
+    </g>
+
+    <g transform="translate(648 112)">
+      <rect width="260" height="58" rx="10" fill="#FFF7ED" stroke="#FDBA74"/>
+      <text class="mono layer" x="18" y="26">review + rights</text>
+      <text class="mono note" x="18" y="46">gates, caveats, permissions</text>
+    </g>
+
+    <g transform="translate(36 202)">
+      <rect width="260" height="58" rx="10" fill="#F5F3FF" stroke="#C4B5FD"/>
+      <text class="mono layer" x="18" y="26">ontology blueprint</text>
+      <text class="mono note" x="18" y="46">what meaning to capture</text>
+    </g>
+
+    <g transform="translate(342 202)">
+      <rect width="260" height="58" rx="10" fill="#F8FAFC" stroke="#CBD5E1"/>
+      <text class="mono layer" x="18" y="26">semantic layers</text>
+      <text class="mono note" x="18" y="46">terms, lenses, caveats</text>
+    </g>
+
+    <g transform="translate(648 202)">
+      <rect width="260" height="58" rx="10" fill="#FEF2F2" stroke="#FCA5A5"/>
+      <text class="mono layer" x="18" y="26">embedded graph</text>
+      <text class="mono note" x="18" y="46">nodes, edges, communities</text>
+    </g>
+
+    <g transform="translate(36 292)">
+      <rect width="260" height="58" rx="10" fill="#F0FDFA" stroke="#5EEAD4"/>
+      <text class="mono layer" x="18" y="26">reasoning + language</text>
+      <text class="mono note" x="18" y="46">tools, voice, forbidden frames</text>
+    </g>
+
+    <g transform="translate(342 292)">
+      <rect width="260" height="58" rx="10" fill="#FFFBEB" stroke="#FCD34D"/>
+      <text class="mono layer" x="18" y="26">agent guidance</text>
+      <text class="mono note" x="18" y="46">cite, retrieve, stop, hand off</text>
+    </g>
+
+    <g transform="translate(648 292)">
+      <rect width="260" height="58" rx="10" fill="#F1F5F9" stroke="#94A3B8"/>
+      <text class="mono layer" x="18" y="26">outputs + health</text>
+      <text class="mono note" x="18" y="46">contracts, evals, warnings</text>
+    </g>
+  </g>
+
+  <text class="mono note" x="126" y="598">adapter rule: Ladybug / Neo4j / Oxigraph / pgvector / MCP / memory can project this graph, but the capsule bundle stays canonical.</text>
+</svg>

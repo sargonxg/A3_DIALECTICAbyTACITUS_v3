@@ -25,7 +25,8 @@
       "type": "string"
     },
     "capsule_type": {
-      "type": "string"
+      "type": "string",
+      "pattern": "^(user_capsule|situation_capsule|tool_capsule|output_capsule)$"
     },
     "extraction_questions": {
       "type": "array",

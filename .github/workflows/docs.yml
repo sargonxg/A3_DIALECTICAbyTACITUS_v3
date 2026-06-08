@@ -22,6 +22,8 @@ jobs:
           test -f CITATION.cff
           test -f AGENTS.md
           test -f assets/dialectica-mark.svg
+          test -f assets/four-capsule-model.svg
+          test -f assets/capsule-anatomy.svg
           test -f assets/capsule-stack.svg
           test -f assets/embedded-graph.svg
           test -f assets/agent-build-flow.svg
@@ -72,7 +74,7 @@ jobs:
           test -f fixtures/example-capsules/README.md
           test -f fixtures/example-capsules/user-capsule.example.json
           test -f fixtures/example-capsules/situation-capsule.example.json
-          test -f fixtures/example-capsules/thinking-device-capsule.example.json
+          test -f fixtures/example-capsules/tool-capsule.example.json
           test -f fixtures/example-capsules/output-capsule.example.json
           test -f fixtures/golden-policy-capsule/expected-bundle/manifest.json
           test -f fixtures/golden-policy-capsule/expected-bundle/source_ledger.jsonl
@@ -121,5 +123,5 @@ jobs:
         run: |
           python -m json.tool fixtures/example-capsules/user-capsule.example.json > /dev/null
           python -m json.tool fixtures/example-capsules/situation-capsule.example.json > /dev/null
-          python -m json.tool fixtures/example-capsules/thinking-device-capsule.example.json > /dev/null
+          python -m json.tool fixtures/example-capsules/tool-capsule.example.json > /dev/null
           python -m json.tool fixtures/example-capsules/output-capsule.example.json > /dev/null

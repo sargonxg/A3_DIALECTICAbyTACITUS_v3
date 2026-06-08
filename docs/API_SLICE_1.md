@@ -88,6 +88,9 @@ Response must include:
 - `compatible_workflows`;
 - `warnings`.
 
+`capsule_type` must be one of `user_capsule`, `situation_capsule`,
+`tool_capsule`, or `output_capsule`.
+
 ## `GET /v1/capsules/{capsule_id}/graph-preview`
 
 Response schema: `graph_preview_v1` from `docs/GRAPH_PROFILE_REGISTRY.md`.

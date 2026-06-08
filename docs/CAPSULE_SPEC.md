@@ -9,9 +9,9 @@ stored, shared, reviewed, combined, and used by humans and PRAXIS agents.
 
 It contains:
 
-- a model of the situation;
+- a model of a user, situation, tool, or output;
 - the evidence behind that model;
-- a model of how to think about and act on the situation.
+- a model of how to reason, act, reuse, or hand off within the declared scope.
 
 ## Bundle Shape
 
@@ -138,15 +138,18 @@ The ontology slice should be built from a capsule-specific ontology blueprint:
 - User Capsules emphasize role, authority, preference, privacy, and output
   style semantics.
 - Situation Capsules emphasize actors, claims, events, risks, policy
-  instruments, source state, and decision clocks.
-- Source Capsules emphasize source-span proof, qualification, contradiction,
-  temporal status, and citation limits.
-- Thinking Device Capsules emphasize method steps, inputs, failure modes,
-  expert caveats, and review criteria.
+  instruments, source state, stakeholder lenses, domain semantics, scenario
+  hypotheses, caveats, and decision clocks.
+- Tool Capsules emphasize method steps, required inputs, intellectual and
+  philosophical lenses, source standards, failure modes, expert caveats, and
+  review criteria.
 - Output Capsules emphasize artifact structure, claim lineage, source receipts,
   reuse rules, and caveats.
-- New capsule types declare their own ontology family and map local terms back
-  to shared graph classes only where PRAXIS interoperability needs it.
+
+Source packs, domain ontologies, stakeholder maps, scenario branches, expert
+endorsements, and graph modules are modeled as internal ontology layers, graph
+lenses, review metadata, or marketplace metadata inside those four classes.
+They are not PRAXIS-importable capsule classes.
 
 Required sections:
 
@@ -265,7 +268,8 @@ Example:
 
 ```json
 {
-  "graph_profile": "stakeholder_graph_v1",
+  "graph_profile": "situation_graph_v1",
+  "graph_lens": "stakeholder_power_lens",
   "required_node_classes": ["actor", "institution", "claim", "source", "risk"],
   "required_edge_fields": [
     "source_ids",
