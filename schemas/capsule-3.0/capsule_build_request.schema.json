@@ -1,0 +1,94 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CapsuleBuildRequest",
+  "type": "object",
+  "required": [
+    "build_mode",
+    "contract_version",
+    "output_intent",
+    "request_id",
+    "review_policy",
+    "target_workflow"
+  ],
+  "properties": {
+    "build_mode": {
+      "$ref": "#/definitions/BuildMode"
+    },
+    "contract_version": {
+      "type": "string"
+    },
+    "output_intent": {
+      "type": "string"
+    },
+    "request_id": {
+      "type": "string"
+    },
+    "requested_type": {
+      "default": null,
+      "anyOf": [
+        {
+          "$ref": "#/definitions/CapsuleType"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "review_policy": {
+      "$ref": "#/definitions/ReviewPolicy"
+    },
+    "target_workflow": {
+      "type": "string"
+    }
+  },
+  "definitions": {
+    "BuildMode": {
+      "type": "string",
+      "enum": [
+        "auto_draft",
+        "assisted",
+        "plus_promoted"
+      ]
+    },
+    "CapsuleType": {
+      "type": "string",
+      "enum": [
+        "user",
+        "situation",
+        "tool",
+        "output"
+      ]
+    },
+    "ReviewPolicy": {
+      "type": "object",
+      "required": [
+        "blocked_without_source_spans",
+        "default_reviewer_role",
+        "plus_requires_human_review",
+        "policy_id",
+        "require_language_review",
+        "require_rights_review"
+      ],
+      "properties": {
+        "blocked_without_source_spans": {
+          "type": "boolean"
+        },
+        "default_reviewer_role": {
+          "type": "string"
+        },
+        "plus_requires_human_review": {
+          "type": "boolean"
+        },
+        "policy_id": {
+          "type": "string"
+        },
+        "require_language_review": {
+          "type": "boolean"
+        },
+        "require_rights_review": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

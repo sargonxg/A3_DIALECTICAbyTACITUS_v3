@@ -1,0 +1,121 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CapsuleBuildPlan",
+  "type": "object",
+  "required": [
+    "blocking_gate_count",
+    "build_mode",
+    "next_phase",
+    "proposal_count",
+    "request_id",
+    "review_gate_count",
+    "selected_type",
+    "source_document_count",
+    "source_pack_id",
+    "source_span_count",
+    "type_inference"
+  ],
+  "properties": {
+    "blocking_gate_count": {
+      "type": "integer",
+      "format": "uint",
+      "minimum": 0.0
+    },
+    "build_mode": {
+      "$ref": "#/definitions/BuildMode"
+    },
+    "next_phase": {
+      "type": "string"
+    },
+    "proposal_count": {
+      "type": "integer",
+      "format": "uint",
+      "minimum": 0.0
+    },
+    "request_id": {
+      "type": "string"
+    },
+    "review_gate_count": {
+      "type": "integer",
+      "format": "uint",
+      "minimum": 0.0
+    },
+    "selected_type": {
+      "$ref": "#/definitions/CapsuleType"
+    },
+    "source_document_count": {
+      "type": "integer",
+      "format": "uint",
+      "minimum": 0.0
+    },
+    "source_pack_id": {
+      "type": "string"
+    },
+    "source_span_count": {
+      "type": "integer",
+      "format": "uint",
+      "minimum": 0.0
+    },
+    "type_inference": {
+      "$ref": "#/definitions/TypeInference"
+    }
+  },
+  "definitions": {
+    "BuildMode": {
+      "type": "string",
+      "enum": [
+        "auto_draft",
+        "assisted",
+        "plus_promoted"
+      ]
+    },
+    "CapsuleType": {
+      "type": "string",
+      "enum": [
+        "user",
+        "situation",
+        "tool",
+        "output"
+      ]
+    },
+    "TypeInference": {
+      "type": "object",
+      "required": [
+        "confidence",
+        "explanation",
+        "selected_type",
+        "source"
+      ],
+      "properties": {
+        "confidence": {
+          "type": "number",
+          "format": "double"
+        },
+        "conflicting_signals": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "explanation": {
+          "type": "string"
+        },
+        "selected_type": {
+          "$ref": "#/definitions/CapsuleType"
+        },
+        "source": {
+          "$ref": "#/definitions/TypeInferenceSource"
+        }
+      }
+    },
+    "TypeInferenceSource": {
+      "type": "string",
+      "enum": [
+        "user_selected",
+        "ai_suggested",
+        "mixed"
+      ]
+    }
+  }
+}

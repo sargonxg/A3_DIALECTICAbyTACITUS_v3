@@ -1,0 +1,144 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ExtractionRun",
+  "type": "object",
+  "required": [
+    "build_mode",
+    "contract_version",
+    "model_receipts",
+    "run_id",
+    "source_pack_id",
+    "type_inference"
+  ],
+  "properties": {
+    "build_mode": {
+      "$ref": "#/definitions/BuildMode"
+    },
+    "contract_version": {
+      "type": "string"
+    },
+    "model_receipts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ModelInvocationReceipt"
+      }
+    },
+    "requested_type": {
+      "default": null,
+      "anyOf": [
+        {
+          "$ref": "#/definitions/CapsuleType"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "run_id": {
+      "type": "string"
+    },
+    "source_pack_id": {
+      "type": "string"
+    },
+    "type_inference": {
+      "$ref": "#/definitions/TypeInference"
+    }
+  },
+  "definitions": {
+    "BuildMode": {
+      "type": "string",
+      "enum": [
+        "auto_draft",
+        "assisted",
+        "plus_promoted"
+      ]
+    },
+    "CapsuleType": {
+      "type": "string",
+      "enum": [
+        "user",
+        "situation",
+        "tool",
+        "output"
+      ]
+    },
+    "ModelInvocationReceipt": {
+      "type": "object",
+      "required": [
+        "created_at",
+        "fixture_mode",
+        "input_digest",
+        "model",
+        "output_digest",
+        "prompt_template_id",
+        "provider",
+        "receipt_id"
+      ],
+      "properties": {
+        "created_at": {
+          "type": "string"
+        },
+        "fixture_mode": {
+          "type": "boolean"
+        },
+        "input_digest": {
+          "type": "string"
+        },
+        "model": {
+          "type": "string"
+        },
+        "output_digest": {
+          "type": "string"
+        },
+        "prompt_template_id": {
+          "type": "string"
+        },
+        "provider": {
+          "type": "string"
+        },
+        "receipt_id": {
+          "type": "string"
+        }
+      }
+    },
+    "TypeInference": {
+      "type": "object",
+      "required": [
+        "confidence",
+        "explanation",
+        "selected_type",
+        "source"
+      ],
+      "properties": {
+        "confidence": {
+          "type": "number",
+          "format": "double"
+        },
+        "conflicting_signals": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "explanation": {
+          "type": "string"
+        },
+        "selected_type": {
+          "$ref": "#/definitions/CapsuleType"
+        },
+        "source": {
+          "$ref": "#/definitions/TypeInferenceSource"
+        }
+      }
+    },
+    "TypeInferenceSource": {
+      "type": "string",
+      "enum": [
+        "user_selected",
+        "ai_suggested",
+        "mixed"
+      ]
+    }
+  }
+}

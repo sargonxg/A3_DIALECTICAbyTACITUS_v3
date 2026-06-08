@@ -105,10 +105,22 @@ jobs:
           test -f fixtures/golden-policy-capsule/expected-bundle/graph_slice.json
           test -f fixtures/golden-policy-capsule/expected-bundle/language_profile.json
           test -f fixtures/golden-policy-capsule/expected-bundle/agent_guidance.json
+          test -f fixtures/golden-policy-capsule/build_request.json
+          test -f fixtures/golden-policy-capsule/source-pack/README.md
+          test -f fixtures/golden-policy-capsule/source-pack/source_pack.json
+          test -f fixtures/golden-policy-capsule/proposals/extraction_run.json
+          test -f fixtures/golden-policy-capsule/proposals/proposals.jsonl
           test -f schemas/capsule-3.0/praxis_capsule_manifest.schema.json
           test -f schemas/capsule-3.0/praxis_capsule_package.schema.json
           test -f schemas/capsule-3.0/ladybug_projection_manifest.schema.json
           test -f schemas/capsule-3.0/ladybug_projection_build_receipt.schema.json
+          test -f schemas/capsule-3.0/capsule_build_request.schema.json
+          test -f schemas/capsule-3.0/capsule_build_plan.schema.json
+          test -f schemas/capsule-3.0/source_pack.schema.json
+          test -f schemas/capsule-3.0/extraction_run.schema.json
+          test -f schemas/capsule-3.0/extraction_proposal.schema.json
+          test -f schemas/capsule-3.0/proposal_set.schema.json
+          test -f schemas/capsule-3.0/review_gate.schema.json
           test -f schemas/capsule-0.1.0/manifest.schema.json
           test -f schemas/capsule-0.1.0/capsule.schema.json
           test -f schemas/capsule-0.1.0/ontology_blueprint.schema.json
@@ -140,6 +152,12 @@ jobs:
         run: cargo run -p dialectica-cli -- inspect fixtures/golden-policy-capsule/expected-bundle
       - name: Plan golden capsule ontology
         run: cargo run -p dialectica-cli -- ontology-plan fixtures/golden-policy-capsule/expected-bundle
+      - name: Check golden source pack
+        run: cargo run -p dialectica-cli -- source-pack-check fixtures/golden-policy-capsule/source-pack/source_pack.json
+      - name: Check golden extraction proposals
+        run: cargo run -p dialectica-cli -- proposal-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals
+      - name: Print golden build plan
+        run: cargo run -p dialectica-cli -- build-plan fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals
       - name: Export schema snapshots
         run: cargo run -p dialectica-cli -- schema-export schemas/capsule-3.0
 

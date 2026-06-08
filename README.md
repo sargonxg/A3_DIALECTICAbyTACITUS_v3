@@ -31,14 +31,17 @@ Current truth:
 
 - **Works now**: Rust contract validation, canonical v3 Situation Capsule
   fixture validation with required embedded Ladybug projection, legacy
-  migration fixture validation, schema export, and CLI
-  `doctor`/`validate`/`inspect`/`ontology-plan`/`ladybug-*`/`schema-export`.
-- **Not built yet**: source-pack ingestion, LLM extraction proposals, human
-  review UI, deterministic compiler, `.capsule` archive writer, PRAXIS
-  context-pack export, PostgreSQL migrations, API routes, task handler, and
-  PRAXIS frontend integration.
-- **Next build**: source pack and proposal records first, review-trigger
-  routing second, deterministic v3 compiler third.
+  migration fixture validation, source-pack validation, fixture-mode extraction
+  proposal validation, review-trigger routing, build-plan printing, schema
+  export, and CLI
+  `doctor`/`validate`/`inspect`/`ontology-plan`/`ladybug-*`/`source-pack-check`/
+  `proposal-check`/`build-plan`/`schema-export`.
+- **Not built yet**: live document/PDF/conversation ingestion, live model
+  provider calls, reviewer decision workflow, deterministic compiler,
+  `.capsule` archive writer, PRAXIS context-pack export, PostgreSQL migrations,
+  API routes, task handler, and PRAXIS frontend integration.
+- **Next build**: reviewer decisions and promotion records first, deterministic
+  v3 compiler second, PRAXIS context-pack export third.
 
 Start with [docs/CODING_LEDGER.md](docs/CODING_LEDGER.md) and
 [docs/NEXT_CODE_BUILD_PLAN.md](docs/NEXT_CODE_BUILD_PLAN.md). Use
@@ -233,8 +236,9 @@ Core services:
   bundle metadata, and serves PRAXIS integration endpoints.
 - **Ingestion workers**: parse documents, normalize source spans, extract
   entities, detect temporal claims, and write provenance records.
-- **Extraction proposal layer**: planned Rust crate for source packs, model
-  receipts, LLM proposal records, and review-trigger routing.
+- **Extraction proposal layer**: Rust crate for source packs, model receipts,
+  proposal records, build plans, and review-trigger routing. The current
+  implementation is fixture-mode only; live provider calls come later.
 - **Capsule compiler**: assembles v3 `.capsule` packages from canonical
   records, review decisions, ontology layers, a connected `graph.jsonld`,
   runtime rules, and generated agent views.
@@ -248,7 +252,7 @@ Current coding scaffold:
 ```text
 Cargo workspace
   crates/dialectica-capsule       contract types and validation
-  crates/dialectica-extractor     planned source-pack/proposal crate
+  crates/dialectica-extractor     source-pack/proposal/build-plan contracts
   crates/dialectica-compiler      deterministic bundle assembly
   crates/dialectica-graph         Ladybug projection planning/build/check/query
   crates/dialectica-store         PostgreSQL repositories and migrations
@@ -280,15 +284,19 @@ cargo run -p dialectica-cli --features ladybug -- ladybug-query fixtures/canonic
 cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule/expected-bundle
 cargo run -p dialectica-cli -- inspect fixtures/golden-policy-capsule/expected-bundle
 cargo run -p dialectica-cli -- ontology-plan fixtures/golden-policy-capsule/expected-bundle
+cargo run -p dialectica-cli -- source-pack-check fixtures/golden-policy-capsule/source-pack/source_pack.json
+cargo run -p dialectica-cli -- proposal-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals
+cargo run -p dialectica-cli -- build-plan fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals
 cargo run -p dialectica-cli -- schema-export schemas/capsule-3.0
 ```
 
 This proves the repository is not only product copy. It already has typed Rust
 capsule contracts, v3 package validation, schema export, a canonical v3
 Situation Capsule fixture with a real embedded `graph/ladybug/capsule.lbug`, a
-legacy migration fixture, a capsule-specific ontology planner, and Ladybug
-projection check/query commands. It does not yet build capsules from documents
-or serve PRAXIS; that boundary is tracked in the code audit and build ledger.
+legacy migration fixture, source-pack/proposal/build-plan validation, a
+capsule-specific ontology planner, and Ladybug projection check/query commands.
+It does not yet call live models, compile capsules from uploaded documents, or
+serve PRAXIS; that boundary is tracked in the code audit and build ledger.
 
 LLM extraction architecture:
 
@@ -632,16 +640,18 @@ Keep the README as the front door, not the full table of contents.
 
 ## Current Status
 
-This repository is at **Phase 0: source-of-truth plus executable contract
+This repository is at **Phase 1: executable input and capsule contract
 scaffold**.
 
-The Rust workspace now has its first executable capsule-contract slice. It can
-validate and inspect a canonical v3 Situation Capsule fixture, keep the legacy
-policy fixture passing during migration, and export JSON Schema snapshots. The
-next implementation step is to add source-pack and extraction-proposal records,
-then review-trigger routing, then deterministic v3 package and `.capsule`
-archive generation. Model-provider calls, storage, API routes, PRAXIS frontend
-integration, and cloud deployment wait until the local loop is executable.
+The Rust workspace now has its first executable capsule-contract and input
+contract slice. It can validate and inspect a canonical v3 Situation Capsule
+fixture, keep the legacy policy fixture passing during migration, validate a
+source pack, validate fixture-mode extraction proposals, route review triggers,
+print a build plan, and export JSON Schema snapshots. The next implementation
+step is to add reviewer decisions and deterministic promotion records, then a
+deterministic v3 package and `.capsule` archive compiler. Live model-provider
+calls, storage, API routes, PRAXIS frontend integration, and cloud deployment
+wait until the local source-pack to compiled-capsule loop is executable.
 
 Start here:
 
@@ -686,6 +696,9 @@ cargo run -p dialectica-cli --features ladybug -- ladybug-query fixtures/canonic
 cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule/expected-bundle
 cargo run -p dialectica-cli -- inspect fixtures/golden-policy-capsule/expected-bundle
 cargo run -p dialectica-cli -- ontology-plan fixtures/golden-policy-capsule/expected-bundle
+cargo run -p dialectica-cli -- source-pack-check fixtures/golden-policy-capsule/source-pack/source_pack.json
+cargo run -p dialectica-cli -- proposal-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals
+cargo run -p dialectica-cli -- build-plan fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals
 cargo run -p dialectica-cli -- schema-export schemas/capsule-3.0
 python -m compileall tools/python
 python -m unittest discover tools/python/tests

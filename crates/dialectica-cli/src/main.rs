@@ -34,6 +34,51 @@ fn main() {
             };
             print_ontology_plan(Path::new(&path));
         }
+        "source-pack-check" => {
+            let Some(path) = args.next() else {
+                eprintln!("missing source pack path");
+                std::process::exit(2);
+            };
+            check_source_pack(Path::new(&path));
+        }
+        "proposal-check" => {
+            let Some(build_request_path) = args.next() else {
+                eprintln!("missing build request path");
+                std::process::exit(2);
+            };
+            let Some(source_pack_path) = args.next() else {
+                eprintln!("missing source pack path");
+                std::process::exit(2);
+            };
+            let Some(proposal_dir) = args.next() else {
+                eprintln!("missing proposal directory");
+                std::process::exit(2);
+            };
+            check_proposals(
+                Path::new(&build_request_path),
+                Path::new(&source_pack_path),
+                Path::new(&proposal_dir),
+            );
+        }
+        "build-plan" => {
+            let Some(build_request_path) = args.next() else {
+                eprintln!("missing build request path");
+                std::process::exit(2);
+            };
+            let Some(source_pack_path) = args.next() else {
+                eprintln!("missing source pack path");
+                std::process::exit(2);
+            };
+            let Some(proposal_dir) = args.next() else {
+                eprintln!("missing proposal directory");
+                std::process::exit(2);
+            };
+            print_build_plan(
+                Path::new(&build_request_path),
+                Path::new(&source_pack_path),
+                Path::new(&proposal_dir),
+            );
+        }
         "ladybug-plan" => {
             let Some(path) = args.next() else {
                 eprintln!("missing capsule directory");
@@ -75,6 +120,10 @@ fn main() {
                 eprintln!("{error}");
                 std::process::exit(1);
             }
+            if let Err(error) = dialectica_extractor::export_schema_dir(Path::new(&path)) {
+                eprintln!("{error}");
+                std::process::exit(1);
+            }
             println!("schema_exported={path}");
         }
         "help" | "--help" | "-h" => print_help(),
@@ -93,6 +142,9 @@ fn print_help() {
     println!("  validate <bundle-dir>   validate a capsule bundle directory");
     println!("  inspect <bundle-dir>    print capsule bundle summary");
     println!("  ontology-plan <dir>     print capsule-specific ontology blueprint");
+    println!("  source-pack-check <path> validate a builder source pack");
+    println!("  proposal-check <request> <source-pack> <proposal-dir>");
+    println!("  build-plan <request> <source-pack> <proposal-dir>");
     println!("  ladybug-plan <dir>      print embedded Ladybug projection plan");
     println!("  ladybug-build <dir>     build graph/ladybug/capsule.lbug from graph.jsonld");
     println!("  ladybug-check <dir>     validate embedded Ladybug projection files");
@@ -209,6 +261,72 @@ fn print_ontology_plan(path: &Path) {
     }
 }
 
+fn check_source_pack(path: &Path) {
+    let source_pack = load_source_pack_or_exit(path);
+    let report = dialectica_extractor::validate_source_pack(&source_pack);
+    print_build_validation_report(&report);
+    println!("source_pack_id={}", source_pack.pack_id);
+    println!("source_document_count={}", source_pack.documents.len());
+    println!("source_span_count={}", source_pack.spans.len());
+    println!("valid={}", !report.has_errors());
+    if report.has_errors() {
+        std::process::exit(1);
+    }
+}
+
+fn check_proposals(build_request_path: &Path, source_pack_path: &Path, proposal_dir: &Path) {
+    let build_request = load_build_request_or_exit(build_request_path);
+    let source_pack = load_source_pack_or_exit(source_pack_path);
+    let proposal_set = load_proposal_set_or_exit(proposal_dir);
+    let report =
+        dialectica_extractor::validate_proposal_set(&source_pack, &build_request, &proposal_set);
+    let gates = dialectica_extractor::route_review_gates(&build_request, &proposal_set);
+
+    print_build_validation_report(&report);
+    println!("extraction_run_id={}", proposal_set.extraction_run.run_id);
+    println!("proposal_count={}", proposal_set.proposals.len());
+    println!("review_gate_count={}", gates.len());
+    println!(
+        "blocking_gate_count={}",
+        gates.iter().filter(|gate| gate.blocking).count()
+    );
+    println!("valid={}", !report.has_errors());
+    if report.has_errors() {
+        std::process::exit(1);
+    }
+}
+
+fn print_build_plan(build_request_path: &Path, source_pack_path: &Path, proposal_dir: &Path) {
+    let build_request = load_build_request_or_exit(build_request_path);
+    let source_pack = load_source_pack_or_exit(source_pack_path);
+    let proposal_set = load_proposal_set_or_exit(proposal_dir);
+    let report =
+        dialectica_extractor::validate_proposal_set(&source_pack, &build_request, &proposal_set);
+    if report.has_errors() {
+        print_build_validation_report(&report);
+        std::process::exit(1);
+    }
+
+    let plan =
+        dialectica_extractor::plan_capsule_build(&build_request, &source_pack, &proposal_set);
+    match serde_json::to_string_pretty(&plan) {
+        Ok(json) => println!("{json}"),
+        Err(error) => {
+            eprintln!("failed to serialize build plan: {error}");
+            std::process::exit(1);
+        }
+    }
+}
+
+fn print_build_validation_report(report: &dialectica_extractor::BuildValidationReport) {
+    for finding in &report.findings {
+        println!(
+            "{:?} {} {}: {}",
+            finding.severity, finding.code, finding.path, finding.message
+        );
+    }
+}
+
 fn ladybug_plan(path: &Path) {
     match dialectica_graph::plan_ladybug_projection(path) {
         Ok(plan) => match serde_json::to_string_pretty(&plan) {
@@ -289,6 +407,36 @@ fn ladybug_query(path: &Path, query: &str) {
 fn load_legacy_or_exit(path: &Path) -> CapsuleBundle {
     match CapsuleBundle::load_from_dir(path) {
         Ok(bundle) => bundle,
+        Err(error) => {
+            eprintln!("{error}");
+            std::process::exit(1);
+        }
+    }
+}
+
+fn load_source_pack_or_exit(path: &Path) -> dialectica_extractor::SourcePack {
+    match dialectica_extractor::load_source_pack(path) {
+        Ok(source_pack) => source_pack,
+        Err(error) => {
+            eprintln!("{error}");
+            std::process::exit(1);
+        }
+    }
+}
+
+fn load_build_request_or_exit(path: &Path) -> dialectica_extractor::CapsuleBuildRequest {
+    match dialectica_extractor::load_build_request(path) {
+        Ok(build_request) => build_request,
+        Err(error) => {
+            eprintln!("{error}");
+            std::process::exit(1);
+        }
+    }
+}
+
+fn load_proposal_set_or_exit(path: &Path) -> dialectica_extractor::ProposalSet {
+    match dialectica_extractor::ProposalSet::load_from_dir(path) {
+        Ok(proposal_set) => proposal_set,
         Err(error) => {
             eprintln!("{error}");
             std::process::exit(1);

@@ -358,20 +358,54 @@ Implementation constraints:
 | ADR-005 | Benchmark-informed capsule engine posture | accepted | `docs/decisions/ADR-005-benchmark-informed-capsule-engine-posture.md` |
 | ADR-006 | Apache-2.0 open-source license with citation metadata | accepted | `docs/decisions/ADR-006-open-source-license-and-citation.md` |
 | ADR-007 | LLM extraction is proposal-only until validation and review | accepted | `docs/decisions/ADR-007-llm-extraction-proposal-boundary.md` |
+| ADR-008 | Promoted capsules require an embedded Ladybug graph projection | accepted | `docs/decisions/ADR-008-ladybug-required-embedded-graph-projection.md` |
+
+## 2026-06-08 - Source Pack And Proposal Contract Implementation
+
+Status: implemented for local fixture mode; live extraction and compilation
+still pending.
+
+Actions:
+
+- added `crates/dialectica-extractor` with `SourcePack`, `SourceDocument`,
+  `SourceSpan`, `ExtractionRun`, `ModelInvocationReceipt`,
+  `ExtractionProposal`, `ProposalSet`, `ReviewGate`, and `CapsuleBuildPlan`
+  contracts;
+- added source-pack, proposal-set, review-gate, extraction-run, extraction
+  proposal, build-request, and build-plan JSON Schema export;
+- added the golden policy source pack, build request, extraction run, and
+  proposal fixtures;
+- added CLI commands `source-pack-check`, `proposal-check`, and `build-plan`;
+- added contract tests proving source-pack validation, proposal validation, and
+  Plus/promoted review-gate routing;
+- updated CI to require the new fixtures, schemas, and validator commands.
+
+Evidence:
+
+- `cargo run -p dialectica-cli -- source-pack-check fixtures/golden-policy-capsule/source-pack/source_pack.json` validates two source documents and four source spans;
+- `cargo run -p dialectica-cli -- proposal-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals` validates twelve proposals and nine blocking review gates;
+- `cargo run -p dialectica-cli -- build-plan fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals` prints the authoritative situation-capsule build plan and routes the next phase to human review before compilation.
+
+Remaining gaps:
+
+1. reviewer decisions and correction records;
+2. proposal-to-canonical promotion normalization;
+3. deterministic v3 package writer;
+4. `.capsule` archive writer;
+5. PRAXIS context-pack export;
+6. live model-provider extraction behind provider traits.
 
 ## Next Build Tasks
 
-1. Define typed source-pack inputs and canonical deterministic serialization
-   rules.
-2. Add `crates/dialectica-extractor` with proposal envelopes, model receipts,
-   and review-trigger routing.
-3. Add local fixture proposal records and reviewer decisions.
+1. Add reviewer decision and correction records for the golden proposal set.
+2. Define proposal-to-canonical promotion normalization.
+3. Define canonical deterministic serialization rules.
 4. Implement deterministic v3 package writer in `crates/dialectica-compiler`.
 5. Add `.capsule` archive writing with `mimetype` first, stable entry order,
    LF line endings, and explicit handling for required `graph/ladybug/`
    projection files versus optional non-canonical cache files.
 6. Add `build-fixture` so a canonical capsule can be generated from source-pack
-   records and review decisions.
+   records, proposals, and review decisions.
 7. Add checksum, Merkle-root, and signature placeholders with stable diff
    output.
 8. Deepen v3 validators for claims, sources, temporal episodes, graph,

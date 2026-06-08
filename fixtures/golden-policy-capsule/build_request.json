@@ -1,0 +1,16 @@
+{
+  "request_id": "build_conflict_situation_fixture_v1",
+  "contract_version": "0.1.0",
+  "requested_type": "situation",
+  "build_mode": "plus_promoted",
+  "target_workflow": "conflict_map",
+  "output_intent": "Build a reviewed Situation Capsule that PRAXIS can use for conflict mapping and a cited decision brief.",
+  "review_policy": {
+    "policy_id": "review_policy_conflict_plus_v1",
+    "plus_requires_human_review": true,
+    "default_reviewer_role": "policy_reviewer",
+    "blocked_without_source_spans": true,
+    "require_language_review": true,
+    "require_rights_review": true
+  }
+}

@@ -4,6 +4,11 @@ use dialectica_capsule::{
     export_schema_dir, CapsuleBundle, CapsuleManifest, PraxisCapsulePackage, ReviewState,
     ValidationSeverity,
 };
+use dialectica_extractor::{
+    export_schema_dir as export_extractor_schema_dir, load_build_request, load_source_pack,
+    plan_capsule_build, route_review_gates, validate_proposal_set, validate_source_pack,
+    BuildValidationSeverity, CapsuleType, ProposalSet,
+};
 
 fn golden_bundle_dir() -> std::path::PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR"))
@@ -15,6 +20,24 @@ fn canonical_situation_dir() -> std::path::PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("../..")
         .join("fixtures/canonical-capsules/conflict-situation-capsule")
+}
+
+fn golden_build_request_path() -> std::path::PathBuf {
+    Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../..")
+        .join("fixtures/golden-policy-capsule/build_request.json")
+}
+
+fn golden_source_pack_path() -> std::path::PathBuf {
+    Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../..")
+        .join("fixtures/golden-policy-capsule/source-pack/source_pack.json")
+}
+
+fn golden_proposals_dir() -> std::path::PathBuf {
+    Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../..")
+        .join("fixtures/golden-policy-capsule/proposals")
 }
 
 #[test]
@@ -49,6 +72,62 @@ fn canonical_v3_situation_capsule_loads_and_validates() {
         .layers_present
         .iter()
         .any(|layer| layer == "reasoning"));
+}
+
+#[test]
+fn golden_source_pack_loads_and_validates() {
+    let source_pack =
+        load_source_pack(&golden_source_pack_path()).expect("source pack fixture should load");
+
+    let report = validate_source_pack(&source_pack);
+
+    assert!(!report.has_errors(), "{:#?}", report.findings);
+    assert_eq!(
+        source_pack.target_capsule_type,
+        Some(CapsuleType::Situation)
+    );
+    assert_eq!(source_pack.documents.len(), 2);
+    assert_eq!(source_pack.spans.len(), 4);
+}
+
+#[test]
+fn golden_proposal_set_routes_plus_review_gates() {
+    let build_request =
+        load_build_request(&golden_build_request_path()).expect("build request should load");
+    let source_pack =
+        load_source_pack(&golden_source_pack_path()).expect("source pack fixture should load");
+    let proposal_set =
+        ProposalSet::load_from_dir(&golden_proposals_dir()).expect("proposals should load");
+
+    let report = validate_proposal_set(&source_pack, &build_request, &proposal_set);
+    let gates = route_review_gates(&build_request, &proposal_set);
+    let plan = plan_capsule_build(&build_request, &source_pack, &proposal_set);
+
+    assert!(!report.has_errors(), "{:#?}", report.findings);
+    assert_eq!(plan.selected_type, CapsuleType::Situation);
+    assert_eq!(plan.source_document_count, 2);
+    assert_eq!(plan.source_span_count, 4);
+    assert_eq!(plan.proposal_count, 12);
+    assert_eq!(plan.blocking_gate_count, 9);
+    assert_eq!(gates.len(), 9);
+}
+
+#[test]
+fn proposal_without_source_span_fails_validation() {
+    let build_request =
+        load_build_request(&golden_build_request_path()).expect("build request should load");
+    let source_pack =
+        load_source_pack(&golden_source_pack_path()).expect("source pack fixture should load");
+    let mut proposal_set =
+        ProposalSet::load_from_dir(&golden_proposals_dir()).expect("proposals should load");
+    proposal_set.proposals[0].source_span_ids.clear();
+
+    let report = validate_proposal_set(&source_pack, &build_request, &proposal_set);
+
+    assert!(report.findings.iter().any(|finding| {
+        finding.severity == BuildValidationSeverity::Error
+            && finding.code == "proposal_missing_source_spans"
+    }));
 }
 
 #[test]
@@ -123,6 +202,28 @@ fn schema_export_writes_required_snapshots() {
     assert!(std::fs::read_to_string(manifest_schema)
         .expect("manifest schema should be readable")
         .contains("CapsuleManifest"));
+
+    std::fs::remove_dir_all(output_dir).expect("temp schema dir should clean up");
+}
+
+#[test]
+fn extractor_schema_export_writes_builder_contracts() {
+    let output_dir = std::env::temp_dir().join(format!(
+        "dialectica-extractor-schema-test-{}",
+        std::process::id()
+    ));
+    let _ = std::fs::remove_dir_all(&output_dir);
+
+    export_extractor_schema_dir(&output_dir).expect("extractor schema export should succeed");
+
+    assert!(output_dir
+        .join("capsule_build_request.schema.json")
+        .exists());
+    assert!(output_dir.join("source_pack.schema.json").exists());
+    assert!(output_dir.join("extraction_run.schema.json").exists());
+    assert!(output_dir.join("extraction_proposal.schema.json").exists());
+    assert!(output_dir.join("proposal_set.schema.json").exists());
+    assert!(output_dir.join("review_gate.schema.json").exists());
 
     std::fs::remove_dir_all(output_dir).expect("temp schema dir should clean up");
 }

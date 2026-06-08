@@ -1,6 +1,7 @@
 # LLM Context Extraction Architecture
 
-Status: target architecture; not yet implemented.
+Status: target architecture with the first fixture-mode source/proposal
+contract implemented.
 
 This document defines how DIALECTICA should use LLMs to build PRAXIS Capsules
 without letting model output become unchecked truth. The goal is not a generic
@@ -117,6 +118,9 @@ Current code:
   validators, schema export, and inspection summaries.
 - `dialectica-cli` owns local proof commands and switches between canonical v3
   packages and legacy migration bundles.
+- `dialectica-extractor` owns the first fixture-mode source-pack, model
+  receipt, extraction proposal, review-trigger, schema-export, and build-plan
+  contract. It does not yet call model providers.
 - `dialectica-compiler` is only a scaffold with a legacy review-gate helper.
 - `dialectica-store`, `dialectica-eval`, `dialectica-api`, and
   `dialectica-task-handler` are scaffolds.
@@ -125,8 +129,8 @@ Required next ownership:
 
 ```text
 dialectica-extractor
-  owns source-pack inputs, model proposal schemas, extraction orchestration,
-  model invocation receipts, review-trigger routing, and provider traits
+  owns live extraction orchestration, provider traits, provider fallback, and
+  reviewer-decision inputs in addition to the implemented fixture contracts
 
 dialectica-capsule
   owns canonical capsule records, validator, schema, context-pack types, and
@@ -166,6 +170,25 @@ record schemas must not hardcode one model provider.
 
 The extractor should emit proposal records first. A proposal record is not a
 canonical claim.
+
+Implemented now:
+
+- `SourcePack`, `SourceDocument`, and `SourceSpan` fixture records;
+- `ExtractionRun` and `ModelInvocationReceipt` fixture records;
+- `ExtractionProposal` records for claims, episodes, graph nodes, graph edges,
+  ontology terms, reasoning devices, language rules, caveats, rights rules, and
+  output rules;
+- review-trigger routing for Plus/promoted builds;
+- CLI validation through `source-pack-check`, `proposal-check`, and
+  `build-plan`.
+
+Still required before live extraction:
+
+- provider traits and model clients;
+- source-bound prompt templates;
+- retry/error receipts;
+- reviewer decision and correction records;
+- proposal-to-canonical promotion normalization.
 
 Every proposal must include:
 
@@ -395,19 +418,17 @@ Before a capsule can be promoted:
 
 ## Build Order
 
-1. Add source-pack and proposal schemas in Rust.
-2. Add a local fixture with documents, source spans, extraction proposals, and
-   review decisions.
-3. Add deterministic proposal-to-canonical normalization.
-4. Add review-trigger routing.
-5. Add deeper v3 validators for cross-layer references.
-6. Add deterministic compiler and `.capsule` archive writer.
-7. Add PRAXIS context-pack export.
-8. Add local API routes.
-9. Add PostgreSQL migrations.
-10. Add model-provider integration behind provider traits.
-11. Add document/PDF/conversation ingestion.
-12. Add PRAXIS frontend integration.
+1. Add reviewer decision and correction records.
+2. Add deterministic proposal-to-canonical normalization.
+3. Add compiler input records for approved and caveated proposals.
+4. Add deeper v3 validators for cross-layer references.
+5. Add deterministic compiler and `.capsule` archive writer.
+6. Add PRAXIS context-pack export.
+7. Add local API routes.
+8. Add PostgreSQL migrations.
+9. Add model-provider integration behind provider traits.
+10. Add document/PDF/conversation ingestion.
+11. Add PRAXIS frontend integration.
 
 ## Non-Goals For The First Build
 

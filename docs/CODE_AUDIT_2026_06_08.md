@@ -1,7 +1,7 @@
 # Code Audit - 2026-06-08
 
-Status: executable contract scaffold verified; capsule-building service not yet
-implemented.
+Status: executable contract scaffold and fixture-mode extractor contract
+verified; capsule-building service not yet implemented.
 
 This audit checks the repository against the canonical v3 Capsule Spec and the
 current goal: DIALECTICA must build portable PRAXIS Capsules that preserve
@@ -19,9 +19,9 @@ Related follow-up docs:
 
 | Dimension | Score | Meaning |
 | --- | ---: | --- |
-| Repository coding readiness | 88/100 | Workspace, docs, fixtures, CI, and command gates are coherent enough for focused coding. |
+| Repository coding readiness | 90/100 | Workspace, docs, fixtures, CI, and command gates are coherent enough for focused coding. |
 | Capsule contract readiness | 76/100 | Canonical v3 package validation works for the first fixture, but deep cross-layer validation is still missing. |
-| Capsule engine readiness | 38/100 | The repo can validate and inspect hand-authored packages; it cannot yet ingest, compile, sign, store, or serve capsules. |
+| Capsule engine readiness | 45/100 | The repo can validate hand-authored packages and fixture source/proposal plans; it cannot yet ingest live material, compile, sign, store, or serve capsules. |
 | Production service readiness | 20/100 | API, task handler, database, auth, observability, deployment, and PRAXIS integration are not yet functional. |
 
 ## What Is Actually Built
@@ -39,7 +39,19 @@ Related follow-up docs:
   - `validate`;
   - `inspect`;
   - `ontology-plan`;
+  - `source-pack-check`;
+  - `proposal-check`;
+  - `build-plan`;
   - `schema-export`.
+- `crates/dialectica-extractor` provides the first fixture-mode input contract:
+  - source packs and source spans;
+  - extraction runs and model invocation receipts;
+  - proposal records for claims, episodes, graph nodes, graph edges, ontology
+    terms, reasoning devices, language rules, caveats, rights rules, and output
+    rules;
+  - Plus/promoted review-trigger routing;
+  - build-plan typing;
+  - schema export.
 - `fixtures/canonical-capsules/conflict-situation-capsule/` is the first
   canonical v3 extracted Situation Capsule fixture.
 - `fixtures/golden-policy-capsule/expected-bundle/` remains a legacy migration
@@ -58,9 +70,11 @@ Related follow-up docs:
 ## What Is Not Built Yet
 
 - No v3 capsule compiler writer exists.
-- No source-pack ingestion or normalized source-span builder exists.
-- No `dialectica-extractor` crate, extraction proposal schema, model receipt,
-  or review-trigger router exists.
+- No live source-pack ingestion or normalized source-span builder from
+  uploaded material exists.
+- No live model-provider extraction, reviewer decision records,
+  proposal-to-canonical promotion normalizer, or provider fallback policy
+  exists.
 - No `.capsule` zip archive writer exists.
 - No deterministic Merkle root, checksum map, signature envelope, or signing
   policy exists.
@@ -92,6 +106,11 @@ cargo run -p dialectica-cli -- doctor
 cargo run -p dialectica-cli -- validate fixtures/canonical-capsules/conflict-situation-capsule
 cargo run -p dialectica-cli -- inspect fixtures/canonical-capsules/conflict-situation-capsule
 cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule/expected-bundle
+cargo run -p dialectica-cli -- inspect fixtures/golden-policy-capsule/expected-bundle
+cargo run -p dialectica-cli -- ontology-plan fixtures/golden-policy-capsule/expected-bundle
+cargo run -p dialectica-cli -- source-pack-check fixtures/golden-policy-capsule/source-pack/source_pack.json
+cargo run -p dialectica-cli -- proposal-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals
+cargo run -p dialectica-cli -- build-plan fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals
 cargo run -p dialectica-cli -- schema-export $env:TEMP\dialectica-audit-schemas
 python -m compileall tools/python
 python -m unittest discover tools/python/tests
@@ -110,7 +129,7 @@ DIALECTICA can prove package shape, but cannot yet build the product object.
 
 Required fix:
 
-1. Add typed source-pack input records.
+1. Add reviewer decisions and proposal-to-canonical promotion records.
 2. Implement deterministic v3 package writing.
 3. Add `.capsule` archive writing.
 4. Add contract tests that regenerate the canonical fixture byte-for-byte or
@@ -185,10 +204,10 @@ Required fix:
 
 The next code phase must be v3-first:
 
-1. `dialectica-compiler`: typed source pack plus deterministic v3 package
-   writer.
-2. `dialectica-extractor`: proposal envelopes, model receipts, and
-   review-trigger routing.
+1. `dialectica-extractor`: reviewer decisions and proposal promotion
+   normalization.
+2. `dialectica-compiler`: typed source/proposal/review input plus deterministic
+   v3 package writer.
 3. `dialectica-compiler`: `.capsule` archive writer with deterministic entry
    order and explicit digest scope.
 4. `dialectica-cli`: `build-fixture` that writes to an output directory.
@@ -208,11 +227,14 @@ The repository may currently claim:
 - it defines the canonical v3 capsule contract;
 - it validates and inspects one canonical v3 Situation Capsule fixture;
 - it retains legacy fixture compatibility during migration;
+- it validates fixture-mode source packs and extraction proposals;
+- it routes Plus/promoted proposal review gates before compilation;
 - it has enough scaffolding to start coding the engine.
 
 The repository must not yet claim:
 
 - that DIALECTICA builds capsules from documents;
+- that DIALECTICA calls live extraction models;
 - that it has a working backend API;
 - that it stores capsule state in PostgreSQL;
 - that it serves PRAXIS;

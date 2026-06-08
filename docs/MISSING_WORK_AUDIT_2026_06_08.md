@@ -1,6 +1,7 @@
 # Missing Work Audit - 2026-06-08
 
-Status: build-gap audit after canonical v3 alignment and the first code audit.
+Status: build-gap audit after canonical v3 alignment, Ladybug projection
+validation, and the first fixture-mode source/proposal implementation.
 
 The repository is coherent and locally verified as a contract scaffold. It is
 not yet the capsule-building engine. This audit lists what remains before
@@ -14,11 +15,14 @@ serve PRAXIS.
 | --- | --- |
 | Canonical v3 fixture validation | Working |
 | Legacy migration fixture validation | Working |
-| CLI `doctor`, `validate`, `inspect`, `ontology-plan`, `schema-export` | Working |
+| CLI `doctor`, `validate`, `inspect`, `ontology-plan`, `ladybug-check`, `source-pack-check`, `proposal-check`, `build-plan`, `schema-export` | Working |
 | Rust contract tests | Working |
-| Source-pack ingestion | Missing |
-| LLM extraction orchestration | Missing |
-| Proposal schemas and review router | Missing |
+| Fixture source-pack contract | Working |
+| Fixture extraction proposals and model receipts | Working |
+| Fixture review-trigger router | Working |
+| Live source-pack ingestion | Missing |
+| Live LLM extraction orchestration | Missing |
+| Reviewer decisions and promotion normalization | Missing |
 | Deterministic v3 compiler | Missing |
 | `.capsule` archive writer | Missing |
 | PRAXIS context-pack export | Missing |
@@ -34,16 +38,23 @@ These block the first real capsule-building loop.
 
 ### 1. Source Pack And Span Ledger
 
-Missing:
+Implemented for fixture mode:
 
 - `SourcePack` Rust type;
 - `SourceDocument` Rust type;
 - `SourceSpan` Rust type;
 - local source-pack fixture;
 - stable hash and locator rules;
-- PDF/document/conversation source categories;
 - prompt-injection quarantine metadata;
 - rights/access metadata.
+
+Still missing:
+
+- real document/PDF/conversation ingestion;
+- full source text extraction;
+- binary artifact staging;
+- PDF/document/conversation source categories;
+- cryptographic validation of artifact hashes beyond fixture-shape checks.
 
 Acceptance:
 
@@ -54,7 +65,7 @@ Acceptance:
 
 ### 2. LLM Extraction Proposal Contract
 
-Missing:
+Implemented for fixture mode:
 
 - `dialectica-extractor` crate;
 - `ExtractionRun` type;
@@ -62,7 +73,18 @@ Missing:
 - `ExtractionProposal` envelope;
 - proposal types for claims, episodes, graph nodes, graph edges, ontology terms,
   reasoning devices, language rules, output rules, caveats, and rights rules;
-- deterministic JSON Schema export for proposal records.
+- deterministic JSON Schema export for proposal records;
+- local proposal fixture records;
+- review-trigger routing for Plus/promoted proposal sets.
+
+Still missing:
+
+- model provider traits and clients;
+- live source-bound prompt orchestration;
+- extraction retry and error envelopes;
+- provider fallback policy;
+- eval benchmark gates before any fine-tuned or cheaper extractor replaces a
+  stronger teacher model.
 
 Acceptance:
 
@@ -73,9 +95,12 @@ Acceptance:
 
 ### 3. Review Router And Human Gates
 
-Missing:
+Implemented for fixture mode:
 
 - deterministic review trigger rules;
+
+Still missing:
+
 - review coverage matrix;
 - reviewer decision file;
 - promotion rules from proposal to canonical record;
@@ -241,10 +266,10 @@ These are valuable after the local loop and API are real.
 
 | Work package | Likely files |
 | --- | --- |
-| Source pack schema | `crates/dialectica-capsule`, `fixtures/golden-policy-capsule/source-pack/` |
-| Extractor crate | `crates/dialectica-extractor`, `Cargo.toml`, `tests/dialectica-contract-tests` |
-| Proposal schemas | `crates/dialectica-extractor`, `schemas/capsule-3.0/` |
-| Review router | `crates/dialectica-extractor`, `crates/dialectica-capsule` |
+| Source pack schema | implemented in `crates/dialectica-extractor`, `fixtures/golden-policy-capsule/source-pack/`, `schemas/capsule-3.0/source_pack.schema.json` |
+| Extractor crate | implemented in `crates/dialectica-extractor`, `Cargo.toml`, `tests/dialectica-contract-tests` |
+| Proposal schemas | implemented in `crates/dialectica-extractor`, `schemas/capsule-3.0/` |
+| Review router | fixture-mode router implemented in `crates/dialectica-extractor`; reviewer decisions still pending |
 | Compiler writer | `crates/dialectica-compiler` |
 | Context pack | `crates/dialectica-capsule`, `crates/dialectica-cli` |
 | API routes | `services/dialectica-api` |
@@ -254,10 +279,10 @@ These are valuable after the local loop and API are real.
 
 ## Next Implementation Sequence
 
-1. Add source-pack Rust types and a local source-pack fixture.
-2. Add `dialectica-extractor` with proposal envelopes and model receipts.
-3. Add review-trigger routing and fixture reviewer decisions.
-4. Add proposal-to-canonical normalization.
+1. Add reviewer decision and correction records.
+2. Add proposal-to-canonical normalization.
+3. Add deterministic v3 compiler output.
+4. Add `.capsule` archive generation.
 5. Expand v3 validator cross-layer checks.
 6. Implement deterministic v3 package writer.
 7. Implement `.capsule` archive writer.

@@ -25,8 +25,8 @@ explicitly while coding.
 | Priority | Gap | Why it matters | Required improvement |
 | --- | --- | --- | --- |
 | P0 | Deterministic bundle output is underspecified. | A capsule cannot be trusted, signed, diffed, or cached if two equal inputs produce different bytes. | Define canonical JSON/JSONL ordering, newline rules, digest scope, and fixture comparison tests before calling the compiler real. |
-| P0 | Source-pack input is not yet a typed contract. | The repo has an expected bundle, but not yet a real proof that DIALECTICA can build it from sources and review decisions. | Add typed source-pack records, proposal records, human correction records, and lineage fields before adding model-provider calls. |
-| P0 | LLM extraction proposal records do not exist. | The engine needs models to help extract context, but model output cannot become truth. | Add `dialectica-extractor`, model receipts, proposal envelopes, review triggers, and tests proving proposals cannot bypass review. |
+| P0 | Source-pack input is fixture-only. | The repo can validate source/proposal records, but it still cannot ingest real documents, PDFs, or conversations. | Keep fixtures canonical, add reviewer decisions and promotion records next, then live ingestion after the compiler loop works. |
+| P0 | LLM extraction proposal records are fixture-only. | The engine has proposal contracts, but no live model-provider calls or fallback policy. | Add live providers only after proposal promotion and eval gates exist. |
 | P0 | Promotion gates are too coarse. | Manifest-level review is not enough; PRAXIS must avoid unreviewed claims, graph edges, language rules, and output contracts. | Add object-level promotion policy and tests for rejected, expired, caveated, stale, and unreviewed objects. |
 | P0 | PRAXIS context pack is still conceptual. | The product value is proven only when PRAXIS can consume a compact capsule payload without internal DIALECTICA state. | Implement `ContextPack`, schema export, CLI export, and fixture assertions before store/API/cloud work. |
 | P1 | API behavior needs a stricter local contract. | Local Axum routes should not become ad hoc JSON endpoints. | Define response envelopes, error codes, content types, fixture mode metadata, and stable route tests. |
@@ -71,12 +71,12 @@ Definition of done:
 
 Deliver:
 
-- `source_pack.json` schema and Rust types;
-- source artifact metadata;
-- normalized source-span records;
-- machine proposal records;
-- model invocation receipts;
-- review-trigger routing;
+- `source_pack.json` schema and Rust types: implemented;
+- source artifact metadata: implemented for fixtures;
+- normalized source-span records: implemented for fixtures;
+- machine proposal records: implemented for fixtures;
+- model invocation receipts: implemented for fixtures;
+- review-trigger routing: implemented for Plus/promoted fixtures;
 - human correction records;
 - review decision records;
 - lineage from every generated object to source spans or review actions.

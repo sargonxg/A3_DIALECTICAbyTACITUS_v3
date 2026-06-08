@@ -206,6 +206,7 @@ version = "0.1.0"
 dependencies = [
  "dialectica-capsule",
  "dialectica-compiler",
+ "dialectica-extractor",
  "dialectica-graph",
  "serde_json",
 ]
@@ -223,11 +224,21 @@ version = "0.1.0"
 dependencies = [
  "dialectica-capsule",
  "dialectica-compiler",
+ "dialectica-extractor",
 ]
 
 [[package]]
 name = "dialectica-eval"
 version = "0.1.0"
+
+[[package]]
+name = "dialectica-extractor"
+version = "0.1.0"
+dependencies = [
+ "schemars",
+ "serde",
+ "serde_json",
+]
 
 [[package]]
 name = "dialectica-graph"

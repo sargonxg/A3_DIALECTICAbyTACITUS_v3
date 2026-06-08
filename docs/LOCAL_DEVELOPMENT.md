@@ -34,7 +34,14 @@ cargo test --locked --workspace
 cargo run -p dialectica-cli -- doctor
 cargo run -p dialectica-cli -- validate fixtures/canonical-capsules/conflict-situation-capsule
 cargo run -p dialectica-cli -- inspect fixtures/canonical-capsules/conflict-situation-capsule
+cargo run -p dialectica-cli -- ladybug-check fixtures/canonical-capsules/conflict-situation-capsule
 cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule/expected-bundle
+cargo run -p dialectica-cli -- inspect fixtures/golden-policy-capsule/expected-bundle
+cargo run -p dialectica-cli -- ontology-plan fixtures/golden-policy-capsule/expected-bundle
+cargo run -p dialectica-cli -- source-pack-check fixtures/golden-policy-capsule/source-pack/source_pack.json
+cargo run -p dialectica-cli -- proposal-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals
+cargo run -p dialectica-cli -- build-plan fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals
+cargo run -p dialectica-cli -- schema-export schemas/capsule-3.0
 python -m compileall tools/python
 python -m unittest discover tools/python/tests
 python -m json.tool fixtures/example-capsules/user-capsule.example.json > $null
@@ -43,15 +50,15 @@ python -m json.tool fixtures/example-capsules/tool-capsule.example.json > $null
 python -m json.tool fixtures/example-capsules/output-capsule.example.json > $null
 ```
 
-Future extractor commands:
+Source/proposal fixture commands:
 
 ```powershell
-cargo run -p dialectica-cli -- validate-source-pack fixtures/golden-policy-capsule/source-pack
-cargo run -p dialectica-cli -- validate-proposals fixtures/golden-policy-capsule/proposals
+cargo run -p dialectica-cli -- source-pack-check fixtures/golden-policy-capsule/source-pack/source_pack.json
+cargo run -p dialectica-cli -- proposal-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals
+cargo run -p dialectica-cli -- build-plan fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals
 ```
 
-These commands do not exist yet. Add them only after the source-pack and
-proposal schemas are implemented.
+These commands run without cloud credentials and do not call model providers.
 
 Optional migration-fixture commands:
 

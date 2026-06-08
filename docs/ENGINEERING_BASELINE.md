@@ -29,8 +29,9 @@ dialectica-capsule
   validation, and versioning
 
 dialectica-extractor
-  planned crate; owns source-pack inputs, extraction proposal schemas, model
-  invocation receipts, review-trigger routing, and provider traits
+  owns source-pack inputs, extraction proposal schemas, model invocation
+  receipts, review-trigger routing, build-plan contracts, and future provider
+  traits
 
 dialectica-compiler
   owns deterministic bundle assembly, checksums, signing hooks, and
@@ -86,14 +87,15 @@ still decide whether the records can be promoted.
 2. `dialectica-cli`: validate and inspect a fixture bundle.
 3. `fixtures/canonical-capsules`: canonical v3 package fixture.
 4. `dialectica-extractor`: source-pack and proposal schemas with review
-   triggers.
-5. `dialectica-compiler`: deterministic v3 package writer, archive writer, and
+   triggers: implemented for fixture mode.
+5. reviewer decisions and proposal promotion normalization.
+6. `dialectica-compiler`: deterministic v3 package writer, archive writer, and
    checksums.
-6. `dialectica-store`: migrations and repository interfaces.
-7. `dialectica-api`: health, version, manifest, graph preview, context pack.
-8. `dialectica-task-handler`: queued compile path.
-9. `dialectica-eval`: fixture eval reports.
-10. Python reports and adapters where they reduce implementation risk.
+7. `dialectica-store`: migrations and repository interfaces.
+8. `dialectica-api`: health, version, manifest, graph preview, context pack.
+9. `dialectica-task-handler`: queued compile path.
+10. `dialectica-eval`: fixture eval reports.
+11. Python reports and adapters where they reduce implementation risk.
 
 ## Required Local Gate
 
@@ -108,6 +110,10 @@ cargo run -p dialectica-cli -- inspect fixtures/canonical-capsules/conflict-situ
 cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule/expected-bundle
 cargo run -p dialectica-cli -- inspect fixtures/golden-policy-capsule/expected-bundle
 cargo run -p dialectica-cli -- ontology-plan fixtures/golden-policy-capsule/expected-bundle
+cargo run -p dialectica-cli -- source-pack-check fixtures/golden-policy-capsule/source-pack/source_pack.json
+cargo run -p dialectica-cli -- proposal-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals
+cargo run -p dialectica-cli -- build-plan fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals
+cargo run -p dialectica-cli -- schema-export schemas/capsule-3.0
 python -m compileall tools/python
 python -m unittest discover tools/python/tests
 ```

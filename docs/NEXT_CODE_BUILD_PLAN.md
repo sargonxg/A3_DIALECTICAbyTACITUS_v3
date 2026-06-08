@@ -10,8 +10,9 @@ Turn the current contract scaffold into a working local capsule engine:
 
 ```text
 source pack
-  -> LLM proposal records
+  -> fixture-mode LLM proposal records
   -> review-trigger routing
+  -> reviewer decisions
   -> reviewed canonical records
   -> deterministic v3 .capsule compiler
   -> PRAXIS context pack
@@ -39,8 +40,14 @@ Already implemented:
 - CLI `validate`;
 - CLI `inspect`;
 - CLI `ontology-plan`;
+- CLI `source-pack-check`;
+- CLI `proposal-check`;
+- CLI `build-plan`;
 - CLI `schema-export`;
 - canonical v3 conflict Situation Capsule fixture;
+- golden policy source pack fixture;
+- golden policy extraction run and proposal fixtures;
+- fixture-mode review-trigger routing for Plus/promoted proposals;
 - golden policy expected bundle;
 - contract tests for canonical v3 validation, rejected top-level types,
   sourceability, temporal warnings, graph registry, ontology blueprint families,
@@ -48,10 +55,9 @@ Already implemented:
 
 Not yet implemented:
 
-- source-pack ingestion;
-- LLM extraction proposal schema;
-- model invocation receipts;
-- review-trigger routing;
+- live document/PDF/conversation ingestion;
+- live model-provider extraction calls;
+- reviewer decision fixture and promotion normalization;
 - v3 package writer;
 - `.capsule` archive writer;
 - Merkle/checksum/signature envelope;
@@ -74,6 +80,9 @@ cargo run -p dialectica-cli -- inspect fixtures/canonical-capsules/conflict-situ
 cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule/expected-bundle
 cargo run -p dialectica-cli -- inspect fixtures/golden-policy-capsule/expected-bundle
 cargo run -p dialectica-cli -- ontology-plan fixtures/golden-policy-capsule/expected-bundle
+cargo run -p dialectica-cli -- source-pack-check fixtures/golden-policy-capsule/source-pack/source_pack.json
+cargo run -p dialectica-cli -- proposal-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals
+cargo run -p dialectica-cli -- build-plan fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals
 cargo run -p dialectica-cli -- schema-export schemas/capsule-3.0
 python -m compileall tools/python
 python -m unittest discover tools/python/tests
@@ -81,19 +90,22 @@ python -m unittest discover tools/python/tests
 
 ## Phase 1: Source Pack And Extraction Proposal Contract
 
+Status: fixture-mode contract implemented.
+
 Goal: make the input side of the engine real without calling a model provider.
 
 Deliver:
 
-- Rust `SourcePack`, `SourceDocument`, and `SourceSpan` types;
+- Rust `SourcePack`, `SourceDocument`, and `SourceSpan` types: implemented;
 - source-pack fixture with at least one document-like source and one
-  user/assistant discussion source;
-- Rust `ExtractionRun` and `ModelInvocationReceipt` types;
-- Rust `ExtractionProposal` envelope;
+  user/assistant discussion source: implemented;
+- Rust `ExtractionRun` and `ModelInvocationReceipt` types: implemented;
+- Rust `ExtractionProposal` envelope: implemented;
 - proposal payloads for claim, episode, graph node, graph edge, ontology term,
-  reasoning device, language rule, caveat, rights rule, and output rule;
-- review-trigger router;
-- CLI validation for source pack and proposal fixture records.
+  reasoning device, language rule, caveat, rights rule, and output rule:
+  implemented;
+- review-trigger router: implemented for fixture records;
+- CLI validation for source pack and proposal fixture records: implemented.
 
 Acceptance:
 
@@ -101,11 +113,36 @@ Acceptance:
 - fixture proposal records validate locally;
 - every proposal includes source spans, confidence, uncertainty, model receipt,
   and review triggers;
-- no proposal can be exported as canonical without review or deterministic
-  promotion rules;
+- no Plus/promoted material proposal can proceed without a blocking review gate;
 - tests prove LLM extraction is proposal-only.
 
-## Phase 2: Deterministic Bundle Writer
+Remaining before Phase 1 is product-complete:
+
+- provider traits and live source-bound model calls;
+- reviewer decision records;
+- proposal-to-canonical promotion normalization;
+- deterministic rule for which Auto Draft proposals can bypass human review.
+
+## Phase 2: Reviewer Decisions And Promotion Records
+
+Goal: make the human-gated layer explicit before writing canonical bundle files.
+
+Deliver:
+
+- reviewer decision fixture for the golden proposal set;
+- decision statuses: approve, approve_with_caveats, reject, request_evidence;
+- promotion policy that turns approved proposals into canonical compiler inputs;
+- blocking rule that prevents unreviewed Plus/promoted proposals from compiling;
+- lineage preservation for rejected and superseded proposals.
+
+Acceptance:
+
+- proposal records and reviewer decisions validate together;
+- rejected records remain in lineage but do not enter promoted PRAXIS context;
+- caveats propagate to the compiler input contract;
+- tests prove a missing reviewer decision blocks promoted output.
+
+## Phase 3: Deterministic Bundle Writer
 
 Goal: make `dialectica-compiler` write the canonical v3 extracted package from
 typed records, then assemble a `.capsule` archive.
@@ -139,7 +176,7 @@ Acceptance:
 
 Do not move to API or store work until this phase has executable proof.
 
-## Phase 3: Source-Pack Builder
+## Phase 4: Source-Pack Builder
 
 Goal: stop treating the golden bundle as hand-authored output only.
 
@@ -161,7 +198,7 @@ Acceptance:
 - unreviewed proposed records remain visible in lineage but cannot enter the
   PRAXIS context pack.
 
-## Phase 4: PRAXIS Context Pack Export
+## Phase 5: PRAXIS Context Pack Export
 
 Goal: create the first PRAXIS-consumable payload from `agent_context.md`,
 `operations.md`, and the canonical v3 graph/claim/source files.
@@ -186,7 +223,7 @@ Acceptance:
   and output rule has source-span ids, review-action ids, or explicit expert
   note lineage.
 
-## Phase 5: Local API Slice
+## Phase 6: Local API Slice
 
 Goal: make `dialectica-api` a real Axum service in local fixture mode.
 
@@ -208,7 +245,7 @@ Acceptance:
 - error responses include code, message, details, and request id;
 - no cloud credentials are required.
 
-## Phase 6: Store Migration Skeleton
+## Phase 7: Store Migration Skeleton
 
 Goal: prepare Cloud SQL PostgreSQL without making it a blocker for local proof.
 
@@ -228,7 +265,7 @@ Acceptance:
 - bundle export can still run from local fixture records when Postgres is
   absent.
 
-## Phase 7: Deployment Rail
+## Phase 8: Deployment Rail
 
 Goal: prepare deployability after the local loop works.
 

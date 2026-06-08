@@ -1,0 +1,160 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SourcePack",
+  "type": "object",
+  "required": [
+    "contract_version",
+    "created_at",
+    "documents",
+    "pack_id",
+    "spans",
+    "title"
+  ],
+  "properties": {
+    "contract_version": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "documents": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/SourceDocument"
+      }
+    },
+    "pack_id": {
+      "type": "string"
+    },
+    "spans": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/SourceSpan"
+      }
+    },
+    "target_capsule_type": {
+      "default": null,
+      "anyOf": [
+        {
+          "$ref": "#/definitions/CapsuleType"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "title": {
+      "type": "string"
+    }
+  },
+  "definitions": {
+    "CapsuleType": {
+      "type": "string",
+      "enum": [
+        "user",
+        "situation",
+        "tool",
+        "output"
+      ]
+    },
+    "PromptInjectionRisk": {
+      "type": "string",
+      "enum": [
+        "none",
+        "low",
+        "medium",
+        "high",
+        "quarantined"
+      ]
+    },
+    "SourceDocument": {
+      "type": "object",
+      "required": [
+        "content_hash",
+        "document_id",
+        "language",
+        "prompt_injection_risk",
+        "retrieved_at",
+        "rights_or_access",
+        "source_type",
+        "title",
+        "trust_status",
+        "uri"
+      ],
+      "properties": {
+        "content_hash": {
+          "type": "string"
+        },
+        "document_id": {
+          "type": "string"
+        },
+        "language": {
+          "type": "string"
+        },
+        "prompt_injection_risk": {
+          "$ref": "#/definitions/PromptInjectionRisk"
+        },
+        "retrieved_at": {
+          "type": "string"
+        },
+        "rights_or_access": {
+          "type": "string"
+        },
+        "source_type": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "trust_status": {
+          "type": "string"
+        },
+        "uri": {
+          "type": "string"
+        }
+      }
+    },
+    "SourceSpan": {
+      "type": "object",
+      "required": [
+        "document_id",
+        "language",
+        "locator",
+        "quote",
+        "rights_or_access",
+        "span_id",
+        "text_hash"
+      ],
+      "properties": {
+        "document_id": {
+          "type": "string"
+        },
+        "extraction_notes": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "language": {
+          "type": "string"
+        },
+        "locator": {
+          "type": "string"
+        },
+        "quote": {
+          "type": "string"
+        },
+        "rights_or_access": {
+          "type": "string"
+        },
+        "span_id": {
+          "type": "string"
+        },
+        "text_hash": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

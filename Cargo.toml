@@ -4,6 +4,7 @@ members = [
   "crates/dialectica-cli",
   "crates/dialectica-compiler",
   "crates/dialectica-eval",
+  "crates/dialectica-extractor",
   "crates/dialectica-graph",
   "crates/dialectica-store",
   "services/dialectica-api",

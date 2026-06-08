@@ -82,6 +82,9 @@ Current command gate:
 - `cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule/expected-bundle`
 - `cargo run -p dialectica-cli -- inspect fixtures/golden-policy-capsule/expected-bundle`
 - `cargo run -p dialectica-cli -- ontology-plan fixtures/golden-policy-capsule/expected-bundle`
+- `cargo run -p dialectica-cli -- source-pack-check fixtures/golden-policy-capsule/source-pack/source_pack.json`
+- `cargo run -p dialectica-cli -- proposal-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals`
+- `cargo run -p dialectica-cli -- build-plan fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals`
 - `cargo run -p dialectica-cli -- schema-export schemas/capsule-3.0`
 - `python -m compileall tools/python`
 - `python -m unittest discover tools/python/tests`

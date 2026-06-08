@@ -13,6 +13,7 @@ ladybug = ["dialectica-graph/ladybug"]
 [dependencies]
 dialectica-capsule = { path = "../dialectica-capsule" }
 dialectica-compiler = { path = "../dialectica-compiler" }
+dialectica-extractor = { path = "../dialectica-extractor" }
 dialectica-graph = { path = "../dialectica-graph" }
 serde_json = "1"
 

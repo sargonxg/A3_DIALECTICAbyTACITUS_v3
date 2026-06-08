@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ReviewGate",
+  "type": "object",
+  "required": [
+    "blocking",
+    "gate_id",
+    "object_id",
+    "proposal_id",
+    "proposal_kind",
+    "reason",
+    "reviewer_role"
+  ],
+  "properties": {
+    "blocking": {
+      "type": "boolean"
+    },
+    "gate_id": {
+      "type": "string"
+    },
+    "object_id": {
+      "type": "string"
+    },
+    "proposal_id": {
+      "type": "string"
+    },
+    "proposal_kind": {
+      "$ref": "#/definitions/ProposalKind"
+    },
+    "reason": {
+      "type": "string"
+    },
+    "reviewer_role": {
+      "type": "string"
+    }
+  },
+  "definitions": {
+    "ProposalKind": {
+      "type": "string",
+      "enum": [
+        "claim",
+        "episode",
+        "graph_node",
+        "graph_edge",
+        "ontology_term",
+        "reasoning_device",
+        "language_rule",
+        "caveat",
+        "rights_rule",
+        "output_rule"
+      ]
+    }
+  }
+}

@@ -52,7 +52,8 @@ Reusable Rust libraries.
 Active crates:
 
 - `dialectica-capsule`;
-- `dialectica-extractor` planned, not yet created;
+- `dialectica-extractor`;
+- `dialectica-graph`;
 - `dialectica-store`;
 - `dialectica-compiler`;
 - `dialectica-eval`;
@@ -91,6 +92,8 @@ Current examples:
 - `fixtures/example-capsules/output-capsule.example.json`.
 - `fixtures/canonical-capsules/conflict-situation-capsule/`;
 - `fixtures/golden-policy-capsule/expected-bundle/`.
+- `fixtures/golden-policy-capsule/source-pack/source_pack.json`;
+- `fixtures/golden-policy-capsule/proposals/`.
 
 ## `schemas/`
 

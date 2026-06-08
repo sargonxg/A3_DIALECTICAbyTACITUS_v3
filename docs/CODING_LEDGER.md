@@ -2,8 +2,9 @@
 
 Status: active control file for the first functional DIALECTICA build.
 
-Current audit result: executable v3 contract scaffold verified on 2026-06-08;
-the capsule-building service is not yet implemented. See
+Current audit result: executable v3 contract scaffold plus fixture-mode
+source/proposal/build-plan contract verified on 2026-06-08; the live
+capsule-building service is not yet implemented. See
 [Code Audit 2026-06-08](CODE_AUDIT_2026_06_08.md),
 [Missing Work Audit 2026-06-08](MISSING_WORK_AUDIT_2026_06_08.md), and
 [LLM Context Extraction Architecture](LLM_CONTEXT_EXTRACTION_ARCHITECTURE.md).
@@ -37,14 +38,14 @@ The first functional app is not complete until a developer can:
 | --- | --- | --- | --- |
 | Workspace | `Cargo.toml` | created | keep all crates in one Cargo workspace |
 | Capsule contract | `crates/dialectica-capsule` | v3 package validator plus legacy structs, validation, and schema export implemented | expand validators and checksum/signature contract |
-| Extractor | `crates/dialectica-extractor` | not created | source-pack types, LLM proposal envelopes, model receipts, review-trigger router, provider traits |
+| Extractor | `crates/dialectica-extractor` | fixture-mode source-pack, proposal envelope, model receipt, build-plan, schema export, and review-trigger routing implemented | provider traits, live model orchestration, reviewer decisions, and proposal promotion records |
 | Compiler | `crates/dialectica-compiler` | scaffolded with legacy review-gated emit check only | deterministic v3 package writer, `.capsule` archive writer, and checksums |
 | Store | `crates/dialectica-store` | scaffolded with migration family names only | SQLx migrations and repository interfaces |
 | Evals | `crates/dialectica-eval` | scaffolded with check result primitive only | fixture outcome, source-fidelity, temporal, reasoning, and PRAXIS comparison evals |
-| CLI | `crates/dialectica-cli` | `doctor`, `validate`, `inspect`, `ontology-plan`, and `schema-export` implemented | add `build-fixture` and `context-pack` after compiler/context export exists |
+| CLI | `crates/dialectica-cli` | `doctor`, `validate`, `inspect`, `ontology-plan`, `ladybug-check`, `source-pack-check`, `proposal-check`, `build-plan`, and `schema-export` implemented | add `build-fixture` and `context-pack` after compiler/context export exists |
 | API | `services/dialectica-api` | scaffolded binary that prints health text | Axum health, version, manifest, graph-preview, context-pack routes |
 | Task handler | `services/dialectica-task-handler` | scaffolded binary that prints store env | Cloud Tasks-compatible HTTP handler |
-| Contract tests | `tests/dialectica-contract-tests` | canonical v3 fixture and legacy migration tests implemented | generated-fixture, archive, deep-validator, and context-pack tests |
+| Contract tests | `tests/dialectica-contract-tests` | canonical v3 fixture, source-pack/proposal validation, review-gate routing, and legacy migration tests implemented | generated-fixture, archive, deep-validator, and context-pack tests |
 
 ## 2026-06-08 Audit Result
 
@@ -56,6 +57,9 @@ Verified as working:
 - canonical v3 Situation Capsule fixture validates and inspects;
 - unsupported top-level capsule types are rejected;
 - legacy expected-bundle fixture still validates during migration;
+- fixture source pack validates;
+- fixture extraction proposals validate;
+- fixture build plan routes Plus/promoted review gates before compilation;
 - schema export works;
 - Rust workspace checks, clippy, tests, and Python auxiliary tests pass;
 - CI now runs canonical v3 fixture validation before the legacy migration
@@ -64,9 +68,9 @@ Verified as working:
 Not yet built:
 
 - v3 compiler writer;
-- source-pack ingestion;
-- LLM extraction proposal schema;
-- review-trigger router;
+- live document/PDF/conversation source-pack ingestion;
+- live LLM extraction orchestration and provider clients;
+- reviewer decision fixture and promotion normalization;
 - `.capsule` archive assembly;
 - Merkle/checksum/signature envelope;
 - PRAXIS context-pack export;
@@ -91,6 +95,12 @@ cargo run -p dialectica-cli -- doctor
 cargo run -p dialectica-cli -- validate fixtures/canonical-capsules/conflict-situation-capsule
 cargo run -p dialectica-cli -- inspect fixtures/canonical-capsules/conflict-situation-capsule
 cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule/expected-bundle
+cargo run -p dialectica-cli -- inspect fixtures/golden-policy-capsule/expected-bundle
+cargo run -p dialectica-cli -- ontology-plan fixtures/golden-policy-capsule/expected-bundle
+cargo run -p dialectica-cli -- source-pack-check fixtures/golden-policy-capsule/source-pack/source_pack.json
+cargo run -p dialectica-cli -- proposal-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals
+cargo run -p dialectica-cli -- build-plan fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals
+cargo run -p dialectica-cli -- schema-export schemas/capsule-3.0
 python -m compileall tools/python
 python -m unittest discover tools/python/tests
 ```
@@ -110,6 +120,9 @@ cargo run -p dialectica-cli -- inspect fixtures/canonical-capsules/conflict-situ
 cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule/expected-bundle
 cargo run -p dialectica-cli -- inspect fixtures/golden-policy-capsule/expected-bundle
 cargo run -p dialectica-cli -- ontology-plan fixtures/golden-policy-capsule/expected-bundle
+cargo run -p dialectica-cli -- source-pack-check fixtures/golden-policy-capsule/source-pack/source_pack.json
+cargo run -p dialectica-cli -- proposal-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals
+cargo run -p dialectica-cli -- build-plan fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals
 cargo run -p dialectica-cli -- schema-export schemas/capsule-3.0
 ```
 
@@ -165,12 +178,13 @@ builds possible without cloud credentials.
 
 Deliver:
 
-- `fixtures/golden-policy-capsule/source-pack/`: placeholder added;
-- source-pack schema;
-- extraction proposal schema;
-- model invocation receipt schema;
+- `fixtures/golden-policy-capsule/source-pack/`: implemented with a validated
+  fixture;
+- source-pack schema: implemented;
+- extraction proposal schema: implemented;
+- model invocation receipt schema: implemented;
 - human review decision fixture;
-- review-trigger router;
+- review-trigger router: implemented for fixture proposals;
 - `fixtures/example-capsules/*.example.json` validation;
 - expected bundle records: implemented for the golden policy capsule;
 - reviewer correction;
@@ -294,12 +308,13 @@ when it changes:
 Follow [Next Code Build Plan](NEXT_CODE_BUILD_PLAN.md) and
 [Improvement Guidelines](IMPROVEMENT_GUIDELINES.md):
 
-1. define typed source-pack inputs and extraction proposal records;
-2. add `dialectica-extractor` with model receipts and review-trigger routing;
+1. add reviewer decision and correction records for the fixture proposal set;
+2. define proposal-to-canonical promotion normalization;
 3. define deterministic v3 package-writing rules;
 4. implement `dialectica-compiler` deterministic v3 package writing;
 5. add `.capsule` archive writing with deterministic entry order;
-6. add source-pack records and `dialectica-cli build-fixture`;
+6. add `dialectica-cli build-fixture` from source-pack, proposals, and review
+   decisions;
 7. deepen v3 validation across claims, sources, graph, review, reasoning, and
    runtime records;
 8. export a PRAXIS context pack from the canonical package;

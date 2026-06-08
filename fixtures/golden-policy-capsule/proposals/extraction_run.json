@@ -1,0 +1,26 @@
+{
+  "run_id": "run_conflict_situation_fixture_v1",
+  "contract_version": "0.1.0",
+  "source_pack_id": "srcpack_conflict_situation_fixture_v1",
+  "requested_type": "situation",
+  "type_inference": {
+    "selected_type": "situation",
+    "source": "mixed",
+    "confidence": 0.96,
+    "explanation": "The source pack describes a live political certification dispute with actors, claims, temporality, caveats, and conflict-map needs.",
+    "conflicting_signals": []
+  },
+  "build_mode": "plus_promoted",
+  "model_receipts": [
+    {
+      "receipt_id": "receipt_fixture_extractor_v1",
+      "provider": "fixture",
+      "model": "fixture-policy-extractor",
+      "prompt_template_id": "proposal_extractor_conflict_v1",
+      "input_digest": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+      "output_digest": "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+      "created_at": "2026-06-08T00:00:00Z",
+      "fixture_mode": true
+    }
+  ]
+}

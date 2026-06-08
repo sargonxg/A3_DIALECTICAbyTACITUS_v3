@@ -1,0 +1,75 @@
+{
+  "pack_id": "srcpack_conflict_situation_fixture_v1",
+  "contract_version": "0.1.0",
+  "target_capsule_type": "situation",
+  "title": "Certification Dispute Conflict Source Pack",
+  "created_at": "2026-06-08T00:00:00Z",
+  "documents": [
+    {
+      "document_id": "doc_election_commission_statement",
+      "source_type": "official_statement",
+      "title": "Election Commission Certification Statement",
+      "uri": "fixture://sources/election-commission-certification",
+      "retrieved_at": "2026-06-08T00:00:00Z",
+      "language": "en",
+      "rights_or_access": "fixture_internal",
+      "content_hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "trust_status": "primary_fixture",
+      "prompt_injection_risk": "low"
+    },
+    {
+      "document_id": "doc_analyst_discussion",
+      "source_type": "user_assistant_discussion",
+      "title": "Analyst Discussion On Certification Dispute",
+      "uri": "fixture://discussions/analyst-certification-dispute",
+      "retrieved_at": "2026-06-08T00:00:00Z",
+      "language": "en",
+      "rights_or_access": "private_team_fixture",
+      "content_hash": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "trust_status": "team_context_fixture",
+      "prompt_injection_risk": "medium"
+    }
+  ],
+  "spans": [
+    {
+      "span_id": "span_commission_certification",
+      "document_id": "doc_election_commission_statement",
+      "locator": "paragraph:1",
+      "text_hash": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+      "quote": "The election commission certified the provisional result and opened the statutory challenge window.",
+      "language": "en",
+      "rights_or_access": "fixture_internal",
+      "extraction_notes": ["primary event anchor"]
+    },
+    {
+      "span_id": "span_army_rejection",
+      "document_id": "doc_election_commission_statement",
+      "locator": "paragraph:2",
+      "text_hash": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+      "quote": "A regional army command rejected the certification and called for an emergency negotiation forum.",
+      "language": "en",
+      "rights_or_access": "fixture_internal",
+      "extraction_notes": ["contested actor claim"]
+    },
+    {
+      "span_id": "span_analyst_caveat",
+      "document_id": "doc_analyst_discussion",
+      "locator": "turn:analyst:4",
+      "text_hash": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "quote": "The analyst flagged that the army command's leverage is plausible but not independently corroborated.",
+      "language": "en",
+      "rights_or_access": "private_team_fixture",
+      "extraction_notes": ["expert caveat"]
+    },
+    {
+      "span_id": "span_language_review",
+      "document_id": "doc_analyst_discussion",
+      "locator": "turn:reviewer:2",
+      "text_hash": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "quote": "Use 'rejected the certification' rather than 'nullified the election' unless a legal source supports nullification.",
+      "language": "en",
+      "rights_or_access": "private_team_fixture",
+      "extraction_notes": ["reviewed language rule"]
+    }
+  ]
+}

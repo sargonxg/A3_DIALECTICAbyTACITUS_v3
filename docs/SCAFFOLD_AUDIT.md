@@ -2,14 +2,15 @@
 
 Date: 2026-06-08
 
-Readiness: **88/100 for coding readiness; 38/100 for capsule-engine readiness;
+Readiness: **90/100 for coding readiness; 45/100 for capsule-engine readiness;
 20/100 for app-production readiness**.
 
 The repository has begun the first functional implementation pass. It is not
-yet a working backend or capsule-building service, but the capsule contract is
-now executable in two lanes: the Rust crate can validate a canonical v3
-extracted `.capsule` package, and it can still load the legacy expected-bundle
-directory while the compiler migrates.
+yet a working backend or capsule-building service, but the capsule contract and
+input contract are now executable in three lanes: the Rust crates can validate a
+canonical v3 extracted `.capsule` package, validate a fixture source/proposal
+build plan, and still load the legacy expected-bundle directory while the
+compiler migrates.
 
 ## Evidence Checked
 
@@ -59,6 +60,9 @@ directory while the compiler migrates.
   blueprints, and JSON Schema export.
 - `dialectica-cli` now supports `validate`, `inspect`, `ontology-plan`, and
   `schema-export`.
+- `dialectica-extractor` now supports fixture-mode source packs, extraction
+  runs, proposal records, model receipts, review gates, build plans, and schema
+  export.
 - Canonical v3 conflict Situation Capsule fixture exists under
   `fixtures/canonical-capsules/conflict-situation-capsule/`.
 - GitHub CI now validates and inspects the canonical v3 fixture before the
@@ -67,8 +71,9 @@ directory while the compiler migrates.
   legacy `0.1.0` bundle version separate.
 - `docs/CODE_AUDIT_2026_06_08.md` records the current executable state and the
   P0/P1 build gaps.
-- `docs/MISSING_WORK_AUDIT_2026_06_08.md` lists the source-pack, extraction,
-  review, compiler, API, store, eval, and PRAXIS frontend gaps.
+- `docs/MISSING_WORK_AUDIT_2026_06_08.md` distinguishes the implemented
+  fixture source/proposal contract from the remaining live extraction, review,
+  compiler, API, store, eval, and PRAXIS frontend gaps.
 - `docs/LLM_CONTEXT_EXTRACTION_ARCHITECTURE.md` defines the proposal-only LLM
   extraction pipeline.
 - ADR-007 records that LLM extraction cannot write canonical truth directly.
@@ -108,15 +113,15 @@ directory while the compiler migrates.
 - Capsule validation breadth is incomplete; v3 validation currently checks
   package shape, manifest layer vocabulary, type boundary, non-empty generated
   views, JSON parseability, and minimum Situation claim/source records.
-- No source-pack ingestion, document upload, PDF extraction, user discussion
-  capture, or assistant conversation ingestion exists.
-- No `dialectica-extractor` crate, extraction proposal schema, model invocation
-  receipt, or review-trigger router exists.
+- No live source-pack ingestion, document upload, PDF extraction, user
+  discussion capture, or assistant conversation ingestion exists.
+- No live model-provider extraction, reviewer decision file,
+  proposal-to-canonical promotion normalizer, or provider fallback policy
+  exists.
 - No ontology or semantic-layer creation workflow exists beyond the legacy
   `ontology-plan` helper.
-- Golden fixture source pack is still only a placeholder; the expected bundle is
-  committed, but the compiler does not generate either the legacy bundle or v3
-  package yet.
+- Golden fixture source pack and proposal records validate, but the compiler
+  does not generate either the legacy bundle or v3 package yet.
 - Example single-file capsule envelopes still need shared-envelope validation.
 - PostgreSQL migrations do not exist.
 - API routes are scaffold binaries, not HTTP services.
@@ -137,9 +142,10 @@ directory while the compiler migrates.
 
 ## Blockers Before Calling It Functional
 
-1. Implement source-pack and extraction proposal records.
-2. Add `dialectica-extractor` with model receipts and review-trigger routing.
-3. Implement source-pack to v3 `.capsule` package generation.
+1. Add reviewer decisions and proposal promotion normalization.
+2. Implement source-pack/proposal/review-decision to v3 `.capsule` package
+   generation.
+3. Add live model-provider extraction behind provider traits.
 4. Add deterministic `.capsule` archive assembly, Merkle-root/signature logic,
    and compiler receipts.
 5. Expand Lane A validation to every required acceptance case, including
