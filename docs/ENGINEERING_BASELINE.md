@@ -30,8 +30,8 @@ dialectica-capsule
 
 dialectica-extractor
   owns source-pack inputs, extraction proposal schemas, model invocation
-  receipts, review-trigger routing, build-plan contracts, and future provider
-  traits
+  receipts, review-trigger routing, reviewer decisions, promotion
+  normalization, build-plan contracts, and future provider traits
 
 dialectica-compiler
   owns deterministic bundle assembly, checksums, signing hooks, and
@@ -88,7 +88,8 @@ still decide whether the records can be promoted.
 3. `fixtures/canonical-capsules`: canonical v3 package fixture.
 4. `dialectica-extractor`: source-pack and proposal schemas with review
    triggers: implemented for fixture mode.
-5. reviewer decisions and proposal promotion normalization.
+5. reviewer decisions and proposal promotion normalization: implemented for
+   fixture mode.
 6. `dialectica-compiler`: deterministic v3 package writer, archive writer, and
    checksums.
 7. `dialectica-store`: migrations and repository interfaces.
@@ -113,6 +114,8 @@ cargo run -p dialectica-cli -- ontology-plan fixtures/golden-policy-capsule/expe
 cargo run -p dialectica-cli -- source-pack-check fixtures/golden-policy-capsule/source-pack/source_pack.json
 cargo run -p dialectica-cli -- proposal-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals
 cargo run -p dialectica-cli -- build-plan fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals
+cargo run -p dialectica-cli -- review-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals fixtures/golden-policy-capsule/review-decisions
+cargo run -p dialectica-cli -- promote-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals fixtures/golden-policy-capsule/review-decisions
 cargo run -p dialectica-cli -- schema-export schemas/capsule-3.0
 python -m compileall tools/python
 python -m unittest discover tools/python/tests

@@ -32,16 +32,16 @@ Current truth:
 - **Works now**: Rust contract validation, canonical v3 Situation Capsule
   fixture validation with required embedded Ladybug projection, legacy
   migration fixture validation, source-pack validation, fixture-mode extraction
-  proposal validation, review-trigger routing, build-plan printing, schema
-  export, and CLI
+  proposal validation, review-trigger routing, reviewer-decision validation,
+  promotion normalization, build-plan printing, schema export, and CLI
   `doctor`/`validate`/`inspect`/`ontology-plan`/`ladybug-*`/`source-pack-check`/
-  `proposal-check`/`build-plan`/`schema-export`.
+  `proposal-check`/`build-plan`/`review-check`/`promote-check`/`schema-export`.
 - **Not built yet**: live document/PDF/conversation ingestion, live model
-  provider calls, reviewer decision workflow, deterministic compiler,
-  `.capsule` archive writer, PRAXIS context-pack export, PostgreSQL migrations,
-  API routes, task handler, and PRAXIS frontend integration.
-- **Next build**: reviewer decisions and promotion records first, deterministic
-  v3 compiler second, PRAXIS context-pack export third.
+  provider calls, deterministic compiler, `.capsule` archive writer, PRAXIS
+  context-pack export, PostgreSQL migrations, API routes, task handler, and
+  PRAXIS frontend integration.
+- **Next build**: deterministic v3 compiler first, `.capsule` archive writer
+  second, PRAXIS context-pack export third.
 
 Start with [docs/CODING_LEDGER.md](docs/CODING_LEDGER.md) and
 [docs/NEXT_CODE_BUILD_PLAN.md](docs/NEXT_CODE_BUILD_PLAN.md). Use
@@ -252,7 +252,7 @@ Current coding scaffold:
 ```text
 Cargo workspace
   crates/dialectica-capsule       contract types and validation
-  crates/dialectica-extractor     source-pack/proposal/build-plan contracts
+  crates/dialectica-extractor     source-pack/proposal/review/promotion contracts
   crates/dialectica-compiler      deterministic bundle assembly
   crates/dialectica-graph         Ladybug projection planning/build/check/query
   crates/dialectica-store         PostgreSQL repositories and migrations
@@ -287,16 +287,18 @@ cargo run -p dialectica-cli -- ontology-plan fixtures/golden-policy-capsule/expe
 cargo run -p dialectica-cli -- source-pack-check fixtures/golden-policy-capsule/source-pack/source_pack.json
 cargo run -p dialectica-cli -- proposal-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals
 cargo run -p dialectica-cli -- build-plan fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals
+cargo run -p dialectica-cli -- review-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals fixtures/golden-policy-capsule/review-decisions
+cargo run -p dialectica-cli -- promote-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals fixtures/golden-policy-capsule/review-decisions
 cargo run -p dialectica-cli -- schema-export schemas/capsule-3.0
 ```
 
 This proves the repository is not only product copy. It already has typed Rust
 capsule contracts, v3 package validation, schema export, a canonical v3
 Situation Capsule fixture with a real embedded `graph/ladybug/capsule.lbug`, a
-legacy migration fixture, source-pack/proposal/build-plan validation, a
+legacy migration fixture, source-pack/proposal/review/promotion validation, a
 capsule-specific ontology planner, and Ladybug projection check/query commands.
-It does not yet call live models, compile capsules from uploaded documents, or
-serve PRAXIS; that boundary is tracked in the code audit and build ledger.
+It does not yet call live models, write compiled capsules from promoted records,
+or serve PRAXIS; that boundary is tracked in the code audit and build ledger.
 
 LLM extraction architecture:
 
@@ -647,11 +649,12 @@ The Rust workspace now has its first executable capsule-contract and input
 contract slice. It can validate and inspect a canonical v3 Situation Capsule
 fixture, keep the legacy policy fixture passing during migration, validate a
 source pack, validate fixture-mode extraction proposals, route review triggers,
-print a build plan, and export JSON Schema snapshots. The next implementation
-step is to add reviewer decisions and deterministic promotion records, then a
+validate reviewer decisions, normalize promoted records, print a build plan,
+and export JSON Schema snapshots. The next implementation step is a
 deterministic v3 package and `.capsule` archive compiler. Live model-provider
 calls, storage, API routes, PRAXIS frontend integration, and cloud deployment
-wait until the local source-pack to compiled-capsule loop is executable.
+wait until the local source-pack/proposal/review to compiled-capsule loop is
+executable.
 
 Start here:
 
@@ -699,6 +702,8 @@ cargo run -p dialectica-cli -- ontology-plan fixtures/golden-policy-capsule/expe
 cargo run -p dialectica-cli -- source-pack-check fixtures/golden-policy-capsule/source-pack/source_pack.json
 cargo run -p dialectica-cli -- proposal-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals
 cargo run -p dialectica-cli -- build-plan fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals
+cargo run -p dialectica-cli -- review-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals fixtures/golden-policy-capsule/review-decisions
+cargo run -p dialectica-cli -- promote-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals fixtures/golden-policy-capsule/review-decisions
 cargo run -p dialectica-cli -- schema-export schemas/capsule-3.0
 python -m compileall tools/python
 python -m unittest discover tools/python/tests

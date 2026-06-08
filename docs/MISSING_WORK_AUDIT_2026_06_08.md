@@ -1,7 +1,8 @@
 # Missing Work Audit - 2026-06-08
 
 Status: build-gap audit after canonical v3 alignment, Ladybug projection
-validation, and the first fixture-mode source/proposal implementation.
+validation, and the fixture-mode source/proposal/review/promotion
+implementation.
 
 The repository is coherent and locally verified as a contract scaffold. It is
 not yet the capsule-building engine. This audit lists what remains before
@@ -15,14 +16,15 @@ serve PRAXIS.
 | --- | --- |
 | Canonical v3 fixture validation | Working |
 | Legacy migration fixture validation | Working |
-| CLI `doctor`, `validate`, `inspect`, `ontology-plan`, `ladybug-check`, `source-pack-check`, `proposal-check`, `build-plan`, `schema-export` | Working |
+| CLI `doctor`, `validate`, `inspect`, `ontology-plan`, `ladybug-check`, `source-pack-check`, `proposal-check`, `build-plan`, `review-check`, `promote-check`, `schema-export` | Working |
 | Rust contract tests | Working |
 | Fixture source-pack contract | Working |
 | Fixture extraction proposals and model receipts | Working |
 | Fixture review-trigger router | Working |
+| Fixture reviewer decisions and promotion normalization | Working |
 | Live source-pack ingestion | Missing |
 | Live LLM extraction orchestration | Missing |
-| Reviewer decisions and promotion normalization | Missing |
+| Interactive review UI and live reviewer workflow | Missing |
 | Deterministic v3 compiler | Missing |
 | `.capsule` archive writer | Missing |
 | PRAXIS context-pack export | Missing |
@@ -98,14 +100,16 @@ Acceptance:
 Implemented for fixture mode:
 
 - deterministic review trigger rules;
+- reviewer decision file;
+- promotion rules from proposal to compiler-ready promoted records;
+- caveat propagation into promoted records;
+- rejected-object lineage preservation in promotion summaries.
 
 Still missing:
 
 - review coverage matrix;
-- reviewer decision file;
-- promotion rules from proposal to canonical record;
 - caveat and expiry propagation;
-- rejected-object lineage preservation.
+- interactive review queue and reviewer UI.
 
 Acceptance:
 
@@ -269,7 +273,7 @@ These are valuable after the local loop and API are real.
 | Source pack schema | implemented in `crates/dialectica-extractor`, `fixtures/golden-policy-capsule/source-pack/`, `schemas/capsule-3.0/source_pack.schema.json` |
 | Extractor crate | implemented in `crates/dialectica-extractor`, `Cargo.toml`, `tests/dialectica-contract-tests` |
 | Proposal schemas | implemented in `crates/dialectica-extractor`, `schemas/capsule-3.0/` |
-| Review router | fixture-mode router implemented in `crates/dialectica-extractor`; reviewer decisions still pending |
+| Review router | fixture-mode router, reviewer decisions, and promotion normalization implemented in `crates/dialectica-extractor`; live review UI still pending |
 | Compiler writer | `crates/dialectica-compiler` |
 | Context pack | `crates/dialectica-capsule`, `crates/dialectica-cli` |
 | API routes | `services/dialectica-api` |
@@ -279,10 +283,10 @@ These are valuable after the local loop and API are real.
 
 ## Next Implementation Sequence
 
-1. Add reviewer decision and correction records.
-2. Add proposal-to-canonical normalization.
-3. Add deterministic v3 compiler output.
-4. Add `.capsule` archive generation.
+1. Add deterministic v3 compiler output.
+2. Add `.capsule` archive generation.
+3. Add PRAXIS context-pack export.
+4. Add live ingestion and model-provider orchestration.
 5. Expand v3 validator cross-layer checks.
 6. Implement deterministic v3 package writer.
 7. Implement `.capsule` archive writer.

@@ -42,6 +42,8 @@ Related follow-up docs:
   - `source-pack-check`;
   - `proposal-check`;
   - `build-plan`;
+  - `review-check`;
+  - `promote-check`;
   - `schema-export`.
 - `crates/dialectica-extractor` provides the first fixture-mode input contract:
   - source packs and source spans;
@@ -50,6 +52,8 @@ Related follow-up docs:
     terms, reasoning devices, language rules, caveats, rights rules, and output
     rules;
   - Plus/promoted review-trigger routing;
+  - reviewer decision validation;
+  - promotion normalization;
   - build-plan typing;
   - schema export.
 - `fixtures/canonical-capsules/conflict-situation-capsule/` is the first
@@ -72,9 +76,8 @@ Related follow-up docs:
 - No v3 capsule compiler writer exists.
 - No live source-pack ingestion or normalized source-span builder from
   uploaded material exists.
-- No live model-provider extraction, reviewer decision records,
-  proposal-to-canonical promotion normalizer, or provider fallback policy
-  exists.
+- No live model-provider extraction, interactive review UI, or provider
+  fallback policy exists.
 - No `.capsule` zip archive writer exists.
 - No deterministic Merkle root, checksum map, signature envelope, or signing
   policy exists.
@@ -111,6 +114,8 @@ cargo run -p dialectica-cli -- ontology-plan fixtures/golden-policy-capsule/expe
 cargo run -p dialectica-cli -- source-pack-check fixtures/golden-policy-capsule/source-pack/source_pack.json
 cargo run -p dialectica-cli -- proposal-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals
 cargo run -p dialectica-cli -- build-plan fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals
+cargo run -p dialectica-cli -- review-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals fixtures/golden-policy-capsule/review-decisions
+cargo run -p dialectica-cli -- promote-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals fixtures/golden-policy-capsule/review-decisions
 cargo run -p dialectica-cli -- schema-export $env:TEMP\dialectica-audit-schemas
 python -m compileall tools/python
 python -m unittest discover tools/python/tests
@@ -129,10 +134,9 @@ DIALECTICA can prove package shape, but cannot yet build the product object.
 
 Required fix:
 
-1. Add reviewer decisions and proposal-to-canonical promotion records.
-2. Implement deterministic v3 package writing.
-3. Add `.capsule` archive writing.
-4. Add contract tests that regenerate the canonical fixture byte-for-byte or
+1. Implement deterministic v3 package writing.
+2. Add `.capsule` archive writing.
+3. Add contract tests that regenerate the canonical fixture byte-for-byte or
    compare a canonical normalized output tree.
 
 ### P0 - API Is A Scaffold, Not A Service
@@ -204,20 +208,18 @@ Required fix:
 
 The next code phase must be v3-first:
 
-1. `dialectica-extractor`: reviewer decisions and proposal promotion
-   normalization.
-2. `dialectica-compiler`: typed source/proposal/review input plus deterministic
+1. `dialectica-compiler`: typed source/proposal/review input plus deterministic
    v3 package writer.
-3. `dialectica-compiler`: `.capsule` archive writer with deterministic entry
+2. `dialectica-compiler`: `.capsule` archive writer with deterministic entry
    order and explicit digest scope.
-4. `dialectica-cli`: `build-fixture` that writes to an output directory.
-5. `dialectica-capsule`: deep v3 cross-layer validator.
-6. `dialectica-capsule`: PRAXIS context-pack type and schema export.
-7. `dialectica-cli`: `context-pack <capsule-dir>`.
-8. `dialectica-api`: local fixture-mode Axum service.
-9. `dialectica-store`: SQLx migrations and repositories.
-10. `dialectica-task-handler`: queued compile HTTP target.
-11. PRAXIS repo: capsule builder/import/inspect UI after the local API and
+3. `dialectica-cli`: `build-fixture` that writes to an output directory.
+4. `dialectica-capsule`: deep v3 cross-layer validator.
+5. `dialectica-capsule`: PRAXIS context-pack type and schema export.
+6. `dialectica-cli`: `context-pack <capsule-dir>`.
+7. `dialectica-api`: local fixture-mode Axum service.
+8. `dialectica-store`: SQLx migrations and repositories.
+9. `dialectica-task-handler`: queued compile HTTP target.
+10. PRAXIS repo: capsule builder/import/inspect UI after the local API and
     context-pack contract are stable.
 
 ## Claim Boundary

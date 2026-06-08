@@ -1,0 +1,113 @@
+{
+  "decision_set_id": "reviewset_conflict_situation_fixture_v1",
+  "contract_version": "0.1.0",
+  "extraction_run_id": "run_conflict_situation_fixture_v1",
+  "decisions": [
+    {
+      "decision_id": "decision_claim_certified_result",
+      "proposal_id": "prop_claim_certified_result",
+      "object_id": "clm_commission_certified_result",
+      "status": "approve",
+      "reviewer_role": "policy_reviewer",
+      "decided_at": "2026-06-08T00:10:00Z",
+      "rationale": "The claim is directly supported by the commission source span.",
+      "caveats": [],
+      "requested_evidence": []
+    },
+    {
+      "decision_id": "decision_claim_army_rejected",
+      "proposal_id": "prop_claim_army_rejected",
+      "object_id": "clm_army_rejected_certification",
+      "status": "approve_with_caveats",
+      "reviewer_role": "conflict_analyst",
+      "decided_at": "2026-06-08T00:11:00Z",
+      "rationale": "The actor position is source-backed, but the effect and leverage require caveated use.",
+      "caveats": [
+        "Do not describe the rejection as legal nullification without a legal source.",
+        "Treat actor leverage as plausible but not independently corroborated."
+      ],
+      "requested_evidence": []
+    },
+    {
+      "decision_id": "decision_edge_army_contends",
+      "proposal_id": "prop_edge_army_contends",
+      "object_id": "edge_army_contends_commission",
+      "status": "approve_with_caveats",
+      "reviewer_role": "conflict_analyst",
+      "decided_at": "2026-06-08T00:12:00Z",
+      "rationale": "The edge is useful for conflict mapping when surfaced with uncertainty.",
+      "caveats": [
+        "Use this as a contested relationship, not as a confirmed escalation pathway."
+      ],
+      "requested_evidence": []
+    },
+    {
+      "decision_id": "decision_ontology_certification",
+      "proposal_id": "prop_ontology_certification",
+      "object_id": "term_certification_challenge_window",
+      "status": "approve",
+      "reviewer_role": "domain_reviewer",
+      "decided_at": "2026-06-08T00:13:00Z",
+      "rationale": "The term is capsule-scoped and tied to the source wording.",
+      "caveats": [],
+      "requested_evidence": []
+    },
+    {
+      "decision_id": "decision_device_conflict_map",
+      "proposal_id": "prop_device_conflict_map",
+      "object_id": "device_conflict_mapping_v1",
+      "status": "approve_with_caveats",
+      "reviewer_role": "method_reviewer",
+      "decided_at": "2026-06-08T00:14:00Z",
+      "rationale": "The device is suitable for PRAXIS conflict mapping if sourceability remains explicit.",
+      "caveats": [
+        "Separate sourced positions from analyst inference in generated outputs."
+      ],
+      "requested_evidence": []
+    },
+    {
+      "decision_id": "decision_caveat_leverage_uncorroborated",
+      "proposal_id": "prop_caveat_leverage_uncorroborated",
+      "object_id": "cav_army_leverage_uncorroborated",
+      "status": "approve",
+      "reviewer_role": "conflict_analyst",
+      "decided_at": "2026-06-08T00:15:00Z",
+      "rationale": "The caveat prevents PRAXIS from overstating actor leverage.",
+      "caveats": [],
+      "requested_evidence": []
+    },
+    {
+      "decision_id": "decision_language_nullification",
+      "proposal_id": "prop_language_nullification",
+      "object_id": "lang_avoid_nullified_election",
+      "status": "approve",
+      "reviewer_role": "policy_editor",
+      "decided_at": "2026-06-08T00:16:00Z",
+      "rationale": "The reviewed wording preserves legal precision.",
+      "caveats": [],
+      "requested_evidence": []
+    },
+    {
+      "decision_id": "decision_rights_private_discussion",
+      "proposal_id": "prop_rights_private_discussion",
+      "object_id": "rights_private_discussion_not_public",
+      "status": "approve",
+      "reviewer_role": "privacy_reviewer",
+      "decided_at": "2026-06-08T00:17:00Z",
+      "rationale": "The rule correctly prevents public quoting of private analyst discussion.",
+      "caveats": [],
+      "requested_evidence": []
+    },
+    {
+      "decision_id": "decision_output_conflict_brief",
+      "proposal_id": "prop_output_conflict_brief",
+      "object_id": "output_conflict_brief_requires_caveats",
+      "status": "approve",
+      "reviewer_role": "policy_editor",
+      "decided_at": "2026-06-08T00:18:00Z",
+      "rationale": "The output rule matches the intended conflict brief handoff.",
+      "caveats": [],
+      "requested_evidence": []
+    }
+  ]
+}

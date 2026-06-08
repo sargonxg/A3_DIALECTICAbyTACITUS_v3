@@ -179,16 +179,17 @@ Implemented now:
   ontology terms, reasoning devices, language rules, caveats, rights rules, and
   output rules;
 - review-trigger routing for Plus/promoted builds;
+- reviewer decision records for blocking gates;
+- promotion normalization into compiler-ready records;
 - CLI validation through `source-pack-check`, `proposal-check`, and
-  `build-plan`.
+  `build-plan`, `review-check`, and `promote-check`.
 
 Still required before live extraction:
 
 - provider traits and model clients;
 - source-bound prompt templates;
 - retry/error receipts;
-- reviewer decision and correction records;
-- proposal-to-canonical promotion normalization.
+- live reviewer queue and UI.
 
 Every proposal must include:
 
@@ -418,17 +419,14 @@ Before a capsule can be promoted:
 
 ## Build Order
 
-1. Add reviewer decision and correction records.
-2. Add deterministic proposal-to-canonical normalization.
-3. Add compiler input records for approved and caveated proposals.
-4. Add deeper v3 validators for cross-layer references.
-5. Add deterministic compiler and `.capsule` archive writer.
-6. Add PRAXIS context-pack export.
-7. Add local API routes.
-8. Add PostgreSQL migrations.
-9. Add model-provider integration behind provider traits.
-10. Add document/PDF/conversation ingestion.
-11. Add PRAXIS frontend integration.
+1. Add deterministic compiler and `.capsule` archive writer.
+2. Add deeper v3 validators for cross-layer references.
+3. Add PRAXIS context-pack export.
+4. Add local API routes.
+5. Add PostgreSQL migrations.
+6. Add model-provider integration behind provider traits.
+7. Add document/PDF/conversation ingestion.
+8. Add PRAXIS frontend integration.
 
 ## Non-Goals For The First Build
 

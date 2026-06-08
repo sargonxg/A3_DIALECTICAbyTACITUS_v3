@@ -388,36 +388,55 @@ Evidence:
 
 Remaining gaps:
 
-1. reviewer decisions and correction records;
-2. proposal-to-canonical promotion normalization;
-3. deterministic v3 package writer;
-4. `.capsule` archive writer;
-5. PRAXIS context-pack export;
-6. live model-provider extraction behind provider traits.
+1. deterministic v3 package writer;
+2. `.capsule` archive writer;
+3. PRAXIS context-pack export;
+4. live model-provider extraction behind provider traits.
+
+## 2026-06-08 - Reviewer Decisions And Promotion Normalization
+
+Status: implemented for local fixture mode; compiler still pending.
+
+Actions:
+
+- added `ReviewerDecisionSet`, `ReviewerDecision`, `ReviewDecisionStatus`,
+  `PromotedRecordSet`, and `PromotedRecord` contracts to
+  `dialectica-extractor`;
+- added fixture reviewer decisions for the golden proposal set;
+- added validation that every blocking Plus/promoted review gate has a reviewer
+  decision;
+- added promotion normalization so approved and caveated proposals become
+  compiler-ready records while rejected records stay in lineage;
+- added CLI commands `review-check` and `promote-check`;
+- added JSON Schema snapshots for reviewer decisions and promoted records;
+- updated CI to require the new fixture, schemas, and commands.
+
+Evidence:
+
+- `cargo run -p dialectica-cli -- review-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals fixtures/golden-policy-capsule/review-decisions` validates nine reviewer decisions for nine required gates;
+- `cargo run -p dialectica-cli -- promote-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals fixtures/golden-policy-capsule/review-decisions` produces twelve promoted records, three caveated records, and `ready_for_compiler=true`.
 
 ## Next Build Tasks
 
-1. Add reviewer decision and correction records for the golden proposal set.
-2. Define proposal-to-canonical promotion normalization.
-3. Define canonical deterministic serialization rules.
-4. Implement deterministic v3 package writer in `crates/dialectica-compiler`.
-5. Add `.capsule` archive writing with `mimetype` first, stable entry order,
+1. Define canonical deterministic serialization rules.
+2. Implement deterministic v3 package writer in `crates/dialectica-compiler`.
+3. Add `.capsule` archive writing with `mimetype` first, stable entry order,
    LF line endings, and explicit handling for required `graph/ladybug/`
    projection files versus optional non-canonical cache files.
-6. Add `build-fixture` so a canonical capsule can be generated from source-pack
+4. Add `build-fixture` so a canonical capsule can be generated from source-pack
    records, proposals, and review decisions.
-7. Add checksum, Merkle-root, and signature placeholders with stable diff
+5. Add checksum, Merkle-root, and signature placeholders with stable diff
    output.
-8. Deepen v3 validators for claims, sources, temporal episodes, graph,
+6. Deepen v3 validators for claims, sources, temporal episodes, graph,
    reasoning, review, runtime, and generated agent views.
-9. Export the first PRAXIS context pack from the canonical v3 package.
-10. Validate the four example capsule envelopes against a shared top-level
+7. Export the first PRAXIS context pack from the canonical v3 package.
+8. Validate the four example capsule envelopes against a shared top-level
    contract.
-11. Turn `services/dialectica-api` into a local fixture-mode Axum service.
-12. Add SQLx migrations in `crates/dialectica-store`.
-13. Add ingestion records for documents, PDFs, and user/assistant discussion
+9. Turn `services/dialectica-api` into a local fixture-mode Axum service.
+10. Add SQLx migrations in `crates/dialectica-store`.
+11. Add ingestion records for documents, PDFs, and user/assistant discussion
     turns after the compiler loop works.
-14. Add task-handler and Cloud Run staging skeleton only after the local API
+12. Add task-handler and Cloud Run staging skeleton only after the local API
     runs.
 
 ## Open Product Questions

@@ -6,8 +6,9 @@ use dialectica_capsule::{
 };
 use dialectica_extractor::{
     export_schema_dir as export_extractor_schema_dir, load_build_request, load_source_pack,
-    plan_capsule_build, route_review_gates, validate_proposal_set, validate_source_pack,
-    BuildValidationSeverity, CapsuleType, ProposalSet,
+    plan_capsule_build, promote_records, route_review_gates, validate_proposal_set,
+    validate_reviewer_decision_set, validate_source_pack, BuildValidationSeverity, CapsuleType,
+    ProposalSet, ReviewDecisionStatus, ReviewerDecisionSet,
 };
 
 fn golden_bundle_dir() -> std::path::PathBuf {
@@ -38,6 +39,12 @@ fn golden_proposals_dir() -> std::path::PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("../..")
         .join("fixtures/golden-policy-capsule/proposals")
+}
+
+fn golden_review_decisions_dir() -> std::path::PathBuf {
+    Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../..")
+        .join("fixtures/golden-policy-capsule/review-decisions")
 }
 
 #[test]
@@ -128,6 +135,88 @@ fn proposal_without_source_span_fails_validation() {
         finding.severity == BuildValidationSeverity::Error
             && finding.code == "proposal_missing_source_spans"
     }));
+}
+
+#[test]
+fn golden_review_decisions_validate_and_promote_records() {
+    let build_request =
+        load_build_request(&golden_build_request_path()).expect("build request should load");
+    let source_pack =
+        load_source_pack(&golden_source_pack_path()).expect("source pack fixture should load");
+    let proposal_set =
+        ProposalSet::load_from_dir(&golden_proposals_dir()).expect("proposals should load");
+    let decision_set = ReviewerDecisionSet::load_from_dir(&golden_review_decisions_dir())
+        .expect("review decisions should load");
+
+    let report =
+        validate_reviewer_decision_set(&source_pack, &build_request, &proposal_set, &decision_set);
+    let promoted = promote_records(&build_request, &source_pack, &proposal_set, &decision_set)
+        .expect("golden decisions should promote");
+
+    assert!(!report.has_errors(), "{:#?}", report.findings);
+    assert!(promoted.ready_for_compiler);
+    assert_eq!(promoted.required_decision_count, 9);
+    assert_eq!(promoted.promoted_records.len(), 12);
+    assert_eq!(promoted.caveated_record_count, 3);
+    assert!(promoted
+        .promoted_records
+        .iter()
+        .any(|record| record.object_id == "cav_army_leverage_uncorroborated"));
+}
+
+#[test]
+fn missing_blocking_reviewer_decision_fails_validation() {
+    let build_request =
+        load_build_request(&golden_build_request_path()).expect("build request should load");
+    let source_pack =
+        load_source_pack(&golden_source_pack_path()).expect("source pack fixture should load");
+    let proposal_set =
+        ProposalSet::load_from_dir(&golden_proposals_dir()).expect("proposals should load");
+    let mut decision_set = ReviewerDecisionSet::load_from_dir(&golden_review_decisions_dir())
+        .expect("review decisions should load");
+    decision_set
+        .decisions
+        .retain(|decision| decision.proposal_id != "prop_claim_certified_result");
+
+    let report =
+        validate_reviewer_decision_set(&source_pack, &build_request, &proposal_set, &decision_set);
+
+    assert!(report.findings.iter().any(|finding| {
+        finding.severity == BuildValidationSeverity::Error
+            && finding.code == "missing_reviewer_decision"
+    }));
+}
+
+#[test]
+fn rejected_reviewer_decision_excludes_proposal_from_promotion() {
+    let build_request =
+        load_build_request(&golden_build_request_path()).expect("build request should load");
+    let source_pack =
+        load_source_pack(&golden_source_pack_path()).expect("source pack fixture should load");
+    let proposal_set =
+        ProposalSet::load_from_dir(&golden_proposals_dir()).expect("proposals should load");
+    let mut decision_set = ReviewerDecisionSet::load_from_dir(&golden_review_decisions_dir())
+        .expect("review decisions should load");
+    let decision = decision_set
+        .decisions
+        .iter_mut()
+        .find(|decision| decision.proposal_id == "prop_claim_army_rejected")
+        .expect("fixture should include army rejection decision");
+    decision.status = ReviewDecisionStatus::Reject;
+    decision.caveats.clear();
+    decision.rationale = "Rejected during test because corroboration is insufficient.".to_owned();
+
+    let promoted = promote_records(&build_request, &source_pack, &proposal_set, &decision_set)
+        .expect("rejected decision should still produce a promoted record set");
+
+    assert!(promoted
+        .rejected_proposal_ids
+        .iter()
+        .any(|proposal_id| proposal_id == "prop_claim_army_rejected"));
+    assert!(!promoted
+        .promoted_records
+        .iter()
+        .any(|record| record.object_id == "clm_army_rejected_certification"));
 }
 
 #[test]
@@ -224,6 +313,10 @@ fn extractor_schema_export_writes_builder_contracts() {
     assert!(output_dir.join("extraction_proposal.schema.json").exists());
     assert!(output_dir.join("proposal_set.schema.json").exists());
     assert!(output_dir.join("review_gate.schema.json").exists());
+    assert!(output_dir
+        .join("reviewer_decision_set.schema.json")
+        .exists());
+    assert!(output_dir.join("promoted_record_set.schema.json").exists());
 
     std::fs::remove_dir_all(output_dir).expect("temp schema dir should clean up");
 }

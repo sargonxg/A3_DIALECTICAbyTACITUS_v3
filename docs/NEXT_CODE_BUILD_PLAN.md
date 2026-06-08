@@ -43,11 +43,15 @@ Already implemented:
 - CLI `source-pack-check`;
 - CLI `proposal-check`;
 - CLI `build-plan`;
+- CLI `review-check`;
+- CLI `promote-check`;
 - CLI `schema-export`;
 - canonical v3 conflict Situation Capsule fixture;
 - golden policy source pack fixture;
 - golden policy extraction run and proposal fixtures;
 - fixture-mode review-trigger routing for Plus/promoted proposals;
+- golden policy reviewer decision fixture;
+- fixture-mode promotion normalization into compiler-ready records;
 - golden policy expected bundle;
 - contract tests for canonical v3 validation, rejected top-level types,
   sourceability, temporal warnings, graph registry, ontology blueprint families,
@@ -57,7 +61,6 @@ Not yet implemented:
 
 - live document/PDF/conversation ingestion;
 - live model-provider extraction calls;
-- reviewer decision fixture and promotion normalization;
 - v3 package writer;
 - `.capsule` archive writer;
 - Merkle/checksum/signature envelope;
@@ -83,6 +86,8 @@ cargo run -p dialectica-cli -- ontology-plan fixtures/golden-policy-capsule/expe
 cargo run -p dialectica-cli -- source-pack-check fixtures/golden-policy-capsule/source-pack/source_pack.json
 cargo run -p dialectica-cli -- proposal-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals
 cargo run -p dialectica-cli -- build-plan fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals
+cargo run -p dialectica-cli -- review-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals fixtures/golden-policy-capsule/review-decisions
+cargo run -p dialectica-cli -- promote-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals fixtures/golden-policy-capsule/review-decisions
 cargo run -p dialectica-cli -- schema-export schemas/capsule-3.0
 python -m compileall tools/python
 python -m unittest discover tools/python/tests
@@ -119,21 +124,25 @@ Acceptance:
 Remaining before Phase 1 is product-complete:
 
 - provider traits and live source-bound model calls;
-- reviewer decision records;
-- proposal-to-canonical promotion normalization;
 - deterministic rule for which Auto Draft proposals can bypass human review.
 
 ## Phase 2: Reviewer Decisions And Promotion Records
+
+Status: fixture-mode contract implemented.
 
 Goal: make the human-gated layer explicit before writing canonical bundle files.
 
 Deliver:
 
-- reviewer decision fixture for the golden proposal set;
-- decision statuses: approve, approve_with_caveats, reject, request_evidence;
-- promotion policy that turns approved proposals into canonical compiler inputs;
-- blocking rule that prevents unreviewed Plus/promoted proposals from compiling;
-- lineage preservation for rejected and superseded proposals.
+- reviewer decision fixture for the golden proposal set: implemented;
+- decision statuses: approve, approve_with_caveats, reject,
+  request_more_evidence: implemented;
+- promotion policy that turns approved proposals into canonical compiler inputs:
+  implemented for fixture mode;
+- blocking rule that prevents unreviewed Plus/promoted proposals from compiling:
+  implemented;
+- lineage preservation for rejected and evidence-requested proposals:
+  implemented in promoted-record summaries.
 
 Acceptance:
 

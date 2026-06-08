@@ -2,7 +2,7 @@
 
 Date: 2026-06-08
 
-Readiness: **90/100 for coding readiness; 45/100 for capsule-engine readiness;
+Readiness: **91/100 for coding readiness; 50/100 for capsule-engine readiness;
 20/100 for app-production readiness**.
 
 The repository has begun the first functional implementation pass. It is not
@@ -63,6 +63,8 @@ compiler migrates.
 - `dialectica-extractor` now supports fixture-mode source packs, extraction
   runs, proposal records, model receipts, review gates, build plans, and schema
   export.
+- `dialectica-extractor` now supports fixture-mode reviewer decisions and
+  promotion normalization into compiler-ready records.
 - Canonical v3 conflict Situation Capsule fixture exists under
   `fixtures/canonical-capsules/conflict-situation-capsule/`.
 - GitHub CI now validates and inspects the canonical v3 fixture before the
@@ -115,9 +117,8 @@ compiler migrates.
   views, JSON parseability, and minimum Situation claim/source records.
 - No live source-pack ingestion, document upload, PDF extraction, user
   discussion capture, or assistant conversation ingestion exists.
-- No live model-provider extraction, reviewer decision file,
-  proposal-to-canonical promotion normalizer, or provider fallback policy
-  exists.
+- No live model-provider extraction, interactive review queue, or provider
+  fallback policy exists.
 - No ontology or semantic-layer creation workflow exists beyond the legacy
   `ontology-plan` helper.
 - Golden fixture source pack and proposal records validate, but the compiler
@@ -142,10 +143,9 @@ compiler migrates.
 
 ## Blockers Before Calling It Functional
 
-1. Add reviewer decisions and proposal promotion normalization.
-2. Implement source-pack/proposal/review-decision to v3 `.capsule` package
+1. Implement source-pack/proposal/review-decision to v3 `.capsule` package
    generation.
-3. Add live model-provider extraction behind provider traits.
+2. Add live model-provider extraction behind provider traits.
 4. Add deterministic `.capsule` archive assembly, Merkle-root/signature logic,
    and compiler receipts.
 5. Expand Lane A validation to every required acceptance case, including

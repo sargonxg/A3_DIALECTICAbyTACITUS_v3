@@ -1,0 +1,203 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "PromotedRecordSet",
+  "type": "object",
+  "required": [
+    "build_mode",
+    "caveated_record_count",
+    "decision_count",
+    "evidence_requested_proposal_ids",
+    "extraction_run_id",
+    "promoted_records",
+    "ready_for_compiler",
+    "rejected_proposal_ids",
+    "request_id",
+    "required_decision_count",
+    "selected_type",
+    "source_pack_id"
+  ],
+  "properties": {
+    "build_mode": {
+      "$ref": "#/definitions/BuildMode"
+    },
+    "caveated_record_count": {
+      "type": "integer",
+      "format": "uint",
+      "minimum": 0.0
+    },
+    "decision_count": {
+      "type": "integer",
+      "format": "uint",
+      "minimum": 0.0
+    },
+    "evidence_requested_proposal_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "extraction_run_id": {
+      "type": "string"
+    },
+    "promoted_records": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/PromotedRecord"
+      }
+    },
+    "ready_for_compiler": {
+      "type": "boolean"
+    },
+    "rejected_proposal_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "request_id": {
+      "type": "string"
+    },
+    "required_decision_count": {
+      "type": "integer",
+      "format": "uint",
+      "minimum": 0.0
+    },
+    "selected_type": {
+      "$ref": "#/definitions/CapsuleType"
+    },
+    "source_pack_id": {
+      "type": "string"
+    }
+  },
+  "definitions": {
+    "BuildMode": {
+      "type": "string",
+      "enum": [
+        "auto_draft",
+        "assisted",
+        "plus_promoted"
+      ]
+    },
+    "CapsuleType": {
+      "type": "string",
+      "enum": [
+        "user",
+        "situation",
+        "tool",
+        "output"
+      ]
+    },
+    "PromotedRecord": {
+      "type": "object",
+      "required": [
+        "capsule_type",
+        "confidence",
+        "kind",
+        "object_id",
+        "payload",
+        "promotion_basis",
+        "record_id",
+        "source_proposal_id",
+        "source_span_ids",
+        "uncertainty"
+      ],
+      "properties": {
+        "capsule_type": {
+          "$ref": "#/definitions/CapsuleType"
+        },
+        "caveats": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "confidence": {
+          "type": "number",
+          "format": "double"
+        },
+        "kind": {
+          "$ref": "#/definitions/ProposalKind"
+        },
+        "object_id": {
+          "type": "string"
+        },
+        "payload": true,
+        "promotion_basis": {
+          "$ref": "#/definitions/PromotionBasis"
+        },
+        "record_id": {
+          "type": "string"
+        },
+        "review_decision_id": {
+          "default": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "review_status": {
+          "default": null,
+          "anyOf": [
+            {
+              "$ref": "#/definitions/ReviewDecisionStatus"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reviewer_role": {
+          "default": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_proposal_id": {
+          "type": "string"
+        },
+        "source_span_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "uncertainty": {
+          "type": "string"
+        }
+      }
+    },
+    "PromotionBasis": {
+      "type": "string",
+      "enum": [
+        "reviewer_decision",
+        "deterministic_no_gate"
+      ]
+    },
+    "ProposalKind": {
+      "type": "string",
+      "enum": [
+        "claim",
+        "episode",
+        "graph_node",
+        "graph_edge",
+        "ontology_term",
+        "reasoning_device",
+        "language_rule",
+        "caveat",
+        "rights_rule",
+        "output_rule"
+      ]
+    },
+    "ReviewDecisionStatus": {
+      "type": "string",
+      "enum": [
+        "approve",
+        "approve_with_caveats",
+        "reject",
+        "request_more_evidence"
+      ]
+    }
+  }
+}

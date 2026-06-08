@@ -25,7 +25,7 @@ explicitly while coding.
 | Priority | Gap | Why it matters | Required improvement |
 | --- | --- | --- | --- |
 | P0 | Deterministic bundle output is underspecified. | A capsule cannot be trusted, signed, diffed, or cached if two equal inputs produce different bytes. | Define canonical JSON/JSONL ordering, newline rules, digest scope, and fixture comparison tests before calling the compiler real. |
-| P0 | Source-pack input is fixture-only. | The repo can validate source/proposal records, but it still cannot ingest real documents, PDFs, or conversations. | Keep fixtures canonical, add reviewer decisions and promotion records next, then live ingestion after the compiler loop works. |
+| P0 | Source-pack input is fixture-only. | The repo can validate source/proposal/review records, but it still cannot ingest real documents, PDFs, or conversations. | Keep fixtures canonical, build the deterministic compiler next, then live ingestion after the compiler loop works. |
 | P0 | LLM extraction proposal records are fixture-only. | The engine has proposal contracts, but no live model-provider calls or fallback policy. | Add live providers only after proposal promotion and eval gates exist. |
 | P0 | Promotion gates are too coarse. | Manifest-level review is not enough; PRAXIS must avoid unreviewed claims, graph edges, language rules, and output contracts. | Add object-level promotion policy and tests for rejected, expired, caveated, stale, and unreviewed objects. |
 | P0 | PRAXIS context pack is still conceptual. | The product value is proven only when PRAXIS can consume a compact capsule payload without internal DIALECTICA state. | Implement `ContextPack`, schema export, CLI export, and fixture assertions before store/API/cloud work. |
@@ -77,8 +77,8 @@ Deliver:
 - machine proposal records: implemented for fixtures;
 - model invocation receipts: implemented for fixtures;
 - review-trigger routing: implemented for Plus/promoted fixtures;
-- human correction records;
-- review decision records;
+- human correction records: deferred until interactive review exists;
+- review decision records: implemented for fixtures;
 - lineage from every generated object to source spans or review actions.
 
 Definition of done:

@@ -1,0 +1,88 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ReviewerDecisionSet",
+  "type": "object",
+  "required": [
+    "contract_version",
+    "decision_set_id",
+    "decisions",
+    "extraction_run_id"
+  ],
+  "properties": {
+    "contract_version": {
+      "type": "string"
+    },
+    "decision_set_id": {
+      "type": "string"
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ReviewerDecision"
+      }
+    },
+    "extraction_run_id": {
+      "type": "string"
+    }
+  },
+  "definitions": {
+    "ReviewDecisionStatus": {
+      "type": "string",
+      "enum": [
+        "approve",
+        "approve_with_caveats",
+        "reject",
+        "request_more_evidence"
+      ]
+    },
+    "ReviewerDecision": {
+      "type": "object",
+      "required": [
+        "decided_at",
+        "decision_id",
+        "object_id",
+        "proposal_id",
+        "rationale",
+        "reviewer_role",
+        "status"
+      ],
+      "properties": {
+        "caveats": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "decided_at": {
+          "type": "string"
+        },
+        "decision_id": {
+          "type": "string"
+        },
+        "object_id": {
+          "type": "string"
+        },
+        "proposal_id": {
+          "type": "string"
+        },
+        "rationale": {
+          "type": "string"
+        },
+        "requested_evidence": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "reviewer_role": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/definitions/ReviewDecisionStatus"
+        }
+      }
+    }
+  }
+}

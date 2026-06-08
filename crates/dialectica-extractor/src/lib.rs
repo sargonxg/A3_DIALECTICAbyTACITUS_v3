@@ -4,7 +4,7 @@
 //! and LLM-style proposal records without calling a model provider.
 
 use std::{
-    collections::BTreeSet,
+    collections::{BTreeMap, BTreeSet},
     error::Error,
     fmt::{Display, Formatter},
     fs,
@@ -266,6 +266,89 @@ pub struct ReviewGate {
     pub reviewer_role: String,
     pub reason: String,
     pub blocking: bool,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+#[serde(rename_all = "snake_case")]
+pub enum ReviewDecisionStatus {
+    Approve,
+    ApproveWithCaveats,
+    Reject,
+    RequestMoreEvidence,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, JsonSchema)]
+pub struct ReviewerDecisionSet {
+    pub decision_set_id: String,
+    pub contract_version: String,
+    pub extraction_run_id: String,
+    pub decisions: Vec<ReviewerDecision>,
+}
+
+impl ReviewerDecisionSet {
+    pub fn load_from_dir(path: &Path) -> Result<Self, ExtractorLoadError> {
+        read_json(path, "decision_set.json")
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, JsonSchema)]
+pub struct ReviewerDecision {
+    pub decision_id: String,
+    pub proposal_id: String,
+    pub object_id: String,
+    pub status: ReviewDecisionStatus,
+    pub reviewer_role: String,
+    pub decided_at: String,
+    pub rationale: String,
+    #[serde(default)]
+    pub caveats: Vec<String>,
+    #[serde(default)]
+    pub requested_evidence: Vec<String>,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+#[serde(rename_all = "snake_case")]
+pub enum PromotionBasis {
+    ReviewerDecision,
+    DeterministicNoGate,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, JsonSchema)]
+pub struct PromotedRecordSet {
+    pub request_id: String,
+    pub source_pack_id: String,
+    pub extraction_run_id: String,
+    pub selected_type: CapsuleType,
+    pub build_mode: BuildMode,
+    pub ready_for_compiler: bool,
+    pub required_decision_count: usize,
+    pub decision_count: usize,
+    pub promoted_records: Vec<PromotedRecord>,
+    pub rejected_proposal_ids: Vec<String>,
+    pub evidence_requested_proposal_ids: Vec<String>,
+    pub caveated_record_count: usize,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, JsonSchema)]
+pub struct PromotedRecord {
+    pub record_id: String,
+    pub source_proposal_id: String,
+    pub object_id: String,
+    pub kind: ProposalKind,
+    pub capsule_type: CapsuleType,
+    pub promotion_basis: PromotionBasis,
+    pub source_span_ids: Vec<String>,
+    pub confidence: f64,
+    pub uncertainty: String,
+    pub payload: Value,
+    #[serde(default)]
+    pub review_decision_id: Option<String>,
+    #[serde(default)]
+    pub review_status: Option<ReviewDecisionStatus>,
+    #[serde(default)]
+    pub caveats: Vec<String>,
+    #[serde(default)]
+    pub reviewer_role: Option<String>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
@@ -707,6 +790,151 @@ pub fn plan_capsule_build(
     }
 }
 
+pub fn validate_reviewer_decision_set(
+    source_pack: &SourcePack,
+    request: &CapsuleBuildRequest,
+    proposal_set: &ProposalSet,
+    decision_set: &ReviewerDecisionSet,
+) -> BuildValidationReport {
+    let mut report = validate_proposal_set(source_pack, request, proposal_set);
+
+    if decision_set.decision_set_id.trim().is_empty() {
+        report.push(BuildValidationFinding::error(
+            "missing_decision_set_id",
+            "review_decisions.decision_set_id",
+            "Reviewer decision set requires a stable decision_set_id.",
+        ));
+    }
+    if decision_set.contract_version != EXTRACTOR_CONTRACT_VERSION {
+        report.push(BuildValidationFinding::warning(
+            "decision_set_contract_version_mismatch",
+            "review_decisions.contract_version",
+            format!(
+                "Reviewer decision set contract version '{}' differs from expected '{}'.",
+                decision_set.contract_version, EXTRACTOR_CONTRACT_VERSION
+            ),
+        ));
+    }
+    if decision_set.extraction_run_id != proposal_set.extraction_run.run_id {
+        report.push(BuildValidationFinding::error(
+            "decision_set_run_mismatch",
+            "review_decisions.extraction_run_id",
+            format!(
+                "Reviewer decisions reference run '{}', but proposal run is '{}'.",
+                decision_set.extraction_run_id, proposal_set.extraction_run.run_id
+            ),
+        ));
+    }
+
+    let proposal_map = proposal_set
+        .proposals
+        .iter()
+        .map(|proposal| (proposal.proposal_id.as_str(), proposal))
+        .collect::<BTreeMap<_, _>>();
+    let required_proposal_ids = route_review_gates(request, proposal_set)
+        .into_iter()
+        .map(|gate| gate.proposal_id)
+        .collect::<BTreeSet<_>>();
+
+    let mut decision_ids = BTreeSet::new();
+    let mut decision_proposal_ids = BTreeSet::new();
+    for (index, decision) in decision_set.decisions.iter().enumerate() {
+        validate_decision(
+            decision,
+            index,
+            &proposal_map,
+            &mut decision_ids,
+            &mut decision_proposal_ids,
+            &mut report,
+        );
+    }
+
+    for proposal_id in required_proposal_ids {
+        if !decision_proposal_ids.contains(&proposal_id) {
+            report.push(BuildValidationFinding::error(
+                "missing_reviewer_decision",
+                "review_decisions.decisions",
+                format!(
+                    "Proposal '{proposal_id}' has a blocking review gate and requires a reviewer decision."
+                ),
+            ));
+        }
+    }
+
+    report
+}
+
+pub fn promote_records(
+    request: &CapsuleBuildRequest,
+    source_pack: &SourcePack,
+    proposal_set: &ProposalSet,
+    decision_set: &ReviewerDecisionSet,
+) -> Result<PromotedRecordSet, BuildValidationReport> {
+    let validation_report =
+        validate_reviewer_decision_set(source_pack, request, proposal_set, decision_set);
+    if validation_report.has_errors() {
+        return Err(validation_report);
+    }
+
+    let selected_type = request
+        .requested_type
+        .unwrap_or(proposal_set.extraction_run.type_inference.selected_type);
+    let required_proposal_ids = route_review_gates(request, proposal_set)
+        .into_iter()
+        .map(|gate| gate.proposal_id)
+        .collect::<BTreeSet<_>>();
+    let decisions_by_proposal = decision_set
+        .decisions
+        .iter()
+        .map(|decision| (decision.proposal_id.as_str(), decision))
+        .collect::<BTreeMap<_, _>>();
+
+    let mut promoted_records = Vec::new();
+    let mut rejected_proposal_ids = Vec::new();
+    let mut evidence_requested_proposal_ids = Vec::new();
+
+    for proposal in &proposal_set.proposals {
+        match decisions_by_proposal.get(proposal.proposal_id.as_str()) {
+            Some(decision) => match decision.status {
+                ReviewDecisionStatus::Approve | ReviewDecisionStatus::ApproveWithCaveats => {
+                    promoted_records.push(promoted_from_decision(proposal, decision));
+                }
+                ReviewDecisionStatus::Reject => {
+                    rejected_proposal_ids.push(proposal.proposal_id.clone());
+                }
+                ReviewDecisionStatus::RequestMoreEvidence => {
+                    evidence_requested_proposal_ids.push(proposal.proposal_id.clone());
+                }
+            },
+            None if !required_proposal_ids.contains(&proposal.proposal_id) => {
+                promoted_records.push(promoted_without_gate(proposal));
+            }
+            None => {}
+        }
+    }
+
+    let caveated_record_count = promoted_records
+        .iter()
+        .filter(|record| !record.caveats.is_empty())
+        .count();
+    let ready_for_compiler = evidence_requested_proposal_ids.is_empty();
+
+    Ok(PromotedRecordSet {
+        request_id: request.request_id.clone(),
+        source_pack_id: source_pack.pack_id.clone(),
+        extraction_run_id: proposal_set.extraction_run.run_id.clone(),
+        selected_type,
+        build_mode: request.build_mode,
+        ready_for_compiler,
+        required_decision_count: required_proposal_ids.len(),
+        decision_count: decision_set.decisions.len(),
+        promoted_records,
+        rejected_proposal_ids,
+        evidence_requested_proposal_ids,
+        caveated_record_count,
+    })
+}
+
 pub fn export_schema_dir(path: &Path) -> Result<(), ExtractorLoadError> {
     fs::create_dir_all(path).map_err(|error| {
         ExtractorLoadError::new(format!(
@@ -738,6 +966,16 @@ pub fn export_schema_dir(path: &Path) -> Result<(), ExtractorLoadError> {
     )?;
     write_schema(path, "proposal_set.schema.json", schema_for!(ProposalSet))?;
     write_schema(path, "review_gate.schema.json", schema_for!(ReviewGate))?;
+    write_schema(
+        path,
+        "reviewer_decision_set.schema.json",
+        schema_for!(ReviewerDecisionSet),
+    )?;
+    write_schema(
+        path,
+        "promoted_record_set.schema.json",
+        schema_for!(PromotedRecordSet),
+    )?;
     Ok(())
 }
 
@@ -941,6 +1179,130 @@ fn write_schema(path: &Path, filename: &str, schema: RootSchema) -> Result<(), E
     fs::write(&output, format!("{json}\n")).map_err(|error| {
         ExtractorLoadError::new(format!("failed to write {}: {error}", output.display()))
     })
+}
+
+fn validate_decision(
+    decision: &ReviewerDecision,
+    index: usize,
+    proposal_map: &BTreeMap<&str, &ExtractionProposal>,
+    decision_ids: &mut BTreeSet<String>,
+    decision_proposal_ids: &mut BTreeSet<String>,
+    report: &mut BuildValidationReport,
+) {
+    let path = format!("review_decisions.decisions[{index}]");
+    if !decision_ids.insert(decision.decision_id.clone()) {
+        report.push(BuildValidationFinding::error(
+            "duplicate_reviewer_decision_id",
+            format!("{path}.decision_id"),
+            format!("Duplicate reviewer decision id '{}'.", decision.decision_id),
+        ));
+    }
+    if !decision_proposal_ids.insert(decision.proposal_id.clone()) {
+        report.push(BuildValidationFinding::error(
+            "duplicate_reviewer_decision_for_proposal",
+            format!("{path}.proposal_id"),
+            format!(
+                "Proposal '{}' has more than one reviewer decision in this set.",
+                decision.proposal_id
+            ),
+        ));
+    }
+    if decision.decision_id.trim().is_empty()
+        || decision.proposal_id.trim().is_empty()
+        || decision.object_id.trim().is_empty()
+        || decision.reviewer_role.trim().is_empty()
+        || decision.decided_at.trim().is_empty()
+        || decision.rationale.trim().is_empty()
+    {
+        report.push(BuildValidationFinding::error(
+            "incomplete_reviewer_decision",
+            path.clone(),
+            "Reviewer decision requires decision_id, proposal_id, object_id, reviewer_role, decided_at, and rationale.",
+        ));
+    }
+    match proposal_map.get(decision.proposal_id.as_str()) {
+        Some(proposal) if proposal.object_id != decision.object_id => {
+            report.push(BuildValidationFinding::error(
+                "reviewer_decision_object_mismatch",
+                format!("{path}.object_id"),
+                format!(
+                    "Decision '{}' references object '{}', but proposal '{}' targets '{}'.",
+                    decision.decision_id,
+                    decision.object_id,
+                    proposal.proposal_id,
+                    proposal.object_id
+                ),
+            ));
+        }
+        Some(_) => {}
+        None => report.push(BuildValidationFinding::error(
+            "reviewer_decision_unknown_proposal",
+            format!("{path}.proposal_id"),
+            format!(
+                "Reviewer decision '{}' references unknown proposal '{}'.",
+                decision.decision_id, decision.proposal_id
+            ),
+        )),
+    }
+    if matches!(decision.status, ReviewDecisionStatus::ApproveWithCaveats)
+        && decision.caveats.is_empty()
+    {
+        report.push(BuildValidationFinding::error(
+            "caveated_decision_missing_caveats",
+            format!("{path}.caveats"),
+            "approve_with_caveats decisions must include at least one caveat.",
+        ));
+    }
+    if matches!(decision.status, ReviewDecisionStatus::RequestMoreEvidence)
+        && decision.requested_evidence.is_empty()
+    {
+        report.push(BuildValidationFinding::error(
+            "evidence_request_missing_requirements",
+            format!("{path}.requested_evidence"),
+            "request_more_evidence decisions must state what evidence is required.",
+        ));
+    }
+}
+
+fn promoted_from_decision(
+    proposal: &ExtractionProposal,
+    decision: &ReviewerDecision,
+) -> PromotedRecord {
+    PromotedRecord {
+        record_id: format!("promoted:{}", proposal.object_id),
+        source_proposal_id: proposal.proposal_id.clone(),
+        object_id: proposal.object_id.clone(),
+        kind: proposal.kind,
+        capsule_type: proposal.capsule_type,
+        promotion_basis: PromotionBasis::ReviewerDecision,
+        source_span_ids: proposal.source_span_ids.clone(),
+        confidence: proposal.confidence,
+        uncertainty: proposal.uncertainty.clone(),
+        payload: proposal.payload.clone(),
+        review_decision_id: Some(decision.decision_id.clone()),
+        review_status: Some(decision.status),
+        caveats: decision.caveats.clone(),
+        reviewer_role: Some(decision.reviewer_role.clone()),
+    }
+}
+
+fn promoted_without_gate(proposal: &ExtractionProposal) -> PromotedRecord {
+    PromotedRecord {
+        record_id: format!("promoted:{}", proposal.object_id),
+        source_proposal_id: proposal.proposal_id.clone(),
+        object_id: proposal.object_id.clone(),
+        kind: proposal.kind,
+        capsule_type: proposal.capsule_type,
+        promotion_basis: PromotionBasis::DeterministicNoGate,
+        source_span_ids: proposal.source_span_ids.clone(),
+        confidence: proposal.confidence,
+        uncertainty: proposal.uncertainty.clone(),
+        payload: proposal.payload.clone(),
+        review_decision_id: None,
+        review_status: None,
+        caveats: Vec::new(),
+        reviewer_role: None,
+    }
 }
 
 #[cfg(test)]

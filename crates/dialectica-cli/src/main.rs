@@ -79,6 +79,54 @@ fn main() {
                 Path::new(&proposal_dir),
             );
         }
+        "review-check" => {
+            let Some(build_request_path) = args.next() else {
+                eprintln!("missing build request path");
+                std::process::exit(2);
+            };
+            let Some(source_pack_path) = args.next() else {
+                eprintln!("missing source pack path");
+                std::process::exit(2);
+            };
+            let Some(proposal_dir) = args.next() else {
+                eprintln!("missing proposal directory");
+                std::process::exit(2);
+            };
+            let Some(review_dir) = args.next() else {
+                eprintln!("missing review decision directory");
+                std::process::exit(2);
+            };
+            check_review_decisions(
+                Path::new(&build_request_path),
+                Path::new(&source_pack_path),
+                Path::new(&proposal_dir),
+                Path::new(&review_dir),
+            );
+        }
+        "promote-check" => {
+            let Some(build_request_path) = args.next() else {
+                eprintln!("missing build request path");
+                std::process::exit(2);
+            };
+            let Some(source_pack_path) = args.next() else {
+                eprintln!("missing source pack path");
+                std::process::exit(2);
+            };
+            let Some(proposal_dir) = args.next() else {
+                eprintln!("missing proposal directory");
+                std::process::exit(2);
+            };
+            let Some(review_dir) = args.next() else {
+                eprintln!("missing review decision directory");
+                std::process::exit(2);
+            };
+            check_promotion(
+                Path::new(&build_request_path),
+                Path::new(&source_pack_path),
+                Path::new(&proposal_dir),
+                Path::new(&review_dir),
+            );
+        }
         "ladybug-plan" => {
             let Some(path) = args.next() else {
                 eprintln!("missing capsule directory");
@@ -145,6 +193,8 @@ fn print_help() {
     println!("  source-pack-check <path> validate a builder source pack");
     println!("  proposal-check <request> <source-pack> <proposal-dir>");
     println!("  build-plan <request> <source-pack> <proposal-dir>");
+    println!("  review-check <request> <source-pack> <proposal-dir> <review-dir>");
+    println!("  promote-check <request> <source-pack> <proposal-dir> <review-dir>");
     println!("  ladybug-plan <dir>      print embedded Ladybug projection plan");
     println!("  ladybug-build <dir>     build graph/ladybug/capsule.lbug from graph.jsonld");
     println!("  ladybug-check <dir>     validate embedded Ladybug projection files");
@@ -318,6 +368,81 @@ fn print_build_plan(build_request_path: &Path, source_pack_path: &Path, proposal
     }
 }
 
+fn check_review_decisions(
+    build_request_path: &Path,
+    source_pack_path: &Path,
+    proposal_dir: &Path,
+    review_dir: &Path,
+) {
+    let build_request = load_build_request_or_exit(build_request_path);
+    let source_pack = load_source_pack_or_exit(source_pack_path);
+    let proposal_set = load_proposal_set_or_exit(proposal_dir);
+    let decision_set = load_reviewer_decision_set_or_exit(review_dir);
+    let report = dialectica_extractor::validate_reviewer_decision_set(
+        &source_pack,
+        &build_request,
+        &proposal_set,
+        &decision_set,
+    );
+    let required_decision_count =
+        dialectica_extractor::route_review_gates(&build_request, &proposal_set).len();
+
+    print_build_validation_report(&report);
+    println!("decision_set_id={}", decision_set.decision_set_id);
+    println!("decision_count={}", decision_set.decisions.len());
+    println!("required_decision_count={required_decision_count}");
+    println!("valid={}", !report.has_errors());
+    if report.has_errors() {
+        std::process::exit(1);
+    }
+}
+
+fn check_promotion(
+    build_request_path: &Path,
+    source_pack_path: &Path,
+    proposal_dir: &Path,
+    review_dir: &Path,
+) {
+    let build_request = load_build_request_or_exit(build_request_path);
+    let source_pack = load_source_pack_or_exit(source_pack_path);
+    let proposal_set = load_proposal_set_or_exit(proposal_dir);
+    let decision_set = load_reviewer_decision_set_or_exit(review_dir);
+    match dialectica_extractor::promote_records(
+        &build_request,
+        &source_pack,
+        &proposal_set,
+        &decision_set,
+    ) {
+        Ok(promoted) => {
+            println!("ready_for_compiler={}", promoted.ready_for_compiler);
+            println!("promoted_record_count={}", promoted.promoted_records.len());
+            println!(
+                "required_decision_count={}",
+                promoted.required_decision_count
+            );
+            println!("decision_count={}", promoted.decision_count);
+            println!("caveated_record_count={}", promoted.caveated_record_count);
+            println!(
+                "rejected_proposal_count={}",
+                promoted.rejected_proposal_ids.len()
+            );
+            println!(
+                "evidence_requested_proposal_count={}",
+                promoted.evidence_requested_proposal_ids.len()
+            );
+            println!("valid={}", promoted.ready_for_compiler);
+            if !promoted.ready_for_compiler {
+                std::process::exit(1);
+            }
+        }
+        Err(report) => {
+            print_build_validation_report(&report);
+            println!("valid=false");
+            std::process::exit(1);
+        }
+    }
+}
+
 fn print_build_validation_report(report: &dialectica_extractor::BuildValidationReport) {
     for finding in &report.findings {
         println!(
@@ -437,6 +562,16 @@ fn load_build_request_or_exit(path: &Path) -> dialectica_extractor::CapsuleBuild
 fn load_proposal_set_or_exit(path: &Path) -> dialectica_extractor::ProposalSet {
     match dialectica_extractor::ProposalSet::load_from_dir(path) {
         Ok(proposal_set) => proposal_set,
+        Err(error) => {
+            eprintln!("{error}");
+            std::process::exit(1);
+        }
+    }
+}
+
+fn load_reviewer_decision_set_or_exit(path: &Path) -> dialectica_extractor::ReviewerDecisionSet {
+    match dialectica_extractor::ReviewerDecisionSet::load_from_dir(path) {
+        Ok(decision_set) => decision_set,
         Err(error) => {
             eprintln!("{error}");
             std::process::exit(1);
