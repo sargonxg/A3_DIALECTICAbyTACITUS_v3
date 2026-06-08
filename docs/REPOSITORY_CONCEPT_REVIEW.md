@@ -1,6 +1,6 @@
 # Repository Concept Review
 
-Date: 2026-06-07
+Date: 2026-06-08
 
 Status: working audit for repository narrative, product coherence, and
 implementation readiness.
@@ -101,11 +101,15 @@ expert-shaped output than raw prompting.
 - Added `docs/AGENT_BUILD_GUIDE.md` and build-flow graphics so future coding
   agents can follow the contract-first path without rediscovering the product
   architecture.
+- Replaced the dense README banner with a simpler repository mark and shortened
+  the README, `AGENTS.md`, and docs-index start paths so the front door reads
+  as a buildable engine instead of only a planning archive.
 
 ## Remaining Product Gaps
 
-- GitHub repository About metadata should be kept aligned with
-  `docs/GITHUB_PROFILE.md`.
+- GitHub repository About metadata is currently aligned with
+  `docs/GITHUB_PROFILE.md`; re-check it after major naming or licensing
+  changes.
 - The example capsules are intentionally small; the repo still needs a richer
   golden policy capsule with multiple sources, contested claims, review
   objects, graph warnings, and measured PRAXIS output improvement.

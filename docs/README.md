@@ -1,6 +1,24 @@
 # Documentation Index
 
-Start with these files:
+## Fast Build Path
+
+For a coding session, start with the shortest authoritative path:
+
+1. [Source of Truth](SOURCE_OF_TRUTH.md)
+2. [Coding Ledger](CODING_LEDGER.md)
+3. [Engineering Baseline](ENGINEERING_BASELINE.md)
+4. [Lane A Acceptance](LANE_A_ACCEPTANCE.md)
+5. [API Slice 1](API_SLICE_1.md)
+6. [Improvement Guidelines](IMPROVEMENT_GUIDELINES.md)
+7. [Next Code Build Plan](NEXT_CODE_BUILD_PLAN.md)
+8. [Capsule Structure Guide](CAPSULE_STRUCTURE_GUIDE.md)
+9. [Capsule Specification](CAPSULE_SPEC.md)
+10. [Scaffold Audit](SCAFFOLD_AUDIT.md)
+
+Use the full index below when a task needs product narrative, ontology research,
+deployment, PRAXIS integration, security, or operations context.
+
+## Full Index
 
 1. [Source of Truth](SOURCE_OF_TRUTH.md)
 2. [About DIALECTICA](ABOUT_DIALECTICA.md)

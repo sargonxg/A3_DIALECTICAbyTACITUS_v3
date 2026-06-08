@@ -97,6 +97,30 @@ Evidence:
   notes, which document the Node 24 runtime line.
 - license choice checked against Apache Software Foundation guidance and
   GitHub/Citation File Format documentation.
+## 2026-06-08 - Front-Door Simplification
+
+Status: ready for commit and push.
+
+Actions:
+
+- replaced the dense README banner with a clearer accessible SVG mark;
+- shortened the README, `AGENTS.md`, and `docs/README.md` start paths;
+- kept the complete documentation library available behind `docs/README.md`;
+- updated the scaffold audit, concept review, asset notes, and improvement
+  guidelines with the simplicity standard.
+
+Evidence:
+
+- front-door simplification checked against GitHub README relative-link/image
+  guidance and MDN SVG accessibility guidance for `role="img"`, accessible
+  names, and SVG title metadata;
+- `assets/dialectica-mark.svg` parses as XML;
+- remote GitHub About metadata checked with `gh repo view`; description,
+  homepage, topics, default branch, and Apache-2.0 license match the repository
+  profile guidance;
+- terminology scan found no banned product-shortcut, messy-context,
+  proprietary-license, or placeholder-marker language in the checked repository
+  scope.
 
 ## Active Decisions
 

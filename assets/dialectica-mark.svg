@@ -1,58 +1,43 @@
-<svg width="1280" height="420" viewBox="0 0 1280 420" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
-  <title id="title">DIALECTICA by TACITUS</title>
-  <desc id="desc">A modern technical mark for the DIALECTICA context capsule engine, showing a capsule backbone made from source, time, graph, reasoning, review, and PRAXIS nodes.</desc>
-  <rect width="1280" height="420" rx="32" fill="#070B12"/>
-  <rect x="28" y="28" width="1224" height="364" rx="26" fill="#0D1320" stroke="#243142" stroke-width="2"/>
-  <path d="M56 332H1224" stroke="#1F2937" stroke-width="1"/>
-  <path d="M56 88H1224" stroke="#1F2937" stroke-width="1"/>
-  <path d="M104 52V368" stroke="#111827" stroke-width="1"/>
-  <path d="M1176 52V368" stroke="#111827" stroke-width="1"/>
+<svg width="1120" height="320" viewBox="0 0 1120 320" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="dialecticaTitle dialecticaDesc">
+  <title id="dialecticaTitle">DIALECTICA by TACITUS</title>
+  <desc id="dialecticaDesc">Repository mark for the DIALECTICA capsule engine, showing a portable context capsule with source, time, ontology, graph, review, and PRAXIS layers.</desc>
+  <rect width="1120" height="320" rx="30" fill="#F7F5EE"/>
+  <rect x="18" y="18" width="1084" height="284" rx="24" fill="#FFFEFA" stroke="#D8D2C5" stroke-width="2"/>
+  <path d="M322 236H1012" stroke="#E4DDD0" stroke-width="2"/>
+  <path d="M322 86H1012" stroke="#EFE8DA" stroke-width="1"/>
 
-  <g transform="translate(82 86)">
-    <rect x="0" y="0" width="248" height="248" rx="44" fill="#0B1220" stroke="#4B5563" stroke-width="2"/>
-    <path d="M58 124C58 82.0264 92.0264 48 134 48H150C191.974 48 226 82.0264 226 124C226 165.974 191.974 200 150 200H134C92.0264 200 58 165.974 58 124Z" fill="#101827" stroke="#2DD4BF" stroke-width="5"/>
-    <path d="M124 48V200" stroke="#2DD4BF" stroke-width="3" stroke-dasharray="8 10"/>
-    <circle cx="58" cy="124" r="10" fill="#60A5FA"/>
-    <circle cx="92" cy="66" r="9" fill="#FBBF24"/>
-    <circle cx="92" cy="182" r="9" fill="#F472B6"/>
-    <circle cx="190" cy="66" r="9" fill="#A5B4FC"/>
-    <circle cx="190" cy="182" r="9" fill="#86EFAC"/>
-    <circle cx="226" cy="124" r="10" fill="#E5E7EB"/>
-    <path d="M68 124H116M100 72L124 98M100 176L124 150M184 74L160 100M184 176L160 150M168 124H216" stroke="#CBD5E1" stroke-width="3" stroke-linecap="round"/>
-    <text x="26" y="232" fill="#64748B" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12">source.time.graph.review</text>
+  <g transform="translate(70 58)">
+    <rect x="0" y="0" width="204" height="204" rx="34" fill="#F1EDE2" stroke="#27342F" stroke-width="3"/>
+    <path d="M54 102C54 70.52 79.52 45 111 45H128C159.48 45 185 70.52 185 102C185 133.48 159.48 159 128 159H111C79.52 159 54 133.48 54 102Z" fill="#FFFEFA" stroke="#0F766E" stroke-width="6"/>
+    <path d="M102 45V159" stroke="#B45309" stroke-width="4" stroke-linecap="round"/>
+    <path d="M66 102H97M109 102H154M116 68L141 87M116 136L141 117" stroke="#27342F" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="54" cy="102" r="10" fill="#0F766E"/>
+    <circle cx="116" cy="68" r="8" fill="#B45309"/>
+    <circle cx="116" cy="136" r="8" fill="#B45309"/>
+    <circle cx="185" cy="102" r="10" fill="#27342F"/>
+    <circle cx="141" cy="87" r="7" fill="#64748B"/>
+    <circle cx="141" cy="117" r="7" fill="#64748B"/>
+    <path d="M30 178H174" stroke="#D8D2C5" stroke-width="2"/>
+    <text x="42" y="193" fill="#64748B" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12" font-weight="700">capsule.graph</text>
   </g>
 
   <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
-    <text x="382" y="128" fill="#E5E7EB" font-size="68" font-weight="800" letter-spacing="2">DIALECTICA</text>
-    <text x="388" y="168" fill="#2DD4BF" font-size="22" font-weight="700" letter-spacing="5">BY TACITUS</text>
-    <text x="388" y="220" fill="#CBD5E1" font-size="26" font-weight="600">context capsules as the backbone of knowledge work</text>
-    <text x="388" y="260" fill="#94A3B8" font-size="18">portable, reviewable knowledge objects for humans and AI agents</text>
-    <text x="388" y="302" fill="#64748B" font-size="15">/ source ledger / temporal state / embedded graph / reasoning devices / human gate / PRAXIS context pack</text>
+    <text x="322" y="128" fill="#111827" font-size="68" font-weight="850" letter-spacing="1">DIALECTICA</text>
+    <text x="328" y="166" fill="#0F766E" font-size="22" font-weight="800" letter-spacing="4">BY TACITUS</text>
+    <text x="328" y="208" fill="#27342F" font-size="28" font-weight="700">PRAXIS Capsule Engine</text>
+    <text x="328" y="256" fill="#64748B" font-size="16" font-weight="600">source / time / ontology / graph / reasoning / review / praxis</text>
   </g>
 
-  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13" font-weight="700">
-    <text x="932" y="108" fill="#64748B">capsule path</text>
-    <g stroke="#64748B" stroke-width="2" marker-end="url(#arrow)">
-      <path d="M960 152H1032"/>
-      <path d="M960 214H1032"/>
-      <path d="M960 276H1032"/>
-    </g>
-    <rect x="910" y="130" width="74" height="44" rx="10" fill="#111827" stroke="#60A5FA"/>
-    <text x="926" y="157" fill="#DBEAFE">source</text>
-    <rect x="1032" y="130" width="72" height="44" rx="10" fill="#111827" stroke="#2DD4BF"/>
-    <text x="1050" y="157" fill="#CCFBF1">graph</text>
-    <rect x="910" y="192" width="74" height="44" rx="10" fill="#111827" stroke="#F472B6"/>
-    <text x="927" y="219" fill="#FCE7F3">review</text>
-    <rect x="1032" y="192" width="86" height="44" rx="10" fill="#111827" stroke="#86EFAC"/>
-    <text x="1048" y="219" fill="#DCFCE7">capsule</text>
-    <rect x="910" y="254" width="74" height="44" rx="10" fill="#111827" stroke="#A5B4FC"/>
-    <text x="927" y="281" fill="#E0E7FF">reason</text>
-    <rect x="1032" y="254" width="82" height="44" rx="10" fill="#111827" stroke="#E5E7EB"/>
-    <text x="1049" y="281" fill="#F8FAFC">PRAXIS</text>
+  <g transform="translate(846 104)" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+    <path d="M12 38H168" stroke="#CBD5C0" stroke-width="4" stroke-linecap="round"/>
+    <path d="M12 88H168" stroke="#CBD5C0" stroke-width="4" stroke-linecap="round"/>
+    <path d="M42 38L82 88L122 38" stroke="#27342F" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="12" cy="38" r="10" fill="#0F766E"/>
+    <circle cx="42" cy="38" r="8" fill="#B45309"/>
+    <circle cx="82" cy="88" r="10" fill="#27342F"/>
+    <circle cx="122" cy="38" r="8" fill="#B45309"/>
+    <circle cx="168" cy="38" r="10" fill="#0F766E"/>
+    <circle cx="168" cy="88" r="10" fill="#27342F"/>
+    <text x="2" y="130" fill="#64748B" font-size="12" font-weight="700">portable context object</text>
   </g>
-  <defs>
-    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
-      <path d="M0,0 L0,6 L9,3 z" fill="#64748B"/>
-    </marker>
-  </defs>
 </svg>

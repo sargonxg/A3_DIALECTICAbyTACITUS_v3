@@ -1,8 +1,8 @@
 # Scaffold Audit
 
-Date: 2026-06-07
+Date: 2026-06-08
 
-Readiness: **82/100 for coding readiness; not app-production readiness**.
+Readiness: **84/100 for coding readiness; not app-production readiness**.
 
 The repository has begun the first functional implementation pass. It is not
 yet a working backend, but the capsule contract is now executable: the Rust
@@ -14,6 +14,8 @@ validate, inspect, and plan the ontology for a golden policy capsule.
 
 - `README.md`
 - `AGENTS.md`
+- `assets/dialectica-mark.svg`
+- `assets/README.md`
 - `Cargo.toml`
 - `.github/workflows/docs.yml`
 - `assets/agent-build-flow.svg`
@@ -39,6 +41,9 @@ validate, inspect, and plan the ontology for a golden policy capsule.
 - Repository identity is clear: DIALECTICA is the capsule intelligence engine
   for PRAXIS.
 - Visual identity assets are present in `assets/`.
+- The GitHub front door now has a simpler repository mark and a shorter active
+  build path instead of forcing every reader through the full documentation
+  library.
 - Documentation has a source-of-truth order.
 - Cargo workspace is present and testable.
 - `dialectica-capsule` now owns first executable bundle structs, validation
@@ -73,6 +78,9 @@ validate, inspect, and plan the ontology for a golden policy capsule.
 - Four small example capsule envelopes exist under
   `fixtures/example-capsules/`.
 - Python tooling is auxiliary and governed by `docs/PYTHON_TOOLING.md`.
+- GitHub repository metadata is aligned with `docs/GITHUB_PROFILE.md`:
+  Apache-2.0 license, TACITUS homepage, PRAXIS/capsule topics, and a concise
+  description are visible on the remote repository.
 
 ## Not Ready Yet
 

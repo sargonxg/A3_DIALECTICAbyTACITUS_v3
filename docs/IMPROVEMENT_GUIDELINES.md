@@ -1,6 +1,6 @@
 # Improvement Guidelines
 
-Date: 2026-06-07
+Date: 2026-06-08
 
 Status: active quality and gap-control guide for the first executable build.
 
@@ -184,6 +184,9 @@ Every promoted capsule must satisfy these ten invariants.
 ## Coding Guidelines
 
 - Start each session from `docs/CODING_LEDGER.md` and this guide.
+- Keep the active path short. Deep docs are allowed, but README, `AGENTS.md`,
+  and `docs/README.md` must make the next build step obvious in ten links or
+  fewer.
 - Keep each slice vertical: contract, fixture, CLI, tests, docs.
 - Add model extraction only after deterministic source-pack build works.
 - Add cloud only after local API and context-pack export work.

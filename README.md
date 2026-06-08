@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/dialectica-mark.svg" alt="DIALECTICA by TACITUS" width="760">
+  <img src="assets/dialectica-mark.svg" alt="DIALECTICA by TACITUS repository mark" width="820">
 </p>
 
 ![Status](https://img.shields.io/badge/status-build%20cockpit-blue)
@@ -615,31 +615,24 @@ storage, API routes, or model-powered extraction.
 
 Start here:
 
-1. Read [docs/SOURCE_OF_TRUTH.md](docs/SOURCE_OF_TRUTH.md).
-2. Read [docs/ABOUT_DIALECTICA.md](docs/ABOUT_DIALECTICA.md).
-3. Read [docs/CODING_LEDGER.md](docs/CODING_LEDGER.md).
-4. Read [docs/ENGINEERING_BASELINE.md](docs/ENGINEERING_BASELINE.md).
-5. Read [docs/LANE_A_ACCEPTANCE.md](docs/LANE_A_ACCEPTANCE.md).
-6. Read [docs/API_SLICE_1.md](docs/API_SLICE_1.md).
-7. Read [docs/GRAPH_PROFILE_REGISTRY.md](docs/GRAPH_PROFILE_REGISTRY.md).
-8. Read [docs/SCAFFOLD_AUDIT.md](docs/SCAFFOLD_AUDIT.md).
-9. Read [docs/CAPSULE_STRUCTURE_GUIDE.md](docs/CAPSULE_STRUCTURE_GUIDE.md).
-10. Read [docs/GRAPH_ONTOLOGY_RESEARCH_NOTES.md](docs/GRAPH_ONTOLOGY_RESEARCH_NOTES.md).
-11. Read [docs/RESEARCH_LEDGER.md](docs/RESEARCH_LEDGER.md).
-12. Read [docs/AGENT_BUILD_GUIDE.md](docs/AGENT_BUILD_GUIDE.md).
-13. Read [docs/REPOSITORY_CONCEPT_REVIEW.md](docs/REPOSITORY_CONCEPT_REVIEW.md).
-14. Read [docs/IMPROVEMENT_GUIDELINES.md](docs/IMPROVEMENT_GUIDELINES.md).
-15. Read [docs/GITHUB_PROFILE.md](docs/GITHUB_PROFILE.md).
-16. Read [docs/FOUNDATION_BUILD.md](docs/FOUNDATION_BUILD.md).
-17. Read [docs/CAPSULE_SPEC.md](docs/CAPSULE_SPEC.md).
-18. Read [docs/CAPSULE_TYPES_AND_MARKETPLACE.md](docs/CAPSULE_TYPES_AND_MARKETPLACE.md).
-19. Read [docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md](docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md).
-20. Read [docs/CAPSULE_BUILD_EXAMPLES.md](docs/CAPSULE_BUILD_EXAMPLES.md).
-21. Read [docs/API_CONTRACT.md](docs/API_CONTRACT.md).
-22. Read [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
-23. Read [docs/IMPLEMENTATION_BLUEPRINT.md](docs/IMPLEMENTATION_BLUEPRINT.md).
-24. Read [docs/INTELLECTUAL_TOOLS.md](docs/INTELLECTUAL_TOOLS.md).
-25. Use [docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md](docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md) as reference context.
+1. [Source of Truth](docs/SOURCE_OF_TRUTH.md): document priority, naming, and
+   foundation constraints.
+2. [Coding Ledger](docs/CODING_LEDGER.md): active build lanes and command
+   gates.
+3. [Improvement Guidelines](docs/IMPROVEMENT_GUIDELINES.md): current gaps and
+   quality bar.
+4. [Next Code Build Plan](docs/NEXT_CODE_BUILD_PLAN.md): the next executable
+   implementation sequence.
+5. [Capsule Structure Guide](docs/CAPSULE_STRUCTURE_GUIDE.md): bundle layers,
+   graph, reasoning, language, review, and agent guidance.
+6. [Capsule Spec](docs/CAPSULE_SPEC.md): portable bundle contract.
+7. [API Slice 1](docs/API_SLICE_1.md): first PRAXIS-facing backend routes.
+8. [Scaffold Audit](docs/SCAFFOLD_AUDIT.md): what is real now, what is still
+   missing, and what blocks the functional engine.
+
+Use [docs/README.md](docs/README.md) for the full documentation index and
+[docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md](docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md)
+as reference context.
 
 ## First Build Commands
 

@@ -5,33 +5,21 @@ for PRAXIS.
 
 ## Start Here
 
-Before implementation work, read the active coding authority first:
+Before implementation work, read the active build path first:
 
 1. `docs/SOURCE_OF_TRUTH.md`
-2. `docs/ABOUT_DIALECTICA.md`
-3. `docs/CODING_LEDGER.md`
-4. `docs/ENGINEERING_BASELINE.md`
-5. `docs/LANE_A_ACCEPTANCE.md`
-6. `docs/API_SLICE_1.md`
-7. `docs/GRAPH_PROFILE_REGISTRY.md`
+2. `docs/CODING_LEDGER.md`
+3. `docs/ENGINEERING_BASELINE.md`
+4. `docs/LANE_A_ACCEPTANCE.md`
+5. `docs/API_SLICE_1.md`
+6. `docs/IMPROVEMENT_GUIDELINES.md`
+7. `docs/NEXT_CODE_BUILD_PLAN.md`
 8. `docs/CAPSULE_STRUCTURE_GUIDE.md`
-9. `docs/GRAPH_ONTOLOGY_RESEARCH_NOTES.md`
-10. `docs/ONTOLOGY_BLUEPRINTS.md`
-11. `docs/RESEARCH_LEDGER.md`
-12. `docs/AGENT_BUILD_GUIDE.md`
-13. `docs/NEXT_CODE_BUILD_PLAN.md`
-14. `docs/IMPROVEMENT_GUIDELINES.md`
-15. `docs/IMPLEMENTATION_PHASE_PLAN.md`
-16. `docs/REPOSITORY_CONCEPT_REVIEW.md`
-17. `docs/GITHUB_PROFILE.md`
-18. `docs/SCAFFOLD_AUDIT.md`
-19. `docs/CAPSULE_SPEC.md`
-20. `docs/API_CONTRACT.md`
-21. `docs/DATA_MODEL.md`
-22. `docs/ARCHITECTURE.md`
-23. `docs/IMPLEMENTATION_BLUEPRINT.md`
-24. `docs/AGENTIC_WORKFLOWS.md`
-25. `docs/BUILD_LEDGER.md`
+9. `docs/CAPSULE_SPEC.md`
+10. `docs/SCAFFOLD_AUDIT.md`
+
+Use `docs/README.md` as the complete index when deeper product, graph,
+ontology, deployment, PRAXIS, or research context is needed.
 
 Use `docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md` as product/reference context.
 When it conflicts with the active Rust-first coding docs above, follow
