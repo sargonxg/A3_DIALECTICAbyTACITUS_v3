@@ -36,6 +36,9 @@ directory while the compiler migrates.
 - `docs/BUILD_LEDGER.md`
 - `docs/IMPLEMENTATION_PHASE_PLAN.md`
 - `docs/CODE_AUDIT_2026_06_08.md`
+- `docs/MISSING_WORK_AUDIT_2026_06_08.md`
+- `docs/LLM_CONTEXT_EXTRACTION_ARCHITECTURE.md`
+- `docs/decisions/ADR-007-llm-extraction-proposal-boundary.md`
 - `schemas/capsule-3.0/`
 - `schemas/capsule-0.1.0/`
 - `fixtures/canonical-capsules/conflict-situation-capsule/`
@@ -64,6 +67,11 @@ directory while the compiler migrates.
   legacy `0.1.0` bundle version separate.
 - `docs/CODE_AUDIT_2026_06_08.md` records the current executable state and the
   P0/P1 build gaps.
+- `docs/MISSING_WORK_AUDIT_2026_06_08.md` lists the source-pack, extraction,
+  review, compiler, API, store, eval, and PRAXIS frontend gaps.
+- `docs/LLM_CONTEXT_EXTRACTION_ARCHITECTURE.md` defines the proposal-only LLM
+  extraction pipeline.
+- ADR-007 records that LLM extraction cannot write canonical truth directly.
 - Legacy golden policy capsule expected-bundle exists under
   `fixtures/golden-policy-capsule/expected-bundle/`.
 - Initial crate and service boundaries exist.
@@ -102,6 +110,8 @@ directory while the compiler migrates.
   views, JSON parseability, and minimum Situation claim/source records.
 - No source-pack ingestion, document upload, PDF extraction, user discussion
   capture, or assistant conversation ingestion exists.
+- No `dialectica-extractor` crate, extraction proposal schema, model invocation
+  receipt, or review-trigger router exists.
 - No ontology or semantic-layer creation workflow exists beyond the legacy
   `ontology-plan` helper.
 - Golden fixture source pack is still only a placeholder; the expected bundle is
@@ -127,18 +137,20 @@ directory while the compiler migrates.
 
 ## Blockers Before Calling It Functional
 
-1. Implement source-pack to v3 `.capsule` package generation.
-2. Add deterministic `.capsule` archive assembly, Merkle-root/signature logic,
+1. Implement source-pack and extraction proposal records.
+2. Add `dialectica-extractor` with model receipts and review-trigger routing.
+3. Implement source-pack to v3 `.capsule` package generation.
+4. Add deterministic `.capsule` archive assembly, Merkle-root/signature logic,
    and compiler receipts.
-3. Expand Lane A validation to every required acceptance case, including
+5. Expand Lane A validation to every required acceptance case, including
    ontology blueprint compatibility checks.
-4. Validate the four example capsule envelopes against a shared-envelope
+6. Validate the four example capsule envelopes against a shared-envelope
    contract.
-5. Export a PRAXIS context pack from canonical v3 package records.
-6. Add local API health and manifest/context-pack routes.
-7. Add store migrations for capsules, sources, claims, graph, review, rights,
+7. Export a PRAXIS context pack from canonical v3 package records.
+8. Add local API health and manifest/context-pack routes.
+9. Add store migrations for capsules, sources, claims, graph, review, rights,
    and bundle exports.
-8. Add fixture evals that compare raw, loose-doc, and capsule-augmented output.
+10. Add fixture evals that compare raw, loose-doc, and capsule-augmented output.
 
 ## High-Value Fixes
 

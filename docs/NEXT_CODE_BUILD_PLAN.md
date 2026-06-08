@@ -10,6 +10,8 @@ Turn the current contract scaffold into a working local capsule engine:
 
 ```text
 source pack
+  -> LLM proposal records
+  -> review-trigger routing
   -> reviewed canonical records
   -> deterministic v3 .capsule compiler
   -> PRAXIS context pack
@@ -47,6 +49,9 @@ Already implemented:
 Not yet implemented:
 
 - source-pack ingestion;
+- LLM extraction proposal schema;
+- model invocation receipts;
+- review-trigger routing;
 - v3 package writer;
 - `.capsule` archive writer;
 - Merkle/checksum/signature envelope;
@@ -74,7 +79,33 @@ python -m compileall tools/python
 python -m unittest discover tools/python/tests
 ```
 
-## Phase 1: Deterministic Bundle Writer
+## Phase 1: Source Pack And Extraction Proposal Contract
+
+Goal: make the input side of the engine real without calling a model provider.
+
+Deliver:
+
+- Rust `SourcePack`, `SourceDocument`, and `SourceSpan` types;
+- source-pack fixture with at least one document-like source and one
+  user/assistant discussion source;
+- Rust `ExtractionRun` and `ModelInvocationReceipt` types;
+- Rust `ExtractionProposal` envelope;
+- proposal payloads for claim, episode, graph node, graph edge, ontology term,
+  reasoning device, language rule, caveat, rights rule, and output rule;
+- review-trigger router;
+- CLI validation for source pack and proposal fixture records.
+
+Acceptance:
+
+- fixture source pack validates locally;
+- fixture proposal records validate locally;
+- every proposal includes source spans, confidence, uncertainty, model receipt,
+  and review triggers;
+- no proposal can be exported as canonical without review or deterministic
+  promotion rules;
+- tests prove LLM extraction is proposal-only.
+
+## Phase 2: Deterministic Bundle Writer
 
 Goal: make `dialectica-compiler` write the canonical v3 extracted package from
 typed records, then assemble a `.capsule` archive.
@@ -107,14 +138,13 @@ Acceptance:
 
 Do not move to API or store work until this phase has executable proof.
 
-## Phase 2: Source-Pack Builder
+## Phase 3: Source-Pack Builder
 
 Goal: stop treating the golden bundle as hand-authored output only.
 
 Deliver:
 
 - `fixtures/golden-policy-capsule/source-pack/source_pack.json`;
-- Rust source-pack input types;
 - normalized source-span fixture records;
 - extraction proposal fixture records;
 - human correction fixture records;
@@ -130,7 +160,7 @@ Acceptance:
 - unreviewed proposed records remain visible in lineage but cannot enter the
   PRAXIS context pack.
 
-## Phase 3: PRAXIS Context Pack Export
+## Phase 4: PRAXIS Context Pack Export
 
 Goal: create the first PRAXIS-consumable payload from `agent_context.md`,
 `operations.md`, and the canonical v3 graph/claim/source files.
@@ -155,7 +185,7 @@ Acceptance:
   and output rule has source-span ids, review-action ids, or explicit expert
   note lineage.
 
-## Phase 4: Local API Slice
+## Phase 5: Local API Slice
 
 Goal: make `dialectica-api` a real Axum service in local fixture mode.
 
@@ -177,7 +207,7 @@ Acceptance:
 - error responses include code, message, details, and request id;
 - no cloud credentials are required.
 
-## Phase 5: Store Migration Skeleton
+## Phase 6: Store Migration Skeleton
 
 Goal: prepare Cloud SQL PostgreSQL without making it a blocker for local proof.
 
@@ -197,7 +227,7 @@ Acceptance:
 - bundle export can still run from local fixture records when Postgres is
   absent.
 
-## Phase 6: Deployment Rail
+## Phase 7: Deployment Rail
 
 Goal: prepare deployability after the local loop works.
 
@@ -225,6 +255,7 @@ Acceptance:
   adapters/caches until an ADR promotes one.
 - Keep ontology blueprints capsule-specific.
 - Keep every promoted object source-backed or review-backed.
+- Keep LLM extraction proposal-only until validation and review promote records.
 - Keep every code slice covered by contract tests.
 - Keep P0/P1 gaps from `docs/IMPROVEMENT_GUIDELINES.md` visible in the ledger
   until they have command or test evidence.

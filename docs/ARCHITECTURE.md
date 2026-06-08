@@ -49,13 +49,19 @@ Responsibilities:
 
 - receive source artifacts from PRAXIS, uploads, connectors, or fixtures;
 - normalize text, metadata, document spans, and language;
-- extract entities, claims, dates, actors, relationships, and uncertainties;
+- call source-bound LLM extraction passes that propose entities, claims, dates,
+  actors, relationships, reasoning devices, language rules, and uncertainties;
 - create source ledger records;
-- write extraction run receipts;
+- write extraction proposal records and model invocation receipts;
+- route required human review gates;
 - enqueue review and compile work.
 
 Workers must be idempotent. Reprocessing the same source version should not
 silently duplicate semantic records.
+
+LLM extraction is proposal-only. See
+[LLM Context Extraction Architecture](LLM_CONTEXT_EXTRACTION_ARCHITECTURE.md)
+and [ADR-007](decisions/ADR-007-llm-extraction-proposal-boundary.md).
 
 ### Temporal Layer
 
@@ -159,12 +165,15 @@ Responsibilities:
 1. PRAXIS or a local fixture creates a capsule job.
 2. Sources are written to immutable artifact storage.
 3. Ingestion workers parse and normalize source material.
-4. Extractors propose entities, claims, temporal facts, and relationships.
-5. Canonical records are written to PostgreSQL with provenance.
-6. Reviewers approve, reject, correct, or annotate records.
-7. The compiler assembles a signed capsule bundle.
-8. The eval harness checks bundle validity and PRAXIS utility.
-9. Promoted capsules become visible to PRAXIS.
+4. Extractors propose entities, claims, temporal facts, relationships,
+   reasoning devices, language rules, and review triggers.
+5. Rust validators and cross-check agents normalize and inspect proposals.
+6. Reviewers approve, reject, correct, or annotate records where required.
+7. Canonical records are written to PostgreSQL with provenance and review
+   state.
+8. The compiler assembles a signed capsule bundle.
+9. The eval harness checks bundle validity and PRAXIS utility.
+10. Promoted capsules become visible to PRAXIS.
 
 ## Canonical Stores
 
@@ -225,3 +234,4 @@ See:
 - [ADR-001: Capsule Bundle as Source of Truth](decisions/ADR-001-capsule-bundle-source-of-truth.md)
 - [ADR-002: Cloud Run First Deployment](decisions/ADR-002-cloud-run-first-deployment.md)
 - [ADR-003: PostgreSQL First Operational Store](decisions/ADR-003-postgres-first-operational-store.md)
+- [ADR-007: LLM Extraction Proposal Boundary](decisions/ADR-007-llm-extraction-proposal-boundary.md)

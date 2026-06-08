@@ -58,8 +58,13 @@ cargo test --locked --workspace
 
 ## Phase 2: Deterministic Compiler
 
-Goal: build a capsule from canonical records into a v3 package directory and
-portable `.capsule` archive.
+Goal: build a capsule from reviewed canonical records into a v3 package
+directory and portable `.capsule` archive.
+
+Before compiler implementation, add the source-pack and extraction-proposal
+contract described in
+`docs/LLM_CONTEXT_EXTRACTION_ARCHITECTURE.md`. The compiler should consume
+reviewed canonical records, not raw model output.
 
 Deliver:
 
@@ -88,6 +93,8 @@ Deliver:
 
 - source-pack manifest;
 - source span normalization;
+- extraction proposal records with model receipts;
+- review-trigger routing;
 - claim extraction input contract;
 - ontology blueprint generation before graph and reasoning extraction;
 - human review correction file;

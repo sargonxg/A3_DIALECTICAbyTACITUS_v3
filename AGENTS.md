@@ -17,7 +17,9 @@ Before implementation work, read the active build path first:
 8. `docs/CAPSULE_STRUCTURE_GUIDE.md`
 9. `docs/CAPSULE_SPEC.md`
 10. `docs/CODE_AUDIT_2026_06_08.md`
-11. `docs/SCAFFOLD_AUDIT.md`
+11. `docs/MISSING_WORK_AUDIT_2026_06_08.md`
+12. `docs/LLM_CONTEXT_EXTRACTION_ARCHITECTURE.md`
+13. `docs/SCAFFOLD_AUDIT.md`
 
 Use `docs/README.md` as the complete index when deeper product, graph,
 ontology, deployment, PRAXIS, or research context is needed.
@@ -44,6 +46,8 @@ When it conflicts with the active Rust-first coding docs above, follow
 - Agent guidance is a first-class bundle layer for PRAXIS workflow use.
 - Ontology blueprints are capsule-specific. Actor/claim graphs are one profile,
   not the universal ontology for all capsules.
+- LLM extraction is proposal-only until Rust validation and human review gates
+  promote records.
 - Embedded graph previews must be loadable by PRAXIS from the capsule bundle.
 - Marketplace metadata must expose review level, rights, lineage, caveats, and
   freshness.

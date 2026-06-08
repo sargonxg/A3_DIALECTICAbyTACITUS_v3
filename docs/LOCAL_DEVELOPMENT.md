@@ -43,6 +43,16 @@ python -m json.tool fixtures/example-capsules/tool-capsule.example.json > $null
 python -m json.tool fixtures/example-capsules/output-capsule.example.json > $null
 ```
 
+Future extractor commands:
+
+```powershell
+cargo run -p dialectica-cli -- validate-source-pack fixtures/golden-policy-capsule/source-pack
+cargo run -p dialectica-cli -- validate-proposals fixtures/golden-policy-capsule/proposals
+```
+
+These commands do not exist yet. Add them only after the source-pack and
+proposal schemas are implemented.
+
 Optional migration-fixture commands:
 
 ```powershell

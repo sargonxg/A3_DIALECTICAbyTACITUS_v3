@@ -256,6 +256,46 @@ Blocking build gaps:
 7. ingestion and human review workflow;
 8. PRAXIS frontend integration after the local contract is stable.
 
+## 2026-06-08 - LLM Extraction And Missing-Work Architecture Pass
+
+Status: architecture clarified; extraction implementation still pending.
+
+Actions:
+
+- added `docs/MISSING_WORK_AUDIT_2026_06_08.md` with a P0/P1/P2 missing-work
+  matrix;
+- added `docs/LLM_CONTEXT_EXTRACTION_ARCHITECTURE.md` to define how documents,
+  conversations, expert notes, LLM proposals, review gates, graph construction,
+  and deterministic compilation should work;
+- added ADR-007 to make LLM extraction proposal-only until Rust validation and
+  human review promote records;
+- updated the README, agent start path, docs index, engineering baseline, coding
+  ledger, implementation plan, and next-code build plan around the extraction
+  proposal boundary;
+- recorded the planned `dialectica-extractor` crate as the owner of
+  source-pack inputs, extraction proposal schemas, model receipts, review
+  triggers, and provider traits.
+
+Evidence:
+
+- current Rust code was inspected: `dialectica-capsule` owns v3 and legacy
+  contract validation, `dialectica-cli` owns local proof commands, and
+  compiler/store/eval/services remain scaffolds;
+- the architecture now requires local fixture proposal records before any model
+  provider integration;
+- the build order now starts with source-pack and extraction proposal contracts
+  before compiler/API/store work.
+
+Blocking build gaps added by this pass:
+
+1. create `crates/dialectica-extractor`;
+2. implement source-pack and source-span types;
+3. implement extraction proposal envelopes and model invocation receipts;
+4. implement review-trigger routing;
+5. add fixture proposals and reviewer decisions;
+6. prove proposals cannot become canonical records without validation and
+   required review.
+
 ## Active Decisions
 
 | ID | Decision | Status | Where |
@@ -266,28 +306,32 @@ Blocking build gaps:
 | ADR-004 | Rust service stack: Tokio, Axum, SQLx, Serde, Schemars, tracing | accepted | `docs/decisions/ADR-004-rust-service-stack.md` |
 | ADR-005 | Benchmark-informed capsule engine posture | accepted | `docs/decisions/ADR-005-benchmark-informed-capsule-engine-posture.md` |
 | ADR-006 | Apache-2.0 open-source license with citation metadata | accepted | `docs/decisions/ADR-006-open-source-license-and-citation.md` |
+| ADR-007 | LLM extraction is proposal-only until validation and review | accepted | `docs/decisions/ADR-007-llm-extraction-proposal-boundary.md` |
 
 ## Next Build Tasks
 
 1. Define typed source-pack inputs and canonical deterministic serialization
    rules.
-2. Implement deterministic v3 package writer in `crates/dialectica-compiler`.
-3. Add `.capsule` archive writing with `mimetype` first, stable entry order,
+2. Add `crates/dialectica-extractor` with proposal envelopes, model receipts,
+   and review-trigger routing.
+3. Add local fixture proposal records and reviewer decisions.
+4. Implement deterministic v3 package writer in `crates/dialectica-compiler`.
+5. Add `.capsule` archive writing with `mimetype` first, stable entry order,
    LF line endings, and explicit cache exclusion from digest scope.
-4. Add `build-fixture` so a canonical capsule can be generated from source-pack
+6. Add `build-fixture` so a canonical capsule can be generated from source-pack
    records and review decisions.
-5. Add checksum, Merkle-root, and signature placeholders with stable diff
+7. Add checksum, Merkle-root, and signature placeholders with stable diff
    output.
-6. Deepen v3 validators for claims, sources, temporal episodes, graph,
+8. Deepen v3 validators for claims, sources, temporal episodes, graph,
    reasoning, review, runtime, and generated agent views.
-7. Export the first PRAXIS context pack from the canonical v3 package.
-8. Validate the four example capsule envelopes against a shared top-level
+9. Export the first PRAXIS context pack from the canonical v3 package.
+10. Validate the four example capsule envelopes against a shared top-level
    contract.
-9. Turn `services/dialectica-api` into a local fixture-mode Axum service.
-10. Add SQLx migrations in `crates/dialectica-store`.
-11. Add ingestion records for documents, PDFs, and user/assistant discussion
+11. Turn `services/dialectica-api` into a local fixture-mode Axum service.
+12. Add SQLx migrations in `crates/dialectica-store`.
+13. Add ingestion records for documents, PDFs, and user/assistant discussion
     turns after the compiler loop works.
-12. Add task-handler and Cloud Run staging skeleton only after the local API
+14. Add task-handler and Cloud Run staging skeleton only after the local API
     runs.
 
 ## Open Product Questions

@@ -237,9 +237,11 @@ Cargo workspace
 ```
 
 Start coding from [docs/CODING_LEDGER.md](docs/CODING_LEDGER.md). Read
-[docs/CODE_AUDIT_2026_06_08.md](docs/CODE_AUDIT_2026_06_08.md) and
-[docs/SCAFFOLD_AUDIT.md](docs/SCAFFOLD_AUDIT.md) before claiming that any slice
-is functional. The next implementation sequence is in
+[docs/CODE_AUDIT_2026_06_08.md](docs/CODE_AUDIT_2026_06_08.md),
+[docs/MISSING_WORK_AUDIT_2026_06_08.md](docs/MISSING_WORK_AUDIT_2026_06_08.md),
+[docs/LLM_CONTEXT_EXTRACTION_ARCHITECTURE.md](docs/LLM_CONTEXT_EXTRACTION_ARCHITECTURE.md),
+and [docs/SCAFFOLD_AUDIT.md](docs/SCAFFOLD_AUDIT.md) before claiming that any
+slice is functional. The next implementation sequence is in
 [docs/NEXT_CODE_BUILD_PLAN.md](docs/NEXT_CODE_BUILD_PLAN.md), and the active
 gap-control standard is in
 [docs/IMPROVEMENT_GUIDELINES.md](docs/IMPROVEMENT_GUIDELINES.md).
@@ -261,6 +263,22 @@ capsule contracts, v3 package validation, schema export, a canonical v3
 Situation Capsule fixture, a legacy migration fixture, and a capsule-specific
 ontology planner. It does not yet build capsules from documents or serve PRAXIS;
 that boundary is tracked in the code audit and build ledger.
+
+LLM extraction architecture:
+
+```text
+documents + user/assistant discussion + expert notes
+  -> source spans and hashes
+  -> capsule-specific ontology blueprint
+  -> LLM proposal records
+  -> Rust validation and cross-checks
+  -> human review gates
+  -> deterministic v3 .capsule
+  -> PRAXIS context pack
+```
+
+The rule is strict: LLMs propose context, graphs, reasoning devices, and
+language rules; Rust validation and human review promote them.
 
 Initial runtime promise:
 
@@ -565,6 +583,8 @@ docs/
   API_SLICE_1.md                        exact first API slice contract
   GRAPH_PROFILE_REGISTRY.md             canonical graph vocabulary
   CODE_AUDIT_2026_06_08.md              what is coded, verified, and still missing
+  MISSING_WORK_AUDIT_2026_06_08.md      complete missing-build audit
+  LLM_CONTEXT_EXTRACTION_ARCHITECTURE.md proposal-only LLM extraction pipeline
   SCAFFOLD_AUDIT.md                     repo readiness and gap audit
   FOUNDATION_BUILD.md                   first product slice and non-goals
   TECH_BENCHMARK.md                      research and ecosystem comparison
@@ -661,7 +681,11 @@ Start here:
 7. [API Slice 1](docs/API_SLICE_1.md): first PRAXIS-facing backend routes.
 8. [Code Audit 2026-06-08](docs/CODE_AUDIT_2026_06_08.md): what is coded,
    verified, and not built yet.
-9. [Scaffold Audit](docs/SCAFFOLD_AUDIT.md): what is real now, what is still
+9. [Missing Work Audit 2026-06-08](docs/MISSING_WORK_AUDIT_2026_06_08.md):
+   complete missing-build checklist.
+10. [LLM Context Extraction Architecture](docs/LLM_CONTEXT_EXTRACTION_ARCHITECTURE.md):
+   how LLM extraction, graph building, and human gates should work.
+11. [Scaffold Audit](docs/SCAFFOLD_AUDIT.md): what is real now, what is still
    missing, and what blocks the functional engine.
 
 Use [docs/README.md](docs/README.md) for the full documentation index and

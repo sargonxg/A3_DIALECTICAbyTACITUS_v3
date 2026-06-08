@@ -25,7 +25,8 @@ explicitly while coding.
 | Priority | Gap | Why it matters | Required improvement |
 | --- | --- | --- | --- |
 | P0 | Deterministic bundle output is underspecified. | A capsule cannot be trusted, signed, diffed, or cached if two equal inputs produce different bytes. | Define canonical JSON/JSONL ordering, newline rules, digest scope, and fixture comparison tests before calling the compiler real. |
-| P0 | Source-pack input is not yet a typed contract. | The repo has an expected bundle, but not yet a real proof that DIALECTICA can build it from sources and review decisions. | Add typed source-pack records, proposal records, human correction records, and lineage fields before adding model extraction. |
+| P0 | Source-pack input is not yet a typed contract. | The repo has an expected bundle, but not yet a real proof that DIALECTICA can build it from sources and review decisions. | Add typed source-pack records, proposal records, human correction records, and lineage fields before adding model-provider calls. |
+| P0 | LLM extraction proposal records do not exist. | The engine needs models to help extract context, but model output cannot become truth. | Add `dialectica-extractor`, model receipts, proposal envelopes, review triggers, and tests proving proposals cannot bypass review. |
 | P0 | Promotion gates are too coarse. | Manifest-level review is not enough; PRAXIS must avoid unreviewed claims, graph edges, language rules, and output contracts. | Add object-level promotion policy and tests for rejected, expired, caveated, stale, and unreviewed objects. |
 | P0 | PRAXIS context pack is still conceptual. | The product value is proven only when PRAXIS can consume a compact capsule payload without internal DIALECTICA state. | Implement `ContextPack`, schema export, CLI export, and fixture assertions before store/API/cloud work. |
 | P1 | API behavior needs a stricter local contract. | Local Axum routes should not become ad hoc JSON endpoints. | Define response envelopes, error codes, content types, fixture mode metadata, and stable route tests. |
@@ -42,6 +43,10 @@ marketplace, graph databases, or PRAXIS production integration before the local
 loop is executable.
 
 ### Series 1: Make The Compiler Real
+
+Prerequisite: source-pack and proposal records from Series 2 must exist before
+the compiler consumes extracted context. For implementation, Series 1 and Series
+2 should move together in small vertical slices.
 
 Deliver:
 
@@ -70,6 +75,8 @@ Deliver:
 - source artifact metadata;
 - normalized source-span records;
 - machine proposal records;
+- model invocation receipts;
+- review-trigger routing;
 - human correction records;
 - review decision records;
 - lineage from every generated object to source spans or review actions.
@@ -78,6 +85,7 @@ Definition of done:
 
 - `build-fixture` regenerates the golden policy bundle from source-pack inputs;
 - proposed but unreviewed records remain visible in lineage;
+- LLM-generated proposals cannot become canonical records directly;
 - PRAXIS context export excludes rejected, expired, and unreviewed objects by
   default.
 
@@ -188,7 +196,8 @@ Every promoted capsule must satisfy these ten invariants.
   and `docs/README.md` must make the next build step obvious in ten links or
   fewer.
 - Keep each slice vertical: contract, fixture, CLI, tests, docs.
-- Add model extraction only after deterministic source-pack build works.
+- Add model-provider calls only after deterministic source-pack and proposal
+  fixtures work locally.
 - Add cloud only after local API and context-pack export work.
 - Add graph or memory adapters only behind an ADR, adapter boundary, and eval.
 - Keep Postgres and the signed bundle canonical for DIALECTICA.
@@ -251,7 +260,7 @@ Every P0 or P1 gap needs:
 The next coding session should start with Series 1 and Series 2 together:
 
 ```text
-typed source pack -> deterministic compiler -> generated golden bundle
+typed source pack -> proposal records -> review routing -> deterministic compiler
 ```
 
 That is the shortest path from a strong repository scaffold to a real engine.

@@ -49,6 +49,8 @@ jobs:
           test -f docs/GITHUB_PROFILE.md
           test -f docs/PYTHON_TOOLING.md
           test -f docs/CODE_AUDIT_2026_06_08.md
+          test -f docs/MISSING_WORK_AUDIT_2026_06_08.md
+          test -f docs/LLM_CONTEXT_EXTRACTION_ARCHITECTURE.md
           test -f docs/SCAFFOLD_AUDIT.md
           test -f docs/FOUNDATION_BUILD.md
           test -f docs/TECH_BENCHMARK.md
@@ -71,6 +73,7 @@ jobs:
           test -f docs/PRAXIS_REPO_ALIGNMENT.md
           test -f docs/RESEARCH_BACKLOG.md
           test -f docs/BUILD_LEDGER.md
+          test -f docs/decisions/ADR-007-llm-extraction-proposal-boundary.md
           test -f docs/decisions/ADR-006-open-source-license-and-citation.md
           test -f fixtures/example-capsules/README.md
           test -f fixtures/example-capsules/user-capsule.example.json

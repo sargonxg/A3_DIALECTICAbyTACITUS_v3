@@ -10,6 +10,7 @@ agents do not improvise the stack.
 | Layer | Language | Why |
 | --- | --- | --- |
 | Capsule contract | Rust | type safety, schema ownership, deterministic validation |
+| LLM extraction orchestration | Rust | proposal schemas, review routing, source-bound model calls, and deterministic promotion gates |
 | Compiler | Rust | reproducible bundle writes, checksums, signing path |
 | API and task handler | Rust | Cloud Run services, strong boundaries, low runtime overhead |
 | Store and migrations | Rust + SQL | PostgreSQL as operational source of truth |
@@ -27,8 +28,13 @@ dialectica-capsule
   owns portable bundle structs, ontology blueprint planning, schema generation,
   validation, and versioning
 
+dialectica-extractor
+  planned crate; owns source-pack inputs, extraction proposal schemas, model
+  invocation receipts, review-trigger routing, and provider traits
+
 dialectica-compiler
-  owns deterministic bundle assembly, checksums, signing hooks, and context-pack export
+  owns deterministic bundle assembly, checksums, signing hooks, and
+  context-pack export
 
 dialectica-store
   owns SQLx migrations, repositories, transactions, and idempotency
@@ -50,7 +56,8 @@ dialectica-task-handler
 Dependency direction:
 
 ```text
-api/task-handler -> store/compiler/capsule/eval
+api/task-handler -> store/extractor/compiler/capsule/eval
+extractor        -> capsule
 compiler         -> capsule
 store            -> capsule-compatible IDs and records
 eval             -> capsule
@@ -78,13 +85,15 @@ still decide whether the records can be promoted.
 1. `dialectica-capsule`: real structs, schema, validation errors.
 2. `dialectica-cli`: validate and inspect a fixture bundle.
 3. `fixtures/canonical-capsules`: canonical v3 package fixture.
-4. `dialectica-compiler`: deterministic v3 package writer, archive writer, and
+4. `dialectica-extractor`: source-pack and proposal schemas with review
+   triggers.
+5. `dialectica-compiler`: deterministic v3 package writer, archive writer, and
    checksums.
-5. `dialectica-store`: migrations and repository interfaces.
-6. `dialectica-api`: health, version, manifest, graph preview, context pack.
-7. `dialectica-task-handler`: queued compile path.
-8. `dialectica-eval`: fixture eval reports.
-9. Python reports and adapters where they reduce implementation risk.
+6. `dialectica-store`: migrations and repository interfaces.
+7. `dialectica-api`: health, version, manifest, graph preview, context pack.
+8. `dialectica-task-handler`: queued compile path.
+9. `dialectica-eval`: fixture eval reports.
+10. Python reports and adapters where they reduce implementation risk.
 
 ## Required Local Gate
 
@@ -123,6 +132,8 @@ Do not promote a capability as functional unless:
 - Ontology blueprints: `docs/ONTOLOGY_BLUEPRINTS.md`
 - Capsule structure: `docs/CAPSULE_STRUCTURE_GUIDE.md`
 - Graph/ontology research: `docs/GRAPH_ONTOLOGY_RESEARCH_NOTES.md`
+- LLM extraction architecture: `docs/LLM_CONTEXT_EXTRACTION_ARCHITECTURE.md`
+- Missing work audit: `docs/MISSING_WORK_AUDIT_2026_06_08.md`
 - Implementation phases: `docs/IMPLEMENTATION_PHASE_PLAN.md`
 - Python support: `docs/PYTHON_TOOLING.md`
 - Current code audit: `docs/CODE_AUDIT_2026_06_08.md`

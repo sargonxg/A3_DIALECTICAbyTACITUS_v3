@@ -41,8 +41,8 @@ python -m json.tool fixtures/example-capsules/tool-capsule.example.json
 python -m json.tool fixtures/example-capsules/output-capsule.example.json
 ```
 
-Future CI should add generated-fixture comparison after `build-fixture` exists,
-not before.
+Future CI should add source-pack/proposal validation after `dialectica-extractor`
+exists, then generated-fixture comparison after `build-fixture` exists.
 
 ## Later Staging CI
 

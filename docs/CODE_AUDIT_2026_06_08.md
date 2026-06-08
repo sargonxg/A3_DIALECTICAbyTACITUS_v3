@@ -9,6 +9,12 @@ sourceability, temporality, ontology, semantic layers, embedded graph context,
 reasoning guidance, expert review, language guidance, and PRAXIS runtime
 instructions.
 
+Related follow-up docs:
+
+- [Missing Work Audit 2026-06-08](MISSING_WORK_AUDIT_2026_06_08.md);
+- [LLM Context Extraction Architecture](LLM_CONTEXT_EXTRACTION_ARCHITECTURE.md);
+- [ADR-007: LLM Extraction Proposal Boundary](decisions/ADR-007-llm-extraction-proposal-boundary.md).
+
 ## Readiness Scores
 
 | Dimension | Score | Meaning |
@@ -53,6 +59,8 @@ instructions.
 
 - No v3 capsule compiler writer exists.
 - No source-pack ingestion or normalized source-span builder exists.
+- No `dialectica-extractor` crate, extraction proposal schema, model receipt,
+  or review-trigger router exists.
 - No `.capsule` zip archive writer exists.
 - No deterministic Merkle root, checksum map, signature envelope, or signing
   policy exists.
@@ -179,16 +187,18 @@ The next code phase must be v3-first:
 
 1. `dialectica-compiler`: typed source pack plus deterministic v3 package
    writer.
-2. `dialectica-compiler`: `.capsule` archive writer with deterministic entry
+2. `dialectica-extractor`: proposal envelopes, model receipts, and
+   review-trigger routing.
+3. `dialectica-compiler`: `.capsule` archive writer with deterministic entry
    order and explicit digest scope.
-3. `dialectica-cli`: `build-fixture` that writes to an output directory.
-4. `dialectica-capsule`: deep v3 cross-layer validator.
-5. `dialectica-capsule`: PRAXIS context-pack type and schema export.
-6. `dialectica-cli`: `context-pack <capsule-dir>`.
-7. `dialectica-api`: local fixture-mode Axum service.
-8. `dialectica-store`: SQLx migrations and repositories.
-9. `dialectica-task-handler`: queued compile HTTP target.
-10. PRAXIS repo: capsule builder/import/inspect UI after the local API and
+4. `dialectica-cli`: `build-fixture` that writes to an output directory.
+5. `dialectica-capsule`: deep v3 cross-layer validator.
+6. `dialectica-capsule`: PRAXIS context-pack type and schema export.
+7. `dialectica-cli`: `context-pack <capsule-dir>`.
+8. `dialectica-api`: local fixture-mode Axum service.
+9. `dialectica-store`: SQLx migrations and repositories.
+10. `dialectica-task-handler`: queued compile HTTP target.
+11. PRAXIS repo: capsule builder/import/inspect UI after the local API and
     context-pack contract are stable.
 
 ## Claim Boundary

@@ -4,7 +4,9 @@ Status: active control file for the first functional DIALECTICA build.
 
 Current audit result: executable v3 contract scaffold verified on 2026-06-08;
 the capsule-building service is not yet implemented. See
-[Code Audit 2026-06-08](CODE_AUDIT_2026_06_08.md).
+[Code Audit 2026-06-08](CODE_AUDIT_2026_06_08.md),
+[Missing Work Audit 2026-06-08](MISSING_WORK_AUDIT_2026_06_08.md), and
+[LLM Context Extraction Architecture](LLM_CONTEXT_EXTRACTION_ARCHITECTURE.md).
 
 This ledger turns the architecture docs into a coding sequence. Keep it updated
 whenever a crate, service, migration, fixture, or deployment gate changes.
@@ -17,15 +19,17 @@ objects that humans and AI agents can use interchangeably.
 The first functional app is not complete until a developer can:
 
 1. ingest a deterministic source pack;
-2. build evidence, claim, episode, ontology, graph, reasoning, review, and
+2. create source-bound LLM proposal records with model receipts and review
+   triggers;
+3. build evidence, claim, episode, ontology, graph, reasoning, review, and
    runtime records;
-3. build generated `agent_context.md` and `operations.md` for PRAXIS workflows;
-4. validate the v3 `.capsule` contract;
-5. block promotion when review is missing;
-6. emit a PRAXIS context pack;
-7. run a local API health check;
-8. run a task-handler path without cloud credentials;
-9. prove the result with contract tests and fixture evals.
+4. build generated `agent_context.md` and `operations.md` for PRAXIS workflows;
+5. validate the v3 `.capsule` contract;
+6. block promotion when review is missing;
+7. emit a PRAXIS context pack;
+8. run a local API health check;
+9. run a task-handler path without cloud credentials;
+10. prove the result with contract tests and fixture evals.
 
 ## Active Scaffold
 
@@ -33,6 +37,7 @@ The first functional app is not complete until a developer can:
 | --- | --- | --- | --- |
 | Workspace | `Cargo.toml` | created | keep all crates in one Cargo workspace |
 | Capsule contract | `crates/dialectica-capsule` | v3 package validator plus legacy structs, validation, and schema export implemented | expand validators and checksum/signature contract |
+| Extractor | `crates/dialectica-extractor` | not created | source-pack types, LLM proposal envelopes, model receipts, review-trigger router, provider traits |
 | Compiler | `crates/dialectica-compiler` | scaffolded with legacy review-gated emit check only | deterministic v3 package writer, `.capsule` archive writer, and checksums |
 | Store | `crates/dialectica-store` | scaffolded with migration family names only | SQLx migrations and repository interfaces |
 | Evals | `crates/dialectica-eval` | scaffolded with check result primitive only | fixture outcome, source-fidelity, temporal, reasoning, and PRAXIS comparison evals |
@@ -60,6 +65,8 @@ Not yet built:
 
 - v3 compiler writer;
 - source-pack ingestion;
+- LLM extraction proposal schema;
+- review-trigger router;
 - `.capsule` archive assembly;
 - Merkle/checksum/signature envelope;
 - PRAXIS context-pack export;
@@ -153,11 +160,17 @@ Next validator expansion:
 
 ### Lane B: Fixture And CLI
 
-Goal: make a deterministic capsule build possible without cloud credentials.
+Goal: make source packs, LLM proposals, review decisions, and deterministic CLI
+builds possible without cloud credentials.
 
 Deliver:
 
 - `fixtures/golden-policy-capsule/source-pack/`: placeholder added;
+- source-pack schema;
+- extraction proposal schema;
+- model invocation receipt schema;
+- human review decision fixture;
+- review-trigger router;
 - `fixtures/example-capsules/*.example.json` validation;
 - expected bundle records: implemented for the golden policy capsule;
 - reviewer correction;
@@ -167,8 +180,10 @@ Deliver:
 
 Done when:
 
-- one command validates the fixture;
-- one command prints the capsule graph/review/source summary.
+- one command validates the source pack and proposal records;
+- one command builds or validates the fixture;
+- one command prints the capsule graph/review/source summary;
+- unreviewed proposal records cannot enter promoted PRAXIS context.
 
 ### Lane C: Store And Migrations
 
@@ -255,6 +270,8 @@ Done when:
 - Do not wire PRAXIS production calls before local fixture validation works.
 - Do not add autonomous memory promotion.
 - Do not let model extraction write canonical truth without review state.
+- Do not call a model provider from the first extractor tests; fixture
+  proposals must validate locally first.
 - Do not add secrets to fixtures, logs, docs, or snapshots.
 - Do not start broad multi-agent backend implementation before Lane A merges.
 
@@ -277,16 +294,18 @@ when it changes:
 Follow [Next Code Build Plan](NEXT_CODE_BUILD_PLAN.md) and
 [Improvement Guidelines](IMPROVEMENT_GUIDELINES.md):
 
-1. define typed source-pack inputs and deterministic v3 package-writing rules;
-2. implement `dialectica-compiler` deterministic v3 package writing;
-3. add `.capsule` archive writing with deterministic entry order;
-4. add source-pack records and `dialectica-cli build-fixture`;
-5. deepen v3 validation across claims, sources, graph, review, reasoning, and
+1. define typed source-pack inputs and extraction proposal records;
+2. add `dialectica-extractor` with model receipts and review-trigger routing;
+3. define deterministic v3 package-writing rules;
+4. implement `dialectica-compiler` deterministic v3 package writing;
+5. add `.capsule` archive writing with deterministic entry order;
+6. add source-pack records and `dialectica-cli build-fixture`;
+7. deepen v3 validation across claims, sources, graph, review, reasoning, and
    runtime records;
-6. export a PRAXIS context pack from the canonical package;
-7. turn `dialectica-api` into a local fixture-mode Axum service;
-8. add PostgreSQL migrations only after the local capsule loop is executable;
-9. start PRAXIS frontend integration only after the API/context-pack contract is
+8. export a PRAXIS context pack from the canonical package;
+9. turn `dialectica-api` into a local fixture-mode Axum service;
+10. add PostgreSQL migrations only after the local capsule loop is executable;
+11. start PRAXIS frontend integration only after the API/context-pack contract is
    stable.
 
 Do not start Cloud Run, MCP, graph-database, or PRAXIS production integration

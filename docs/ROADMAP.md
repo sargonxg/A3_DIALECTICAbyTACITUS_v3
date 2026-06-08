@@ -31,6 +31,9 @@ Acceptance:
 
 ## Phase 2: Canonical Store
 
+Status: deferred until the local source-pack, proposal, compiler, and
+context-pack loop works.
+
 Deliverables:
 
 - PostgreSQL schema;
@@ -51,12 +54,15 @@ Deliverables:
 - local document ingestion;
 - text normalization;
 - source span records;
+- extraction proposal records;
 - extraction run receipts;
+- review-trigger routing;
 - idempotent worker execution.
 
 Acceptance:
 
-- fixture source pack creates source ledger and normalized artifacts.
+- fixture source pack creates source ledger, normalized artifacts, proposal
+  records, and review triggers without calling a model provider.
 
 ## Phase 4: Capsule Compiler
 
@@ -71,7 +77,8 @@ Deliverables:
 
 Acceptance:
 
-- generated capsule bundle passes contract evals.
+- generated capsule bundle passes contract evals and cannot include unreviewed
+  model proposals in promoted PRAXIS context.
 
 ## Phase 5: Review Gate
 
@@ -85,7 +92,8 @@ Deliverables:
 
 Acceptance:
 
-- unreviewed required records cannot be promoted.
+- unreviewed required records, including LLM-proposed graph edges, language
+  rules, rights rules, and expert reasoning steps, cannot be promoted.
 
 ## Phase 6: PRAXIS Adapter
 
