@@ -45,6 +45,14 @@ Already implemented:
 - CLI `build-plan`;
 - CLI `review-check`;
 - CLI `promote-check`;
+- CLI `build-fixture`;
+- CLI `archive`;
+- CLI `context-pack`;
+- deterministic fixture-mode v3 package writer;
+- deterministic `.capsule` archive writer;
+- fixture-mode PRAXIS context-pack exporter;
+- fixture-backed Axum API health, version, manifest, graph-preview,
+  context-pack, and read-receipt routes;
 - CLI `schema-export`;
 - canonical v3 conflict Situation Capsule fixture;
 - golden policy source pack fixture;
@@ -61,11 +69,8 @@ Not yet implemented:
 
 - live document/PDF/conversation ingestion;
 - live model-provider extraction calls;
-- v3 package writer;
-- `.capsule` archive writer;
-- Merkle/checksum/signature envelope;
-- context-pack export;
-- HTTP API routes;
+- production-grade Merkle/checksum/signature envelope;
+- store-backed HTTP API routes and durable build jobs;
 - PostgreSQL migrations;
 - document/PDF/user discussion ingestion;
 - human review queue;
@@ -153,6 +158,8 @@ Acceptance:
 
 ## Phase 3: Deterministic Bundle Writer
 
+Status: implemented for local fixture mode.
+
 Goal: make `dialectica-compiler` write the canonical v3 extracted package from
 typed records, then assemble a `.capsule` archive.
 
@@ -183,9 +190,12 @@ Acceptance:
   from promoted PRAXIS export;
 - contract tests compare generated output to the canonical v3 fixture.
 
-Do not move to API or store work until this phase has executable proof.
+Remaining hardening: byte-for-byte generated fixture comparison, stronger
+checksum/signature envelope, and deeper cross-layer validators.
 
 ## Phase 4: Source-Pack Builder
+
+Status: implemented for fixture source packs and reviewed proposal records.
 
 Goal: stop treating the golden bundle as hand-authored output only.
 
@@ -209,16 +219,19 @@ Acceptance:
 
 ## Phase 5: PRAXIS Context Pack Export
 
+Status: implemented for local fixture-mode compiled packages.
+
 Goal: create the first PRAXIS-consumable payload from `agent_context.md`,
 `operations.md`, and the canonical v3 graph/claim/source files.
 
 Deliver:
 
-- `ContextPack` type in `dialectica-capsule`;
+- `PraxisContextPack` type in `dialectica-compiler`;
 - compact context records with source receipts, temporal status, graph focus
   nodes, ontology blueprint, language rules, stop conditions, and review caveats;
 - CLI `context-pack <bundle-dir>`;
-- JSON Schema snapshot for `context_pack.schema.json`.
+- JSON Schema snapshot for `context_pack.schema.json` after the context-pack
+  type moves into the stable capsule contract crate.
 
 Acceptance:
 
@@ -233,6 +246,8 @@ Acceptance:
   note lineage.
 
 ## Phase 6: Local API Slice
+
+Status: implemented for fixture mode with Axum.
 
 Goal: make `dialectica-api` a real Axum service in local fixture mode.
 

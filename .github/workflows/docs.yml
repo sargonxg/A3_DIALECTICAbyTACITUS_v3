@@ -165,6 +165,14 @@ jobs:
         run: cargo run -p dialectica-cli -- review-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals fixtures/golden-policy-capsule/review-decisions
       - name: Check golden promotion normalization
         run: cargo run -p dialectica-cli -- promote-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals fixtures/golden-policy-capsule/review-decisions
+      - name: Build golden v3 capsule package
+        run: |
+          out="$(mktemp -d)"
+          cargo run -p dialectica-cli -- build-fixture fixtures/golden-policy-capsule --out "$out"
+          cargo run -p dialectica-cli -- validate "$out"
+          cargo run -p dialectica-cli -- archive "$out" --out "$RUNNER_TEMP/golden-policy.capsule"
+          cargo run -p dialectica-cli -- context-pack "$out" --workflow conflict_map > "$RUNNER_TEMP/golden-context-pack.json"
+          python -m json.tool "$RUNNER_TEMP/golden-context-pack.json" > /dev/null
       - name: Export schema snapshots
         run: cargo run -p dialectica-cli -- schema-export schemas/capsule-3.0
 

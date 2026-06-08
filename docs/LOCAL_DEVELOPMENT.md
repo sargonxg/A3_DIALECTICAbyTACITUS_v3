@@ -43,6 +43,10 @@ cargo run -p dialectica-cli -- proposal-check fixtures/golden-policy-capsule/bui
 cargo run -p dialectica-cli -- build-plan fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals
 cargo run -p dialectica-cli -- review-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals fixtures/golden-policy-capsule/review-decisions
 cargo run -p dialectica-cli -- promote-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals fixtures/golden-policy-capsule/review-decisions
+cargo run -p dialectica-cli -- build-fixture fixtures/golden-policy-capsule --out $env:TEMP\dialectica-golden-v3
+cargo run -p dialectica-cli -- validate $env:TEMP\dialectica-golden-v3
+cargo run -p dialectica-cli -- archive $env:TEMP\dialectica-golden-v3 --out $env:TEMP\dialectica-golden-v3.capsule
+cargo run -p dialectica-cli -- context-pack $env:TEMP\dialectica-golden-v3 --workflow conflict_map
 cargo run -p dialectica-cli -- schema-export schemas/capsule-3.0
 python -m compileall tools/python
 python -m unittest discover tools/python/tests
@@ -60,9 +64,23 @@ cargo run -p dialectica-cli -- proposal-check fixtures/golden-policy-capsule/bui
 cargo run -p dialectica-cli -- build-plan fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals
 cargo run -p dialectica-cli -- review-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals fixtures/golden-policy-capsule/review-decisions
 cargo run -p dialectica-cli -- promote-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals fixtures/golden-policy-capsule/review-decisions
+cargo run -p dialectica-cli -- build-fixture fixtures/golden-policy-capsule --out $env:TEMP\dialectica-golden-v3
+cargo run -p dialectica-cli -- context-pack $env:TEMP\dialectica-golden-v3 --workflow conflict_map
 ```
 
 These commands run without cloud credentials and do not call model providers.
+
+Local API preview:
+
+```powershell
+$env:DIALECTICA_FIXTURE_CAPSULE_DIR = "$PWD\fixtures\canonical-capsules\conflict-situation-capsule"
+cargo run -p dialectica-api
+```
+
+The API serves `/health`, `/version`,
+`/v1/capsules/{capsule_id}/manifest`,
+`/v1/capsules/{capsule_id}/graph-preview`,
+`/v1/capsules/{capsule_id}/praxis-context-pack`, and fixture read receipts.
 
 Optional migration-fixture commands:
 

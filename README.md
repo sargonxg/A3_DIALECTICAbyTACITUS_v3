@@ -33,15 +33,19 @@ Current truth:
   fixture validation with required embedded Ladybug projection, legacy
   migration fixture validation, source-pack validation, fixture-mode extraction
   proposal validation, review-trigger routing, reviewer-decision validation,
-  promotion normalization, build-plan printing, schema export, and CLI
+  promotion normalization, deterministic fixture-mode v3 package compilation,
+  `.capsule` archive writing, PRAXIS context-pack export, Axum fixture API
+  routes, build-plan printing, schema export, and CLI
   `doctor`/`validate`/`inspect`/`ontology-plan`/`ladybug-*`/`source-pack-check`/
   `proposal-check`/`build-plan`/`review-check`/`promote-check`/`schema-export`.
+  `build-fixture`/`archive`/`context-pack`.
 - **Not built yet**: live document/PDF/conversation ingestion, live model
-  provider calls, deterministic compiler, `.capsule` archive writer, PRAXIS
-  context-pack export, PostgreSQL migrations, API routes, task handler, and
-  PRAXIS frontend integration.
-- **Next build**: deterministic v3 compiler first, `.capsule` archive writer
-  second, PRAXIS context-pack export third.
+  provider calls, PostgreSQL migrations, durable build jobs, task handler,
+  cloud artifact storage, auth, deployment wiring, and PRAXIS frontend
+  integration.
+- **Next build**: durable build state and store-backed job records first,
+  ingestion/model-provider adapters second, PRAXIS frontend integration after
+  the local API/context-pack contract remains stable.
 
 Start with [docs/CODING_LEDGER.md](docs/CODING_LEDGER.md) and
 [docs/NEXT_CODE_BUILD_PLAN.md](docs/NEXT_CODE_BUILD_PLAN.md). Use
@@ -642,19 +646,18 @@ Keep the README as the front door, not the full table of contents.
 
 ## Current Status
 
-This repository is at **Phase 1: executable input and capsule contract
-scaffold**.
+This repository is at **Phase 2: local executable capsule build loop**.
 
 The Rust workspace now has its first executable capsule-contract and input
 contract slice. It can validate and inspect a canonical v3 Situation Capsule
 fixture, keep the legacy policy fixture passing during migration, validate a
 source pack, validate fixture-mode extraction proposals, route review triggers,
 validate reviewer decisions, normalize promoted records, print a build plan,
-and export JSON Schema snapshots. The next implementation step is a
-deterministic v3 package and `.capsule` archive compiler. Live model-provider
-calls, storage, API routes, PRAXIS frontend integration, and cloud deployment
-wait until the local source-pack/proposal/review to compiled-capsule loop is
-executable.
+compile a deterministic v3 package, write a deterministic `.capsule` archive,
+export a PRAXIS context pack, serve fixture-backed Axum API routes, and export
+JSON Schema snapshots. Live model-provider calls, durable storage, PRAXIS
+frontend integration, and cloud deployment wait until this local build loop is
+hardened with store-backed jobs and ingestion adapters.
 
 Start here:
 
@@ -704,6 +707,10 @@ cargo run -p dialectica-cli -- proposal-check fixtures/golden-policy-capsule/bui
 cargo run -p dialectica-cli -- build-plan fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals
 cargo run -p dialectica-cli -- review-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals fixtures/golden-policy-capsule/review-decisions
 cargo run -p dialectica-cli -- promote-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals fixtures/golden-policy-capsule/review-decisions
+cargo run -p dialectica-cli -- build-fixture fixtures/golden-policy-capsule --out $env:TEMP\dialectica-golden-v3
+cargo run -p dialectica-cli -- validate $env:TEMP\dialectica-golden-v3
+cargo run -p dialectica-cli -- archive $env:TEMP\dialectica-golden-v3 --out $env:TEMP\dialectica-golden-v3.capsule
+cargo run -p dialectica-cli -- context-pack $env:TEMP\dialectica-golden-v3 --workflow conflict_map
 cargo run -p dialectica-cli -- schema-export schemas/capsule-3.0
 python -m compileall tools/python
 python -m unittest discover tools/python/tests

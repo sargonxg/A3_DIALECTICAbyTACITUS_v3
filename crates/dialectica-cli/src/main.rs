@@ -127,6 +127,37 @@ fn main() {
                 Path::new(&review_dir),
             );
         }
+        "build-fixture" => {
+            let Some(fixture_dir) = args.next() else {
+                eprintln!("missing fixture directory");
+                std::process::exit(2);
+            };
+            let Some(output_dir) = parse_option_value(args.next(), args.next(), "--out") else {
+                eprintln!("missing --out <directory>");
+                std::process::exit(2);
+            };
+            build_fixture(Path::new(&fixture_dir), Path::new(&output_dir));
+        }
+        "archive" => {
+            let Some(package_dir) = args.next() else {
+                eprintln!("missing compiled package directory");
+                std::process::exit(2);
+            };
+            let Some(output_file) = parse_option_value(args.next(), args.next(), "--out") else {
+                eprintln!("missing --out <file.capsule>");
+                std::process::exit(2);
+            };
+            archive_package(Path::new(&package_dir), Path::new(&output_file));
+        }
+        "context-pack" => {
+            let Some(package_dir) = args.next() else {
+                eprintln!("missing compiled package directory");
+                std::process::exit(2);
+            };
+            let workflow = parse_option_value(args.next(), args.next(), "--workflow")
+                .unwrap_or_else(|| "decision_brief".to_owned());
+            print_context_pack(Path::new(&package_dir), &workflow);
+        }
         "ladybug-plan" => {
             let Some(path) = args.next() else {
                 eprintln!("missing capsule directory");
@@ -195,6 +226,9 @@ fn print_help() {
     println!("  build-plan <request> <source-pack> <proposal-dir>");
     println!("  review-check <request> <source-pack> <proposal-dir> <review-dir>");
     println!("  promote-check <request> <source-pack> <proposal-dir> <review-dir>");
+    println!("  build-fixture <fixture-dir> --out <dir>");
+    println!("  archive <compiled-dir> --out <file.capsule>");
+    println!("  context-pack <compiled-dir> [--workflow <workflow>]");
     println!("  ladybug-plan <dir>      print embedded Ladybug projection plan");
     println!("  ladybug-build <dir>     build graph/ladybug/capsule.lbug from graph.jsonld");
     println!("  ladybug-check <dir>     validate embedded Ladybug projection files");
@@ -300,8 +334,18 @@ fn print_v3_inspection(path: &Path, inspection: &CapsuleInspection) {
 }
 
 fn print_ontology_plan(path: &Path) {
-    let bundle = load_legacy_or_exit(path);
-    let blueprint = bundle.ontology_blueprint();
+    let blueprint = if is_v3_package(path) {
+        match PraxisCapsulePackage::load_from_dir(path) {
+            Ok(package) => package.manifest.ontology_blueprint(),
+            Err(error) => {
+                eprintln!("{error}");
+                std::process::exit(1);
+            }
+        }
+    } else {
+        load_legacy_or_exit(path).ontology_blueprint()
+    };
+
     match serde_json::to_string_pretty(&blueprint) {
         Ok(json) => println!("{json}"),
         Err(error) => {
@@ -443,6 +487,63 @@ fn check_promotion(
     }
 }
 
+fn build_fixture(fixture_dir: &Path, output_dir: &Path) {
+    match dialectica_compiler::compile_fixture(fixture_dir, output_dir) {
+        Ok(receipt) => {
+            println!("capsule_id={}", receipt.capsule_id);
+            println!("output_dir={}", receipt.output_dir.display());
+            println!("promoted_record_count={}", receipt.promoted_record_count);
+            println!("rejected_record_count={}", receipt.rejected_record_count);
+            println!("caveated_record_count={}", receipt.caveated_record_count);
+            println!("package_file_count={}", receipt.package_file_count);
+            println!("bundle_digest={}", receipt.bundle_digest);
+            println!("valid=true");
+        }
+        Err(error) => {
+            eprintln!("{error}");
+            println!("valid=false");
+            std::process::exit(1);
+        }
+    }
+}
+
+fn archive_package(package_dir: &Path, output_file: &Path) {
+    match dialectica_compiler::write_capsule_archive(package_dir, output_file) {
+        Ok(receipt) => {
+            println!("capsule_id={}", receipt.capsule_id);
+            println!("archive_path={}", receipt.archive_path.display());
+            println!("entry_count={}", receipt.entry_count);
+            println!("archive_digest={}", receipt.archive_digest);
+            println!(
+                "first_entry={}",
+                receipt.entries.first().map(String::as_str).unwrap_or("")
+            );
+            println!("valid=true");
+        }
+        Err(error) => {
+            eprintln!("{error}");
+            println!("valid=false");
+            std::process::exit(1);
+        }
+    }
+}
+
+fn print_context_pack(package_dir: &Path, workflow: &str) {
+    match dialectica_compiler::export_praxis_context_pack(package_dir, workflow) {
+        Ok(pack) => match serde_json::to_string_pretty(&pack) {
+            Ok(text) => println!("{text}"),
+            Err(error) => {
+                eprintln!("failed to serialize context pack: {error}");
+                std::process::exit(1);
+            }
+        },
+        Err(error) => {
+            eprintln!("{error}");
+            std::process::exit(1);
+        }
+    }
+}
+
 fn print_build_validation_report(report: &dialectica_extractor::BuildValidationReport) {
     for finding in &report.findings {
         println!(
@@ -576,6 +677,18 @@ fn load_reviewer_decision_set_or_exit(path: &Path) -> dialectica_extractor::Revi
             eprintln!("{error}");
             std::process::exit(1);
         }
+    }
+}
+
+fn parse_option_value(
+    first: Option<String>,
+    second: Option<String>,
+    option_name: &str,
+) -> Option<String> {
+    match (first, second) {
+        (Some(flag), Some(value)) if flag == option_name => Some(value),
+        (Some(value), _) if value != option_name => Some(value),
+        _ => None,
     }
 }
 

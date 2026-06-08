@@ -1,7 +1,8 @@
 # Code Audit - 2026-06-08
 
-Status: executable contract scaffold and fixture-mode extractor contract
-verified; capsule-building service not yet implemented.
+Status: executable contract scaffold plus fixture-mode compiler/archive/context
+API loop verified; live ingestion and durable capsule-building service not yet
+implemented.
 
 This audit checks the repository against the canonical v3 Capsule Spec and the
 current goal: DIALECTICA must build portable PRAXIS Capsules that preserve
@@ -19,10 +20,10 @@ Related follow-up docs:
 
 | Dimension | Score | Meaning |
 | --- | ---: | --- |
-| Repository coding readiness | 90/100 | Workspace, docs, fixtures, CI, and command gates are coherent enough for focused coding. |
-| Capsule contract readiness | 76/100 | Canonical v3 package validation works for the first fixture, but deep cross-layer validation is still missing. |
-| Capsule engine readiness | 45/100 | The repo can validate hand-authored packages and fixture source/proposal plans; it cannot yet ingest live material, compile, sign, store, or serve capsules. |
-| Production service readiness | 20/100 | API, task handler, database, auth, observability, deployment, and PRAXIS integration are not yet functional. |
+| Repository coding readiness | 93/100 | Workspace, docs, fixtures, CI, and command gates are coherent enough for focused coding. |
+| Capsule contract readiness | 82/100 | Canonical v3 validation and generated fixture packages work, but deep cross-layer validation is still missing. |
+| Capsule engine readiness | 62/100 | The repo can compile reviewed fixture records into v3 packages, archives, and context packs; it cannot yet ingest live material, sign, store, or run durable jobs. |
+| Production service readiness | 30/100 | Fixture API routes work, but task handler, database, auth, observability, deployment, and PRAXIS integration are not yet functional. |
 
 ## What Is Actually Built
 
@@ -44,6 +45,9 @@ Related follow-up docs:
   - `build-plan`;
   - `review-check`;
   - `promote-check`;
+  - `build-fixture`;
+  - `archive`;
+  - `context-pack`;
   - `schema-export`.
 - `crates/dialectica-extractor` provides the first fixture-mode input contract:
   - source packs and source spans;
@@ -56,6 +60,18 @@ Related follow-up docs:
   - promotion normalization;
   - build-plan typing;
   - schema export.
+- `crates/dialectica-compiler` provides the first fixture-mode output loop:
+  - reviewed proposal records compile into a canonical v3 package directory;
+  - deterministic `.capsule` archives use `mimetype` as the first entry;
+  - PRAXIS context-pack JSON exports from compiled package directories;
+  - missing review decisions block compilation.
+- `services/dialectica-api` provides fixture-backed local routes:
+  - `/health`;
+  - `/version`;
+  - manifest;
+  - graph preview;
+  - PRAXIS context pack;
+  - deterministic read receipts.
 - `fixtures/canonical-capsules/conflict-situation-capsule/` is the first
   canonical v3 extracted Situation Capsule fixture.
 - `fixtures/golden-policy-capsule/expected-bundle/` remains a legacy migration
@@ -73,16 +89,13 @@ Related follow-up docs:
 
 ## What Is Not Built Yet
 
-- No v3 capsule compiler writer exists.
 - No live source-pack ingestion or normalized source-span builder from
   uploaded material exists.
 - No live model-provider extraction, interactive review UI, or provider
   fallback policy exists.
-- No `.capsule` zip archive writer exists.
-- No deterministic Merkle root, checksum map, signature envelope, or signing
-  policy exists.
-- No PRAXIS context-pack exporter exists.
-- No local HTTP API exists; `dialectica-api` only prints scaffold output.
+- No production-grade Merkle root, checksum map, signature envelope, or signing
+  policy exists beyond fixture placeholders.
+- No store-backed HTTP API or durable build job workflow exists.
 - No Cloud Tasks-compatible handler exists; `dialectica-task-handler` only
   prints scaffold output.
 - No PostgreSQL migrations or SQLx repositories exist.
@@ -116,6 +129,10 @@ cargo run -p dialectica-cli -- proposal-check fixtures/golden-policy-capsule/bui
 cargo run -p dialectica-cli -- build-plan fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals
 cargo run -p dialectica-cli -- review-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals fixtures/golden-policy-capsule/review-decisions
 cargo run -p dialectica-cli -- promote-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals fixtures/golden-policy-capsule/review-decisions
+cargo run -p dialectica-cli -- build-fixture fixtures/golden-policy-capsule --out $env:TEMP\dialectica-golden-v3
+cargo run -p dialectica-cli -- validate $env:TEMP\dialectica-golden-v3
+cargo run -p dialectica-cli -- archive $env:TEMP\dialectica-golden-v3 --out $env:TEMP\dialectica-golden-v3.capsule
+cargo run -p dialectica-cli -- context-pack $env:TEMP\dialectica-golden-v3 --workflow conflict_map
 cargo run -p dialectica-cli -- schema-export $env:TEMP\dialectica-audit-schemas
 python -m compileall tools/python
 python -m unittest discover tools/python/tests
@@ -126,30 +143,33 @@ stale-claim warning while returning `valid=true`.
 
 ## Findings
 
-### P0 - Compiler Cannot Build The Canonical Capsule
+### P0 - Compiler Is Local-Fixture Only
 
-The canonical v3 fixture is hand-authored. `dialectica-compiler` currently only
-contains `can_emit_bundle()` for the legacy manifest review gate. This means
-DIALECTICA can prove package shape, but cannot yet build the product object.
+`dialectica-compiler` now builds a valid fixture-mode v3 package from
+source-pack, proposals, and review decisions. It also writes `.capsule`
+archives and PRAXIS context packs. The remaining risk is production integrity,
+not basic compilation.
 
 Required fix:
 
-1. Implement deterministic v3 package writing.
-2. Add `.capsule` archive writing.
-3. Add contract tests that regenerate the canonical fixture byte-for-byte or
+1. Promote deterministic checksum/signature placeholders to a stable envelope.
+2. Add contract tests that regenerate the canonical fixture byte-for-byte or
    compare a canonical normalized output tree.
+3. Keep rejected/unreviewed records visible in lineage but blocked from PRAXIS
+   context packs.
 
-### P0 - API Is A Scaffold, Not A Service
+### P0 - API Is Fixture-Backed, Not Store-Backed
 
-`services/dialectica-api` has no HTTP framework or routes. PRAXIS cannot call
-DIALECTICA yet.
+`services/dialectica-api` now serves fixture health, version, manifest, graph
+preview, context-pack, and read-receipt routes. It cannot yet serve durable
+build jobs, authenticated tenant artifacts, or cloud-stored capsules.
 
 Required fix:
 
-1. Add Axum.
-2. Implement `GET /health` and `GET /version`.
-3. Implement fixture-mode routes for manifest, graph preview, and context pack.
-4. Add integration tests over local fixture data.
+1. Add store-backed capsule lookup.
+2. Add job state routes after `dialectica-store` has migrations.
+3. Add service-to-service auth and tenant/project scoping.
+4. Keep fixture mode available for local CI.
 
 ### P0 - Store Is A Placeholder
 
@@ -194,33 +214,30 @@ Required fix:
 The needed PRAXIS experience is clear: upload documents, build a User,
 Situation, Tool, or Output Capsule, inspect source receipts and embedded graphs,
 capture assistant discussions, review uncertain records, and import the
-approved context pack into Ask PRAXIS. This repository cannot supply that yet.
+approved context pack into Ask PRAXIS. This repository now supplies the local
+context-pack/API contract; the PRAXIS frontend integration still belongs in
+the PRAXIS repo.
 
 Required fix:
 
-1. Build local context-pack export in DIALECTICA.
-2. Serve it from the local API.
-3. Then implement the PRAXIS frontend integration inside the PRAXIS repo.
-4. Mirror only PRAXIS-facing visibility state to Firestore; keep DIALECTICA
+1. Stabilize the local context-pack/API contract.
+2. Then implement the PRAXIS frontend integration inside the PRAXIS repo.
+3. Mirror only PRAXIS-facing visibility state to Firestore; keep DIALECTICA
    canonical records in its bundle and PostgreSQL store.
 
 ## Build Ledger Update
 
-The next code phase must be v3-first:
+The next code phase must harden the local loop:
 
-1. `dialectica-compiler`: typed source/proposal/review input plus deterministic
-   v3 package writer.
-2. `dialectica-compiler`: `.capsule` archive writer with deterministic entry
-   order and explicit digest scope.
-3. `dialectica-cli`: `build-fixture` that writes to an output directory.
-4. `dialectica-capsule`: deep v3 cross-layer validator.
-5. `dialectica-capsule`: PRAXIS context-pack type and schema export.
-6. `dialectica-cli`: `context-pack <capsule-dir>`.
-7. `dialectica-api`: local fixture-mode Axum service.
-8. `dialectica-store`: SQLx migrations and repositories.
-9. `dialectica-task-handler`: queued compile HTTP target.
-10. PRAXIS repo: capsule builder/import/inspect UI after the local API and
-    context-pack contract are stable.
+1. `dialectica-capsule`: deep v3 cross-layer validator.
+2. `dialectica-compiler`: stable checksum/signature envelope and generated
+   fixture comparison.
+3. `dialectica-store`: SQLx migrations and repositories.
+4. `dialectica-api`: store-backed jobs and artifact lookup.
+5. `dialectica-task-handler`: queued compile HTTP target.
+6. live ingestion/provider adapters behind proposal-only boundaries.
+7. PRAXIS repo: capsule builder/import/inspect UI after the local API and
+   context-pack contract are stable.
 
 ## Claim Boundary
 
@@ -231,14 +248,18 @@ The repository may currently claim:
 - it retains legacy fixture compatibility during migration;
 - it validates fixture-mode source packs and extraction proposals;
 - it routes Plus/promoted proposal review gates before compilation;
+- it compiles reviewed fixture records into a valid v3 package;
+- it writes deterministic local `.capsule` archives;
+- it exports fixture-mode PRAXIS context packs;
+- it serves fixture-backed local API routes;
 - it has enough scaffolding to start coding the engine.
 
 The repository must not yet claim:
 
 - that DIALECTICA builds capsules from documents;
 - that DIALECTICA calls live extraction models;
-- that it has a working backend API;
+- that it has a production backend API;
 - that it stores capsule state in PostgreSQL;
-- that it serves PRAXIS;
+- that it serves production PRAXIS traffic;
 - that it performs human-gated extraction or review;
 - that it has a production deployment.

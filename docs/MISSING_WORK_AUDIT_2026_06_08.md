@@ -1,14 +1,14 @@
 # Missing Work Audit - 2026-06-08
 
 Status: build-gap audit after canonical v3 alignment, Ladybug projection
-validation, and the fixture-mode source/proposal/review/promotion
+validation, and the fixture-mode source/proposal/review/promotion/compiler/API
 implementation.
 
 The repository is coherent and locally verified as a contract scaffold. It is
-not yet the capsule-building engine. This audit lists what remains before
-DIALECTICA can ingest policy material, use LLMs to extract context, route human
-review, build graphs and semantic layers, compile `.capsule` artifacts, and
-serve PRAXIS.
+not yet the production capsule-building engine. This audit lists what remains
+before DIALECTICA can ingest live policy material, use LLMs to extract context,
+route durable human review, build graphs and semantic layers at scale, persist
+`.capsule` artifacts, and serve production PRAXIS traffic.
 
 ## Current Truth
 
@@ -16,7 +16,7 @@ serve PRAXIS.
 | --- | --- |
 | Canonical v3 fixture validation | Working |
 | Legacy migration fixture validation | Working |
-| CLI `doctor`, `validate`, `inspect`, `ontology-plan`, `ladybug-check`, `source-pack-check`, `proposal-check`, `build-plan`, `review-check`, `promote-check`, `schema-export` | Working |
+| CLI `doctor`, `validate`, `inspect`, `ontology-plan`, `ladybug-check`, `source-pack-check`, `proposal-check`, `build-plan`, `review-check`, `promote-check`, `build-fixture`, `archive`, `context-pack`, `schema-export` | Working |
 | Rust contract tests | Working |
 | Fixture source-pack contract | Working |
 | Fixture extraction proposals and model receipts | Working |
@@ -25,11 +25,12 @@ serve PRAXIS.
 | Live source-pack ingestion | Missing |
 | Live LLM extraction orchestration | Missing |
 | Interactive review UI and live reviewer workflow | Missing |
-| Deterministic v3 compiler | Missing |
-| `.capsule` archive writer | Missing |
-| PRAXIS context-pack export | Missing |
+| Deterministic fixture-mode v3 compiler | Working |
+| `.capsule` archive writer | Working |
+| PRAXIS context-pack export | Working |
 | PostgreSQL migrations | Missing |
-| HTTP API | Missing |
+| Fixture-backed HTTP API | Working |
+| Store-backed HTTP API | Missing |
 | Task handler | Missing |
 | Eval harness | Missing |
 | PRAXIS frontend integration | Missing |
@@ -122,15 +123,19 @@ Acceptance:
 
 ### 4. Deterministic Compiler
 
-Missing:
+Implemented for fixture mode:
 
 - v3 package writer;
 - stable JSON/JSONL writer;
 - `.capsule` archive writer;
-- Merkle root and checksum map;
-- signature envelope;
 - compiler receipt;
 - deterministic generated views.
+
+Still missing:
+
+- production-grade Merkle root and checksum map;
+- signature envelope;
+- byte-for-byte generated canonical fixture comparison.
 
 Acceptance:
 
@@ -161,15 +166,20 @@ Acceptance:
 
 ### 6. PRAXIS Context Pack
 
-Missing:
+Implemented for fixture mode:
 
-- `ContextPack` Rust type;
-- JSON Schema export;
+- `PraxisContextPack` Rust type in `dialectica-compiler`;
 - CLI `context-pack`;
 - source receipt compaction;
 - graph focus-node projection;
 - review caveat projection;
 - language and reasoning guidance projection.
+
+Still missing:
+
+- stable context-pack type in `dialectica-capsule`;
+- JSON Schema export after the type moves to the stable contract crate;
+- store-backed capsule lookup.
 
 Acceptance:
 
@@ -183,13 +193,17 @@ These are required for a usable local service after the P0 loop works.
 
 ### 1. Local Axum API
 
-Missing:
+Implemented for fixture mode:
 
 - `GET /health`;
 - `GET /version`;
 - capsule manifest route;
 - graph preview route;
 - PRAXIS context-pack route;
+- deterministic read-receipt route.
+
+Still missing:
+
 - deterministic error envelope;
 - request id and tracing.
 
@@ -274,31 +288,30 @@ These are valuable after the local loop and API are real.
 | Extractor crate | implemented in `crates/dialectica-extractor`, `Cargo.toml`, `tests/dialectica-contract-tests` |
 | Proposal schemas | implemented in `crates/dialectica-extractor`, `schemas/capsule-3.0/` |
 | Review router | fixture-mode router, reviewer decisions, and promotion normalization implemented in `crates/dialectica-extractor`; live review UI still pending |
-| Compiler writer | `crates/dialectica-compiler` |
-| Context pack | `crates/dialectica-capsule`, `crates/dialectica-cli` |
-| API routes | `services/dialectica-api` |
+| Compiler writer | implemented for fixture mode in `crates/dialectica-compiler` |
+| Context pack | implemented for fixture mode in `crates/dialectica-compiler`, `crates/dialectica-cli` |
+| API routes | fixture mode implemented in `services/dialectica-api` |
 | Store migrations | `crates/dialectica-store/migrations/` |
 | Task handler | `services/dialectica-task-handler` |
 | Eval checks | `crates/dialectica-eval` |
 
 ## Next Implementation Sequence
 
-1. Add deterministic v3 compiler output.
-2. Add `.capsule` archive generation.
-3. Add PRAXIS context-pack export.
-4. Add live ingestion and model-provider orchestration.
-5. Expand v3 validator cross-layer checks.
-6. Implement deterministic v3 package writer.
-7. Implement `.capsule` archive writer.
-8. Add PRAXIS context-pack type, schema, and CLI command.
-9. Add local Axum fixture API.
-10. Add PostgreSQL migrations.
-11. Add ingestion for files, PDFs, and user/assistant discussions.
-12. Add PRAXIS frontend integration.
+1. Expand v3 validator cross-layer checks.
+2. Harden checksum/signature envelope.
+3. Add generated-fixture comparison.
+4. Add PostgreSQL migrations.
+5. Add store-backed API jobs and artifact lookup.
+6. Add live ingestion and model-provider orchestration.
+7. Add task-handler routes.
+8. Add PRAXIS frontend integration after the API/context-pack contract is
+   stable.
 
 ## Claim Boundary
 
 The repository may claim that it defines and validates the first v3 capsule
-contract. It must not claim that it extracts context, builds capsules from
-documents, serves PRAXIS, or performs human-gated review until those capabilities
-exist as commands, tests, routes, and fixtures.
+contract and can compile reviewed fixture records into local v3 packages,
+archives, context packs, and fixture API responses. It must not claim that it
+extracts live context, builds capsules from documents, serves production PRAXIS
+traffic, or performs durable human-gated review until those capabilities exist
+as commands, tests, routes, and fixtures.

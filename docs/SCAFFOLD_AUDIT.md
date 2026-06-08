@@ -2,15 +2,15 @@
 
 Date: 2026-06-08
 
-Readiness: **91/100 for coding readiness; 50/100 for capsule-engine readiness;
-20/100 for app-production readiness**.
+Readiness: **94/100 for coding readiness; 64/100 for capsule-engine readiness;
+30/100 for app-production readiness**.
 
 The repository has begun the first functional implementation pass. It is not
-yet a working backend or capsule-building service, but the capsule contract and
-input contract are now executable in three lanes: the Rust crates can validate a
-canonical v3 extracted `.capsule` package, validate a fixture source/proposal
-build plan, and still load the legacy expected-bundle directory while the
-compiler migrates.
+yet a production backend or live capsule-building service, but the local
+capsule loop is now executable: the Rust crates can validate a canonical v3
+extracted package, validate a fixture source/proposal/review build plan, compile
+reviewed fixture records into a v3 package, archive it as `.capsule`, export a
+PRAXIS context pack, and serve fixture-backed API routes.
 
 ## Evidence Checked
 
@@ -65,6 +65,10 @@ compiler migrates.
   export.
 - `dialectica-extractor` now supports fixture-mode reviewer decisions and
   promotion normalization into compiler-ready records.
+- `dialectica-compiler` now writes deterministic fixture-mode v3 packages,
+  `.capsule` archives, and PRAXIS context packs.
+- `dialectica-api` now exposes fixture-backed Axum health, version, manifest,
+  graph-preview, context-pack, and read-receipt routes.
 - Canonical v3 conflict Situation Capsule fixture exists under
   `fixtures/canonical-capsules/conflict-situation-capsule/`.
 - GitHub CI now validates and inspects the canonical v3 fixture before the
@@ -75,7 +79,7 @@ compiler migrates.
   P0/P1 build gaps.
 - `docs/MISSING_WORK_AUDIT_2026_06_08.md` distinguishes the implemented
   fixture source/proposal contract from the remaining live extraction, review,
-  compiler, API, store, eval, and PRAXIS frontend gaps.
+  store, eval, and PRAXIS frontend gaps.
 - `docs/LLM_CONTEXT_EXTRACTION_ARCHITECTURE.md` defines the proposal-only LLM
   extraction pipeline.
 - ADR-007 records that LLM extraction cannot write canonical truth directly.
@@ -121,42 +125,36 @@ compiler migrates.
   fallback policy exists.
 - No ontology or semantic-layer creation workflow exists beyond the legacy
   `ontology-plan` helper.
-- Golden fixture source pack and proposal records validate, but the compiler
-  does not generate either the legacy bundle or v3 package yet.
 - Example single-file capsule envelopes still need shared-envelope validation.
 - PostgreSQL migrations do not exist.
-- API routes are scaffold binaries, not HTTP services.
 - Cloud Tasks handler is a scaffold binary, not an HTTP target.
-- `.capsule` archive assembly, signing, and Merkle-root logic are not
-  implemented.
+- Production signing and Merkle-root logic are not implemented beyond fixture
+  placeholders.
 - Ontology blueprint persistence inside signed bundles is not implemented; the
   planner exists as a CLI and schema contract.
-- PRAXIS context-pack export is not implemented.
 - PRAXIS frontend integration is not implemented in this repository and should
   be done in the PRAXIS repo only after a stable DIALECTICA context-pack/API
   contract exists.
 - Evals are only planned.
 - Cloud infrastructure has no Terraform/OpenTofu state yet.
-- API service still has no HTTP framework.
 - Python tooling is intentionally small and should not be treated as backend
   capability.
 
 ## Blockers Before Calling It Functional
 
-1. Implement source-pack/proposal/review-decision to v3 `.capsule` package
-   generation.
-2. Add live model-provider extraction behind provider traits.
-4. Add deterministic `.capsule` archive assembly, Merkle-root/signature logic,
-   and compiler receipts.
-5. Expand Lane A validation to every required acceptance case, including
+1. Harden deterministic checksum, Merkle-root, signature, and compiler receipt
+   semantics beyond fixture placeholders.
+2. Add generated-fixture comparison once generated output is promoted as
+   canonical.
+3. Add live model-provider extraction behind provider traits.
+4. Expand Lane A validation to every required acceptance case, including
    ontology blueprint compatibility checks.
-6. Validate the four example capsule envelopes against a shared-envelope
+5. Validate the four example capsule envelopes against a shared-envelope
    contract.
-7. Export a PRAXIS context pack from canonical v3 package records.
-8. Add local API health and manifest/context-pack routes.
-9. Add store migrations for capsules, sources, claims, graph, review, rights,
+6. Add store migrations for capsules, sources, claims, graph, review, rights,
    and bundle exports.
-10. Add fixture evals that compare raw, loose-doc, and capsule-augmented output.
+7. Add store-backed API jobs and artifact lookup.
+8. Add fixture evals that compare raw, loose-doc, and capsule-augmented output.
 
 ## High-Value Fixes
 

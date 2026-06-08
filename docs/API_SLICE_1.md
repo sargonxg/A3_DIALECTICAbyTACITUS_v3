@@ -1,10 +1,13 @@
 # API Slice 1
 
-Status: required API contract before implementing `services/dialectica-api`.
+Status: implemented for local fixture mode in `services/dialectica-api`.
 
 API Slice 1 exposes health, manifest, graph preview, context pack, and read
 receipt surfaces over fixture data. It must not require production PRAXIS
 credentials or cloud resources.
+
+Remaining staging work: store-backed capsule lookup, request ids, tracing,
+service-to-service auth, and tenant/project scoping.
 
 ## Route Names
 

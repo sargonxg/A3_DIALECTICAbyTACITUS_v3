@@ -140,6 +140,19 @@ pub fn canonical_capsule_type(capsule_type: &str) -> Option<&'static str> {
     }
 }
 
+/// Maps canonical v3 capsule types to the legacy `*_capsule` label used by
+/// ontology blueprint helpers.
+pub fn canonical_to_legacy_capsule_type(capsule_type: &str) -> String {
+    match capsule_type.trim() {
+        "user" | "user_capsule" => "user_capsule",
+        "situation" | "situation_capsule" => "situation_capsule",
+        "tool" | "tool_capsule" => "tool_capsule",
+        "output" | "output_capsule" => "output_capsule",
+        other => other,
+    }
+    .to_owned()
+}
+
 /// Human-review state for a capsule or one of its internal objects.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 #[serde(rename_all = "snake_case")]
@@ -753,6 +766,29 @@ impl PraxisCapsuleManifest {
 
     pub fn is_canonical_type(&self) -> bool {
         is_canonical_capsule_type(&self.capsule_type)
+    }
+
+    /// Creates the same capsule-specific ontology blueprint used by legacy
+    /// bundles, while preserving the canonical v3 four-type vocabulary.
+    pub fn ontology_blueprint(&self) -> CapsuleOntologyBlueprint {
+        let mut manifest = CapsuleManifest::new(
+            &self.capsule_id,
+            &self.title,
+            &canonical_to_legacy_capsule_type(&self.capsule_type),
+            ReviewState::ApprovedWithCaveats,
+            &self.provenance_root_hash,
+        );
+        manifest.schema_version = self.spec_version.clone();
+        manifest.created_at = self.created_at.clone();
+        manifest.compiled_at = self.updated_at.clone();
+        manifest.status = "canonical_v3".to_owned();
+        manifest.graph_profile = if self.cores.is_empty() {
+            String::new()
+        } else {
+            self.cores.join("+")
+        };
+
+        CapsuleOntologyBlueprint::from_manifest(&manifest)
     }
 }
 
@@ -2195,7 +2231,10 @@ mod tests {
         time::{SystemTime, UNIX_EPOCH},
     };
 
-    use super::{CapsuleManifest, PraxisCapsulePackage, ReviewState, CAPSULE_MIME_TYPE};
+    use super::{
+        CapsuleManifest, PraxisCapsuleManifest, PraxisCapsulePackage, ReviewState,
+        CAPSULE_MIME_TYPE,
+    };
 
     #[test]
     fn approved_manifest_with_digest_is_export_ready() {
@@ -2235,6 +2274,35 @@ mod tests {
 
         assert!(!manifest.is_export_ready());
         assert!(!manifest.has_approved_capsule_type());
+    }
+
+    #[test]
+    fn v3_manifest_builds_macro_type_ontology_blueprint() {
+        let manifest = PraxisCapsuleManifest {
+            capsule_id: "cap_v3_situation_001".to_owned(),
+            spec_version: "3.0".to_owned(),
+            version: 1,
+            capsule_type: "situation".to_owned(),
+            category: "conflict".to_owned(),
+            title: "Conflict Situation".to_owned(),
+            owner_uid: None,
+            situation_id: None,
+            cores: vec!["aco".to_owned(), "temporal".to_owned()],
+            created_at: "2026-06-08T00:00:00Z".to_owned(),
+            updated_at: "2026-06-08T00:00:00Z".to_owned(),
+            provenance_root_hash: "sha256:test".to_owned(),
+            signature: "test".to_owned(),
+            depends_on: Vec::new(),
+            layers_present: vec!["evidence".to_owned(), "graph".to_owned()],
+        };
+
+        let blueprint = manifest.ontology_blueprint();
+
+        assert_eq!(blueprint.capsule_type, "situation_capsule");
+        assert_eq!(blueprint.ontology_family, "situation_policy_ontology");
+        assert!(blueprint
+            .reasoning_lenses
+            .contains(&"stakeholder analysis".to_owned()));
     }
 
     #[test]

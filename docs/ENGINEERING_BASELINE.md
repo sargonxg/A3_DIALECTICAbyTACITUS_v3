@@ -45,7 +45,7 @@ dialectica-eval
 
 dialectica-cli
   owns local developer workflows: doctor, validate, inspect, ontology-plan,
-  build-fixture
+  build-fixture, archive, context-pack
 
 dialectica-api
   owns PRAXIS-facing HTTP endpoints
@@ -59,7 +59,7 @@ Dependency direction:
 ```text
 api/task-handler -> store/extractor/compiler/capsule/eval
 extractor        -> capsule
-compiler         -> capsule
+compiler         -> capsule/extractor/graph
 store            -> capsule-compatible IDs and records
 eval             -> capsule
 cli              -> capsule/compiler/eval/store as needed
@@ -91,9 +91,10 @@ still decide whether the records can be promoted.
 5. reviewer decisions and proposal promotion normalization: implemented for
    fixture mode.
 6. `dialectica-compiler`: deterministic v3 package writer, archive writer, and
-   checksums.
-7. `dialectica-store`: migrations and repository interfaces.
-8. `dialectica-api`: health, version, manifest, graph preview, context pack.
+   context-pack export: implemented for fixture mode.
+7. `dialectica-api`: health, version, manifest, graph preview, context pack:
+   implemented for fixture mode.
+8. `dialectica-store`: migrations and repository interfaces.
 9. `dialectica-task-handler`: queued compile path.
 10. `dialectica-eval`: fixture eval reports.
 11. Python reports and adapters where they reduce implementation risk.
@@ -116,6 +117,10 @@ cargo run -p dialectica-cli -- proposal-check fixtures/golden-policy-capsule/bui
 cargo run -p dialectica-cli -- build-plan fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals
 cargo run -p dialectica-cli -- review-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals fixtures/golden-policy-capsule/review-decisions
 cargo run -p dialectica-cli -- promote-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals fixtures/golden-policy-capsule/review-decisions
+cargo run -p dialectica-cli -- build-fixture fixtures/golden-policy-capsule --out $env:TEMP\dialectica-golden-v3
+cargo run -p dialectica-cli -- validate $env:TEMP\dialectica-golden-v3
+cargo run -p dialectica-cli -- archive $env:TEMP\dialectica-golden-v3 --out $env:TEMP\dialectica-golden-v3.capsule
+cargo run -p dialectica-cli -- context-pack $env:TEMP\dialectica-golden-v3 --workflow conflict_map
 cargo run -p dialectica-cli -- schema-export schemas/capsule-3.0
 python -m compileall tools/python
 python -m unittest discover tools/python/tests

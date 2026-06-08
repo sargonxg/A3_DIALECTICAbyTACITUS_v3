@@ -208,8 +208,8 @@ Evidence:
 - v3 validation now checks required files, manifest layer vocabulary, macro
   type values, non-empty compiled views, JSON parseability, and minimum
   Situation Capsule claim/source records;
-- remaining gap: the compiler still needs to generate the v3 package and
-  archive rather than relying on hand-authored fixtures.
+- superseded gap: this entry predated the local compiler slice; the compiler
+  now generates a fixture-mode v3 package and archive from reviewed records.
 
 ## 2026-06-08 - Code Audit And Build-Gate Update
 
@@ -395,7 +395,8 @@ Remaining gaps:
 
 ## 2026-06-08 - Reviewer Decisions And Promotion Normalization
 
-Status: implemented for local fixture mode; compiler still pending.
+Status: implemented for local fixture mode; compiler gap later closed by the
+end-to-end local capsule build loop entry.
 
 Actions:
 
@@ -416,28 +417,51 @@ Evidence:
 - `cargo run -p dialectica-cli -- review-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals fixtures/golden-policy-capsule/review-decisions` validates nine reviewer decisions for nine required gates;
 - `cargo run -p dialectica-cli -- promote-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals fixtures/golden-policy-capsule/review-decisions` produces twelve promoted records, three caveated records, and `ready_for_compiler=true`.
 
+## 2026-06-08 - End-To-End Local Capsule Build Loop
+
+Status: implemented for local fixture mode; durable store, live ingestion, and
+production auth still pending.
+
+Actions:
+
+- implemented deterministic fixture-mode v3 package writing in
+  `dialectica-compiler`;
+- added deterministic `.capsule` archive writing with `mimetype` as the first
+  archive entry;
+- added PRAXIS context-pack export from compiled v3 package directories;
+- added CLI commands `build-fixture`, `archive`, and `context-pack`;
+- turned `dialectica-api` into a fixture-backed Axum service with health,
+  version, manifest, graph-preview, context-pack, and read-receipt routes;
+- added compiler, archive, context-pack, and API route tests;
+- updated CI to build, validate, archive, and context-pack the golden fixture.
+
+Evidence:
+
+- `cargo run -p dialectica-cli -- build-fixture fixtures/golden-policy-capsule --out <temp>` writes `cap_build_conflict_situation_fixture_v1`;
+- `cargo run -p dialectica-cli -- validate <temp>` validates the generated v3 package;
+- `cargo run -p dialectica-cli -- archive <temp> --out <temp>.capsule` writes a deterministic archive with `first_entry=mimetype`;
+- `cargo run -p dialectica-cli -- context-pack <temp> --workflow conflict_map` emits PRAXIS-readable context JSON;
+- `cargo test -p dialectica-api` proves fixture API routes return manifest, graph preview, context pack, and deterministic read receipts.
+
 ## Next Build Tasks
 
-1. Define canonical deterministic serialization rules.
-2. Implement deterministic v3 package writer in `crates/dialectica-compiler`.
-3. Add `.capsule` archive writing with `mimetype` first, stable entry order,
-   LF line endings, and explicit handling for required `graph/ladybug/`
-   projection files versus optional non-canonical cache files.
-4. Add `build-fixture` so a canonical capsule can be generated from source-pack
-   records, proposals, and review decisions.
-5. Add checksum, Merkle-root, and signature placeholders with stable diff
-   output.
-6. Deepen v3 validators for claims, sources, temporal episodes, graph,
+1. Harden checksum, Merkle-root, and signature placeholders into a stable
+   promotion envelope.
+2. Add byte-for-byte generated-fixture comparison after the generated v3 output
+   is accepted as canonical.
+3. Deepen v3 validators for claims, sources, temporal episodes, graph,
    reasoning, review, runtime, and generated agent views.
-7. Export the first PRAXIS context pack from the canonical v3 package.
-8. Validate the four example capsule envelopes against a shared top-level
+4. Validate the four example capsule envelopes against a shared top-level
    contract.
-9. Turn `services/dialectica-api` into a local fixture-mode Axum service.
-10. Add SQLx migrations in `crates/dialectica-store`.
-11. Add ingestion records for documents, PDFs, and user/assistant discussion
-    turns after the compiler loop works.
-12. Add task-handler and Cloud Run staging skeleton only after the local API
-    runs.
+5. Add SQLx migrations in `crates/dialectica-store` for build state, source
+   spans, proposals, review decisions, compiled artifacts, and exports.
+6. Add ingestion records for documents, PDFs, and user/assistant discussion
+   turns.
+7. Add provider traits and live model extraction behind the proposal-only
+   boundary.
+8. Add task-handler routes after store-backed jobs exist.
+9. Add Cloud Run staging skeleton only after local API plus store-backed jobs
+   run.
 
 ## Open Product Questions
 

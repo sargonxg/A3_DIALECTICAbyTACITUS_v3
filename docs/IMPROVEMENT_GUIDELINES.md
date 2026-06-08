@@ -83,7 +83,8 @@ Deliver:
 
 Definition of done:
 
-- `build-fixture` regenerates the golden policy bundle from source-pack inputs;
+- `build-fixture` regenerates a valid v3 fixture package from source-pack
+  inputs;
 - proposed but unreviewed records remain visible in lineage;
 - LLM-generated proposals cannot become canonical records directly;
 - PRAXIS context export excludes rejected, expired, and unreviewed objects by
@@ -91,17 +92,21 @@ Definition of done:
 
 ### Series 3: Make The PRAXIS Context Pack Real
 
+Status: implemented for fixture-mode compiled packages; stable schema export
+still pending.
+
 Deliver:
 
-- `ContextPack` type;
-- `context_pack.schema.json`;
-- CLI `context-pack <bundle-dir>`;
-- compact retrieval records;
-- graph focus records;
-- temporal warnings;
-- language and output rules;
-- read-receipt hints;
-- stop conditions and handoff policy.
+- `PraxisContextPack` type: implemented in `dialectica-compiler`;
+- `context_pack.schema.json`: pending until the type moves to
+  `dialectica-capsule`;
+- CLI `context-pack <bundle-dir>`: implemented;
+- compact retrieval records: implemented for fixtures;
+- graph focus records: implemented for fixtures;
+- temporal warnings: implemented for fixtures;
+- language and output rules: implemented for fixtures;
+- read-receipt hints: implemented for fixtures;
+- stop conditions and handoff policy: implemented in runtime fields.
 
 Definition of done:
 
@@ -114,22 +119,26 @@ Definition of done:
 
 ### Series 4: Make The Local API Boring And Deterministic
 
+Status: implemented for fixture mode; store-backed artifacts, request ids, and
+tracing still pending.
+
 Deliver:
 
-- Axum service in fixture mode;
-- `GET /health`;
-- `GET /version`;
-- manifest route;
-- graph-preview route;
-- PRAXIS context-pack route;
-- deterministic error envelope;
-- route-level tests.
+- Axum service in fixture mode: implemented;
+- `GET /health`: implemented;
+- `GET /version`: implemented;
+- manifest route: implemented;
+- graph-preview route: implemented;
+- PRAXIS context-pack route: implemented;
+- deterministic read-receipt route: implemented;
+- deterministic error envelope: partially implemented;
+- route-level tests: implemented.
 
 Definition of done:
 
 - the API starts without cloud credentials;
 - all routes return stable JSON for the golden fixture;
-- errors include code, message, details, and request id;
+- errors include code and message; details and request id remain pending;
 - no route exposes internal graph-engine or model-provider details.
 
 ### Series 5: Add Storage Without Breaking Local Proof

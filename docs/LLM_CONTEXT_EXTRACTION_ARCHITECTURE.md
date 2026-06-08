@@ -121,9 +121,12 @@ Current code:
 - `dialectica-extractor` owns the first fixture-mode source-pack, model
   receipt, extraction proposal, review-trigger, schema-export, and build-plan
   contract. It does not yet call model providers.
-- `dialectica-compiler` is only a scaffold with a legacy review-gate helper.
-- `dialectica-store`, `dialectica-eval`, `dialectica-api`, and
-  `dialectica-task-handler` are scaffolds.
+- `dialectica-compiler` owns fixture-mode v3 package writing, `.capsule`
+  archive writing, and PRAXIS context-pack export.
+- `dialectica-api` owns fixture-backed health, version, manifest,
+  graph-preview, context-pack, and read-receipt routes.
+- `dialectica-store`, `dialectica-eval`, and `dialectica-task-handler` remain
+  scaffolds.
 
 Required next ownership:
 
@@ -419,14 +422,15 @@ Before a capsule can be promoted:
 
 ## Build Order
 
-1. Add deterministic compiler and `.capsule` archive writer.
-2. Add deeper v3 validators for cross-layer references.
-3. Add PRAXIS context-pack export.
-4. Add local API routes.
-5. Add PostgreSQL migrations.
-6. Add model-provider integration behind provider traits.
-7. Add document/PDF/conversation ingestion.
-8. Add PRAXIS frontend integration.
+1. Add deeper v3 validators for cross-layer references.
+2. Harden compiler checksum/signature semantics and generated-fixture
+   comparison.
+3. Add PostgreSQL migrations and store-backed build jobs.
+4. Add model-provider integration behind provider traits.
+5. Add document/PDF/conversation ingestion.
+6. Add task-handler routes.
+7. Add PRAXIS frontend integration after the API/context-pack contract is
+   stable.
 
 ## Non-Goals For The First Build
 
