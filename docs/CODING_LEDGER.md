@@ -13,10 +13,10 @@ objects that humans and AI agents can use interchangeably.
 The first functional app is not complete until a developer can:
 
 1. ingest a deterministic source pack;
-2. build source, temporal, ontology, graph, reasoning, review, and rights
-   records;
-3. build agent guidance records for PRAXIS workflows;
-4. validate the bundle contract;
+2. build evidence, claim, episode, ontology, graph, reasoning, review, and
+   runtime records;
+3. build generated `agent_context.md` and `operations.md` for PRAXIS workflows;
+4. validate the v3 `.capsule` contract;
 5. block promotion when review is missing;
 6. emit a PRAXIS context pack;
 7. run a local API health check;
@@ -28,7 +28,7 @@ The first functional app is not complete until a developer can:
 | Area | Path | Current status | First real implementation |
 | --- | --- | --- | --- |
 | Workspace | `Cargo.toml` | created | keep all crates in one Cargo workspace |
-| Capsule contract | `crates/dialectica-capsule` | first executable structs, validation, and schema export implemented | expand validators and checksum/signature contract |
+| Capsule contract | `crates/dialectica-capsule` | v3 package validator plus legacy structs, validation, and schema export implemented | expand validators and checksum/signature contract |
 | Compiler | `crates/dialectica-compiler` | scaffolded with review-gated emit check | deterministic bundle writer and checksums |
 | Store | `crates/dialectica-store` | scaffolded with migration families | SQLx migrations and repository interfaces |
 | Evals | `crates/dialectica-eval` | scaffolded with check result primitive | fixture outcome and source-fidelity evals |
@@ -61,29 +61,35 @@ cargo run -p dialectica-cli -- inspect fixtures/golden-policy-capsule
 Active Lane A/B gate:
 
 ```powershell
+cargo run -p dialectica-cli -- validate fixtures/canonical-capsules/conflict-situation-capsule
+cargo run -p dialectica-cli -- inspect fixtures/canonical-capsules/conflict-situation-capsule
 cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule/expected-bundle
 cargo run -p dialectica-cli -- inspect fixtures/golden-policy-capsule/expected-bundle
 cargo run -p dialectica-cli -- ontology-plan fixtures/golden-policy-capsule/expected-bundle
-cargo run -p dialectica-cli -- schema-export schemas/capsule-0.1.0
+cargo run -p dialectica-cli -- schema-export schemas/capsule-3.0
 ```
 
 ## Build Lanes
 
 ### Lane A: Capsule Contract
 
-Goal: make the capsule bundle schema real.
+Goal: make the v3 `.capsule` schema real.
 
 Acceptance contract: [Lane A Acceptance](LANE_A_ACCEPTANCE.md).
 
 Deliver:
 
-- manifest structs: implemented;
-- source ledger structs: implemented;
-- temporal ledger structs: implemented;
-- ontology slice structs: implemented;
+- v3 manifest/package validation: implemented;
+- legacy manifest structs: implemented;
+- source/evidence structs: partially implemented through legacy and v3 checks;
+- temporal/episode structs: partially implemented through legacy and v3 checks;
+- ontology/semantic layer structs: legacy implemented, v3 graph named-graph
+  validation started;
 - ontology blueprint planner and schema: implemented;
-- embedded graph structs: implemented;
-- agent guidance structs: implemented;
+- embedded graph structs: legacy implemented, v3 `graph.jsonld` parser check
+  implemented;
+- runtime/agent guidance structs: legacy implemented, v3 runtime file check
+  implemented;
 - review ledger structs: implemented;
 - rights profile structs: implemented;
 - JSON Schema snapshots: implemented;
@@ -92,7 +98,8 @@ Deliver:
 
 Done when:
 
-- fixture bundle validates locally;
+- canonical v3 fixture validates locally;
+- legacy fixture bundle validates locally during migration;
 - invalid bundle reports precise paths;
 - schema snapshots are committed;
 - remaining Lane A cases are tracked before moving to store/API work.

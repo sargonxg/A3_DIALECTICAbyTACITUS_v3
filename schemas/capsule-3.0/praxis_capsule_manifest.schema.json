@@ -1,0 +1,88 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "PraxisCapsuleManifest",
+  "description": "Canonical v3 manifest for a portable `.capsule` package.",
+  "type": "object",
+  "required": [
+    "capsule_id",
+    "category",
+    "cores",
+    "created_at",
+    "layers_present",
+    "provenance_root_hash",
+    "signature",
+    "spec_version",
+    "title",
+    "type",
+    "updated_at",
+    "version"
+  ],
+  "properties": {
+    "capsule_id": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string"
+    },
+    "cores": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "depends_on": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "layers_present": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "owner_uid": {
+      "default": null,
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "provenance_root_hash": {
+      "type": "string"
+    },
+    "signature": {
+      "type": "string"
+    },
+    "situation_id": {
+      "default": null,
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "spec_version": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "pattern": "^(user|situation|tool|output)$"
+    },
+    "updated_at": {
+      "type": "string"
+    },
+    "version": {
+      "type": "integer",
+      "format": "uint64",
+      "minimum": 0.0
+    }
+  }
+}

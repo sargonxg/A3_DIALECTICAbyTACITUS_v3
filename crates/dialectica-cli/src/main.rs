@@ -2,7 +2,10 @@
 
 use std::path::Path;
 
-use dialectica_capsule::{export_schema_dir, CapsuleBundle, CapsuleManifest, ReviewState};
+use dialectica_capsule::{
+    export_schema_dir, CapsuleBundle, CapsuleInspection, CapsuleManifest, PraxisCapsulePackage,
+    ReviewState, CAPSULE_SPEC_VERSION,
+};
 
 fn main() {
     let mut args = std::env::args().skip(1);
@@ -71,14 +74,24 @@ fn print_doctor() {
     );
 
     println!("dialectica scaffold doctor");
-    println!("schema_version={}", manifest.schema_version);
+    println!("capsule_spec_version={CAPSULE_SPEC_VERSION}");
+    println!("legacy_schema_version={}", manifest.schema_version);
     println!("compiler={}", dialectica_compiler::COMPILER_ID);
     println!("export_ready={}", manifest.is_export_ready());
 }
 
 fn validate_bundle(path: &Path) {
-    let bundle = load_or_exit(path);
-    let report = bundle.validate();
+    let report = if is_v3_package(path) {
+        match PraxisCapsulePackage::load_from_dir(path) {
+            Ok(package) => package.validate(),
+            Err(error) => {
+                eprintln!("{error}");
+                std::process::exit(1);
+            }
+        }
+    } else {
+        load_legacy_or_exit(path).validate()
+    };
 
     for finding in &report.findings {
         println!(
@@ -94,9 +107,22 @@ fn validate_bundle(path: &Path) {
 }
 
 fn inspect_bundle(path: &Path) {
-    let bundle = load_or_exit(path);
-    let inspection = bundle.inspection();
+    let inspection = if is_v3_package(path) {
+        match PraxisCapsulePackage::load_from_dir(path) {
+            Ok(package) => package.inspection(),
+            Err(error) => {
+                eprintln!("{error}");
+                std::process::exit(1);
+            }
+        }
+    } else {
+        load_legacy_or_exit(path).inspection()
+    };
 
+    print_inspection(&inspection);
+}
+
+fn print_inspection(inspection: &CapsuleInspection) {
     println!("capsule_id={}", inspection.capsule_id);
     println!("capsule_type={}", inspection.capsule_type);
     println!("review_state={:?}", inspection.review_state);
@@ -108,7 +134,7 @@ fn inspect_bundle(path: &Path) {
 }
 
 fn print_ontology_plan(path: &Path) {
-    let bundle = load_or_exit(path);
+    let bundle = load_legacy_or_exit(path);
     let blueprint = bundle.ontology_blueprint();
     match serde_json::to_string_pretty(&blueprint) {
         Ok(json) => println!("{json}"),
@@ -119,7 +145,7 @@ fn print_ontology_plan(path: &Path) {
     }
 }
 
-fn load_or_exit(path: &Path) -> CapsuleBundle {
+fn load_legacy_or_exit(path: &Path) -> CapsuleBundle {
     match CapsuleBundle::load_from_dir(path) {
         Ok(bundle) => bundle,
         Err(error) => {
@@ -127,4 +153,16 @@ fn load_or_exit(path: &Path) -> CapsuleBundle {
             std::process::exit(1);
         }
     }
+}
+
+fn is_v3_package(path: &Path) -> bool {
+    let manifest_path = path.join("manifest.json");
+    let Ok(text) = std::fs::read_to_string(manifest_path) else {
+        return false;
+    };
+    let Ok(value) = serde_json::from_str::<serde_json::Value>(&text) else {
+        return false;
+    };
+
+    value.get("spec_version").is_some() || value.get("type").is_some()
 }

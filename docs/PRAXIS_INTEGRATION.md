@@ -185,11 +185,11 @@ PRAXIS mirror documents should be small and reconstructable:
   "tenantId": "tenant_123",
   "projectId": "project_123",
   "title": "EU industrial electricity support situation",
-  "capsuleType": "situation_capsule",
+  "type": "situation",
   "reviewState": "approved_with_caveats",
   "freshness": "current",
-  "bundleDigest": "sha256:fixture",
-  "schemaVersion": "0.1.0",
+  "provenanceRootHash": "sha256:fixture",
+  "specVersion": "3.0",
   "graphProfile": "situation_graph_v1",
   "sourceCount": 8,
   "warningCount": 2,
@@ -201,7 +201,7 @@ PRAXIS mirror documents should be small and reconstructable:
 
 Cache invalidation rule:
 
-- if `bundleDigest` changes, PRAXIS must refresh manifest, graph preview,
+- if `provenanceRootHash` changes, PRAXIS must refresh manifest, graph preview,
   context-pack hints, and visible warnings before using the capsule.
 
 PRAXIS should avoid exposing:

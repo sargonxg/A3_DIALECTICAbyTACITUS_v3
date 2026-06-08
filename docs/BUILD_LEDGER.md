@@ -175,6 +175,40 @@ Evidence:
 - GraphGeeks `awesome-graph-universe` and `odsc-agentic-ai-summit-2025`
   checked for graph registry and hybrid GraphRAG patterns.
 
+## 2026-06-08 - Canonical Capsule Spec v3 Alignment
+
+Status: canonical contract promoted; compiler migration still pending.
+
+Actions:
+
+- promoted `docs/CAPSULE_SPEC.md` to the definitive v3 `.capsule` contract;
+- moved the source-of-truth priority so the capsule spec outranks older
+  implementation scaffolding;
+- added canonical v3 Rust types for `PraxisCapsuleManifest` and
+  `PraxisCapsulePackage`;
+- added CLI auto-detection for v3 packages versus legacy expected bundles;
+- added a canonical conflict Situation Capsule fixture under
+  `fixtures/canonical-capsules/conflict-situation-capsule`;
+- added contract tests proving the canonical v3 fixture validates and that
+  non-macro top-level types such as `stakeholder` are rejected;
+- updated README, Lane A acceptance, build plan, API contract, data model,
+  formal model, structure guide, and embedded graph docs to target
+  `manifest.json.type = user | situation | tool | output`;
+- marked the old `0.1.0` expected-bundle shape as legacy compatibility rather
+  than the product contract.
+
+Evidence:
+
+- canonical v3 fixture includes `mimetype`, `manifest.json`, `claims.jsonl`,
+  `graph.jsonld`, `episodes.json`, `evidence/sources.jsonl`, `reasoning/`,
+  `review/review.json`, `runtime.json`, `agent_context.md`, and
+  `operations.md`;
+- v3 validation now checks required files, manifest layer vocabulary, macro
+  type values, non-empty compiled views, JSON parseability, and minimum
+  Situation Capsule claim/source records;
+- remaining gap: the compiler still needs to generate the v3 package and
+  archive rather than relying on hand-authored fixtures.
+
 ## Active Decisions
 
 | ID | Decision | Status | Where |

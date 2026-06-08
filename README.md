@@ -22,9 +22,9 @@ The product thesis is:
 
 The technical thesis is:
 
-> A capsule is a signed, portable, self-describing knowledge-work object: a
-> model of a situation, the evidence behind it, the reasoning tools for using
-> it, and the rules for human and AI use.
+> A PRAXIS Capsule is a signed, portable `.capsule` object with two faces:
+> substrate, the knowledge to reason over, and guidance, the expert reasoning
+> to reason with.
 
 ## Why This Matters
 
@@ -35,7 +35,8 @@ policy answer usable after the chat window closes.
 - **For policy teams**: a capsule keeps sources, dates, caveats, reasoning
   method, reviewed language, and output scope together.
 - **For engineers**: a capsule is a typed, signed, testable contract with
-  provenance, graph slices, review gates, and PRAXIS-facing APIs.
+  provenance, `graph.jsonld`, review gates, generated agent views, and
+  PRAXIS-facing APIs.
 - **For investors and operators**: capsules create a defensible knowledge layer
   for PRAXIS, where expert-reviewed context, methods, and language can become a
   reusable library rather than one-off prompt work.
@@ -213,8 +214,9 @@ Core services:
   bundle metadata, and serves PRAXIS integration endpoints.
 - **Ingestion workers**: parse documents, normalize source spans, extract
   entities, detect temporal claims, and write provenance records.
-- **Capsule compiler**: assembles capsule bundles from canonical records,
-  review decisions, ontology slices, graph summaries, and retrieval packs.
+- **Capsule compiler**: assembles v3 `.capsule` packages from canonical
+  records, review decisions, ontology layers, a connected `graph.jsonld`,
+  runtime rules, and generated agent views.
 - **Review gate**: records human approvals, rejections, expert notes, red-team
   findings, and promotion decisions.
 - **Evaluation harness**: tests source fidelity, temporal accuracy, retrieval
@@ -245,20 +247,23 @@ Current executable surface:
 
 ```powershell
 cargo run -p dialectica-cli -- doctor
+cargo run -p dialectica-cli -- validate fixtures/canonical-capsules/conflict-situation-capsule
+cargo run -p dialectica-cli -- inspect fixtures/canonical-capsules/conflict-situation-capsule
 cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule/expected-bundle
 cargo run -p dialectica-cli -- inspect fixtures/golden-policy-capsule/expected-bundle
 cargo run -p dialectica-cli -- ontology-plan fixtures/golden-policy-capsule/expected-bundle
-cargo run -p dialectica-cli -- schema-export schemas/capsule-0.1.0
+cargo run -p dialectica-cli -- schema-export schemas/capsule-3.0
 ```
 
 This proves the repository is not only product copy. It already has typed Rust
-capsule contracts, validation, schema export, a golden policy fixture, and a
-capsule-specific ontology planner.
+capsule contracts, v3 package validation, schema export, a canonical v3
+Situation Capsule fixture, a legacy policy fixture, and a capsule-specific
+ontology planner.
 
 Initial runtime promise:
 
 > Given a small policy source pack and a review decision, DIALECTICA can compile
-> a valid PRAXIS Capsule bundle that PRAXIS can use to produce a more grounded,
+> a valid PRAXIS `.capsule` that PRAXIS can use to produce a more grounded,
 > more temporally aware, more source-faithful policy answer than raw prompting.
 
 Canonical stores:
@@ -275,9 +280,9 @@ Canonical stores:
 At initial runtime scale, a capsule is:
 
 ```text
-Capsule = Identity + Context + Sources + Time + Ontology Blueprint + Graph
-        + Reasoning Devices + Language Profile + Agent Guidance + Retrieval Pack
-        + Output Contracts + Review Ledger + Evaluation Report + Signature
+Capsule = Manifest + Evidence + Claims + Episodes + graph.jsonld
+        + Reasoning Guidance + Review + Runtime Contract
+        + agent_context.md + operations.md + Signature
 ```
 
 The PRAXIS-facing capsule classes are fixed:
@@ -323,7 +328,7 @@ adapters**.
 
 ```mermaid
 flowchart LR
-  Canonical["Canonical records<br/>Postgres + source artifacts"] --> Export["Capsule bundle"]
+Canonical["Canonical records<br/>Postgres + source artifacts"] --> Export[".capsule package"]
   Canonical --> Derived["Derived adapters"]
   Derived --> Graph["Graph summaries"]
   Derived --> Vector["Embeddings"]
@@ -333,7 +338,7 @@ flowchart LR
 ```
 
 Graph, vector, MCP, and memory planes can make retrieval better, but they do not
-replace the capsule bundle or PostgreSQL ledger in the foundation build.
+replace the `.capsule` package or PostgreSQL ledger in the foundation build.
 
 ## Capsule Types
 

@@ -1,0 +1,20 @@
+{
+  "trust_layers": {
+    "T1": "vetted",
+    "T2": "corroborated",
+    "T3": "needs_corroboration"
+  },
+  "open_questions": [
+    "Has the army command moved forces or only issued a public statement?",
+    "Which civilian institution still controls certification enforcement?"
+  ],
+  "review_actions": [
+    {
+      "id": "review_fixture",
+      "reviewer_role": "policy_expert",
+      "decision": "approved_with_caveats",
+      "object_ids": ["clm_army_rejects_certification"],
+      "caveats": ["Single-source until corroborated by independent reporting."]
+    }
+  ]
+}

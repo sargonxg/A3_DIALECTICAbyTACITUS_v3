@@ -44,7 +44,7 @@ adapters until an ADR promotes them.
 - `project_id`
 - `title`
 - `capsule_type`
-- `schema_version`
+- `spec_version`
 - `status`
 - `freshness`
 - `compiled_at`
@@ -53,12 +53,12 @@ adapters until an ADR promotes them.
 - `created_at`
 - `updated_at`
 
-`capsule_type` must be one of:
+`capsule_type` stores `manifest.json.type` and must be one of:
 
-- `user_capsule`
-- `situation_capsule`
-- `tool_capsule`
-- `output_capsule`
+- `user`
+- `situation`
+- `tool`
+- `output`
 
 Specialized structures such as source packs, stakeholder maps, scenario
 branches, domain ontologies, and expert recommendations should be modeled in

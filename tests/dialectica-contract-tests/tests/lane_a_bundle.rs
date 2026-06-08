@@ -1,13 +1,20 @@
 use std::path::Path;
 
 use dialectica_capsule::{
-    export_schema_dir, CapsuleBundle, CapsuleManifest, ReviewState, ValidationSeverity,
+    export_schema_dir, CapsuleBundle, CapsuleManifest, PraxisCapsulePackage, ReviewState,
+    ValidationSeverity,
 };
 
 fn golden_bundle_dir() -> std::path::PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("../..")
         .join("fixtures/golden-policy-capsule/expected-bundle")
+}
+
+fn canonical_situation_dir() -> std::path::PathBuf {
+    Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../..")
+        .join("fixtures/canonical-capsules/conflict-situation-capsule")
 }
 
 #[test]
@@ -25,6 +32,38 @@ fn golden_policy_bundle_loads_and_validates() {
     );
     assert_eq!(bundle.source_ledger.len(), 5);
     assert_eq!(bundle.graph_slice.edges.len(), 4);
+}
+
+#[test]
+fn canonical_v3_situation_capsule_loads_and_validates() {
+    let package = PraxisCapsulePackage::load_from_dir(&canonical_situation_dir())
+        .expect("canonical v3 fixture should load");
+
+    let report = package.validate();
+
+    assert!(!report.has_errors(), "{:#?}", report.findings);
+    assert_eq!(package.manifest.spec_version, "3.0");
+    assert_eq!(package.manifest.capsule_type, "situation");
+    assert!(package
+        .manifest
+        .layers_present
+        .iter()
+        .any(|layer| layer == "reasoning"));
+}
+
+#[test]
+fn canonical_v3_capsule_rejects_extra_macro_types() {
+    let mut package = PraxisCapsulePackage::load_from_dir(&canonical_situation_dir())
+        .expect("canonical v3 fixture should load");
+    package.manifest.capsule_type = "stakeholder".to_owned();
+
+    let report = package.validate();
+
+    assert!(report.findings.iter().any(|finding| {
+        finding.code == "unsupported_capsule_type"
+            && finding.severity == ValidationSeverity::Error
+            && finding.path == "manifest.type"
+    }));
 }
 
 #[test]
@@ -73,10 +112,12 @@ fn schema_export_writes_required_snapshots() {
     export_schema_dir(&output_dir).expect("schema export should succeed");
 
     let manifest_schema = output_dir.join("manifest.schema.json");
+    let v3_manifest_schema = output_dir.join("praxis_capsule_manifest.schema.json");
     let capsule_schema = output_dir.join("capsule.schema.json");
     let ontology_blueprint_schema = output_dir.join("ontology_blueprint.schema.json");
 
     assert!(manifest_schema.exists());
+    assert!(v3_manifest_schema.exists());
     assert!(capsule_schema.exists());
     assert!(ontology_blueprint_schema.exists());
     assert!(std::fs::read_to_string(manifest_schema)

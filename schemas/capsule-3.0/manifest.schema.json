@@ -1,0 +1,150 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CapsuleManifest",
+  "description": "Manifest for a portable capsule bundle.",
+  "type": "object",
+  "required": [
+    "agent_guidance_profile",
+    "bundle_digest",
+    "capsule_health",
+    "capsule_id",
+    "capsule_type",
+    "compatibility_profile",
+    "compiled_at",
+    "compiler_version",
+    "created_at",
+    "freshness",
+    "graph_profile",
+    "language_profile",
+    "project_id",
+    "reasoning_profile",
+    "review_state",
+    "rights_profile",
+    "schema_version",
+    "source_count",
+    "status",
+    "summary",
+    "tenant_id",
+    "title"
+  ],
+  "properties": {
+    "agent_guidance_profile": {
+      "type": "string"
+    },
+    "bundle_digest": {
+      "type": "string"
+    },
+    "capsule_health": {
+      "type": "string"
+    },
+    "capsule_id": {
+      "type": "string"
+    },
+    "capsule_type": {
+      "type": "string",
+      "pattern": "^(user_capsule|situation_capsule|tool_capsule|output_capsule)$"
+    },
+    "compatibility_profile": {
+      "type": "string"
+    },
+    "compiled_at": {
+      "type": "string"
+    },
+    "compiler_version": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "freshness": {
+      "type": "string"
+    },
+    "graph_profile": {
+      "type": "string"
+    },
+    "language_profile": {
+      "type": "string"
+    },
+    "project_id": {
+      "type": "string"
+    },
+    "reasoning_profile": {
+      "type": "string"
+    },
+    "review_state": {
+      "$ref": "#/definitions/ReviewState"
+    },
+    "rights_profile": {
+      "type": "string"
+    },
+    "schema_version": {
+      "type": "string"
+    },
+    "source_count": {
+      "type": "integer",
+      "format": "uint",
+      "minimum": 0.0
+    },
+    "status": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "tenant_id": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    }
+  },
+  "definitions": {
+    "ReviewState": {
+      "description": "Human-review state for a capsule or one of its internal objects.",
+      "oneOf": [
+        {
+          "description": "Author-created or machine-proposed, not yet inspected.",
+          "type": "string",
+          "enum": [
+            "draft"
+          ]
+        },
+        {
+          "description": "A reviewer must inspect before promotion.",
+          "type": "string",
+          "enum": [
+            "needs_review"
+          ]
+        },
+        {
+          "description": "Approved for the recorded scope.",
+          "type": "string",
+          "enum": [
+            "approved"
+          ]
+        },
+        {
+          "description": "Approved, but caveats must travel with the capsule.",
+          "type": "string",
+          "enum": [
+            "approved_with_caveats"
+          ]
+        },
+        {
+          "description": "Blocked by review.",
+          "type": "string",
+          "enum": [
+            "rejected"
+          ]
+        },
+        {
+          "description": "Approved for PRAXIS use.",
+          "type": "string",
+          "enum": [
+            "promoted"
+          ]
+        }
+      ]
+    }
+  }
+}

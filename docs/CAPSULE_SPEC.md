@@ -1,555 +1,518 @@
-# PRAXIS Capsule Specification
+# PRAXIS Capsule - Format Specification v3.0
 
-Status: draft contract for foundation build implementation.
+Status: canonical contract for DIALECTICA builders and PRAXIS readers.
 
-## Definition
+This is the capsule format for DIALECTICA -> PRAXIS. One container
+(`.capsule`), four macro types, built to capture real knowledge, tacit
+expertise, and reasoning, and to serve agents as both substrate and guidance.
 
-A PRAXIS Capsule is a signed, portable knowledge-work object that can be
-stored, shared, reviewed, combined, and used by humans and PRAXIS agents.
+## 1. What A Capsule Is
 
-It contains:
+A capsule is a portable, governed, self-describing knowledge object. Every
+capsule, regardless of type, has two faces:
 
-- a model of a user, situation, tool, or output;
-- the evidence behind that model;
-- a model of how to reason, act, reuse, or hand off within the declared scope.
+- **Substrate**: the structured knowledge an agent reasons over: evidence,
+  atomic claims, entities, relations, episodes, embeddings, and source state.
+  The "what."
+- **Guidance**: how to reason with the substrate: methods, mental models,
+  tacit heuristics, traps to avoid, and the runtime contract. The "how."
 
-## Bundle Shape
+> A capsule is a model of a situation plus a model of how to think about it.
 
-The canonical export is a directory or compressed archive:
+The four macro types package different mixes of substrate and guidance, but
+they share one container, one layer vocabulary, and one set of building blocks.
+
+| Type | Question | Dominant face | Role |
+| --- | --- | --- | --- |
+| `user` | Who am I working as or for? | guidance about the analyst | personalize voice, audience, intellectual style, standing positions |
+| `situation` | What is going on? | substrate | the grounded, trust-layered model of a case |
+| `tool` | How should I think? | guidance method | an executable analytical method plus tacit expertise |
+| `output` | What should I produce? | guidance deliverable | the deliverable template and contract |
+
+PRAXIS composes a set:
 
 ```text
-capsule/
-  manifest.json
-  capsule.json
-  source_ledger.jsonl
-  temporal_ledger.jsonl
-  ontology_slice.json
-  graph_slice.json
-  graph_semantics.jsonld
-  graph_constraints.json
-  reasoning_playbook.json
-  language_profile.json
-  agent_guidance.json
-  retrieval_pack.jsonl
-  output_contracts.json
-  review_ledger.jsonl
-  rights_profile.json
-  marketplace_listing.json
-  capsule_health.json
-  eval_report.json
-  checksums.sha256
-  signature.json
+1 User + 1..n Situation + 0..n Tool + 1 Output
 ```
 
-## `manifest.json`
+The composed context tells the agent who it is working for, what is known, how
+to reason, and what to produce.
 
-Required fields:
+## 2. The `.capsule` Container
 
-- `capsule_id`
-- `schema_version`
-- `title`
-- `summary`
-- `created_at`
-- `compiled_at`
-- `tenant_id`
-- `project_id`
-- `status`
-- `freshness`
-- `source_count`
-- `review_state`
-- `capsule_type`
-- `rights_profile`
-- `graph_profile`
-- `reasoning_profile`
-- `language_profile`
-- `agent_guidance_profile`
-- `compatibility_profile`
-- `bundle_digest`
-- `compiler_version`
-- `capsule_health`
+A capsule is a Zip archive with extension `.capsule` and MIME type:
 
-## `capsule.json`
+```text
+application/vnd.tacitus.praxis-capsule+zip
+```
 
-Required sections:
+The first Zip entry is an uncompressed `mimetype` file holding that exact
+string, following the EPUB sniffing pattern. There is one extension for all
+four types; `manifest.json.type` discriminates the type. Versions live in the
+manifest, not in the suffix.
 
-- `identity_context`: user, team, institution, mandate, audience;
-- `situation_context`: issue, geography, sector, time horizon, constraints;
-- `analytical_context`: frames, assumptions, uncertainties, questions;
-- `policy_context`: instruments, authorities, stakeholders, tradeoffs;
-- `risk_context`: known risks, unknowns, edge cases, escalation triggers;
-- `usage_context`: intended PRAXIS workflows and forbidden uses.
+Filename pattern:
 
-## `source_ledger.jsonl`
+```text
+<title-slug>.<short-id>.capsule
+```
 
-One record per source or source span.
+Portability rule:
 
-Required fields:
+- canonical files are open JSON, JSONL, JSON-LD, and Markdown;
+- `cache/` is optional, regenerable, and excluded from integrity hashes;
+- a capsule must remain fully usable with no graph engine running;
+- Ladybug, Oxigraph, vector indexes, and full-text indexes are acceleration,
+  never the source of truth.
 
-- `source_id`
-- `source_type`
-- `title`
-- `uri`
-- `publisher`
-- `published_at`
-- `retrieved_at`
-- `language`
-- `license_or_access`
-- `trust_status`
-- `span_id`
-- `span_locator`
-- `hash`
-- `notes`
+## 3. Layer Model
 
-## `temporal_ledger.jsonl`
+The capsule knowledge model has nine layers. In canonical `graph.jsonld`, these
+are named graphs. Some layers also have dedicated files.
 
-One record per temporal claim.
+| # | Layer | Named graph | Face | Holds |
+| --- | --- | --- | --- | --- |
+| 1 | Evidence | `g:evidence` | substrate | sources, spans, hashes, rights, provenance |
+| 2 | Claim | `g:claims` | substrate | atomic typed claims |
+| 3 | Graph / relation | `g:situation` | substrate | entities and relations |
+| 4 | Temporal / episodic | `g:temporal` | substrate | episodes, intervals, causal links |
+| 5 | Semantic / ontology | `g:ontology` | substrate | ACO core, domain cores, OWL/SHACL |
+| 6 | Reasoning / guidance | `g:reasoning` | guidance | devices, heuristics, mental models, traps, annotations |
+| 7 | Memory | `g:memory` | meta | semantic, episodic, procedural build memory |
+| 8 | Governance / trust | `g:governance` | meta | trust tiers, review, signoff, dissent, corroboration |
+| 9 | Runtime / contract | `g:runtime` | guidance | how an agent must retrieve, cite, combine, and act |
 
-Required fields:
+Substrate and guidance live in one connected graph. A claim can link to its
+evidence, episode, annotations, heuristics, caveats, traps, review decisions,
+and runtime rules. Layers are views over a connected graph, not separate
+stores.
 
-- `claim_id`
-- `claim_text`
-- `valid_time_start`
-- `valid_time_end`
-- `published_at`
-- `observed_at`
-- `status`
-- `confidence`
-- `supersedes`
-- `superseded_by`
-- `source_ids`
-
-Allowed statuses:
-
-- `current`
-- `stale`
-- `superseded`
-- `forecast`
-- `contested`
-- `unknown`
-
-## `ontology_slice.json`
-
-Contains the local vocabulary and semantic contract needed for this capsule.
-It is not a global taxonomy and must not assume that actor/claim analysis is the
-right ontology for every capsule.
-
-The ontology slice should be built from a capsule-specific ontology blueprint:
-
-- User Capsules emphasize role, authority, preference, privacy, and output
-  style semantics.
-- Situation Capsules emphasize actors, claims, events, risks, policy
-  instruments, source state, stakeholder lenses, domain semantics, scenario
-  hypotheses, caveats, and decision clocks.
-- Tool Capsules emphasize method steps, required inputs, intellectual and
-  philosophical lenses, source standards, failure modes, expert caveats, and
-  review criteria.
-- Output Capsules emphasize artifact structure, claim lineage, source receipts,
-  reuse rules, and caveats.
-
-Source packs, domain ontologies, stakeholder maps, scenario branches, expert
-endorsements, and graph modules are modeled as internal ontology layers, graph
-lenses, review metadata, or marketplace metadata inside those four classes.
-They are not PRAXIS-importable capsule classes.
-
-Required sections:
-
-- `ontology_id`
-- `version`
-- `namespace`
-- `language`
-- `domains`
-- `terms`
-- `mappings`
-- `frame_memberships`
-- `deprecations`
-- `review_notes`
-
-Every source-backed definition must point to source spans or review notes.
-Every material term must carry enough scope and review state for PRAXIS to know
-whether it can be used directly, caveated, hidden, or escalated.
-
-## `graph_slice.json`
-
-Contains the compact graph needed by PRAXIS.
-
-Top-level required sections:
-
-- `schema_version`
-- `capsule_id`
-- `graph_profile`
-- `nodes`
-- `edges`
-- `communities`
-- `layout_hints`
-- `health`
-
-Node types:
-
-- `actor`
-- `institution`
-- `source`
-- `source_span`
-- `event`
-- `claim`
-- `concept`
-- `policy_instrument`
-- `risk`
-- `decision`
-- `reasoning_device`
-- `review_action`
-- `output_contract`
-- `rights_policy`
-
-Edge types:
-
-- `supports`
-- `contradicts`
-- `causes`
-- `influences`
-- `incentivized_by`
-- `depends_on`
-- `mentions`
-- `authored_by`
-- `regulated_by`
-- `reviewed_by`
-- `supersedes`
-- `belongs_to_frame`
-- `uses_device`
-- `forbidden_for`
-- `has_output_rule`
-- `has_rights_policy`
-
-Every edge must include provenance:
-
-- `source_ids`
-- `created_by`
-- `created_at`
-- `confidence`
-- `review_state`
-- `temporal_scope`
-- `explanation`
-
-Use `docs/GRAPH_PROFILE_REGISTRY.md` for canonical node classes, edge classes,
-approved aliases, graph profile names, and PRAXIS preview payloads.
-
-The list above is a shared export vocabulary. The capsule-specific ontology can
-add local properties, aliases, and domain terms, but promoted graph nodes and
-edges must normalize back to registered classes or explicitly declare how PRAXIS
-should treat the local class.
-
-## `graph_semantics.jsonld`
-
-Contains an optional linked-data representation of the graph and capsule
-identity. The first implementation should keep this simple and compatible with
-normal JSON processing.
-
-Design anchors:
-
-- JSON-LD for linked-data serialization;
-- PROV-O for generation and review provenance;
-- SKOS for controlled concepts;
-- ODRL for rights and usage semantics.
-
-## `graph_constraints.json`
-
-Defines the required graph profile for the capsule type.
-
-Required sections:
-
-- `node_classes`
-- `edge_classes`
-- `required_edge_fields`
-- `review_state_rules`
-- `temporal_rules`
-- `source_provenance_rules`
-- `praxis_visualization_hints`
-
-Example:
+## 4. Shared Envelope: `manifest.json`
 
 ```json
 {
-  "graph_profile": "situation_graph_v1",
-  "graph_lens": "stakeholder_power_lens",
-  "required_node_classes": ["actor", "institution", "claim", "source", "risk"],
-  "required_edge_fields": [
-    "source_ids",
-    "source_span_ids",
-    "temporal_scope",
-    "review_state",
-    "explanation"
+  "capsule_id": "cap_01HQ...",
+  "spec_version": "3.0",
+  "version": 4,
+  "type": "situation",
+  "category": "country_risk",
+  "title": "Country X - coup and aftermath",
+  "owner_uid": "...",
+  "situation_id": "...",
+  "cores": ["aco", "country_risk"],
+  "created_at": "...",
+  "updated_at": "...",
+  "provenance_root_hash": "sha256:...",
+  "signature": "...",
+  "depends_on": [],
+  "layers_present": [
+    "evidence",
+    "claims",
+    "situation",
+    "temporal",
+    "ontology",
+    "reasoning",
+    "governance",
+    "runtime"
   ]
 }
 ```
 
-## `reasoning_playbook.json`
+Only four `type` values are PRAXIS-importable:
 
-This is where DIALECTICA captures expert thinking, not only expert facts.
-
-Required sections:
-
-- `mental_models`
-- `policy_heuristics`
-- `philosophical_lenses`
-- `adversarial_questions`
-- `causal_questions`
-- `temporal_questions`
-- `red_flags`
-- `recommended_output_patterns`
-- `reviewer_guidance`
-
-Examples:
-
-- distributional analysis;
-- institutional capacity analysis;
-- incentive mapping;
-- second-order effects;
-- legitimacy and consent;
-- precautionary principle;
-- game-theoretic actor response;
-- path dependency;
-- epistemic humility and uncertainty disclosure.
-
-## `language_profile.json`
-
-This is where DIALECTICA captures human-gated language. It is separate from
-`output_contracts.json` because the same language rules can apply across
-briefs, memos, stakeholder maps, scenario updates, and agent handoffs.
-
-Required sections:
-
-- `profile_id`
-- `primary_language`
-- `secondary_languages`
-- `audience_register`
-- `approved_terms`
-- `deprecated_terms`
-- `blocked_phrases`
-- `framing_rules`
-- `translation_notes`
-- `citation_language`
-- `uncertainty_language`
-- `review_state`
-
-Every material term or framing rule should include:
-
-- a stable rule or term id;
-- the approved wording or blocked wording;
-- rationale;
-- source span ids or review action ids;
-- valid scope;
-- review state.
-
-Example:
-
-```json
-{
-  "profile_id": "language:policy-brief-en-v1",
-  "primary_language": "en",
-  "secondary_languages": ["fr", "es"],
-  "audience_register": "ministerial_decision_brief",
-  "approved_terms": [
-    {
-      "term_id": "term:state-aid",
-      "label": "state aid",
-      "definition": "Public support that may affect competition and requires jurisdiction-specific caveats.",
-      "review_state": "approved_with_caveats"
-    }
-  ],
-  "blocked_phrases": ["guaranteed legal compliance"],
-  "framing_rules": [
-    {
-      "rule_id": "language:caveat-legal-status",
-      "rule": "Use 'may require authority review' instead of stating legal clearance.",
-      "review_state": "approved"
-    }
-  ],
-  "citation_language": "Use source receipts for factual and legal-sensitive claims.",
-  "uncertainty_language": "State confidence and unresolved evidence gaps plainly.",
-  "review_state": "approved_with_caveats"
-}
+```text
+user | situation | tool | output
 ```
 
-## `agent_guidance.json`
+Everything else is an internal layer, lens, payload, listing field, or review
+object inside one of those four types.
 
-This is the model-facing execution contract for PRAXIS agents. It is separate
-from the reasoning playbook because a method can be reusable across many
-workflows while agent permissions, tool policy, citation rules, stop
-conditions, and handoff rules can differ by capsule.
+## 5. Shared Building Blocks
 
-Required sections:
+### 5.1 Claim: `claims.jsonl`
 
-- `allowed_workflows`
-- `tool_policy`
-- `citation_policy`
-- `graph_use_policy`
-- `language_profile_refs`
-- `reasoning_sequence`
-- `context_budget_policy`
-- `stop_conditions`
-- `handoff_policy`
-- `audit_receipts_required`
-
-Example:
+Claims are the atoms of substrate.
 
 ```json
 {
-  "allowed_workflows": ["decision_brief", "stakeholder_map"],
-  "tool_policy": {
-    "allowed_tools": ["capsule_search", "source_preview", "graph_preview"],
-    "blocked_tools": ["automated_legal_opinion"]
+  "id": "clm_...",
+  "text": "The army chief publicly rejected the certification.",
+  "primitive": "Claim",
+  "subject": "ent_army_chief",
+  "predicate": "rejects",
+  "object": "ent_ec_cert",
+  "cores": ["aco", "country_risk"],
+  "source_span": {
+    "source_id": "src_07",
+    "start": 1840,
+    "end": 1979
   },
-  "citation_policy": "cite_source_span_for_every_nontrivial_claim",
-  "graph_use_policy": "prefer approved current edges; show needs_review edges as warnings",
-  "language_profile_refs": ["language:policy-brief-en-v1"],
-  "reasoning_sequence": ["decision_clock_v1", "stakeholder_scan_v1"],
-  "context_budget_policy": "include graph focus nodes and contested claims first",
-  "stop_conditions": ["material_claim_missing_source", "rights_policy_blocks_workflow"],
-  "handoff_policy": "ask reviewer before public or legal-sensitive output",
-  "audit_receipts_required": ["capsule_id", "bundle_digest", "source_span_ids", "graph_edge_ids"]
+  "confidence": 0.74,
+  "corroboration": {
+    "score": 0.82,
+    "sources": ["src_07", "gdelt:...", "wd:Q..."]
+  },
+  "trust_layer": "T1",
+  "disputed": false,
+  "valid_from": "2026-02-14",
+  "valid_to": null,
+  "observed_at": "...",
+  "superseded_by": null,
+  "episode_id": "ep_precoup_2026",
+  "origin": "extracted",
+  "annotations": ["ann_crux_01"]
 }
 ```
 
-## `retrieval_pack.jsonl`
+### 5.2 Entity And Relation: `graph.jsonld`
 
-Records optimized for PRAXIS context injection.
+Entities carry grounded identifiers where available. Relations are typed; the
+conflict-bearing relations are first-class:
 
-Required fields:
+```text
+(:Actor)-[:CONTENDS_WITH {over, means, intensity}]->(:Actor)
+(:Office)-[:FRICTION_WITH {issue}]->(:Office)
+(:Actor)-[:HOLDS]->(:Interest)
+(:Actor)-[:WIELDS]->(:Leverage)
+(:Actor)-[:BOUND_BY]->(:Constraint)
+(:Actor)-[:MADE]->(:Commitment)
+```
 
-- `chunk_id`
-- `source_ids`
-- `text`
-- `embedding_ref`
-- `tags`
-- `temporal_status`
-- `citation_hint`
-- `review_state`
-- `intended_use`
+### 5.3 Episode: `episodes.json`
 
-## `output_contracts.json`
+```json
+{
+  "id": "ep_precoup_2026",
+  "type": "regime_phase",
+  "label": "Pre-coup constitutional order",
+  "t_start": "2025-11-01",
+  "t_end": "2026-02-14",
+  "boundary_event": "evt_coup_declaration",
+  "fuzzy": true,
+  "participants": ["ent_army", "ent_president"],
+  "member_claims": ["clm_..."],
+  "state_before": "Civilian government holds nominal control.",
+  "state_after": "Army asserts executive authority.",
+  "causes": ["ep_election_dispute_2026"],
+  "leads_to": ["ep_postcoup_transition"]
+}
+```
 
-Defines what the capsule is meant to help generate.
+### 5.4 Evidence: `evidence/sources.jsonl`
 
-Initial output types:
+Each source record must carry source id, URI, title, publisher, retrieval time,
+content hash, rights, and chunk references. Source blobs may live in
+`evidence/blobs/` and are referenced by hash.
 
-- policy memo;
-- decision brief;
-- stakeholder map;
-- scenario analysis;
-- risk register;
-- research synthesis;
-- evidence table;
-- talking points;
-- legislative or regulatory analysis;
-- PRAXIS agent workflow context pack.
+## 6. Tacit Knowledge And Reasoning
 
-Each output contract should include:
+Tacit knowledge is captured as structured guidance objects attached at capsule
+level or to a specific claim, entity, episode, or output rule. These objects
+must be reachable from the connected graph.
 
-- required citations;
-- required uncertainty handling;
-- recommended structure;
-- forbidden claims;
-- escalation criteria;
-- reviewer expectations.
+### 6.1 Heuristic: `reasoning/heuristics.json`
 
-## `review_ledger.jsonl`
+An expert judgment rule.
 
-Required fields:
+```json
+{
+  "id": "heu_premobilization",
+  "statement": "A military actor's public rejection of a civilian institution near a constitutional deadline signals elevated escalation risk.",
+  "trigger": "(:Actor{type:'Military'})-[:rejects]->(:Institution) within N days of a (:Constraint{type:'deadline'})",
+  "inference": "raise escalation_risk to HIGH; probe for mobilization indicators",
+  "scope": ["aco", "country_risk"],
+  "confidence": 0.7,
+  "source": "expert:desk; derivation:case-pattern",
+  "examples": ["case_..."]
+}
+```
 
-- `review_id`
-- `reviewer_id`
-- `reviewer_role`
-- `reviewed_object_type`
-- `reviewed_object_id`
-- `decision`
-- `scope`
-- `notes`
-- `created_at`
-- `expires_at`
+### 6.2 Mental Model / Lens
 
-Allowed decisions:
+Reusable lenses such as Galtung's ABC triangle, Fisher-Ury
+interests-vs-positions, principal-agent, two-level games, escalation ladders,
+stakeholder analysis, conflict mapping, or ACH belong primarily in Tool
+Capsules.
 
-- `approved`
-- `rejected`
-- `needs_revision`
-- `approved_with_caveats`
-- `escalated`
+### 6.3 Salience Prior: `reasoning/salience.json`
 
-## `rights_profile.json`
+```json
+{
+  "target": "primitive:Commitment",
+  "weight": 0.9,
+  "rationale": "Commitments predict behavior better than narrative."
+}
+```
 
-Defines how the capsule may be used, shared, exported, or listed.
+### 6.4 Anti-Pattern / Trap: `reasoning/traps.json`
 
-Required sections:
+```json
+{
+  "id": "trap_mirror_imaging",
+  "name": "Mirror-imaging",
+  "description": "Assuming an adversary reasons as we do.",
+  "detection_prompt": "Where has an actor's motive been inferred from our own framing rather than their stated interests?"
+}
+```
 
-- `owner`
-- `allowed_workflows`
-- `prohibited_workflows`
-- `export_policy`
-- `sharing_policy`
-- `source_license_summary`
-- `sensitive_fields`
-- `redaction_rules`
-- `marketplace_policy`
-- `expires_at`
+Traps feed the `critique()` verb directly.
 
-## `marketplace_listing.json`
+### 6.5 Precedent / Analogy: `reasoning/precedents.json`
 
-Optional for private capsules, required for listed capsules.
+```json
+{
+  "this": "cap_country_x",
+  "resembles": "cap_country_y_2021",
+  "basis": "contested certification plus neutral-then-aligned army",
+  "lessons": ["..."]
+}
+```
 
-Required fields:
+### 6.6 Annotation: `reasoning/annotations.json`
 
-- `listing_id`
-- `capsule_id`
-- `title`
-- `capsule_type`
-- `domain_tags`
-- `geography`
-- `language`
-- `review_level`
-- `reviewer_summary`
-- `freshness_status`
-- `source_count`
-- `rights_summary`
-- `known_caveats`
-- `compatible_capsules`
-- `fork_policy`
-- `eval_snapshot`
+```json
+{
+  "id": "ann_crux_01",
+  "target": "clm_...",
+  "author": "analyst:GC",
+  "type": "crux",
+  "text": "This is the hinge: if true, escalation is near-certain.",
+  "affects_trust": false
+}
+```
 
-## `capsule_health.json`
+Reusable domain and method expertise belongs in Tool Capsules. Individual
+analyst style and standing heuristics belong in User Capsules.
+Situation-specific judgments and caveats belong as annotations inside
+Situation Capsules.
 
-Required fields:
+## 7. Four Types In Detail
 
-- `capsule_id`
-- `schema_version`
-- `source_coverage`
-- `unsupported_claim_count`
-- `stale_claim_count`
-- `contested_claim_count`
-- `graph_provenance_coverage`
-- `ontology_coverage`
-- `review_coverage`
-- `reasoning_device_coverage`
-- `output_contract_completeness`
-- `praxis_eval_score`
-- `blocking_warnings`
-- `recommended_next_actions`
+All types share the envelope, container, layer vocabulary, and building blocks.
+They differ in which layers they populate heavily.
 
-Capsule health is a gate. It should not be only a UI score.
+| Layer | User | Situation | Tool | Output |
+| --- | --- | --- | --- | --- |
+| Evidence | light | heavy | optional | optional |
+| Claim | standing positions | heavy | optional | optional |
+| Graph / relation | optional affiliations | heavy | required patterns | optional lineage |
+| Temporal / episodic | optional | heavy | if temporal device | optional |
+| Semantic / ontology | persona schema | domain cores | method primitives | output schema |
+| Reasoning / guidance | style and heuristics | open questions, annotations | primary payload | template and contract |
+| Memory | history/preferences | build provenance | usage notes | lineage |
+| Governance / trust | privacy/review | heavy | device validation | output approval |
+| Runtime / contract | voice/audience | freshness/citation | how to apply | format/cite/refusal |
 
-## Compatibility Rules
+### 7.1 User Capsule: `payload.user.json`
 
-- New optional fields may be added in minor schema versions.
-- Required fields require a major schema version bump.
-- Deprecated fields must remain readable for at least one major version.
-- PRAXIS must reject capsule bundles with unsupported major versions.
-- Capsule validators must produce actionable error paths.
+```json
+{
+  "role": "UN political affairs officer",
+  "seniority": "senior",
+  "expertise": ["Middle East", "mediation"],
+  "audience": "Security Council members",
+  "voice": "measured, institutional",
+  "intellectual_style": ["interests-over-positions", "scenario-minded", "skeptical of single-source"],
+  "standing_positions": [{ "claim": "...", "since": "..." }],
+  "preferred_devices": ["fisher_ury_interests", "scenario_analysis"],
+  "heuristics_ref": "reasoning/heuristics.json"
+}
+```
 
-## Foundation Acceptance Criteria
+### 7.2 Situation Capsule
 
-The first implementation is acceptable when:
+The situation payload is the substrate:
 
-- a fixture bundle can be generated from local source files;
-- the bundle validates against the schema;
-- the source ledger can prove where each derived claim came from;
-- the review ledger can block promotion;
-- PRAXIS can consume the manifest and retrieval pack;
-- the eval harness can compare raw and capsule-augmented outputs.
+- `claims.jsonl`
+- `graph.jsonld`
+- `episodes.json`
+- `evidence/`
+- `review/`
+- `reasoning/annotations.json`
+- `reasoning/precedents.json`
+- `reasoning/traps.json`
+
+The bulk of AGON and KAIROS output lands here when those adapters are present.
+Open questions live in `review/review.json`.
+
+### 7.3 Tool Capsule: `payload.tool.json`
+
+```json
+{
+  "id": "stakeholder_analysis",
+  "purpose": "Map actors by influence x interest.",
+  "required_primitives": ["Actor", "Interest", "Leverage", "Constraint"],
+  "graph_queries": ["MATCH (a:Actor)-[:HOLDS]->(i:Interest) RETURN a, collect(i)"],
+  "procedure": [
+    "Score influence x interest salience.",
+    "Cluster coalitions.",
+    "Flag swing actors."
+  ],
+  "heuristics": ["heu_..."],
+  "traps": ["trap_mirror_imaging"],
+  "output_schema": "StakeholderMatrix",
+  "critique_prompts": ["Which high-influence actor is missing from the sources?"]
+}
+```
+
+A Tool Capsule is pure guidance made executable. It declares the graph patterns
+it needs, the moves, the tacit heuristics and traps, and the typed output.
+
+### 7.4 Output Capsule: `payload.output.json`
+
+```json
+{
+  "format": "decision_memo",
+  "sections": ["BLUF", "situation", "options", "risks", "recommendation"],
+  "max_words": 900,
+  "citation_style": "claim_id_inline",
+  "runtime_contract": {
+    "must_cite": true,
+    "hedge_T3": true,
+    "surface_disputed": true,
+    "freshness_days": 30,
+    "combination_rules": "dedupe by QID; flag conflicts",
+    "refusal": ["do not assert disputed claims as fact"]
+  }
+}
+```
+
+## 8. One Connected Graph; Ladybug Materializes It
+
+`graph.jsonld` is the canonical graph serialization. Named graphs correspond to
+layers. The substrate and guidance layers form a single connected graph:
+claims <-> evidence, claims <-> episodes, claims <-> annotations/heuristics/traps,
+actors <-> relations, and runtime rules <-> outputs.
+
+For speed, a capsule may ship optional engine caches in `cache/`:
+
+```text
+cache/capsule.ladybug
+cache/capsule.oxigraph/
+```
+
+Ladybug may materialize graph traversal, vector search, and full-text search.
+Oxigraph may materialize RDF for SPARQL and SHACL validation. Both are
+regenerable from `graph.jsonld`, excluded from the integrity hash, and never the
+source of truth.
+
+## 9. Trust Layers
+
+Trust layers apply to Situation claims:
+
+- **T1 Vetted**: assert.
+- **T2 Corroborated**: attribute.
+- **T3 Needs corroboration**: hedge.
+- **Disputed flag**: surface, do not silently resolve.
+
+Anything an agent proposes through `improve()` or `connect()` enters as T3 and
+must pass human gating before it counts.
+
+## 10. Agent View
+
+Every bundle ships two generated entry points:
+
+- `agent_context.md`: compiled, bounded, self-citing context block.
+- `operations.md`: self-describing card explaining how to operate the capsule
+  with no database.
+
+`agent_context.md` should follow this order:
+
+```text
+CONTRACT
+SITUATION FRAME
+EPISODES
+ACTOR AND FRICTION MAP
+FACTS BY TRUST
+REASONING SCAFFOLD
+OPEN QUESTIONS
+OPERATIONS
+```
+
+The verb set must work with or without an engine:
+
+```text
+seek · understand · connect · critique · improve · apply_device · diff · compose
+```
+
+Substrate verbs query or traverse. Guidance verbs follow encoded methods,
+heuristics, and traps. `improve` and `connect` emit T3 proposals back into
+gating.
+
+## 11. Composition Across Types
+
+`compose(1 User + 1..n Situation + 0..n Tool + 1 Output)` merges bundles into a
+bounded, self-citing context block:
+
+- dedupe entities by grounded id where possible;
+- reconcile or flag conflicting claims, never silently merge;
+- layer facts by trust;
+- inject the User persona and Output contract at the top;
+- precompute each Tool device over the Situation graph;
+- preserve citations, caveats, rights, freshness, and review gates.
+
+The result tells the agent who it is, what is known and how sure, how to think,
+and what to produce.
+
+## 12. Validation And Integrity
+
+- SHACL shapes per loaded core validate the graph.
+- `provenance_root_hash` is a Merkle root over canonical files only.
+- `signature` signs the manifest and root hash.
+- `cache/` is excluded from the root hash.
+- Generated `agent_context.md` and `operations.md` must be reproducible from
+  canonical files.
+
+## 13. Full Bundle
+
+```text
+<title-slug>.<short-id>.capsule
+├── mimetype
+├── manifest.json
+├── claims.jsonl
+├── graph.jsonld
+├── episodes.json
+├── evidence/
+│   ├── sources.jsonl
+│   └── blobs/
+├── reasoning/
+│   ├── devices.json
+│   ├── heuristics.json
+│   ├── salience.json
+│   ├── traps.json
+│   ├── precedents.json
+│   ├── annotations.json
+│   └── plan.json
+├── payload.<type>.json
+├── review/
+│   └── review.json
+├── runtime.json
+├── agent_context.md
+├── operations.md
+└── cache/
+    ├── capsule.ladybug
+    └── capsule.oxigraph/
+```
+
+Situation Capsules may omit `payload.situation.json` when the substrate files
+are the payload. User, Tool, and Output Capsules must include their matching
+payload file.
+
+## 14. Foundation Cut
+
+The first build must hold scope without weakening the target:
+
+- required layers: evidence, claims, situation graph, temporal, ontology,
+  reasoning, governance, runtime;
+- required compiled views: `agent_context.md` and `operations.md`;
+- required guidance objects: `devices`, `annotations`, and `traps`;
+- supported but initially sparse: `heuristics`, `salience`, `precedents`,
+  `memory`, Ladybug cache, Oxigraph cache;
+- ship one canonical Situation Capsule fixture and keep User, Tool, and Output
+  examples aligned to the same manifest vocabulary;
+- all promoted capsules must validate as v3 and remain usable without a graph
+  engine.
+
+Substrate is the knowledge. Guidance is the judgment. The capsule carries both
+as a portable `.capsule` that any agent can use, with or without a database,
+and that humans gate as it grows into the Canon.

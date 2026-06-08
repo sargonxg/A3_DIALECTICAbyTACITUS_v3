@@ -11,7 +11,7 @@ Turn the current contract scaffold into a working local capsule engine:
 ```text
 source pack
   -> reviewed canonical records
-  -> deterministic bundle compiler
+  -> deterministic v3 .capsule compiler
   -> PRAXIS context pack
   -> local API preview
 ```
@@ -48,25 +48,33 @@ cargo fmt --all -- --check
 cargo check --locked --workspace --all-targets
 cargo clippy --locked --workspace --all-targets -- -D warnings
 cargo test --locked --workspace
+cargo run -p dialectica-cli -- validate fixtures/canonical-capsules/conflict-situation-capsule
+cargo run -p dialectica-cli -- inspect fixtures/canonical-capsules/conflict-situation-capsule
 cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule/expected-bundle
 cargo run -p dialectica-cli -- inspect fixtures/golden-policy-capsule/expected-bundle
 cargo run -p dialectica-cli -- ontology-plan fixtures/golden-policy-capsule/expected-bundle
-cargo run -p dialectica-cli -- schema-export schemas/capsule-0.1.0
+cargo run -p dialectica-cli -- schema-export schemas/capsule-3.0
 python -m compileall tools/python
 python -m unittest discover tools/python/tests
 ```
 
 ## Phase 1: Deterministic Bundle Writer
 
-Goal: make `dialectica-compiler` write a bundle directory from typed records.
+Goal: make `dialectica-compiler` write the canonical v3 extracted package from
+typed records, then assemble a `.capsule` archive.
 
 Deliver:
 
 - `BundleWriter` in `crates/dialectica-compiler`;
+- v3 `manifest.json` with `spec_version: "3.0"` and `type`;
+- `mimetype` as the first uncompressed archive entry;
+- canonical files: `claims.jsonl`, `graph.jsonld`, `episodes.json`,
+  `evidence/sources.jsonl`, `reasoning/`, `review/review.json`,
+  `runtime.json`, `agent_context.md`, and `operations.md`;
 - deterministic JSON writer;
 - deterministic JSONL writer;
-- required file list from `docs/CAPSULE_SPEC.md`;
-- checksum manifest placeholder;
+- archive writer for `.capsule`;
+- Merkle root scope that excludes only `cache/`;
 - compiler receipt with input record counts and review state.
 
 Acceptance:
@@ -79,7 +87,7 @@ Acceptance:
 - missing review state blocks promoted export;
 - rejected, expired, and unreviewed objects remain in lineage but are blocked
   from promoted PRAXIS export;
-- contract tests compare generated output to the golden expected bundle.
+- contract tests compare generated output to the canonical v3 fixture.
 
 ## Phase 2: Source-Pack Builder
 
@@ -106,7 +114,8 @@ Acceptance:
 
 ## Phase 3: PRAXIS Context Pack Export
 
-Goal: create the first PRAXIS-consumable payload.
+Goal: create the first PRAXIS-consumable payload from `agent_context.md`,
+`operations.md`, and the canonical v3 graph/claim/source files.
 
 Deliver:
 
@@ -120,6 +129,8 @@ Acceptance:
 
 - PRAXIS can read the context-pack JSON without needing PostgreSQL or a graph
   database;
+- PRAXIS can also read `agent_context.md` directly as the bounded first LLM
+  context block;
 - rejected and expired objects are hidden by default;
 - stale or contested claims appear as warnings.
 - context-pack tests assert that every included claim, graph edge, language rule,
@@ -192,8 +203,8 @@ Acceptance:
 
 - Keep capsule bundle and PostgreSQL canonical.
 - Keep Firestore as PRAXIS visibility mirror only.
-- Keep LadybugDB, Graphiti, MCP, and vector stores as adapters until an ADR
-  promotes one.
+- Keep Ladybug, Oxigraph, Graphiti, MCP, and vector stores as optional
+  adapters/caches until an ADR promotes one.
 - Keep ontology blueprints capsule-specific.
 - Keep every promoted object source-backed or review-backed.
 - Keep every code slice covered by contract tests.

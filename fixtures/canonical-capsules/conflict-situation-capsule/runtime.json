@@ -1,0 +1,12 @@
+{
+  "verbs": ["seek", "understand", "connect", "critique", "improve", "apply_device", "diff", "compose"],
+  "citation_style": "claim_id_inline",
+  "trust_rules": {
+    "T1": "assert",
+    "T2": "attribute",
+    "T3": "hedge"
+  },
+  "must_surface_disputed": true,
+  "must_cite": true,
+  "cache_policy": "cache/ is optional and regenerable; canonical files are sufficient."
+}

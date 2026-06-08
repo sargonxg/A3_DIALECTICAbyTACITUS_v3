@@ -2,8 +2,9 @@
 
 Status: required acceptance contract for the first implementation lane.
 
-Lane A makes the capsule contract real. Do not start store, API, model
-extraction, or deployment code beyond scaffolding until Lane A is complete.
+Lane A makes the canonical capsule contract real. Do not start store, API,
+model extraction, or deployment code beyond scaffolding until Lane A can
+validate a v3 PRAXIS Capsule package.
 
 ## Scope
 
@@ -14,6 +15,7 @@ crates/dialectica-capsule/
 crates/dialectica-cli/
 tests/dialectica-contract-tests/
 schemas/
+fixtures/canonical-capsules/
 fixtures/golden-policy-capsule/
 docs/CAPSULE_SPEC.md
 docs/GRAPH_PROFILE_REGISTRY.md
@@ -31,36 +33,57 @@ crates/dialectica-store/
 infrastructure/
 ```
 
+## Canonical Contract
+
+Lane A targets [Capsule Spec v3.0](CAPSULE_SPEC.md). The production artifact is
+a `.capsule` Zip archive. Tests may validate the extracted directory projection.
+
+Required canonical files:
+
+```text
+<title-slug>.<short-id>.capsule
+├── mimetype
+├── manifest.json
+├── claims.jsonl
+├── graph.jsonld
+├── episodes.json
+├── evidence/
+│   └── sources.jsonl
+├── reasoning/
+│   ├── devices.json
+│   ├── annotations.json
+│   └── traps.json
+├── review/
+│   └── review.json
+├── runtime.json
+├── agent_context.md
+└── operations.md
+```
+
+`payload.user.json`, `payload.tool.json`, and `payload.output.json` are required
+for User, Tool, and Output Capsules. Situation Capsules may use the substrate
+files as their payload.
+
+`cache/` is optional and must remain regenerable.
+
 ## Required Rust Types
 
-`crates/dialectica-capsule` must define typed structs for:
+`crates/dialectica-capsule` must define typed structs or validators for:
 
-- `CapsuleManifest`;
-- `CapsuleBundleIndex`;
-- `SourceLedgerRecord`;
-- `SourceSpanRecord`;
-- `TemporalLedgerRecord`;
-- `OntologySlice`;
-- `OntologyTerm`;
-- `OntologyMapping`;
-- `GraphSlice`;
-- `GraphNode`;
-- `GraphEdge`;
-- `GraphCommunity`;
-- `GraphHealth`;
-- `ReasoningDevice`;
-- `LanguageProfile`;
-- `LanguageRule`;
-- `AgentGuidance`;
-- `ToolPolicy`;
-- `CitationPolicy`;
-- `GraphUsePolicy`;
-- `OutputContract`;
-- `ReviewLedgerRecord`;
-- `RightsProfile`;
-- `MarketplaceListing`;
-- `CapsuleHealthReport`;
-- `ValidationError`.
+- `PraxisCapsuleManifest`;
+- `PraxisCapsulePackage`;
+- `CapsuleManifest` legacy compatibility;
+- `CapsuleBundle` legacy compatibility;
+- source/evidence records;
+- claim records;
+- episode records;
+- ontology/semantic layer records;
+- graph records;
+- reasoning devices, annotations, traps, heuristics;
+- review and trust records;
+- runtime contract records;
+- output contract records;
+- validation findings.
 
 All exported structs should derive or implement:
 
@@ -68,82 +91,67 @@ All exported structs should derive or implement:
 - `Clone` where reasonable;
 - `serde::Serialize`;
 - `serde::Deserialize`;
-- JSON Schema generation once `schemars` is introduced.
+- JSON Schema generation where the type is part of the public contract.
 
 ## Schema Outputs
 
-Lane A must create deterministic schema files:
+Lane A must export v3 schemas:
 
 ```text
-schemas/capsule-0.1.0/manifest.schema.json
-schemas/capsule-0.1.0/capsule.schema.json
-schemas/capsule-0.1.0/source_ledger.schema.json
-schemas/capsule-0.1.0/temporal_ledger.schema.json
-schemas/capsule-0.1.0/ontology_slice.schema.json
-schemas/capsule-0.1.0/graph_slice.schema.json
-schemas/capsule-0.1.0/reasoning_playbook.schema.json
-schemas/capsule-0.1.0/language_profile.schema.json
-schemas/capsule-0.1.0/agent_guidance.schema.json
-schemas/capsule-0.1.0/output_contracts.schema.json
-schemas/capsule-0.1.0/review_ledger.schema.json
-schemas/capsule-0.1.0/rights_profile.schema.json
-schemas/capsule-0.1.0/marketplace_listing.schema.json
+praxis_capsule_manifest.schema.json
+praxis_capsule_package.schema.json
 ```
+
+Legacy schema outputs under `schemas/capsule-0.1.0/` remain compatibility
+snapshots until the compiler is fully migrated. New compiler work must target
+`schemas/capsule-3.0/` once the v3 typed model is complete.
 
 ## Fixture Outputs
 
-Lane A must create the fixture shell:
+Required canonical fixture:
 
 ```text
-fixtures/golden-policy-capsule/
-  source-pack/
-  expected-bundle/
-    manifest.json
-    capsule.json
-    source_ledger.jsonl
-    temporal_ledger.jsonl
-    ontology_slice.json
-    graph_slice.json
-    graph_semantics.jsonld
-    graph_constraints.json
-    reasoning_playbook.json
-    language_profile.json
-    agent_guidance.json
-    retrieval_pack.jsonl
-    output_contracts.json
-    review_ledger.jsonl
-    rights_profile.json
-    marketplace_listing.json
-    capsule_health.json
-    eval_report.json
+fixtures/canonical-capsules/conflict-situation-capsule/
 ```
 
-The fixture must include:
+It must include:
 
-- at least five source records;
-- at least one source span per factual claim;
-- at least one stale or superseded claim;
-- at least one contested claim;
-- at least one graph edge in `approved_with_caveats`;
-- at least one rejected or blocked graph object;
+- v3 `manifest.json`;
+- the PRAXIS Capsule MIME marker;
+- at least one claim;
+- at least one evidence source;
+- JSON-LD graph named graphs for evidence, claims, situation, temporal,
+  ontology, reasoning, governance, and runtime;
 - at least one reasoning device;
-- at least one human-reviewed language rule;
-- at least one agent guidance policy;
-- at least one output contract;
-- at least one rights rule that blocks a workflow.
+- at least one annotation;
+- at least one trap;
+- review and trust-layer data;
+- runtime verb contract;
+- generated `agent_context.md`;
+- generated `operations.md`.
 
-## Validation Error Shape
+Legacy fixture:
 
-All validation errors must serialize to this shape:
+```text
+fixtures/golden-policy-capsule/expected-bundle/
+```
+
+This is retained to keep earlier tests useful, but it is not the product
+contract. Compiler work must migrate it to the v3 shape or generate both legacy
+and v3 projections only during transition.
+
+## Validation Finding Shape
+
+All validation findings must serialize to this shape:
 
 ```json
 {
-  "code": "missing_required_field",
-  "path": "graph_slice.edges[0].source_span_ids",
-  "message": "Graph edge must include at least one source span or review action.",
+  "code": "missing_v3_bundle_file",
+  "path": "graph.jsonld",
+  "message": "Required v3 capsule file 'graph.jsonld' is missing.",
   "severity": "error",
-  "object_id": "edge:guidelines-regulated-by-commission",
-  "help": "Add source_span_ids or review_action_ids before promotion."
+  "object_id": "cap_123",
+  "help": "Compile the capsule using the v3 bundle shape from docs/CAPSULE_SPEC.md."
 }
 ```
 
@@ -159,36 +167,37 @@ Lane A must support:
 
 ```powershell
 cargo run -p dialectica-cli -- doctor
+cargo run -p dialectica-cli -- validate fixtures/canonical-capsules/conflict-situation-capsule
+cargo run -p dialectica-cli -- inspect fixtures/canonical-capsules/conflict-situation-capsule
 cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule/expected-bundle
-cargo run -p dialectica-cli -- inspect fixtures/golden-policy-capsule/expected-bundle
-cargo run -p dialectica-cli -- schema-export schemas/capsule-0.1.0
+cargo run -p dialectica-cli -- schema-export schemas/capsule-3.0
 ```
 
-`validate` must fail non-zero for invalid bundles.
+`validate` must fail non-zero for invalid v3 packages or invalid legacy bundles.
 
 `inspect` must print:
 
 - capsule id;
 - capsule type;
-- review state;
+- review state placeholder or review state;
 - source count;
 - claim count;
-- graph node and edge counts;
+- graph node and edge counts when available;
 - warnings.
 
 ## Tests
 
 Required tests:
 
-- valid fixture bundle passes validation;
-- missing source span fails validation;
-- unregistered graph edge fails validation unless it has an approved alias;
-- unreviewed critical graph edge blocks promotion;
-- stale temporal claim produces warning;
-- rejected review object remains in lineage but is blocked from context pack;
-- schema export is deterministic.
+- canonical v3 Situation Capsule fixture passes validation;
+- canonical v3 rejects non-macro top-level types such as `stakeholder`;
+- missing v3 required files fail validation;
+- legacy golden bundle still passes until migration is complete;
+- stale temporal claim in the legacy fixture produces a warning;
+- unsupported legacy top-level capsule type fails validation;
+- schema export includes v3 manifest/package schemas;
 - example capsules under `fixtures/example-capsules/` parse and share the same
-  top-level bundle sections.
+  top-level bundle sections until they are migrated.
 
 ## Completion Gate
 
@@ -200,6 +209,7 @@ cargo check --locked --workspace --all-targets
 cargo clippy --locked --workspace --all-targets -- -D warnings
 cargo test --locked --workspace
 cargo run -p dialectica-cli -- doctor
+cargo run -p dialectica-cli -- validate fixtures/canonical-capsules/conflict-situation-capsule
 cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule/expected-bundle
 python -m compileall tools/python
 python -m unittest discover tools/python/tests

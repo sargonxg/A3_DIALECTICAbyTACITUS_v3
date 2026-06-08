@@ -64,7 +64,7 @@ Response:
 {
   "service": "dialectica-api",
   "version": "0.1.0",
-  "capsule_schema_version": "0.1.0",
+  "capsule_spec_version": "3.0",
   "graph_preview_schema_version": "graph_preview_v1",
   "commit": "local"
 }
@@ -75,21 +75,23 @@ Response:
 Response must include:
 
 - `capsule_id`;
-- `schema_version`;
+- `spec_version`;
 - `title`;
-- `capsule_type`;
+- `type`;
+- `category`;
+- `cores`;
 - `status`;
 - `review_state`;
 - `freshness`;
 - `source_count`;
 - `graph_profile`;
-- `bundle_digest`;
+- `provenance_root_hash`;
+- `signature`;
 - `compiled_at`;
 - `compatible_workflows`;
 - `warnings`.
 
-`capsule_type` must be one of `user_capsule`, `situation_capsule`,
-`tool_capsule`, or `output_capsule`.
+`type` must be one of `user`, `situation`, `tool`, or `output`.
 
 ## `GET /v1/capsules/{capsule_id}/graph-preview`
 
@@ -118,7 +120,7 @@ Response must include:
 - temporal warnings;
 - graph focus nodes and edge warnings;
 - reasoning devices;
-- agent guidance policy;
+- runtime contract and operations;
 - output contract;
 - forbidden claims;
 - read receipt hints.

@@ -86,15 +86,14 @@ lens, source-proof lens, scenario lens, and ontology lens inside that capsule.
 
 Every PRAXIS-importable capsule declares:
 
-- `capsule_type`: one of `user_capsule`, `situation_capsule`, `tool_capsule`,
-  or `output_capsule`;
+- `manifest.json.type`: one of `user`, `situation`, `tool`, or `output`;
 - `scope`: issue, geography, time horizon, institution, user/team boundary, and
   intended workflow;
-- `ontology_family`: the semantic family selected by the ontology blueprint;
-- `graph_profile`: the embedded graph profile and any local graph lenses;
-- `required_layers`: source ledger, temporal ledger, ontology slice, graph
-  slice, reasoning playbook, language profile, agent guidance, review ledger,
-  rights profile, health, eval, and signature;
+- `cores`: the ACO and capsule-specific semantic cores selected by the ontology
+  blueprint;
+- `graph.jsonld`: the embedded connected graph and named layer graphs;
+- `layers_present`: evidence, claims, situation, temporal, ontology,
+  reasoning, governance, and runtime for the foundation cut;
 - `allowed_workflows`: PRAXIS workflows where the capsule may be used;
 - `reasoning_profile`: tools or methods that must sequence the agent's work;
 - `review_profile`: reviewer roles, caveats, expiry, promotion rules;
@@ -106,7 +105,9 @@ Example:
 
 ```json
 {
-  "capsule_type": "situation_capsule",
+  "type": "situation",
+  "spec_version": "3.0",
+  "cores": ["aco", "conflict_analysis"],
   "scope": {
     "issue": "border-region electricity infrastructure conflict",
     "geography": "synthetic fixture region",
@@ -114,23 +115,16 @@ Example:
     "valid_until": "2026-09-30"
   },
   "required_layers": [
-    "source_ledger",
-    "temporal_ledger",
-    "ontology_blueprint",
-    "ontology_slice",
-    "graph_slice",
-    "reasoning_playbook",
-    "language_profile",
-    "agent_guidance",
-    "review_ledger"
+    "evidence",
+    "claims",
+    "situation",
+    "temporal",
+    "ontology",
+    "reasoning",
+    "governance",
+    "runtime"
   ],
-  "graph_profile": "situation_graph_v1",
-  "graph_lenses": [
-    "source_proof_lens",
-    "stakeholder_power_lens",
-    "scenario_causality_lens",
-    "domain_semantic_lens"
-  ],
+  "graph_file": "graph.jsonld",
   "reasoning_profile": "conflict_mapping_v1",
   "review_profile": "expert_review_required",
   "rights_profile": "team_internal_reviewed"
@@ -139,23 +133,29 @@ Example:
 
 ## Embedded Graph
 
-Each capsule contains an embedded graph in the signed bundle. The graph is
-canonical at the bundle layer; graph databases are adapters.
+Each capsule contains an embedded graph in the signed `.capsule` package.
+`graph.jsonld` is canonical at the bundle layer; graph databases are adapters
+or caches.
 
 ```text
 Capsule
   |
-  +-- ontology blueprint        what meaning must be captured
-  +-- ontology slice            terms, frames, mappings, caveats
-  +-- graph slice               nodes, edges, communities, review state
-  +-- graph semantics           JSON-LD / PROV-O / SKOS / ODRL export view
-  +-- graph constraints         validation rules and allowed lenses
+  +-- graph.jsonld              named graphs for all capsule layers
+  +-- g:evidence                sources, spans, hashes, rights
+  +-- g:claims                  atomic claims by trust layer
+  +-- g:situation               entities and relations
+  +-- g:temporal                episodes, intervals, causal links
+  +-- g:ontology                ACO and capsule-specific cores
+  +-- g:reasoning               tools, heuristics, traps, annotations
+  +-- g:governance              review, signoff, dissent, corroboration
+  +-- g:runtime                 retrieval, citation, composition contract
 ```
 
-LadybugDB, Neo4j, Oxigraph, PostgreSQL, Graphiti, or GraphRAG systems may be
-used as projections for exploration, algorithms, temporal graph memory, or
-visualization. They do not replace the capsule contract. The bundle must remain
-portable as JSON/JSONL plus checksums and review receipts.
+Ladybug, Oxigraph, PostgreSQL, Graphiti, or GraphRAG systems may be used as
+projections for exploration, algorithms, temporal graph memory, validation, or
+visualization. They do not replace the capsule contract. The package must
+remain portable as JSON/JSONL/JSON-LD/Markdown plus checksums and review
+receipts.
 
 ## Example: Conflict Situation Capsule
 

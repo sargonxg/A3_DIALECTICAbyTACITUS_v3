@@ -2,13 +2,13 @@
 
 Date: 2026-06-08
 
-Readiness: **84/100 for coding readiness; not app-production readiness**.
+Readiness: **86/100 for coding readiness; not app-production readiness**.
 
 The repository has begun the first functional implementation pass. It is not
-yet a working backend, but the capsule contract is now executable: the Rust
-crate can load a bundle directory, validate core invariants, generate a
-capsule-specific ontology blueprint, export schema snapshots, and the CLI can
-validate, inspect, and plan the ontology for a golden policy capsule.
+yet a working backend, but the capsule contract is now executable in two
+lanes: the Rust crate can validate a canonical v3 extracted `.capsule` package,
+and it can still load the legacy expected-bundle directory while the compiler
+migrates.
 
 ## Evidence Checked
 
@@ -35,6 +35,7 @@ validate, inspect, and plan the ontology for a golden policy capsule.
 - `docs/BUILD_LEDGER.md`
 - `docs/IMPLEMENTATION_PHASE_PLAN.md`
 - `schemas/capsule-0.1.0/`
+- `fixtures/canonical-capsules/conflict-situation-capsule/`
 
 ## Ready
 
@@ -46,12 +47,14 @@ validate, inspect, and plan the ontology for a golden policy capsule.
   library.
 - Documentation has a source-of-truth order.
 - Cargo workspace is present and testable.
-- `dialectica-capsule` now owns first executable bundle structs, validation
-  findings, bundle loading, inspection summaries, ontology blueprints, and JSON
-  Schema export.
+- `dialectica-capsule` now owns v3 package validation, legacy bundle structs,
+  validation findings, bundle loading, inspection summaries, ontology
+  blueprints, and JSON Schema export.
 - `dialectica-cli` now supports `validate`, `inspect`, `ontology-plan`, and
   `schema-export`.
-- Golden policy capsule expected-bundle exists under
+- Canonical v3 conflict Situation Capsule fixture exists under
+  `fixtures/canonical-capsules/conflict-situation-capsule/`.
+- Legacy golden policy capsule expected-bundle exists under
   `fixtures/golden-policy-capsule/expected-bundle/`.
 - Initial crate and service boundaries exist.
 - Contract-test crate exists.
@@ -66,7 +69,7 @@ validate, inspect, and plan the ontology for a golden policy capsule.
 - Lane A acceptance is explicit in `docs/LANE_A_ACCEPTANCE.md`.
 - API Slice 1 is explicit in `docs/API_SLICE_1.md`.
 - Graph vocabulary is centralized in `docs/GRAPH_PROFILE_REGISTRY.md`.
-- Capsule bundle layers and agent guidance are explained in
+- Capsule v3 layers, runtime contract, and generated agent views are explained in
   `docs/CAPSULE_STRUCTURE_GUIDE.md`.
 - Research-backed graph and ontology adapter decisions are recorded in
   `docs/GRAPH_ONTOLOGY_RESEARCH_NOTES.md`.
@@ -84,15 +87,18 @@ validate, inspect, and plan the ontology for a golden policy capsule.
 
 ## Not Ready Yet
 
-- Capsule validation breadth is incomplete; only the first sourceability, graph
-  registry, review, rights, manifest, and temporal checks are implemented.
+- Capsule validation breadth is incomplete; v3 validation currently checks
+  package shape, manifest layer vocabulary, type boundary, non-empty generated
+  views, JSON parseability, and minimum Situation claim/source records.
 - Golden fixture source pack is still only a placeholder; the expected bundle is
-  committed, but the compiler does not generate it yet.
+  committed, but the compiler does not generate either the legacy bundle or v3
+  package yet.
 - Example single-file capsule envelopes still need shared-envelope validation.
 - PostgreSQL migrations do not exist.
 - API routes are scaffold binaries, not HTTP services.
 - Cloud Tasks handler is a scaffold binary, not an HTTP target.
-- Bundle signing/checksum logic is not implemented.
+- `.capsule` archive assembly, signing, and Merkle-root logic are not
+  implemented.
 - Ontology blueprint persistence inside signed bundles is not implemented; the
   planner exists as a CLI and schema contract.
 - PRAXIS context-pack export is not implemented.
@@ -108,8 +114,8 @@ validate, inspect, and plan the ontology for a golden policy capsule.
    ontology blueprint compatibility checks.
 2. Validate the four example capsule envelopes against a shared-envelope
    contract.
-3. Implement source-pack to expected-bundle generation.
-4. Add bundle checksums and deterministic compiler output.
+3. Implement source-pack to v3 `.capsule` package generation.
+4. Add Merkle-root/signature logic and deterministic compiler output.
 5. Add store migrations for capsules, sources, claims, graph, review, rights,
    and bundle exports.
 6. Add local API health and manifest/context-pack routes.

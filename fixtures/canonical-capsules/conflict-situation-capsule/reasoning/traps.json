@@ -1,0 +1,8 @@
+[
+  {
+    "id": "trap_mirror_imaging",
+    "name": "Mirror imaging",
+    "description": "Assuming a conflict actor reasons from the same institutional priorities as the analyst.",
+    "detection_prompt": "Where has motive been inferred from our preferred institutional frame rather than from sourced actor commitments?"
+  }
+]

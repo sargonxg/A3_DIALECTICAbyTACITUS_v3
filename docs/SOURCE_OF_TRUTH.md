@@ -6,14 +6,14 @@ This file defines how to use the repository before implementation starts.
 
 When documents conflict, use this order:
 
-1. `docs/SOURCE_OF_TRUTH.md`
-2. `docs/CODING_LEDGER.md`
-3. `docs/ENGINEERING_BASELINE.md`
-4. `docs/LANE_A_ACCEPTANCE.md`
-5. `docs/API_SLICE_1.md`
-6. `docs/GRAPH_PROFILE_REGISTRY.md`
-7. `docs/CAPSULE_STRUCTURE_GUIDE.md`
-8. `docs/CAPSULE_SPEC.md`
+1. `docs/CAPSULE_SPEC.md`
+2. `docs/SOURCE_OF_TRUTH.md`
+3. `docs/CODING_LEDGER.md`
+4. `docs/ENGINEERING_BASELINE.md`
+5. `docs/LANE_A_ACCEPTANCE.md`
+6. `docs/API_SLICE_1.md`
+7. `docs/GRAPH_PROFILE_REGISTRY.md`
+8. `docs/CAPSULE_STRUCTURE_GUIDE.md`
 9. `docs/API_CONTRACT.md`
 10. `docs/DATA_MODEL.md`
 11. `docs/ARCHITECTURE.md`
@@ -89,16 +89,19 @@ generation.
 
 The foundation build must include:
 
-- a portable capsule bundle;
-- source and provenance ledger;
-- temporal claim model;
-- minimal ontology and graph slices;
-- embedded graph semantics and validation constraints;
-- human-reviewed language profile;
-- explicit agent guidance for PRAXIS workflow use;
+- a portable `.capsule` bundle with MIME marker and v3 `manifest.json`;
+- canonical files: `claims.jsonl`, `graph.jsonld`, `episodes.json`,
+  `evidence/sources.jsonl`, `reasoning/`, `review/review.json`,
+  `runtime.json`, `agent_context.md`, and `operations.md`;
+- source and provenance records linked to claims and graph nodes;
+- temporal episode model;
+- ontology named graph and capsule-specific semantic cores;
+- embedded connected graph where substrate and guidance are traversable
+  together;
+- explicit runtime contract for PRAXIS workflow use;
 - capsule-specific ontology blueprint and semantic-layer plan;
-- human review ledger;
-- rights and marketplace-readiness metadata;
+- human review and trust-layer records;
+- rights and marketplace-readiness metadata when promotion requires it;
 - concrete policy fixture examples;
 - PRAXIS integration contract;
 - eval fixtures that measure whether the capsule helps.
@@ -144,8 +147,9 @@ Before building service code, the repo needs:
 - CI check for formatting, tests, and docs presence.
 
 Current implementation status: the first executable capsule-contract slice now
-includes Rust bundle structs, schema export, a golden expected-bundle fixture,
-and CLI `validate`, `inspect`, `ontology-plan`, and `schema-export` commands.
+includes Rust legacy bundle structs, v3 package validation, schema export, a
+legacy expected-bundle fixture, a canonical v3 Situation Capsule fixture, and
+CLI `validate`, `inspect`, `ontology-plan`, and `schema-export` commands.
 Compiler, store, API, task handler, and eval capabilities remain future phases.
 
 ## First Definition of Done
@@ -153,7 +157,8 @@ Compiler, store, API, task handler, and eval capabilities remain future phases.
 Phase 1 is done when a developer can run one local command to:
 
 1. create a valid sample capsule bundle from fixtures;
-2. validate it against the capsule schema;
+2. validate it against the v3 capsule spec;
 3. inspect the source ledger and review ledger;
-4. export the bundle as a directory and compressed artifact;
+4. export the bundle as a `.capsule` archive and extracted directory
+   projection;
 5. run contract tests in CI.

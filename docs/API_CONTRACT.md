@@ -65,7 +65,8 @@ Request:
 ```json
 {
   "title": "Energy security decision brief",
-  "capsule_type": "situation_capsule",
+  "type": "situation",
+  "spec_version": "3.0",
   "intended_workflows": ["decision_brief", "stakeholder_map"],
   "sources": [
     {
@@ -131,14 +132,16 @@ Response:
 ```json
 {
   "capsule_id": "cap_123",
-  "schema_version": "0.1.0",
+  "spec_version": "3.0",
   "summary": "...",
+  "agent_context": "...",
+  "operations": "...",
   "retrieval_records": [],
   "citation_hints": [],
   "temporal_warnings": [],
   "reasoning_devices": [],
   "language_profile": {},
-  "agent_guidance": {},
+  "runtime_contract": {},
   "output_contract": {},
   "graph_focus": [],
   "graph_warnings": [],

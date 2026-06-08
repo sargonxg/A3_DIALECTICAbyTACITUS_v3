@@ -15,19 +15,56 @@ use schemars::{schema::RootSchema, schema_for, JsonSchema};
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use serde_json::Value;
 
-/// Current capsule schema version used by scaffold fixtures and API contracts.
-pub const CAPSULE_SCHEMA_VERSION: &str = "0.1.0";
+/// Current canonical PRAXIS Capsule format version.
+pub const CAPSULE_SPEC_VERSION: &str = "3.0";
 
-/// PRAXIS-importable capsule classes.
-///
-/// More specialized concepts such as sources, stakeholders, scenarios,
-/// domains, expert picks, and graph ontologies are modeled as internal
-/// semantic layers or graph lenses inside these four classes.
-pub const APPROVED_CAPSULE_TYPES: &[&str] = &[
+/// MIME type written into the first uncompressed entry of a `.capsule` archive.
+pub const CAPSULE_MIME_TYPE: &str = "application/vnd.tacitus.praxis-capsule+zip";
+
+/// Legacy directory-bundle schema kept only for compatibility while the
+/// compiler migrates to the v3 `.capsule` contract.
+pub const LEGACY_BUNDLE_SCHEMA_VERSION: &str = "0.1.0";
+
+/// Backward-compatible alias used by existing scaffold binaries.
+pub const CAPSULE_SCHEMA_VERSION: &str = CAPSULE_SPEC_VERSION;
+
+/// Canonical PRAXIS-importable capsule macro types.
+pub const CANONICAL_CAPSULE_TYPES: &[&str] = &["user", "situation", "tool", "output"];
+
+/// Legacy PRAXIS-importable capsule class names.
+pub const LEGACY_CAPSULE_TYPES: &[&str] = &[
     "user_capsule",
     "situation_capsule",
     "tool_capsule",
     "output_capsule",
+];
+
+/// Backward-compatible alias for older code that still says capsule_type.
+pub const APPROVED_CAPSULE_TYPES: &[&str] = LEGACY_CAPSULE_TYPES;
+
+/// Canonical v3 layer names. The `memory` layer is supported but not required
+/// for the first executable compiler slice.
+pub const CANONICAL_LAYER_NAMES: &[&str] = &[
+    "evidence",
+    "claims",
+    "situation",
+    "temporal",
+    "ontology",
+    "reasoning",
+    "memory",
+    "governance",
+    "runtime",
+];
+
+const REQUIRED_V3_LAYERS: &[&str] = &[
+    "evidence",
+    "claims",
+    "situation",
+    "temporal",
+    "ontology",
+    "reasoning",
+    "governance",
+    "runtime",
 ];
 
 const REGISTERED_NODE_TYPES: &[&str] = &[
@@ -69,7 +106,23 @@ const REGISTERED_EDGE_TYPES: &[&str] = &[
 /// Returns true when the capsule type is part of the PRAXIS-importable contract.
 pub fn is_approved_capsule_type(capsule_type: &str) -> bool {
     let capsule_type = capsule_type.trim();
-    APPROVED_CAPSULE_TYPES.contains(&capsule_type)
+    CANONICAL_CAPSULE_TYPES.contains(&capsule_type) || LEGACY_CAPSULE_TYPES.contains(&capsule_type)
+}
+
+/// Returns true when the capsule type uses the v3 canonical manifest value.
+pub fn is_canonical_capsule_type(capsule_type: &str) -> bool {
+    CANONICAL_CAPSULE_TYPES.contains(&capsule_type.trim())
+}
+
+/// Maps legacy type names to canonical v3 macro types.
+pub fn canonical_capsule_type(capsule_type: &str) -> Option<&'static str> {
+    match capsule_type.trim() {
+        "user" | "user_capsule" => Some("user"),
+        "situation" | "situation_capsule" => Some("situation"),
+        "tool" | "tool_capsule" => Some("tool"),
+        "output" | "output_capsule" => Some("output"),
+        _ => None,
+    }
 }
 
 /// Human-review state for a capsule or one of its internal objects.
@@ -236,7 +289,7 @@ impl CapsuleManifest {
     ) -> Self {
         Self {
             capsule_id: capsule_id.to_owned(),
-            schema_version: CAPSULE_SCHEMA_VERSION.to_owned(),
+            schema_version: LEGACY_BUNDLE_SCHEMA_VERSION.to_owned(),
             title: title.to_owned(),
             summary: String::new(),
             created_at: String::new(),
@@ -614,6 +667,93 @@ pub struct CapsuleHealthReport {
     pub warnings: Vec<String>,
 }
 
+/// Canonical v3 manifest for a portable `.capsule` package.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, JsonSchema)]
+pub struct PraxisCapsuleManifest {
+    pub capsule_id: String,
+    pub spec_version: String,
+    pub version: u64,
+    #[serde(rename = "type")]
+    #[schemars(regex(pattern = "^(user|situation|tool|output)$"))]
+    pub capsule_type: String,
+    pub category: String,
+    pub title: String,
+    #[serde(default)]
+    pub owner_uid: Option<String>,
+    #[serde(default)]
+    pub situation_id: Option<String>,
+    pub cores: Vec<String>,
+    pub created_at: String,
+    pub updated_at: String,
+    pub provenance_root_hash: String,
+    pub signature: String,
+    #[serde(default)]
+    pub depends_on: Vec<String>,
+    pub layers_present: Vec<String>,
+}
+
+impl PraxisCapsuleManifest {
+    pub fn has_required_identity(&self) -> bool {
+        !self.capsule_id.trim().is_empty()
+            && !self.title.trim().is_empty()
+            && !self.capsule_type.trim().is_empty()
+            && !self.spec_version.trim().is_empty()
+    }
+
+    pub fn is_canonical_type(&self) -> bool {
+        is_canonical_capsule_type(&self.capsule_type)
+    }
+}
+
+/// Canonical v3 directory projection of a `.capsule` archive.
+///
+/// The production artifact is a zip archive. This type validates the same
+/// canonical files after extraction or before archive assembly.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, JsonSchema)]
+pub struct PraxisCapsulePackage {
+    pub manifest: PraxisCapsuleManifest,
+    pub root: PathBuf,
+}
+
+impl PraxisCapsulePackage {
+    pub fn load_from_dir(path: &Path) -> Result<Self, CapsuleLoadError> {
+        Ok(Self {
+            manifest: read_json(path, "manifest.json")?,
+            root: path.to_path_buf(),
+        })
+    }
+
+    pub fn validate(&self) -> ValidationReport {
+        let mut report = ValidationReport::default();
+
+        validate_v3_manifest(self, &mut report);
+        validate_v3_required_files(self, &mut report);
+        validate_v3_compiled_views(self, &mut report);
+        validate_v3_minimum_records(self, &mut report);
+
+        report
+    }
+
+    pub fn inspection(&self) -> CapsuleInspection {
+        CapsuleInspection {
+            capsule_id: self.manifest.capsule_id.clone(),
+            capsule_type: self.manifest.capsule_type.clone(),
+            review_state: ReviewState::ApprovedWithCaveats,
+            source_count: count_jsonl_records(&self.root.join("evidence/sources.jsonl"))
+                .unwrap_or_default(),
+            claim_count: count_jsonl_records(&self.root.join("claims.jsonl")).unwrap_or_default(),
+            graph_node_count: 0,
+            graph_edge_count: 0,
+            warning_count: self
+                .validate()
+                .findings
+                .iter()
+                .filter(|finding| finding.severity == ValidationSeverity::Warning)
+                .count(),
+        }
+    }
+}
+
 /// Complete local capsule bundle assembled from the canonical directory shape.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, JsonSchema)]
 pub struct CapsuleBundle {
@@ -703,7 +843,9 @@ impl CapsuleBundle {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 pub struct CapsuleInspection {
     pub capsule_id: String,
-    #[schemars(regex(pattern = "^(user_capsule|situation_capsule|tool_capsule|output_capsule)$"))]
+    #[schemars(regex(
+        pattern = "^(user|situation|tool|output|user_capsule|situation_capsule|tool_capsule|output_capsule)$"
+    ))]
     pub capsule_type: String,
     pub review_state: ReviewState,
     pub source_count: usize,
@@ -808,6 +950,16 @@ pub fn export_schema_dir(path: &Path) -> Result<(), CapsuleLoadError> {
     })?;
 
     write_schema(path, "manifest.schema.json", schema_for!(CapsuleManifest))?;
+    write_schema(
+        path,
+        "praxis_capsule_manifest.schema.json",
+        schema_for!(PraxisCapsuleManifest),
+    )?;
+    write_schema(
+        path,
+        "praxis_capsule_package.schema.json",
+        schema_for!(PraxisCapsulePackage),
+    )?;
     write_schema(path, "capsule.schema.json", schema_for!(CapsuleBundle))?;
     write_schema(
         path,
@@ -1196,6 +1348,241 @@ fn merge_unique(target: &mut Vec<String>, items: impl IntoIterator<Item = String
     }
 }
 
+fn validate_v3_manifest(package: &PraxisCapsulePackage, report: &mut ValidationReport) {
+    let manifest = &package.manifest;
+
+    if !manifest.has_required_identity() {
+        report.push(ValidationFinding::error(
+            "missing_v3_manifest_identity",
+            "manifest",
+            "Manifest requires capsule_id, title, type, and spec_version.",
+            Some(manifest.capsule_id.clone()),
+            "Populate the v3 manifest identity fields before validation.",
+        ));
+    }
+
+    if manifest.spec_version != CAPSULE_SPEC_VERSION {
+        report.push(ValidationFinding::error(
+            "unsupported_capsule_spec_version",
+            "manifest.spec_version",
+            format!(
+                "Expected capsule spec version {CAPSULE_SPEC_VERSION}, found {}.",
+                manifest.spec_version
+            ),
+            Some(manifest.capsule_id.clone()),
+            "Export with the canonical v3 capsule contract or add a migration.",
+        ));
+    }
+
+    if !manifest.is_canonical_type() {
+        report.push(ValidationFinding::error(
+            "unsupported_capsule_type",
+            "manifest.type",
+            format!(
+                "Capsule type '{}' is not canonical. Use one of: {}.",
+                manifest.capsule_type,
+                CANONICAL_CAPSULE_TYPES.join(", ")
+            ),
+            Some(manifest.capsule_id.clone()),
+            "Use user, situation, tool, or output. Model source packs, stakeholder maps, scenarios, ontology modules, and expert picks as internal layers.",
+        ));
+    }
+
+    for layer in &manifest.layers_present {
+        if !CANONICAL_LAYER_NAMES.contains(&layer.as_str()) {
+            report.push(ValidationFinding::error(
+                "unknown_capsule_layer",
+                "manifest.layers_present",
+                format!("Layer '{layer}' is not part of the v3 capsule layer vocabulary."),
+                Some(manifest.capsule_id.clone()),
+                "Use evidence, claims, situation, temporal, ontology, reasoning, memory, governance, or runtime.",
+            ));
+        }
+    }
+
+    for required_layer in REQUIRED_V3_LAYERS {
+        if !manifest
+            .layers_present
+            .iter()
+            .any(|layer| layer == required_layer)
+        {
+            report.push(ValidationFinding::error(
+                "missing_required_capsule_layer",
+                "manifest.layers_present",
+                format!("Required v3 layer '{required_layer}' is missing."),
+                Some(manifest.capsule_id.clone()),
+                "Populate layers_present from the canonical bundle files during compilation.",
+            ));
+        }
+    }
+
+    if manifest.cores.is_empty() {
+        report.push(ValidationFinding::warning(
+            "manifest_has_no_cores",
+            "manifest.cores",
+            "Manifest has no ontology cores declared.",
+            Some(manifest.capsule_id.clone()),
+            "Declare at least the ACO core plus the capsule-specific domain or method core.",
+        ));
+    }
+
+    if manifest.provenance_root_hash.trim().is_empty() || manifest.signature.trim().is_empty() {
+        report.push(ValidationFinding::warning(
+            "manifest_integrity_not_finalized",
+            "manifest.provenance_root_hash",
+            "Manifest integrity hash or signature is not finalized.",
+            Some(manifest.capsule_id.clone()),
+            "Development fixtures may use placeholders, but promoted bundles must be signed.",
+        ));
+    }
+}
+
+fn validate_v3_required_files(package: &PraxisCapsulePackage, report: &mut ValidationReport) {
+    let root = &package.root;
+    let manifest = &package.manifest;
+
+    let mut required_paths = vec![
+        "mimetype",
+        "manifest.json",
+        "claims.jsonl",
+        "graph.jsonld",
+        "episodes.json",
+        "evidence/sources.jsonl",
+        "reasoning/devices.json",
+        "reasoning/annotations.json",
+        "reasoning/traps.json",
+        "review/review.json",
+        "runtime.json",
+        "agent_context.md",
+        "operations.md",
+    ];
+
+    match manifest.capsule_type.as_str() {
+        "user" => required_paths.push("payload.user.json"),
+        "tool" => required_paths.push("payload.tool.json"),
+        "output" => required_paths.push("payload.output.json"),
+        "situation" => {}
+        _ => {}
+    }
+
+    for relative in required_paths {
+        if !root.join(relative).is_file() {
+            report.push(ValidationFinding::error(
+                "missing_v3_bundle_file",
+                relative,
+                format!("Required v3 capsule file '{relative}' is missing."),
+                Some(manifest.capsule_id.clone()),
+                "Compile the capsule using the v3 bundle shape from docs/CAPSULE_SPEC.md.",
+            ));
+        }
+    }
+
+    validate_mimetype(root, manifest, report);
+    validate_json_file(root, "graph.jsonld", manifest, report);
+    validate_json_file(root, "episodes.json", manifest, report);
+    validate_json_file(root, "runtime.json", manifest, report);
+    validate_json_file(root, "review/review.json", manifest, report);
+}
+
+fn validate_v3_compiled_views(package: &PraxisCapsulePackage, report: &mut ValidationReport) {
+    let root = &package.root;
+    let manifest = &package.manifest;
+
+    for relative in ["agent_context.md", "operations.md"] {
+        match read_optional_string(&root.join(relative)) {
+            Ok(Some(text)) if !text.trim().is_empty() => {}
+            Ok(Some(_)) => report.push(ValidationFinding::error(
+                "empty_compiled_capsule_view",
+                relative,
+                format!("Compiled view '{relative}' is empty."),
+                Some(manifest.capsule_id.clone()),
+                "Generate a bounded agent context and self-describing operations card for every capsule.",
+            )),
+            Ok(None) => {}
+            Err(error) => report.push(ValidationFinding::error(
+                "unreadable_compiled_capsule_view",
+                relative,
+                error.to_string(),
+                Some(manifest.capsule_id.clone()),
+                "Ensure compiled markdown views are readable UTF-8 files.",
+            )),
+        }
+    }
+}
+
+fn validate_v3_minimum_records(package: &PraxisCapsulePackage, report: &mut ValidationReport) {
+    let manifest = &package.manifest;
+
+    if manifest.capsule_type == "situation" {
+        let claims = count_jsonl_records(&package.root.join("claims.jsonl")).unwrap_or_default();
+        let sources =
+            count_jsonl_records(&package.root.join("evidence/sources.jsonl")).unwrap_or_default();
+
+        if claims == 0 {
+            report.push(ValidationFinding::error(
+                "situation_capsule_has_no_claims",
+                "claims.jsonl",
+                "Situation capsules must carry at least one atomic claim.",
+                Some(manifest.capsule_id.clone()),
+                "Extract or author claim atoms before compiling the situation capsule.",
+            ));
+        }
+
+        if sources == 0 {
+            report.push(ValidationFinding::error(
+                "situation_capsule_has_no_sources",
+                "evidence/sources.jsonl",
+                "Situation capsules must carry at least one evidence source.",
+                Some(manifest.capsule_id.clone()),
+                "Attach evidence sources and spans before compiling the situation capsule.",
+            ));
+        }
+    }
+}
+
+fn validate_mimetype(root: &Path, manifest: &PraxisCapsuleManifest, report: &mut ValidationReport) {
+    match read_optional_string(&root.join("mimetype")) {
+        Ok(Some(text)) if text.trim() == CAPSULE_MIME_TYPE => {}
+        Ok(Some(_)) => report.push(ValidationFinding::error(
+            "invalid_capsule_mimetype",
+            "mimetype",
+            "The mimetype file does not contain the PRAXIS Capsule MIME type.",
+            Some(manifest.capsule_id.clone()),
+            "Write application/vnd.tacitus.praxis-capsule+zip as the first uncompressed archive entry.",
+        )),
+        Ok(None) => {}
+        Err(error) => report.push(ValidationFinding::error(
+            "unreadable_capsule_mimetype",
+            "mimetype",
+            error.to_string(),
+            Some(manifest.capsule_id.clone()),
+            "Ensure the mimetype marker is readable before archive assembly.",
+        )),
+    }
+}
+
+fn validate_json_file(
+    root: &Path,
+    relative: &str,
+    manifest: &PraxisCapsuleManifest,
+    report: &mut ValidationReport,
+) {
+    let path = root.join(relative);
+    if !path.is_file() {
+        return;
+    }
+
+    if let Err(error) = read_json::<Value>(root, relative) {
+        report.push(ValidationFinding::error(
+            "invalid_v3_json_file",
+            relative,
+            error.to_string(),
+            Some(manifest.capsule_id.clone()),
+            "Emit valid JSON for every canonical capsule file.",
+        ));
+    }
+}
+
 fn validate_manifest(bundle: &CapsuleBundle, report: &mut ValidationReport) {
     if !bundle.manifest.has_required_identity() {
         report.push(ValidationFinding::error(
@@ -1207,16 +1594,16 @@ fn validate_manifest(bundle: &CapsuleBundle, report: &mut ValidationReport) {
         ));
     }
 
-    if bundle.manifest.schema_version != CAPSULE_SCHEMA_VERSION {
+    if bundle.manifest.schema_version != LEGACY_BUNDLE_SCHEMA_VERSION {
         report.push(ValidationFinding::error(
-            "unsupported_schema_version",
+            "unsupported_legacy_schema_version",
             "manifest.schema_version",
             format!(
-                "Expected schema version {CAPSULE_SCHEMA_VERSION}, found {}.",
+                "Expected legacy bundle schema version {LEGACY_BUNDLE_SCHEMA_VERSION}, found {}.",
                 bundle.manifest.schema_version
             ),
             Some(bundle.manifest.capsule_id.clone()),
-            "Export with the current schema version or add a migration.",
+            "Use the v3 package validator for canonical `.capsule` artifacts or add a migration for this legacy directory bundle.",
         ));
     }
 
@@ -1493,6 +1880,19 @@ fn read_to_string(path: &Path) -> Result<String, CapsuleLoadError> {
     fs::read_to_string(path).map_err(|error| {
         CapsuleLoadError::new(format!("failed to read {}: {error}", path.display()))
     })
+}
+
+fn read_optional_string(path: &Path) -> Result<Option<String>, CapsuleLoadError> {
+    if !path.exists() {
+        return Ok(None);
+    }
+
+    read_to_string(path).map(Some)
+}
+
+fn count_jsonl_records(path: &Path) -> Result<usize, CapsuleLoadError> {
+    let text = read_to_string(path)?;
+    Ok(text.lines().filter(|line| !line.trim().is_empty()).count())
 }
 
 fn write_schema(path: &Path, filename: &str, schema: RootSchema) -> Result<(), CapsuleLoadError> {

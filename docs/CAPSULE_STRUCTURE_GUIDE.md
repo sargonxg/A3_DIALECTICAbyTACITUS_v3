@@ -1,208 +1,163 @@
 # Capsule Structure Guide
 
-Status: implementation guide for bundle shape, examples, and future schema work.
+Status: implementation guide for the v3 `.capsule` package. The normative
+contract is [Capsule Spec v3.0](CAPSULE_SPEC.md).
 
 ## Purpose
 
-This guide explains what a PRAXIS Capsule contains and how agents should use it.
-It is the bridge between the product story, the JSON schema work, and the
-fixture examples under `fixtures/example-capsules/`.
+This guide explains what a PRAXIS Capsule contains and how agents should use
+it. It bridges product story, Rust validators, fixture examples, and future
+compiler/API work.
 
 Every capsule should be useful to three readers:
 
 - a human analyst inspecting the work;
-- a human reviewer deciding whether the work can be trusted;
+- a human reviewer deciding whether it can be trusted;
 - a PRAXIS agent that needs structured context, graph guidance, citations, and
   output rules.
 
-## Capsule Stack
+## Canonical Stack
 
 ```text
-PRAXIS Capsule
+PRAXIS Capsule (.capsule)
   |
-  +-- manifest              identity, type, status, digest, compatibility
-  +-- capsule               user/situation/tool/output context
-  +-- source ledger         documents, spans, hashes, provenance
-  +-- temporal ledger       validity windows, stale/superseded/contested facts
-  +-- ontology blueprint    planner for capsule-specific semantic layers
-  +-- ontology slice        local concepts, mappings, frames, deprecations
-  +-- embedded graph        nodes, edges, communities, review state
-  +-- graph semantics       JSON-LD / PROV-O / SKOS / ODRL export view
-  +-- graph constraints     SHACL-like profile and graph validation rules
-  +-- reasoning playbook    expert methods, steps, failure modes
-  +-- language profile      reviewed terms, voice, framing, translation rules
-  +-- agent guidance        model-facing instructions and tool policy
-  +-- retrieval pack        ranked source/context snippets
-  +-- output contracts      allowed artifacts and refusal rules
-  +-- review ledger         human decisions, caveats, expiry, promotion gates
-  +-- rights profile        permission, prohibition, duties, sharing policy
-  +-- marketplace listing   discoverability and trust metadata
-  +-- capsule health        quality, risk, coverage, freshness
-  +-- eval report           measured outcome and regression signals
-  +-- checksums/signature   portability and integrity
+  +-- manifest.json          id, spec version, type, category, cores, hash
+  +-- claims.jsonl           atomic typed claims and trust state
+  +-- graph.jsonld           connected graph; named graphs are layers
+  +-- episodes.json          temporal and episodic model
+  +-- evidence/sources.jsonl sources, spans, hashes, rights
+  +-- reasoning/             devices, heuristics, salience, traps, precedents,
+  |                          annotations, plan/results
+  +-- payload.<type>.json    user/tool/output payload; situation may omit
+  +-- review/review.json     trust layers, review, dissent, open questions
+  +-- runtime.json           verbs, citation, composition, refusal rules
+  +-- agent_context.md       bounded self-citing context block for LLMs
+  +-- operations.md          engine-less operating card
+  +-- cache/                 optional Ladybug/Oxigraph/vector/FTS caches
 ```
 
-The production bundle stores these as individual files. The examples in
-`fixtures/example-capsules/*.example.json` use a single-file envelope with the
-same sections so reviewers and agents can inspect the full shape quickly.
+`cache/` is optional and regenerable. PRAXIS must be able to load the capsule
+from canonical files with no graph engine running.
 
 ## Required Layer Contract
 
 | Layer | Required questions | Primary consumers |
 | --- | --- | --- |
-| `manifest` | What is this capsule, can it be used, and what digest identifies it? | PRAXIS library, compiler, marketplace |
-| `capsule` | Who or what is modeled, and under what mandate, scope, and boundary? | analysts, PRAXIS Ask, reviewers |
-| `source_ledger` | Which source spans support the claims and graph edges? | citation engine, source inspector |
-| `temporal_ledger` | What is current, stale, superseded, forecast, or contested? | answer planner, decision clock |
-| `ontology_blueprint` | Which semantic layers should this capsule build for its type, domain, and workflow? | compiler, graph builder, reviewer, PRAXIS context planner |
-| `ontology_slice` | What terms, frames, and mappings make this capsule legible? | graph builder, concept inspector |
-| `graph_slice` | How do this capsule's relevant objects, sources, methods, risks, tools, and outputs relate? | PRAXIS graph UI, context planner |
-| `graph_semantics` | How can the capsule be exported to linked-data systems? | interoperability adapters |
-| `graph_constraints` | Which graph classes, fields, and review rules must validate? | Rust validator, reviewer |
-| `reasoning_playbook` | Which expert method should structure the analysis? | analyst, reviewer, agent planner |
-| `language_profile` | Which terms, voice, caveats, and framings are approved or blocked? | analyst, reviewer, PRAXIS agents |
-| `agent_guidance` | What may the model do, cite, ask, refuse, and hand off? | PRAXIS agents |
-| `retrieval_pack` | Which compact source/context units should enter the model context? | retrieval and context pack API |
-| `output_contracts` | Which artifacts are allowed and how must they be shaped? | memo/brief builders |
-| `review_ledger` | Who approved or caveated which objects and when does review expire? | trust layer, promotion gate |
-| `rights_profile` | Who may use, fork, export, or list the capsule? | marketplace, sharing, policy |
-| `marketplace_listing` | How is the capsule discovered without leaking private content? | capsule library |
-| `capsule_health` | What is weak, stale, unsupported, or risky? | reviewers, CI, evals |
-| `eval_report` | Did this capsule improve a real workflow? | product and quality gates |
+| Evidence | Which source spans, hashes, rights, and retrieval receipts exist? | citation engine, reviewers |
+| Claims | Which atomic facts are asserted, disputed, stale, or proposed? | PRAXIS Ask, evaluators |
+| Graph / relation | How do sources, claims, actors, episodes, tools, and review notes connect? | graph preview, context planner |
+| Temporal / episodic | What changed, when, and what is current or superseded? | decision clock, warnings |
+| Ontology / semantic | Which core, domain, method, or output schema gives meaning? | compiler, validators, PRAXIS lenses |
+| Reasoning / guidance | Which expert devices, heuristics, traps, and annotations guide thinking? | analysts, reviewers, agents |
+| Memory | What build or use history should travel with the capsule? | future agent memory adapters |
+| Governance / trust | What has a human approved, rejected, caveated, or escalated? | promotion gate, audit |
+| Runtime / contract | What may the agent retrieve, cite, combine, refuse, and output? | PRAXIS agents |
 
 ## Embedded Graph Requirements
 
-The embedded graph is not a decoration. It is a compact, reviewable map of the
-knowledge object selected by the ontology blueprint. Every promoted graph
-object needs:
+The embedded graph is not a decoration. `graph.jsonld` is the canonical map of
+the capsule, and its named graphs correspond to the layer model:
 
-- a registered node or edge class from `docs/GRAPH_PROFILE_REGISTRY.md`;
-- source spans or review actions that justify it;
+```text
+g:evidence
+g:claims
+g:situation
+g:temporal
+g:ontology
+g:reasoning
+g:memory
+g:governance
+g:runtime
+```
+
+Every promoted graph object needs:
+
+- source spans, review actions, or explicit expert notes;
 - temporal scope when the fact can change;
 - review state and reviewer linkage;
 - a human-readable explanation;
-- PRAXIS visualization hints.
+- enough stable identifiers for PRAXIS graph preview and composition.
 
-Graph engines such as LadybugDB may accelerate projection, exploration, and
-graph algorithms, but they are optional adapters. The signed bundle, embedded
-graph, source ledger, review ledger, and runtime database projection remain the
-canonical state.
+Graph engines such as Ladybug may accelerate traversal, full-text search, and
+vector search, but they remain optional caches.
 
 ## Semantic Layer Requirements
 
 The semantic layer should be practical first and standards-compatible second:
 
-- JSON-LD gives a JSON-compatible linked-data export.
-- PROV-O anchors provenance for source, extraction, review, and compile runs.
-- SKOS anchors controlled policy vocabularies and concept schemes.
-- SHACL inspires graph validation constraints.
-- ODRL anchors usage rights, prohibitions, duties, and sharing policies.
-- OWL remains optional for richer ontology inference once the simple slice works.
-
-Do not require a full RDF stack in the first validator. Design fields so a
-later RDF/OWL/SHACL adapter can be built without changing the capsule contract.
+- JSON-LD is the canonical graph serialization.
+- PROV-O anchors source, extraction, review, and compile provenance.
+- SKOS anchors controlled concepts.
+- SHACL validates loaded cores.
+- ODRL can anchor usage rights.
+- OWL remains optional for richer ontology inference once the simple slice
+  works.
 
 Do not treat `actor`, `claim`, and `institution` as the default ontology for
-all capsules. Those classes are central for situation and conflict work. A user
-capsule, tool capsule, and output capsule need different local semantic layers.
-The shared graph registry gives PRAXIS stable export names; the ontology
-blueprint gives each capsule its expert lens.
+all capsules. Those classes are central for situation and conflict work. User,
+Tool, and Output Capsules need different local semantic layers. The shared graph
+registry gives PRAXIS stable export names; each capsule's cores and reasoning
+objects provide its expert lens.
 
 ## Capsule Type Profiles
 
-PRAXIS imports exactly four top-level capsule classes. Specialized structures
-such as sources, stakeholders, scenarios, domain ontologies, expert picks, and
-graph modules are layers, lenses, or metadata inside those four classes.
+PRAXIS imports exactly four top-level macro types:
 
-| Type | Must emphasize | Ontology family | Graph profile | Agent behavior |
-| --- | --- | --- | --- | --- |
-| User Capsule | preferences, expertise, voice, permission boundary | `user_context_ontology` | `user_context_graph_v1` | personalize only inside explicit scope |
-| Situation Capsule | sources, live facts, actors, claims, stakeholders, risks, caveats, domain meaning, decision clock | `situation_policy_ontology` | `situation_graph_v1` | answer with temporal and source discipline |
-| Tool Capsule | method steps, intellectual lenses, failure modes, examples, review criteria | `tool_method_ontology` | `tool_method_graph_v1` | structure reasoning before drafting |
-| Output Capsule | artifact lineage, citations, caveats, reuse rules | `output_trace_ontology` | `output_trace_graph_v1` | reuse or update only within contract |
+| Type | Must emphasize | Agent behavior |
+| --- | --- | --- |
+| `user` | preferences, expertise, voice, authority, privacy | personalize only inside explicit scope |
+| `situation` | sources, live facts, actors, claims, stakeholders, risks, caveats, domain meaning, decision clock | answer with temporal and source discipline |
+| `tool` | method steps, intellectual lenses, failure modes, examples, review criteria | structure reasoning before drafting |
+| `output` | artifact lineage, citations, caveats, reuse rules | reuse or update only within contract |
 
-All other labels are internal specialization. For example, a conflict Situation
-Capsule may contain a `stakeholder_power_layer`, `scenario_causality_layer`,
-`source_proof_layer`, and `domain_semantic_layer`; it is still a
-`situation_capsule`.
+All other labels are internal specialization. A conflict Situation Capsule may
+contain stakeholder, source-proof, scenario, and ontology lenses; it is still a
+`situation` capsule.
 
-## Language Profile Contract
+## Runtime Contract
 
-`language_profile.json` captures the human-gated language layer. It should not
-be reduced to "tone." Policy work needs reviewed terminology and framing rules
-because words can imply legal status, responsibility, certainty, legitimacy, or
-scope.
-
-The profile should include:
-
-- primary language and supported secondary languages;
-- approved terms, aliases, definitions, and deprecated terms;
-- terms that require caveats, jurisdictions, or date ranges;
-- forbidden framings, overclaims, euphemisms, or identity labels;
-- audience register, voice, and institutional style rules;
-- translation notes and terms that must not be translated literally;
-- citation and uncertainty language;
-- review state for every material language rule.
-
-Agents must treat rejected or unreviewed language rules the same way they treat
-unreviewed graph edges: visible in audit views, blocked from promoted outputs
-unless a workflow explicitly asks for draft material.
-
-## Agent Guidance Contract
-
-`agent_guidance.json` should tell PRAXIS agents:
+`runtime.json` and `operations.md` must tell PRAXIS agents:
 
 - which workflows are allowed;
-- which tools or connectors may be used;
-- which claims require source citation;
-- how to traverse the embedded graph;
+- which verbs are available;
+- which claims require citation;
+- how to traverse or ignore optional graph caches;
 - which reasoning devices to apply first;
-- which language profile rules to enforce;
+- which traps must trigger critique;
 - which output contract controls the answer;
 - which warnings block or downgrade the answer;
 - when to ask a human reviewer instead of proceeding.
-
-Example policies:
-
-```json
-{
-  "allowed_workflows": ["decision_brief", "stakeholder_map"],
-  "citation_policy": "cite_source_span_for_every_nontrivial_claim",
-  "graph_use_policy": "prefer approved current edges; hide rejected edges unless asked for audit",
-  "language_profile_refs": ["language:policy-brief-en-v1"],
-  "stop_conditions": ["missing_source_for_material_claim", "rights_policy_blocks_workflow"],
-  "handoff_policy": "ask reviewer for approval when output would become public"
-}
-```
 
 ## Build Workflow
 
 ```text
 source pack
-  -> source ledger
-  -> temporal ledger
-  -> ontology blueprint
-  -> ontology slice
-  -> embedded graph
-  -> reasoning playbook
-  -> language profile
-  -> agent guidance
+  -> source and span records
+  -> claim atoms
+  -> episodes
+  -> ontology cores
+  -> graph.jsonld
+  -> reasoning guidance
   -> review gate
-  -> signed bundle
+  -> runtime contract
+  -> agent_context.md + operations.md
+  -> .capsule archive
   -> PRAXIS context pack
 ```
 
 Each arrow must leave receipts. Model extraction can propose records, but the
-review ledger decides what becomes usable for grounding.
+review layer decides what becomes usable for grounding.
 
-## Example Fixtures
+## Fixtures
 
-Use these examples when implementing Lane A and Lane B:
+Canonical fixture:
+
+- `fixtures/canonical-capsules/conflict-situation-capsule`
+
+Legacy single-file examples remain useful for product shape but should be
+migrated to the v3 manifest vocabulary:
 
 - `fixtures/example-capsules/user-capsule.example.json`
 - `fixtures/example-capsules/situation-capsule.example.json`
 - `fixtures/example-capsules/tool-capsule.example.json`
 - `fixtures/example-capsules/output-capsule.example.json`
-
-They are intentionally small. Their purpose is to lock the shape before larger
-policy fixtures are added.

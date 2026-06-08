@@ -11,9 +11,10 @@ tool capsule may need method steps, required inputs, philosophical lenses,
 failure modes, and reviewer caveats. An output capsule may need artifact
 sections, source receipts, review caveats, and reuse rules.
 
-The graph is **embedded** because it travels with the capsule bundle. It can be
-visualized in PRAXIS, projected into PostgreSQL tables, exported as JSON-LD, or
-served through an MCP resource without requiring a dedicated graph database.
+The graph is **embedded** because `graph.jsonld` travels with the `.capsule`
+package. It can be visualized in PRAXIS, projected into PostgreSQL tables,
+materialized into Ladybug or Oxigraph caches, or served through an MCP resource
+without requiring a dedicated graph database.
 
 The canonical graph vocabulary lives in
 [Graph Profile Registry](GRAPH_PROFILE_REGISTRY.md). Use that file before
@@ -40,29 +41,42 @@ the capsule being built.
 
 ## Design Rule
 
-PostgreSQL and the signed capsule bundle are canonical. Graph engines,
-embedding stores, MCP servers, and memory layers are derived views until an ADR
-promotes one of them.
+PostgreSQL operational records and the signed v3 `.capsule` package are
+canonical. Graph engines, embedding stores, MCP servers, and memory layers are
+derived views until an ADR promotes one of them.
 
 This keeps the first backend operable while preserving a path to richer graph
 systems later.
 
-## Graph Slice Files
+## Canonical Graph Files
 
-The capsule carries graph information in three files:
+The capsule carries canonical graph information in one file:
 
 ```text
-graph_slice.json          compact graph for PRAXIS runtime and UI
-graph_semantics.jsonld    linked-data view for interoperability
-graph_constraints.json    validation constraints and required profiles
+graph.jsonld
 ```
 
-`graph_slice.json` is the operational format. `graph_semantics.jsonld` is the
-semantic export. `graph_constraints.json` is the validation profile.
+Named graphs inside `graph.jsonld` correspond to the capsule layers:
+
+```text
+g:evidence
+g:claims
+g:situation
+g:temporal
+g:ontology
+g:reasoning
+g:memory
+g:governance
+g:runtime
+```
+
+PRAXIS graph previews, PostgreSQL graph tables, Ladybug caches, Oxigraph
+stores, and compact UI payloads are projections from `graph.jsonld`, not
+replacement sources of truth.
 
 The ontology blueprint is a planner contract generated from the manifest or
-bundle. It guides the creation of `ontology_slice.json`, `graph_slice.json`,
-`reasoning_playbook.json`, and `agent_guidance.json`. It is executable today via:
+package. It guides the creation of `graph.jsonld`, `reasoning/`, `runtime.json`,
+and generated agent views. The legacy ontology planner is still executable via:
 
 ```powershell
 cargo run -p dialectica-cli -- ontology-plan fixtures/golden-policy-capsule/expected-bundle
@@ -129,30 +143,28 @@ Every edge must carry:
 - `temporal_scope`;
 - `explanation`.
 
-## Graph Slice Shape
+## Graph JSON-LD Shape
 
-`graph_slice.json` must be renderable and validatable:
+`graph.jsonld` must be renderable, validatable, and projectable:
 
 ```json
 {
-  "schema_version": "0.1.0",
-  "capsule_id": "cap_eu_energy_situation_2026_q3",
-  "graph_profile": "situation_graph_v1",
-  "nodes": [],
-  "edges": [],
-  "communities": [],
-  "layout_hints": {
-    "default_lens": "stakeholder_power_lens",
-    "ranked_focus_nodes": [],
-    "review_overlay": true,
-    "temporal_filter_default": "current"
+  "@context": {
+    "dialectica": "https://tacitus.me/dialectica#",
+    "g": "urn:praxis:graph:"
   },
-  "health": {
-    "unsupported_edge_count": 0,
-    "unreviewed_edge_count": 0,
-    "stale_edge_count": 0,
-    "contradiction_cluster_count": 0
-  }
+  "@id": "urn:praxis:capsule:cap_conflict_situation_fixture_v3",
+  "@type": "dialectica:SituationCapsule",
+  "@graph": [
+    { "@id": "g:evidence", "@graph": [] },
+    { "@id": "g:claims", "@graph": [] },
+    { "@id": "g:situation", "@graph": [] },
+    { "@id": "g:temporal", "@graph": [] },
+    { "@id": "g:ontology", "@graph": [] },
+    { "@id": "g:reasoning", "@graph": [] },
+    { "@id": "g:governance", "@graph": [] },
+    { "@id": "g:runtime", "@graph": [] }
+  ]
 }
 ```
 
@@ -174,7 +186,7 @@ The required order is:
 
 | Need | Design anchor | DIALECTICA use |
 | --- | --- | --- |
-| Linked graph JSON | JSON-LD 1.1 | optional `graph_semantics.jsonld` export |
+| Linked graph JSON | JSON-LD 1.1 | canonical `graph.jsonld` |
 | Provenance | PROV-O | source, extraction, reviewer, and compiler lineage |
 | Controlled concepts | SKOS | domain vocabularies, synonyms, broader/narrower terms |
 | Graph validation | SHACL | capsule profile constraints and required fields |
@@ -192,13 +204,13 @@ planner contract.
 
 ## Ontology Slice Shape
 
-`ontology_slice.json` should be a working semantic contract for this capsule,
-not only a list of topics and not a universal taxonomy:
+The ontology named graph should be a working semantic contract for this
+capsule, not only a list of topics and not a universal taxonomy:
 
 ```json
 {
   "ontology_id": "ontology:eu-energy-policy",
-  "version": "0.1.0",
+  "version": "3.0",
   "namespace": "https://tacitus.me/ns/policy/eu-energy#",
   "language": "en",
   "terms": [
@@ -270,16 +282,16 @@ state. Its useful fit is:
 - influence, community, and centrality algorithms over selected capsule graphs;
 - large embedded graph previews where PostgreSQL traversal becomes awkward.
 
-The adapter should read from `graph_slice.json` or PostgreSQL graph tables and
+The adapter should read from `graph.jsonld` or PostgreSQL graph tables and
 write projection receipts. It must not write promoted capsule facts without the
-normal source-span and review-ledger path.
+normal source-span and review path.
 
 Initial adapter profile:
 
 ```json
 {
   "adapter_profile": "ladybug_projection_v1",
-  "source": "graph_slice.json",
+  "source": "graph.jsonld",
   "mode": "derived_projection",
   "allowed_outputs": ["algorithm_scores", "layout_hints", "query_receipts"],
   "forbidden_outputs": ["canonical_claim", "review_promotion"]

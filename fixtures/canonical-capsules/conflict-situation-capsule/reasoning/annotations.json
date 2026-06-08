@@ -1,0 +1,10 @@
+[
+  {
+    "id": "ann_escalation_crux",
+    "target": "clm_army_rejects_certification",
+    "author": "analyst:fixture",
+    "type": "crux",
+    "text": "This claim is a hinge for near-term escalation risk and should be cited directly.",
+    "affects_trust": false
+  }
+]

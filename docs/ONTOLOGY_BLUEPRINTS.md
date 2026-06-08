@@ -20,10 +20,10 @@ how PRAXIS should use the capsule in an agentic workflow.
 
 The PRAXIS-importable capsule classes are fixed:
 
-- `user_capsule`
-- `situation_capsule`
-- `tool_capsule`
-- `output_capsule`
+- `user`
+- `situation`
+- `tool`
+- `output`
 
 The embedded graph registry gives shared interoperability classes. It is not
 the whole ontology. Specialized source, domain, stakeholder, scenario, expert,
@@ -33,11 +33,10 @@ lenses, local terms, and review metadata inside the four classes.
 ```text
 capsule class + workflow + source pack + expert review
   -> ontology blueprint
-  -> ontology_slice.json
-  -> graph_slice.json
-  -> reasoning_playbook.json
-  -> language_profile.json
-  -> agent_guidance.json
+  -> graph.jsonld named graphs
+  -> reasoning/*.json
+  -> runtime.json
+  -> agent_context.md + operations.md
   -> PRAXIS context pack
 ```
 
@@ -81,7 +80,7 @@ whether to persist `ontology_blueprint.json` or store it as a compile receipt.
 ## Situation Capsule Semantic Layers
 
 A conflict or policy Situation Capsule can carry many specialized layers while
-remaining one `situation_capsule`:
+remaining one `situation` capsule:
 
 | Layer | Captures | Why PRAXIS needs it |
 | --- | --- | --- |

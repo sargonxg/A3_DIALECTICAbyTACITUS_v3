@@ -1,0 +1,21 @@
+[
+  {
+    "id": "conflict_mapping_v1",
+    "purpose": "Map actors, relationships, stakes, constraints, and possible escalation paths.",
+    "required_primitives": ["Actor", "Institution", "Claim", "Episode", "Constraint"],
+    "graph_queries": [
+      "MATCH (a:Actor)-[:CONTENDS_WITH]->(b) RETURN a,b"
+    ],
+    "procedure": [
+      "Identify the actors with coercive, institutional, or agenda-setting power.",
+      "Separate sourced claims from inferred motives.",
+      "Attach escalation caveats to claims near constitutional or operational deadlines."
+    ],
+    "heuristics": ["heu_deadline_rejection"],
+    "traps": ["trap_mirror_imaging"],
+    "output_schema": "ConflictMap",
+    "critique_prompts": [
+      "Which actor is absent from the source base but necessary to explain escalation?"
+    ]
+  }
+]

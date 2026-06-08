@@ -1,10 +1,10 @@
 //! Deterministic capsule compiler scaffold.
 //!
-//! The compiler will assemble signed bundle directories from canonical records.
+//! The compiler will assemble signed v3 `.capsule` packages from canonical records.
 
 use dialectica_capsule::CapsuleManifest;
 
-/// Returns true when the compiler may emit a signed bundle for this manifest.
+/// Returns true when the legacy compiler may emit a signed bundle for this manifest.
 pub fn can_emit_bundle(manifest: &CapsuleManifest) -> bool {
     manifest.is_export_ready()
 }
