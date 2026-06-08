@@ -6,17 +6,14 @@ For a coding session, start with the shortest authoritative path:
 
 1. [Source of Truth](SOURCE_OF_TRUTH.md)
 2. [Coding Ledger](CODING_LEDGER.md)
-3. [Engineering Baseline](ENGINEERING_BASELINE.md)
-4. [Lane A Acceptance](LANE_A_ACCEPTANCE.md)
-5. [API Slice 1](API_SLICE_1.md)
-6. [Improvement Guidelines](IMPROVEMENT_GUIDELINES.md)
-7. [Next Code Build Plan](NEXT_CODE_BUILD_PLAN.md)
-8. [Capsule Structure Guide](CAPSULE_STRUCTURE_GUIDE.md)
-9. [Capsule Specification](CAPSULE_SPEC.md)
-10. [Code Audit 2026-06-08](CODE_AUDIT_2026_06_08.md)
-11. [Missing Work Audit 2026-06-08](MISSING_WORK_AUDIT_2026_06_08.md)
-12. [LLM Context Extraction Architecture](LLM_CONTEXT_EXTRACTION_ARCHITECTURE.md)
-13. [Scaffold Audit](SCAFFOLD_AUDIT.md)
+3. [Next Code Build Plan](NEXT_CODE_BUILD_PLAN.md)
+4. [LLM Context Extraction Architecture](LLM_CONTEXT_EXTRACTION_ARCHITECTURE.md)
+5. [Missing Work Audit 2026-06-08](MISSING_WORK_AUDIT_2026_06_08.md)
+6. [Code Audit 2026-06-08](CODE_AUDIT_2026_06_08.md)
+7. [Capsule Specification](CAPSULE_SPEC.md)
+8. [Engineering Baseline](ENGINEERING_BASELINE.md)
+9. [Improvement Guidelines](IMPROVEMENT_GUIDELINES.md)
+10. [Scaffold Audit](SCAFFOLD_AUDIT.md)
 
 Use the full index below when a task needs product narrative, ontology research,
 deployment, PRAXIS integration, security, or operations context.

@@ -120,7 +120,8 @@ Create:
 
 ## Engineering Constraints
 
-- Do not add model-powered extraction before fixture and validation are stable.
+- Do not add model-provider calls before source-pack fixtures, proposal
+  records, review routing, and validation are stable.
 - Do not add graph adapters before graph slice export works from Postgres.
 - Do not add PRAXIS production integration before staging can serve one valid
   fixture capsule.

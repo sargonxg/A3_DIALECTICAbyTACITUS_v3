@@ -164,8 +164,8 @@ directory while the compiler migrates.
 
 - The repo has strong architecture docs, but the coding surface must stay
   narrow or it will drift into another planning repository.
-- The first coding pass must resist model-powered extraction. Schema, fixture,
-  validation, and review gates must work first.
+- The first coding pass must resist model-provider calls. Source-pack fixtures,
+  proposal records, validation, and review gates must work first.
 - The graph layer should remain bundle/PostgreSQL-native until eval evidence
   proves that a dedicated graph adapter is needed.
 

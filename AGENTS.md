@@ -9,17 +9,14 @@ Before implementation work, read the active build path first:
 
 1. `docs/SOURCE_OF_TRUTH.md`
 2. `docs/CODING_LEDGER.md`
-3. `docs/ENGINEERING_BASELINE.md`
-4. `docs/LANE_A_ACCEPTANCE.md`
-5. `docs/API_SLICE_1.md`
-6. `docs/IMPROVEMENT_GUIDELINES.md`
-7. `docs/NEXT_CODE_BUILD_PLAN.md`
-8. `docs/CAPSULE_STRUCTURE_GUIDE.md`
-9. `docs/CAPSULE_SPEC.md`
-10. `docs/CODE_AUDIT_2026_06_08.md`
-11. `docs/MISSING_WORK_AUDIT_2026_06_08.md`
-12. `docs/LLM_CONTEXT_EXTRACTION_ARCHITECTURE.md`
-13. `docs/SCAFFOLD_AUDIT.md`
+3. `docs/NEXT_CODE_BUILD_PLAN.md`
+4. `docs/LLM_CONTEXT_EXTRACTION_ARCHITECTURE.md`
+5. `docs/MISSING_WORK_AUDIT_2026_06_08.md`
+6. `docs/CODE_AUDIT_2026_06_08.md`
+7. `docs/CAPSULE_SPEC.md`
+8. `docs/ENGINEERING_BASELINE.md`
+9. `docs/IMPROVEMENT_GUIDELINES.md`
+10. `docs/SCAFFOLD_AUDIT.md`
 
 Use `docs/README.md` as the complete index when deeper product, graph,
 ontology, deployment, PRAXIS, or research context is needed.

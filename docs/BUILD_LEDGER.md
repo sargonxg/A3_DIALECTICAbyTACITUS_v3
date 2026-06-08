@@ -296,6 +296,32 @@ Blocking build gaps added by this pass:
 6. prove proposals cannot become canonical records without validation and
    required review.
 
+## 2026-06-08 - Repository Front-Door Coherence Cleanup
+
+Status: README and navigation streamlined; no runtime code changed.
+
+Actions:
+
+- moved the current build truth near the top of `README.md`;
+- replaced the long duplicated README repository map with short links to the
+  canonical docs index and repository-structure docs;
+- updated the README current-status language to make source-pack, extraction
+  proposal, review routing, compiler, context-pack, API, and PRAXIS integration
+  ordering explicit;
+- reduced the `README.md`, `AGENTS.md`, and `docs/README.md` start paths to ten
+  links or fewer;
+- corrected stale wording that implied `clippy` was not yet blocking and stale
+  wording that treated local proposal fixtures as model-provider calls.
+
+Evidence:
+
+- stale-term scan found no deprecated launch shorthand, old schema variable,
+  old schema-export path, or retired top-level capsule-type language in the
+  checked repository scope;
+- repository remote is `https://github.com/sargonxg/A3_DIALECTICAbyTACITUS_v3.git`;
+- current branch remains ahead of `origin/main` until the user explicitly asks
+  for push.
+
 ## Active Decisions
 
 | ID | Decision | Status | Where |

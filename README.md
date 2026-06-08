@@ -26,6 +26,22 @@ The technical thesis is:
 > substrate, the knowledge to reason over, and guidance, the expert reasoning
 > to reason with.
 
+Current truth:
+
+- **Works now**: Rust contract validation, canonical v3 Situation Capsule
+  fixture validation, legacy migration fixture validation, schema export, and
+  CLI `doctor`/`validate`/`inspect`/`ontology-plan`/`schema-export`.
+- **Not built yet**: source-pack ingestion, LLM extraction proposals, human
+  review UI, deterministic compiler, `.capsule` archive writer, PRAXIS
+  context-pack export, PostgreSQL migrations, API routes, task handler, and
+  PRAXIS frontend integration.
+- **Next build**: source pack and proposal records first, review-trigger
+  routing second, deterministic v3 compiler third.
+
+Start with [docs/CODING_LEDGER.md](docs/CODING_LEDGER.md) and
+[docs/NEXT_CODE_BUILD_PLAN.md](docs/NEXT_CODE_BUILD_PLAN.md). Use
+[docs/README.md](docs/README.md) for the complete documentation map.
+
 ## Why This Matters
 
 Generic LLMs are good at producing plausible text from loose context.
@@ -214,6 +230,8 @@ Core services:
   bundle metadata, and serves PRAXIS integration endpoints.
 - **Ingestion workers**: parse documents, normalize source spans, extract
   entities, detect temporal claims, and write provenance records.
+- **Extraction proposal layer**: planned Rust crate for source packs, model
+  receipts, LLM proposal records, and review-trigger routing.
 - **Capsule compiler**: assembles v3 `.capsule` packages from canonical
   records, review decisions, ontology layers, a connected `graph.jsonld`,
   runtime rules, and generated agent views.
@@ -227,6 +245,7 @@ Current coding scaffold:
 ```text
 Cargo workspace
   crates/dialectica-capsule       contract types and validation
+  crates/dialectica-extractor     planned source-pack/proposal crate
   crates/dialectica-compiler      deterministic bundle assembly
   crates/dialectica-store         PostgreSQL repositories and migrations
   crates/dialectica-eval          quality and outcome checks
@@ -563,77 +582,18 @@ systems are derived adapters until an ADR and eval evidence promote them.
 
 ## Repository Map
 
-```text
-assets/
-  dialectica-mark.svg                    GitHub README mark
-  capsule-stack.svg                      capsule stack diagram
-  embedded-graph.svg                     embedded graph diagram
-  agent-build-flow.svg                   build order diagram for future agents
-  research-ledger.svg                    research-memory diagram
-Cargo.toml                               Rust workspace scaffold
-CITATION.cff                             citation metadata for GitHub and research use
-NOTICE                                   TACITUS attribution and citation notice
-docs/
-  DIALECTICA_v3_BUILD_INSTRUCTIONS.md   imported reference context
-  ABOUT_DIALECTICA.md                   product definition and backbone story
-  SOURCE_OF_TRUTH.md                    document priority and working rules
-  CODING_LEDGER.md                      active coding control file
-  ENGINEERING_BASELINE.md               Rust/Python ownership and command gates
-  LANE_A_ACCEPTANCE.md                  exact first schema lane acceptance
-  API_SLICE_1.md                        exact first API slice contract
-  GRAPH_PROFILE_REGISTRY.md             canonical graph vocabulary
-  CODE_AUDIT_2026_06_08.md              what is coded, verified, and still missing
-  MISSING_WORK_AUDIT_2026_06_08.md      complete missing-build audit
-  LLM_CONTEXT_EXTRACTION_ARCHITECTURE.md proposal-only LLM extraction pipeline
-  SCAFFOLD_AUDIT.md                     repo readiness and gap audit
-  FOUNDATION_BUILD.md                   first product slice and non-goals
-  TECH_BENCHMARK.md                      research and ecosystem comparison
-  GRAPH_ONTOLOGY_RESEARCH_NOTES.md       graph, ontology, Ladybug, and standards research
-  ONTOLOGY_BLUEPRINTS.md                 capsule-specific semantic planner
-  RESEARCH_LEDGER.md                     source links, conclusions, and refresh triggers
-  AGENT_BUILD_GUIDE.md                   practical build order for future agents
-  NEXT_CODE_BUILD_PLAN.md                concrete next coding phases
-  IMPROVEMENT_GUIDELINES.md              active gaps, quality bar, and improvement protocol
-  IMPLEMENTATION_PHASE_PLAN.md           active phased coding plan
-  CAPSULE_STRUCTURE_GUIDE.md             bundle layers and agent guidance contract
-  GITHUB_PROFILE.md                      recommended GitHub About metadata and topics
-  REPOSITORY_CONCEPT_REVIEW.md            concept, narrative, and repo coherence audit
-  CAPSULE_FORMAL_MODEL.md                formal capsule layers and invariants
-  CAPSULE_TYPES_AND_MARKETPLACE.md       capsule categories and market object
-  EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md   graph, ontology, and semantics
-  EXPERT_REVIEW_AND_MARKETPLACE.md       human gates and expert trust model
-  CAPSULE_BUILD_EXAMPLES.md              concrete policy capsule examples
-  INTELLECTUAL_TOOLS.md                  policy reasoning devices and capture
-  ARCHITECTURE.md                       system architecture and data flow
-  API_CONTRACT.md                        API endpoints PRAXIS will consume
-  CAPSULE_SPEC.md                       capsule bundle contract
-  DATA_MODEL.md                         PostgreSQL-first record model
-  DEPLOYMENT.md                         Cloud Run first deployment plan
-  PRAXIS_INTEGRATION.md                 PRAXIS handoff and API contract
-  IMPLEMENTATION_BLUEPRINT.md           ordered engineering plan
-  LOCAL_DEVELOPMENT.md                  local dev and fixture workflow
-  CI_CD.md                              continuous integration and release gates
-  REPOSITORY_STRUCTURE.md               ownership map for repo directories
-  AGENTIC_WORKFLOWS.md                  Codex agent swarm lanes and gates
-  PRAXIS_REPO_ALIGNMENT.md              integration seams from PRAXIS repo
-  RESEARCH_BACKLOG.md                   research tracks for future improvement
-  PYTHON_TOOLING.md                     auxiliary Python tool boundary
-  AGENT_GUIDE.md                        build lanes for future agents
-  BUILD_LEDGER.md                       decisions, tasks, and evidence trail
-  DEPENDENCIES.md                       dependency candidates and constraints
-  EVAL_PLAN.md                          quality gates and eval strategy
-  OPERATIONS.md                         observability and runbooks
-  ROADMAP.md                            staged build plan
-  SECURITY_AND_PRIVACY.md               trust, privacy, and threat posture
-  decisions/                            architecture decision records
-crates/                                 Rust library and CLI crates
-services/                               deployable Rust service binaries
-infrastructure/                         Terraform/OpenTofu and deployment files
-fixtures/                               test capsules, source packs, eval data
-  example-capsules/                      small user/situation/tool/output examples
-tests/                                  workspace contract tests
-tools/                                  Python reports and local developer tooling
-```
+Keep the README as the front door, not the full table of contents.
+
+| Area | Start here |
+| --- | --- |
+| Active build control | [docs/CODING_LEDGER.md](docs/CODING_LEDGER.md) |
+| Current implementation plan | [docs/NEXT_CODE_BUILD_PLAN.md](docs/NEXT_CODE_BUILD_PLAN.md) |
+| Complete documentation index | [docs/README.md](docs/README.md) |
+| Exact directory ownership | [docs/REPOSITORY_STRUCTURE.md](docs/REPOSITORY_STRUCTURE.md) |
+| Architecture decisions | [docs/decisions/](docs/decisions) |
+| Contract fixtures | [fixtures/README.md](fixtures/README.md) |
+| Rust crate ownership | [crates/README.md](crates/README.md) |
+| Services | [services/README.md](services/README.md) |
 
 ## Build Principles
 
@@ -660,10 +620,10 @@ scaffold**.
 The Rust workspace now has its first executable capsule-contract slice. It can
 validate and inspect a canonical v3 Situation Capsule fixture, keep the legacy
 policy fixture passing during migration, and export JSON Schema snapshots. The
-next implementation step is to make the compiler generate a canonical v3
-package and `.capsule` archive deterministically from source-pack records and
-review decisions before adding storage, API routes, PRAXIS frontend integration,
-or model-powered extraction.
+next implementation step is to add source-pack and extraction-proposal records,
+then review-trigger routing, then deterministic v3 package and `.capsule`
+archive generation. Model-provider calls, storage, API routes, PRAXIS frontend
+integration, and cloud deployment wait until the local loop is executable.
 
 Start here:
 
@@ -671,21 +631,20 @@ Start here:
    foundation constraints.
 2. [Coding Ledger](docs/CODING_LEDGER.md): active build lanes and command
    gates.
-3. [Improvement Guidelines](docs/IMPROVEMENT_GUIDELINES.md): current gaps and
-   quality bar.
-4. [Next Code Build Plan](docs/NEXT_CODE_BUILD_PLAN.md): the next executable
+3. [Next Code Build Plan](docs/NEXT_CODE_BUILD_PLAN.md): the next executable
    implementation sequence.
-5. [Capsule Structure Guide](docs/CAPSULE_STRUCTURE_GUIDE.md): bundle layers,
-   graph, reasoning, language, review, and agent guidance.
-6. [Capsule Spec](docs/CAPSULE_SPEC.md): portable bundle contract.
-7. [API Slice 1](docs/API_SLICE_1.md): first PRAXIS-facing backend routes.
-8. [Code Audit 2026-06-08](docs/CODE_AUDIT_2026_06_08.md): what is coded,
-   verified, and not built yet.
-9. [Missing Work Audit 2026-06-08](docs/MISSING_WORK_AUDIT_2026_06_08.md):
-   complete missing-build checklist.
-10. [LLM Context Extraction Architecture](docs/LLM_CONTEXT_EXTRACTION_ARCHITECTURE.md):
+4. [LLM Context Extraction Architecture](docs/LLM_CONTEXT_EXTRACTION_ARCHITECTURE.md):
    how LLM extraction, graph building, and human gates should work.
-11. [Scaffold Audit](docs/SCAFFOLD_AUDIT.md): what is real now, what is still
+5. [Missing Work Audit 2026-06-08](docs/MISSING_WORK_AUDIT_2026_06_08.md):
+   complete missing-build checklist.
+6. [Code Audit 2026-06-08](docs/CODE_AUDIT_2026_06_08.md): what is coded,
+   verified, and not built yet.
+7. [Capsule Spec](docs/CAPSULE_SPEC.md): portable bundle contract.
+8. [Engineering Baseline](docs/ENGINEERING_BASELINE.md): crate ownership and
+   command gates.
+9. [Improvement Guidelines](docs/IMPROVEMENT_GUIDELINES.md): current gaps and
+   quality bar.
+10. [Scaffold Audit](docs/SCAFFOLD_AUDIT.md): what is real now, what is still
    missing, and what blocks the functional engine.
 
 Use [docs/README.md](docs/README.md) for the full documentation index and
@@ -702,16 +661,19 @@ cargo check --locked --workspace --all-targets
 cargo clippy --locked --workspace --all-targets -- -D warnings
 cargo test --locked --workspace
 cargo run -p dialectica-cli -- doctor
+cargo run -p dialectica-cli -- validate fixtures/canonical-capsules/conflict-situation-capsule
+cargo run -p dialectica-cli -- inspect fixtures/canonical-capsules/conflict-situation-capsule
 cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule/expected-bundle
 cargo run -p dialectica-cli -- inspect fixtures/golden-policy-capsule/expected-bundle
 cargo run -p dialectica-cli -- ontology-plan fixtures/golden-policy-capsule/expected-bundle
+cargo run -p dialectica-cli -- schema-export schemas/capsule-3.0
 python -m compileall tools/python
 python -m unittest discover tools/python/tests
 ```
 
 The first local runtime must not require cloud credentials. Cloud credentials
-arrive only when staging deployment begins. `clippy` becomes a blocking gate
-after the dependency set and crate APIs stabilize.
+arrive only when staging deployment begins. `clippy` is already a blocking local
+and CI gate.
 
 ## License
 
