@@ -673,12 +673,16 @@ Start here:
    complete missing-build checklist.
 6. [Code Audit 2026-06-08](docs/CODE_AUDIT_2026_06_08.md): what is coded,
    verified, and not built yet.
-7. [Capsule Spec](docs/CAPSULE_SPEC.md): portable bundle contract.
-8. [Engineering Baseline](docs/ENGINEERING_BASELINE.md): crate ownership and
+7. [Post-Build Audit 2026-06-08](docs/POST_BUILD_AUDIT_2026_06_08.md):
+   current audit, missing work, and next coding prompt.
+8. [Code Quality Tooling](docs/CODE_QUALITY_TOOLING.md): Graphify, Serena,
+   ECC/Codex skills, and verification loop.
+9. [Capsule Spec](docs/CAPSULE_SPEC.md): portable bundle contract.
+10. [Engineering Baseline](docs/ENGINEERING_BASELINE.md): crate ownership and
    command gates.
-9. [Improvement Guidelines](docs/IMPROVEMENT_GUIDELINES.md): current gaps and
+11. [Improvement Guidelines](docs/IMPROVEMENT_GUIDELINES.md): current gaps and
    quality bar.
-10. [Scaffold Audit](docs/SCAFFOLD_AUDIT.md): what is real now, what is still
+12. [Scaffold Audit](docs/SCAFFOLD_AUDIT.md): what is real now, what is still
    missing, and what blocks the functional engine.
 
 Use [docs/README.md](docs/README.md) for the full documentation index and

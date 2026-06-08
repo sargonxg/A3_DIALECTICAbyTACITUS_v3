@@ -50,6 +50,8 @@ jobs:
           test -f docs/PYTHON_TOOLING.md
           test -f docs/CODE_AUDIT_2026_06_08.md
           test -f docs/MISSING_WORK_AUDIT_2026_06_08.md
+          test -f docs/POST_BUILD_AUDIT_2026_06_08.md
+          test -f docs/CODE_QUALITY_TOOLING.md
           test -f docs/LLM_CONTEXT_EXTRACTION_ARCHITECTURE.md
           test -f docs/SCAFFOLD_AUDIT.md
           test -f docs/FOUNDATION_BUILD.md

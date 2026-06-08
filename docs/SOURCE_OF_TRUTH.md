@@ -16,33 +16,35 @@ When documents conflict, use this order:
 8. `docs/API_SLICE_1.md`
 9. `docs/GRAPH_PROFILE_REGISTRY.md`
 10. `docs/CAPSULE_STRUCTURE_GUIDE.md`
-11. `docs/API_CONTRACT.md`
-12. `docs/DATA_MODEL.md`
-13. `docs/ARCHITECTURE.md`
-14. `docs/PRAXIS_INTEGRATION.md`
-15. `docs/ABOUT_DIALECTICA.md`
-16. `docs/FOUNDATION_BUILD.md`
-17. `docs/CAPSULE_FORMAL_MODEL.md`
-18. `docs/CAPSULE_TYPES_AND_MARKETPLACE.md`
-19. `docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md`
-20. `docs/GRAPH_ONTOLOGY_RESEARCH_NOTES.md`
-21. `docs/ONTOLOGY_BLUEPRINTS.md`
-22. `docs/RESEARCH_LEDGER.md`
-23. `docs/AGENT_BUILD_GUIDE.md`
-24. `docs/NEXT_CODE_BUILD_PLAN.md`
-25. `docs/IMPROVEMENT_GUIDELINES.md`
-26. `docs/IMPLEMENTATION_PHASE_PLAN.md`
-27. `docs/REPOSITORY_CONCEPT_REVIEW.md`
-28. `docs/GITHUB_PROFILE.md`
-29. `docs/EXPERT_REVIEW_AND_MARKETPLACE.md`
-30. `docs/CAPSULE_BUILD_EXAMPLES.md`
-31. `docs/INTELLECTUAL_TOOLS.md`
-32. `docs/DEPLOYMENT.md`
-33. `docs/TECH_BENCHMARK.md`
-34. `docs/PYTHON_TOOLING.md`
-35. `docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md` as reference context
-36. ADRs in `docs/decisions/`
-37. Implementation notes in issues, PRs, and comments
+11. `docs/POST_BUILD_AUDIT_2026_06_08.md`
+12. `docs/CODE_QUALITY_TOOLING.md`
+13. `docs/API_CONTRACT.md`
+14. `docs/DATA_MODEL.md`
+15. `docs/ARCHITECTURE.md`
+16. `docs/PRAXIS_INTEGRATION.md`
+17. `docs/ABOUT_DIALECTICA.md`
+18. `docs/FOUNDATION_BUILD.md`
+19. `docs/CAPSULE_FORMAL_MODEL.md`
+20. `docs/CAPSULE_TYPES_AND_MARKETPLACE.md`
+21. `docs/EMBEDDED_GRAPH_AND_SEMANTIC_LAYER.md`
+22. `docs/GRAPH_ONTOLOGY_RESEARCH_NOTES.md`
+23. `docs/ONTOLOGY_BLUEPRINTS.md`
+24. `docs/RESEARCH_LEDGER.md`
+25. `docs/AGENT_BUILD_GUIDE.md`
+26. `docs/NEXT_CODE_BUILD_PLAN.md`
+27. `docs/IMPROVEMENT_GUIDELINES.md`
+28. `docs/IMPLEMENTATION_PHASE_PLAN.md`
+29. `docs/REPOSITORY_CONCEPT_REVIEW.md`
+30. `docs/GITHUB_PROFILE.md`
+31. `docs/EXPERT_REVIEW_AND_MARKETPLACE.md`
+32. `docs/CAPSULE_BUILD_EXAMPLES.md`
+33. `docs/INTELLECTUAL_TOOLS.md`
+34. `docs/DEPLOYMENT.md`
+35. `docs/TECH_BENCHMARK.md`
+36. `docs/PYTHON_TOOLING.md`
+37. `docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md` as reference context
+38. ADRs in `docs/decisions/`
+39. Implementation notes in issues, PRs, and comments
 
 If an implementation contradicts a higher-priority document, update the
 document through an ADR or stop and ask for a product decision.
@@ -154,12 +156,19 @@ Before building service code, the repo needs:
 - deployment skeleton for local Docker and Cloud Run;
 - CI check for formatting, tests, and docs presence.
 
-Current implementation status: the first executable capsule-contract slice now
+Current implementation status: the first executable capsule-build loop now
 includes Rust legacy bundle structs, v3 package validation, schema export, a
-legacy expected-bundle fixture, a canonical v3 Situation Capsule fixture, and
-CLI `validate`, `inspect`, `ontology-plan`, and `schema-export` commands.
-Extractor, compiler, store, API, task handler, and eval capabilities remain
-future phases.
+legacy expected-bundle fixture, a canonical v3 Situation Capsule fixture,
+fixture-mode source-pack/proposal/review/promotion contracts, deterministic v3
+package compilation, `.capsule` archive writing, PRAXIS context-pack export,
+and fixture-backed Axum API routes for health, version, manifest, graph
+preview, context pack, and read receipts.
+
+Still missing before DIALECTICA is a real production capsule-building service:
+live document/PDF/conversation ingestion, live model-provider extraction,
+PostgreSQL migrations, durable build jobs, task-handler routes, production
+artifact storage, auth, deployment wiring, eval reports, and PRAXIS frontend
+integration.
 
 ## First Definition of Done
 
@@ -171,3 +180,9 @@ Phase 1 is done when a developer can run one local command to:
 4. export the bundle as a `.capsule` archive and extracted directory
    projection with embedded Ladybug graph queryability;
 5. run contract tests in CI.
+
+The current foundation slice satisfies this definition for deterministic
+fixture input only. The next definition of done is store-backed capsule build
+state: `draft -> proposed -> needs_review -> approved_with_caveats -> compiled
+-> exported_to_praxis`, with review decisions and compiled artifacts persisted
+outside the fixture directory.

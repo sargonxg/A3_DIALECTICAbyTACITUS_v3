@@ -13,10 +13,12 @@ Before implementation work, read the active build path first:
 4. `docs/LLM_CONTEXT_EXTRACTION_ARCHITECTURE.md`
 5. `docs/MISSING_WORK_AUDIT_2026_06_08.md`
 6. `docs/CODE_AUDIT_2026_06_08.md`
-7. `docs/CAPSULE_SPEC.md`
-8. `docs/ENGINEERING_BASELINE.md`
-9. `docs/IMPROVEMENT_GUIDELINES.md`
-10. `docs/SCAFFOLD_AUDIT.md`
+7. `docs/POST_BUILD_AUDIT_2026_06_08.md`
+8. `docs/CODE_QUALITY_TOOLING.md`
+9. `docs/CAPSULE_SPEC.md`
+10. `docs/ENGINEERING_BASELINE.md`
+11. `docs/IMPROVEMENT_GUIDELINES.md`
+12. `docs/SCAFFOLD_AUDIT.md`
 
 Use `docs/README.md` as the complete index when deeper product, graph,
 ontology, deployment, PRAXIS, or research context is needed.
@@ -97,6 +99,21 @@ Current command gate:
 
 Example capsule envelopes under `fixtures/example-capsules/` must keep the
 same top-level bundle sections.
+
+## Repo Intelligence Tools
+
+- Run `graphify update .` after meaningful code or documentation movement.
+  Use `graphify-out/GRAPH_REPORT.md` and `graphify-out/graph.json` for
+  architecture orientation, then verify important conclusions in source.
+- Serena is configured through Codex MCP as
+  `serena start-mcp-server --project-from-cwd --context=codex
+  --open-web-dashboard=false`. Use it for symbol-level navigation/refactoring
+  when the tools are exposed in-session; fall back to `rg`, Graphify, and exact
+  file reads if they are not.
+- Use ECC/Codex skills deliberately: incremental implementation, test-driven
+  development, code-review-and-quality, production-audit, and
+  source-driven-development when adding/upgrading dependencies.
+- See `docs/CODE_QUALITY_TOOLING.md` for the full quality loop.
 
 ## External Actions
 

@@ -82,6 +82,17 @@ official sources + papers
 | Awesome Graph Universe, <https://github.com/graphgeeks-lab/awesome-graph-universe> | The list is a broad registry of graph databases, graph engines, graph ETL, graph visualization, GraphRAG infrastructure, and stream processors. | Use as a discovery index only. It confirms the adapter posture but should not restart stack selection. |
 | GraphGeeks Agentic Graph RAG workshop, <https://github.com/graphgeeks-lab/odsc-agentic-ai-summit-2025> | The workshop combines structured extraction, Kuzu graph storage, LanceDB vector/full-text search, hybrid retrieval, observability, guardrails, and evaluation. | Useful reference for future hybrid retrieval and observability patterns. Do not copy the stack into the foundation build; map ideas to capsule receipts and evals first. |
 
+## 2026-06-08 Post-Build Tooling Refresh
+
+| Source | Fresh finding | DIALECTICA consequence |
+| --- | --- | --- |
+| LadybugDB repository, <https://github.com/LadybugDB/ladybug> | The repository currently describes Ladybug as an embedded graph database with Cypher, property graph modeling, full-text/vector features, and Rust installation through `cargo add lbug`; the visible latest release during the check was `v0.17.1` on 2026-06-02. | The current `lbug = "0.17.1"` optional dependency remains coherent. Keep Ladybug as the required embedded projection, not the operational truth store. |
+| LadybugDB installation docs, <https://docs.ladybugdb.com/installation/> | Official docs list Rust client API support and a broad operational surface: CLI, Cypher, imports/exports, graph algorithms, extensions, and relational/cloud integrations. | Before deepening the projection builder, recheck Rust API details and storage compatibility. Do not assume the fixture placeholder is production-grade. |
+| LadybugDB getting started docs, <https://docs.ladybugdb.com/get-started/> | Getting-started docs continue to frame Ladybug as an embedded database with language examples and on-disk graph creation. | Good fit for portable capsule graph previews and local PRAXIS inspection. Still keep JSON/JSON-LD and PostgreSQL as canonical layers. |
+| Graphify codebase guide, <https://emelia.io/hub/knowledge-graph-graphify-guide> | External guidance emphasizes generated codebase graph/report artifacts, incremental update, and watch/hook modes. | Track `graphify-out/GRAPH_REPORT.md` and `graphify-out/graph.json` for agent orientation; ignore local cache/manifest/html. Use Graphify as orientation, not proof. |
+| Serena Codex client docs, <https://oraios.github.io/serena/02-usage/030_clients.html> | Official docs support Codex setup with `serena start-mcp-server --project-from-cwd --context=codex`. | Keep Serena in the Codex MCP baseline and use it for symbol-aware navigation when exposed in-session. |
+| Serena running docs, <https://oraios.github.io/serena/02-usage/020_running.html> | Official docs describe `serena start-mcp-server` and note project activation/lifecycle considerations. | Verify Serena availability before relying on it; if tools are absent, fall back to `rg`, Graphify, and source reads rather than blocking. |
+
 ## Adopted Product Rules
 
 - A capsule is the product contract, not a prompt, cache, or chat transcript.
