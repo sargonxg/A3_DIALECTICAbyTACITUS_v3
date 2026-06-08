@@ -77,8 +77,9 @@ still decide whether the records can be promoted.
 
 1. `dialectica-capsule`: real structs, schema, validation errors.
 2. `dialectica-cli`: validate and inspect a fixture bundle.
-3. `fixtures/golden-policy-capsule`: source pack and expected bundle.
-4. `dialectica-compiler`: deterministic bundle writer and checksums.
+3. `fixtures/canonical-capsules`: canonical v3 package fixture.
+4. `dialectica-compiler`: deterministic v3 package writer, archive writer, and
+   checksums.
 5. `dialectica-store`: migrations and repository interfaces.
 6. `dialectica-api`: health, version, manifest, graph preview, context pack.
 7. `dialectica-task-handler`: queued compile path.
@@ -93,6 +94,8 @@ cargo check --locked --workspace --all-targets
 cargo clippy --locked --workspace --all-targets -- -D warnings
 cargo test --locked --workspace
 cargo run -p dialectica-cli -- doctor
+cargo run -p dialectica-cli -- validate fixtures/canonical-capsules/conflict-situation-capsule
+cargo run -p dialectica-cli -- inspect fixtures/canonical-capsules/conflict-situation-capsule
 cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule/expected-bundle
 cargo run -p dialectica-cli -- inspect fixtures/golden-policy-capsule/expected-bundle
 cargo run -p dialectica-cli -- ontology-plan fixtures/golden-policy-capsule/expected-bundle
@@ -122,3 +125,4 @@ Do not promote a capability as functional unless:
 - Graph/ontology research: `docs/GRAPH_ONTOLOGY_RESEARCH_NOTES.md`
 - Implementation phases: `docs/IMPLEMENTATION_PHASE_PLAN.md`
 - Python support: `docs/PYTHON_TOOLING.md`
+- Current code audit: `docs/CODE_AUDIT_2026_06_08.md`

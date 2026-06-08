@@ -14,6 +14,8 @@ The repository currently includes a lightweight GitHub Actions workflow:
 ```
 
 It verifies required source-of-truth docs exist and checks the Rust workspace.
+It treats the canonical v3 capsule fixture as the first contract gate while
+keeping the legacy expected-bundle fixture as migration coverage.
 
 ## First Code CI
 
@@ -25,6 +27,12 @@ cargo check --locked --workspace --all-targets
 cargo clippy --locked --workspace --all-targets -- -D warnings
 cargo test --locked --workspace
 cargo run -p dialectica-cli -- doctor
+cargo run -p dialectica-cli -- validate fixtures/canonical-capsules/conflict-situation-capsule
+cargo run -p dialectica-cli -- inspect fixtures/canonical-capsules/conflict-situation-capsule
+cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule/expected-bundle
+cargo run -p dialectica-cli -- inspect fixtures/golden-policy-capsule/expected-bundle
+cargo run -p dialectica-cli -- ontology-plan fixtures/golden-policy-capsule/expected-bundle
+cargo run -p dialectica-cli -- schema-export schemas/capsule-3.0
 python -m compileall tools/python
 python -m unittest discover tools/python/tests
 python -m json.tool fixtures/example-capsules/user-capsule.example.json
@@ -33,7 +41,8 @@ python -m json.tool fixtures/example-capsules/tool-capsule.example.json
 python -m json.tool fixtures/example-capsules/output-capsule.example.json
 ```
 
-Add full fixture validation once `fixtures/golden-policy-capsule` exists.
+Future CI should add generated-fixture comparison after `build-fixture` exists,
+not before.
 
 ## Later Staging CI
 

@@ -2,13 +2,14 @@
 
 Date: 2026-06-08
 
-Readiness: **86/100 for coding readiness; not app-production readiness**.
+Readiness: **88/100 for coding readiness; 38/100 for capsule-engine readiness;
+20/100 for app-production readiness**.
 
 The repository has begun the first functional implementation pass. It is not
-yet a working backend, but the capsule contract is now executable in two
-lanes: the Rust crate can validate a canonical v3 extracted `.capsule` package,
-and it can still load the legacy expected-bundle directory while the compiler
-migrates.
+yet a working backend or capsule-building service, but the capsule contract is
+now executable in two lanes: the Rust crate can validate a canonical v3
+extracted `.capsule` package, and it can still load the legacy expected-bundle
+directory while the compiler migrates.
 
 ## Evidence Checked
 
@@ -34,8 +35,11 @@ migrates.
 - `docs/AGENT_BUILD_GUIDE.md`
 - `docs/BUILD_LEDGER.md`
 - `docs/IMPLEMENTATION_PHASE_PLAN.md`
+- `docs/CODE_AUDIT_2026_06_08.md`
+- `schemas/capsule-3.0/`
 - `schemas/capsule-0.1.0/`
 - `fixtures/canonical-capsules/conflict-situation-capsule/`
+- `.env.example`
 
 ## Ready
 
@@ -54,6 +58,12 @@ migrates.
   `schema-export`.
 - Canonical v3 conflict Situation Capsule fixture exists under
   `fixtures/canonical-capsules/conflict-situation-capsule/`.
+- GitHub CI now validates and inspects the canonical v3 fixture before the
+  legacy migration fixture.
+- `.env.example` exposes `DIALECTICA_CAPSULE_SPEC_VERSION=3.0` and keeps the
+  legacy `0.1.0` bundle version separate.
+- `docs/CODE_AUDIT_2026_06_08.md` records the current executable state and the
+  P0/P1 build gaps.
 - Legacy golden policy capsule expected-bundle exists under
   `fixtures/golden-policy-capsule/expected-bundle/`.
 - Initial crate and service boundaries exist.
@@ -90,6 +100,10 @@ migrates.
 - Capsule validation breadth is incomplete; v3 validation currently checks
   package shape, manifest layer vocabulary, type boundary, non-empty generated
   views, JSON parseability, and minimum Situation claim/source records.
+- No source-pack ingestion, document upload, PDF extraction, user discussion
+  capture, or assistant conversation ingestion exists.
+- No ontology or semantic-layer creation workflow exists beyond the legacy
+  `ontology-plan` helper.
 - Golden fixture source pack is still only a placeholder; the expected bundle is
   committed, but the compiler does not generate either the legacy bundle or v3
   package yet.
@@ -102,6 +116,9 @@ migrates.
 - Ontology blueprint persistence inside signed bundles is not implemented; the
   planner exists as a CLI and schema contract.
 - PRAXIS context-pack export is not implemented.
+- PRAXIS frontend integration is not implemented in this repository and should
+  be done in the PRAXIS repo only after a stable DIALECTICA context-pack/API
+  contract exists.
 - Evals are only planned.
 - Cloud infrastructure has no Terraform/OpenTofu state yet.
 - API service still has no HTTP framework.
@@ -110,16 +127,18 @@ migrates.
 
 ## Blockers Before Calling It Functional
 
-1. Expand Lane A validation to every required acceptance case, including
+1. Implement source-pack to v3 `.capsule` package generation.
+2. Add deterministic `.capsule` archive assembly, Merkle-root/signature logic,
+   and compiler receipts.
+3. Expand Lane A validation to every required acceptance case, including
    ontology blueprint compatibility checks.
-2. Validate the four example capsule envelopes against a shared-envelope
+4. Validate the four example capsule envelopes against a shared-envelope
    contract.
-3. Implement source-pack to v3 `.capsule` package generation.
-4. Add Merkle-root/signature logic and deterministic compiler output.
-5. Add store migrations for capsules, sources, claims, graph, review, rights,
-   and bundle exports.
+5. Export a PRAXIS context pack from canonical v3 package records.
 6. Add local API health and manifest/context-pack routes.
-7. Add fixture evals that compare raw, loose-doc, and capsule-augmented output.
+7. Add store migrations for capsules, sources, claims, graph, review, rights,
+   and bundle exports.
+8. Add fixture evals that compare raw, loose-doc, and capsule-augmented output.
 
 ## High-Value Fixes
 
@@ -140,7 +159,7 @@ migrates.
 
 ## Recommendation
 
-Continue with Lane A/B from `docs/CODING_LEDGER.md`: broaden validators, then
-make the compiler generate the committed golden expected-bundle from source-pack
-records and review decisions. Store, API, and cloud work should wait until this
-local capsule loop is deterministic.
+Continue with Lane A/B from `docs/CODING_LEDGER.md`: make the compiler generate
+the canonical v3 package from source-pack records and review decisions, then
+broaden validators. Store, API, PRAXIS frontend, and cloud work should wait
+until this local capsule loop is deterministic and has a context-pack export.

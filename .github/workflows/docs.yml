@@ -48,6 +48,7 @@ jobs:
           test -f docs/REPOSITORY_CONCEPT_REVIEW.md
           test -f docs/GITHUB_PROFILE.md
           test -f docs/PYTHON_TOOLING.md
+          test -f docs/CODE_AUDIT_2026_06_08.md
           test -f docs/SCAFFOLD_AUDIT.md
           test -f docs/FOUNDATION_BUILD.md
           test -f docs/TECH_BENCHMARK.md
@@ -76,12 +77,27 @@ jobs:
           test -f fixtures/example-capsules/situation-capsule.example.json
           test -f fixtures/example-capsules/tool-capsule.example.json
           test -f fixtures/example-capsules/output-capsule.example.json
+          test -f fixtures/canonical-capsules/README.md
+          test -f fixtures/canonical-capsules/conflict-situation-capsule/manifest.json
+          test -f fixtures/canonical-capsules/conflict-situation-capsule/claims.jsonl
+          test -f fixtures/canonical-capsules/conflict-situation-capsule/graph.jsonld
+          test -f fixtures/canonical-capsules/conflict-situation-capsule/episodes.json
+          test -f fixtures/canonical-capsules/conflict-situation-capsule/evidence/sources.jsonl
+          test -f fixtures/canonical-capsules/conflict-situation-capsule/reasoning/devices.json
+          test -f fixtures/canonical-capsules/conflict-situation-capsule/reasoning/annotations.json
+          test -f fixtures/canonical-capsules/conflict-situation-capsule/reasoning/traps.json
+          test -f fixtures/canonical-capsules/conflict-situation-capsule/review/review.json
+          test -f fixtures/canonical-capsules/conflict-situation-capsule/runtime.json
+          test -f fixtures/canonical-capsules/conflict-situation-capsule/agent_context.md
+          test -f fixtures/canonical-capsules/conflict-situation-capsule/operations.md
           test -f fixtures/golden-policy-capsule/expected-bundle/manifest.json
           test -f fixtures/golden-policy-capsule/expected-bundle/source_ledger.jsonl
           test -f fixtures/golden-policy-capsule/expected-bundle/temporal_ledger.jsonl
           test -f fixtures/golden-policy-capsule/expected-bundle/graph_slice.json
           test -f fixtures/golden-policy-capsule/expected-bundle/language_profile.json
           test -f fixtures/golden-policy-capsule/expected-bundle/agent_guidance.json
+          test -f schemas/capsule-3.0/praxis_capsule_manifest.schema.json
+          test -f schemas/capsule-3.0/praxis_capsule_package.schema.json
           test -f schemas/capsule-0.1.0/manifest.schema.json
           test -f schemas/capsule-0.1.0/capsule.schema.json
           test -f schemas/capsule-0.1.0/ontology_blueprint.schema.json
@@ -101,6 +117,10 @@ jobs:
         run: cargo test --locked --workspace
       - name: CLI doctor
         run: cargo run -p dialectica-cli -- doctor
+      - name: Validate canonical v3 capsule
+        run: cargo run -p dialectica-cli -- validate fixtures/canonical-capsules/conflict-situation-capsule
+      - name: Inspect canonical v3 capsule
+        run: cargo run -p dialectica-cli -- inspect fixtures/canonical-capsules/conflict-situation-capsule
       - name: Validate golden capsule
         run: cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule/expected-bundle
       - name: Inspect golden capsule
@@ -108,7 +128,7 @@ jobs:
       - name: Plan golden capsule ontology
         run: cargo run -p dialectica-cli -- ontology-plan fixtures/golden-policy-capsule/expected-bundle
       - name: Export schema snapshots
-        run: cargo run -p dialectica-cli -- schema-export schemas/capsule-0.1.0
+        run: cargo run -p dialectica-cli -- schema-export schemas/capsule-3.0
 
   python-tools:
     name: Python tools

@@ -1,6 +1,6 @@
 # Next Code Build Plan
 
-Date: 2026-06-07
+Date: 2026-06-08
 
 Status: active implementation plan for the next coding session.
 
@@ -29,6 +29,7 @@ Already implemented:
 
 - Rust workspace and service crates;
 - typed capsule bundle structs;
+- canonical v3 package structs;
 - bundle directory loader;
 - first validation report with precise findings;
 - schema export including `ontology_blueprint.schema.json`;
@@ -37,9 +38,24 @@ Already implemented:
 - CLI `inspect`;
 - CLI `ontology-plan`;
 - CLI `schema-export`;
+- canonical v3 conflict Situation Capsule fixture;
 - golden policy expected bundle;
-- contract tests for sourceability, temporal warnings, graph registry,
-  ontology blueprint families, and schema snapshots.
+- contract tests for canonical v3 validation, rejected top-level types,
+  sourceability, temporal warnings, graph registry, ontology blueprint families,
+  and schema snapshots.
+
+Not yet implemented:
+
+- source-pack ingestion;
+- v3 package writer;
+- `.capsule` archive writer;
+- Merkle/checksum/signature envelope;
+- context-pack export;
+- HTTP API routes;
+- PostgreSQL migrations;
+- document/PDF/user discussion ingestion;
+- human review queue;
+- PRAXIS frontend integration.
 
 Current proof commands:
 
@@ -88,6 +104,8 @@ Acceptance:
 - rejected, expired, and unreviewed objects remain in lineage but are blocked
   from promoted PRAXIS export;
 - contract tests compare generated output to the canonical v3 fixture.
+
+Do not move to API or store work until this phase has executable proof.
 
 ## Phase 2: Source-Pack Builder
 

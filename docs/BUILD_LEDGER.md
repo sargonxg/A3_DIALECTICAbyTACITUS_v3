@@ -88,7 +88,8 @@ Evidence:
   `cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule/expected-bundle`,
   `cargo run -p dialectica-cli -- inspect fixtures/golden-policy-capsule/expected-bundle`,
   `cargo run -p dialectica-cli -- ontology-plan fixtures/golden-policy-capsule/expected-bundle`,
-  and `cargo run -p dialectica-cli -- schema-export schemas/capsule-0.1.0`.
+  and the then-current legacy schema export; the current canonical gate exports
+  to `schemas/capsule-3.0`.
 - improvement pass reconciled `README.md`, `AGENTS.md`,
   `docs/SOURCE_OF_TRUTH.md`, `docs/README.md`, `docs/CODING_LEDGER.md`,
   `docs/NEXT_CODE_BUILD_PLAN.md`, and the docs CI required-file list around
@@ -209,6 +210,52 @@ Evidence:
 - remaining gap: the compiler still needs to generate the v3 package and
   archive rather than relying on hand-authored fixtures.
 
+## 2026-06-08 - Code Audit And Build-Gate Update
+
+Status: audit complete; local contract scaffold verified; functional engine
+build remains pending.
+
+Actions:
+
+- added `docs/CODE_AUDIT_2026_06_08.md` as the current truth about what is
+  coded versus planned;
+- added the audit doc to the documentation index, agent start path, and CI
+  required-doc gate;
+- promoted canonical v3 fixture validation and inspection into the active CI
+  and local command gates;
+- updated `.env.example` and local docs to use
+  `DIALECTICA_CAPSULE_SPEC_VERSION=3.0` while keeping
+  `DIALECTICA_LEGACY_BUNDLE_SCHEMA_VERSION=0.1.0` explicit;
+- updated the coding ledger with the next v3-first implementation sequence;
+- recorded that compiler, store, API, task handler, ingestion, review UI, and
+  PRAXIS frontend integration are not yet functional.
+
+Evidence:
+
+- `cargo fmt --all -- --check` passed;
+- `cargo check --locked --workspace --all-targets` passed;
+- `cargo clippy --locked --workspace --all-targets -- -D warnings` passed;
+- `cargo test --locked --workspace` passed;
+- `cargo run -p dialectica-cli -- doctor` passed;
+- `cargo run -p dialectica-cli -- validate fixtures/canonical-capsules/conflict-situation-capsule` passed;
+- `cargo run -p dialectica-cli -- inspect fixtures/canonical-capsules/conflict-situation-capsule` passed;
+- `cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule/expected-bundle` passed with the expected stale-claim warning;
+- `cargo run -p dialectica-cli -- schema-export $env:TEMP\dialectica-audit-schemas` passed;
+- `python -m compileall tools/python` passed;
+- `python -m unittest discover tools/python/tests` passed;
+- a tighter committed-secret scan found no environment-style secret assignments.
+
+Blocking build gaps:
+
+1. v3 compiler writer and source-pack inputs;
+2. `.capsule` archive writer, deterministic digest, and signature envelope;
+3. deep v3 cross-layer validator;
+4. PRAXIS context-pack exporter;
+5. local Axum API;
+6. PostgreSQL migrations and repositories;
+7. ingestion and human review workflow;
+8. PRAXIS frontend integration after the local contract is stable.
+
 ## Active Decisions
 
 | ID | Decision | Status | Where |
@@ -224,19 +271,24 @@ Evidence:
 
 1. Define typed source-pack inputs and canonical deterministic serialization
    rules.
-2. Implement deterministic bundle writer in `crates/dialectica-compiler`.
-3. Add `build-fixture` so the golden expected bundle is generated from
-   source-pack records and review decisions.
-4. Export the first PRAXIS context pack from the golden bundle.
-5. Validate the four example capsule envelopes against a shared top-level
+2. Implement deterministic v3 package writer in `crates/dialectica-compiler`.
+3. Add `.capsule` archive writing with `mimetype` first, stable entry order,
+   LF line endings, and explicit cache exclusion from digest scope.
+4. Add `build-fixture` so a canonical capsule can be generated from source-pack
+   records and review decisions.
+5. Add checksum, Merkle-root, and signature placeholders with stable diff
+   output.
+6. Deepen v3 validators for claims, sources, temporal episodes, graph,
+   reasoning, review, runtime, and generated agent views.
+7. Export the first PRAXIS context pack from the canonical v3 package.
+8. Validate the four example capsule envelopes against a shared top-level
    contract.
-6. Add checksum and signature placeholders with stable diff output.
-7. Implement graph-slice and graph-constraint validators using
-   `docs/GRAPH_PROFILE_REGISTRY.md`.
-8. Turn `services/dialectica-api` into a local fixture-mode Axum service.
-9. Add SQLx migrations in `crates/dialectica-store`.
-10. Add Dockerfile and Cloud Run staging deployment skeleton after the local API
-   runs.
+9. Turn `services/dialectica-api` into a local fixture-mode Axum service.
+10. Add SQLx migrations in `crates/dialectica-store`.
+11. Add ingestion records for documents, PDFs, and user/assistant discussion
+    turns after the compiler loop works.
+12. Add task-handler and Cloud Run staging skeleton only after the local API
+    runs.
 
 ## Open Product Questions
 

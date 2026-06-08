@@ -2,6 +2,10 @@
 
 Status: active control file for the first functional DIALECTICA build.
 
+Current audit result: executable v3 contract scaffold verified on 2026-06-08;
+the capsule-building service is not yet implemented. See
+[Code Audit 2026-06-08](CODE_AUDIT_2026_06_08.md).
+
 This ledger turns the architecture docs into a coding sequence. Keep it updated
 whenever a crate, service, migration, fixture, or deployment gate changes.
 
@@ -29,13 +33,43 @@ The first functional app is not complete until a developer can:
 | --- | --- | --- | --- |
 | Workspace | `Cargo.toml` | created | keep all crates in one Cargo workspace |
 | Capsule contract | `crates/dialectica-capsule` | v3 package validator plus legacy structs, validation, and schema export implemented | expand validators and checksum/signature contract |
-| Compiler | `crates/dialectica-compiler` | scaffolded with review-gated emit check | deterministic bundle writer and checksums |
-| Store | `crates/dialectica-store` | scaffolded with migration families | SQLx migrations and repository interfaces |
-| Evals | `crates/dialectica-eval` | scaffolded with check result primitive | fixture outcome and source-fidelity evals |
-| CLI | `crates/dialectica-cli` | `doctor`, `validate`, `inspect`, `ontology-plan`, and `schema-export` implemented | add `build-fixture` after compiler exists |
-| API | `services/dialectica-api` | scaffolded binary | Axum health, manifest, context-pack routes |
-| Task handler | `services/dialectica-task-handler` | scaffolded binary | Cloud Tasks HTTP handler |
-| Contract tests | `tests/dialectica-contract-tests` | scaffolded | bundle contract and graph constraint tests |
+| Compiler | `crates/dialectica-compiler` | scaffolded with legacy review-gated emit check only | deterministic v3 package writer, `.capsule` archive writer, and checksums |
+| Store | `crates/dialectica-store` | scaffolded with migration family names only | SQLx migrations and repository interfaces |
+| Evals | `crates/dialectica-eval` | scaffolded with check result primitive only | fixture outcome, source-fidelity, temporal, reasoning, and PRAXIS comparison evals |
+| CLI | `crates/dialectica-cli` | `doctor`, `validate`, `inspect`, `ontology-plan`, and `schema-export` implemented | add `build-fixture` and `context-pack` after compiler/context export exists |
+| API | `services/dialectica-api` | scaffolded binary that prints health text | Axum health, version, manifest, graph-preview, context-pack routes |
+| Task handler | `services/dialectica-task-handler` | scaffolded binary that prints store env | Cloud Tasks-compatible HTTP handler |
+| Contract tests | `tests/dialectica-contract-tests` | canonical v3 fixture and legacy migration tests implemented | generated-fixture, archive, deep-validator, and context-pack tests |
+
+## 2026-06-08 Audit Result
+
+The current repo can be trusted for contract-first coding, but not yet for
+serving PRAXIS or building capsules from user material.
+
+Verified as working:
+
+- canonical v3 Situation Capsule fixture validates and inspects;
+- unsupported top-level capsule types are rejected;
+- legacy expected-bundle fixture still validates during migration;
+- schema export works;
+- Rust workspace checks, clippy, tests, and Python auxiliary tests pass;
+- CI now runs canonical v3 fixture validation before the legacy migration
+  fixture.
+
+Not yet built:
+
+- v3 compiler writer;
+- source-pack ingestion;
+- `.capsule` archive assembly;
+- Merkle/checksum/signature envelope;
+- PRAXIS context-pack export;
+- HTTP API routes;
+- task-handler route;
+- PostgreSQL migrations;
+- document/PDF/user-discussion ingestion;
+- ontology/semantic-layer creation workflow;
+- human review queue;
+- frontend integration in PRAXIS.
 
 ## Command Gate
 
@@ -47,6 +81,9 @@ cargo check --locked --workspace --all-targets
 cargo clippy --locked --workspace --all-targets -- -D warnings
 cargo test --locked --workspace
 cargo run -p dialectica-cli -- doctor
+cargo run -p dialectica-cli -- validate fixtures/canonical-capsules/conflict-situation-capsule
+cargo run -p dialectica-cli -- inspect fixtures/canonical-capsules/conflict-situation-capsule
+cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule/expected-bundle
 python -m compileall tools/python
 python -m unittest discover tools/python/tests
 ```
@@ -104,6 +141,16 @@ Done when:
 - schema snapshots are committed;
 - remaining Lane A cases are tracked before moving to store/API work.
 
+Next validator expansion:
+
+- enforce every claim-to-source span reference;
+- enforce graph node/edge references across claims, episodes, reasoning, and
+  review objects;
+- enforce named graph and graph-lens profile compatibility;
+- enforce review caveats and expiration state before promoted export;
+- enforce generated `agent_context.md` and `operations.md` coverage for runtime
+  instructions.
+
 ### Lane B: Fixture And CLI
 
 Goal: make a deterministic capsule build possible without cloud credentials.
@@ -141,11 +188,13 @@ Done when:
 
 ### Lane D: Compiler
 
-Goal: assemble deterministic signed bundle directories.
+Goal: assemble deterministic signed v3 package directories and `.capsule`
+archives.
 
 Deliver:
 
-- bundle directory writer;
+- v3 package directory writer;
+- `.capsule` archive writer;
 - deterministic JSON/JSONL ordering;
 - checksums;
 - manifest generation;
@@ -228,12 +277,17 @@ when it changes:
 Follow [Next Code Build Plan](NEXT_CODE_BUILD_PLAN.md) and
 [Improvement Guidelines](IMPROVEMENT_GUIDELINES.md):
 
-1. define typed source-pack inputs and deterministic bundle-writing rules;
-2. implement `dialectica-compiler` deterministic bundle writing;
-3. add source-pack records and `dialectica-cli build-fixture`;
-4. export a PRAXIS context pack from the golden bundle;
-5. turn `dialectica-api` into a local fixture-mode Axum service;
-6. add PostgreSQL migrations only after the local capsule loop is executable.
+1. define typed source-pack inputs and deterministic v3 package-writing rules;
+2. implement `dialectica-compiler` deterministic v3 package writing;
+3. add `.capsule` archive writing with deterministic entry order;
+4. add source-pack records and `dialectica-cli build-fixture`;
+5. deepen v3 validation across claims, sources, graph, review, reasoning, and
+   runtime records;
+6. export a PRAXIS context pack from the canonical package;
+7. turn `dialectica-api` into a local fixture-mode Axum service;
+8. add PostgreSQL migrations only after the local capsule loop is executable;
+9. start PRAXIS frontend integration only after the API/context-pack contract is
+   stable.
 
 Do not start Cloud Run, MCP, graph-database, or PRAXIS production integration
 work until the local fixture can be generated, validated, inspected, and

@@ -237,6 +237,7 @@ Cargo workspace
 ```
 
 Start coding from [docs/CODING_LEDGER.md](docs/CODING_LEDGER.md). Read
+[docs/CODE_AUDIT_2026_06_08.md](docs/CODE_AUDIT_2026_06_08.md) and
 [docs/SCAFFOLD_AUDIT.md](docs/SCAFFOLD_AUDIT.md) before claiming that any slice
 is functional. The next implementation sequence is in
 [docs/NEXT_CODE_BUILD_PLAN.md](docs/NEXT_CODE_BUILD_PLAN.md), and the active
@@ -257,8 +258,9 @@ cargo run -p dialectica-cli -- schema-export schemas/capsule-3.0
 
 This proves the repository is not only product copy. It already has typed Rust
 capsule contracts, v3 package validation, schema export, a canonical v3
-Situation Capsule fixture, a legacy policy fixture, and a capsule-specific
-ontology planner.
+Situation Capsule fixture, a legacy migration fixture, and a capsule-specific
+ontology planner. It does not yet build capsules from documents or serve PRAXIS;
+that boundary is tracked in the code audit and build ledger.
 
 Initial runtime promise:
 
@@ -562,6 +564,7 @@ docs/
   LANE_A_ACCEPTANCE.md                  exact first schema lane acceptance
   API_SLICE_1.md                        exact first API slice contract
   GRAPH_PROFILE_REGISTRY.md             canonical graph vocabulary
+  CODE_AUDIT_2026_06_08.md              what is coded, verified, and still missing
   SCAFFOLD_AUDIT.md                     repo readiness and gap audit
   FOUNDATION_BUILD.md                   first product slice and non-goals
   TECH_BENCHMARK.md                      research and ecosystem comparison
@@ -631,14 +634,16 @@ tools/                                  Python reports and local developer tooli
 
 ## Current Status
 
-This repository is at **Phase 0: source-of-truth plus coding scaffold**.
+This repository is at **Phase 0: source-of-truth plus executable contract
+scaffold**.
 
 The Rust workspace now has its first executable capsule-contract slice. It can
-load a golden policy bundle, validate sourceability and graph/review/temporal
-invariants, inspect the capsule summary, and export JSON Schema snapshots. The
-next implementation step is to make the compiler generate the golden bundle
-deterministically from source-pack records and review decisions before adding
-storage, API routes, or model-powered extraction.
+validate and inspect a canonical v3 Situation Capsule fixture, keep the legacy
+policy fixture passing during migration, and export JSON Schema snapshots. The
+next implementation step is to make the compiler generate a canonical v3
+package and `.capsule` archive deterministically from source-pack records and
+review decisions before adding storage, API routes, PRAXIS frontend integration,
+or model-powered extraction.
 
 Start here:
 
@@ -654,7 +659,9 @@ Start here:
    graph, reasoning, language, review, and agent guidance.
 6. [Capsule Spec](docs/CAPSULE_SPEC.md): portable bundle contract.
 7. [API Slice 1](docs/API_SLICE_1.md): first PRAXIS-facing backend routes.
-8. [Scaffold Audit](docs/SCAFFOLD_AUDIT.md): what is real now, what is still
+8. [Code Audit 2026-06-08](docs/CODE_AUDIT_2026_06_08.md): what is coded,
+   verified, and not built yet.
+9. [Scaffold Audit](docs/SCAFFOLD_AUDIT.md): what is real now, what is still
    missing, and what blocks the functional engine.
 
 Use [docs/README.md](docs/README.md) for the full documentation index and

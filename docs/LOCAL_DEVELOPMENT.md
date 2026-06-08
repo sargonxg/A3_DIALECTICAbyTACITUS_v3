@@ -32,6 +32,9 @@ cargo check --locked --workspace --all-targets
 cargo clippy --locked --workspace --all-targets -- -D warnings
 cargo test --locked --workspace
 cargo run -p dialectica-cli -- doctor
+cargo run -p dialectica-cli -- validate fixtures/canonical-capsules/conflict-situation-capsule
+cargo run -p dialectica-cli -- inspect fixtures/canonical-capsules/conflict-situation-capsule
+cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule/expected-bundle
 python -m compileall tools/python
 python -m unittest discover tools/python/tests
 python -m json.tool fixtures/example-capsules/user-capsule.example.json > $null
@@ -40,11 +43,12 @@ python -m json.tool fixtures/example-capsules/tool-capsule.example.json > $null
 python -m json.tool fixtures/example-capsules/output-capsule.example.json > $null
 ```
 
-Future fixture commands:
+Optional migration-fixture commands:
 
 ```powershell
-cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule/expected-bundle
 cargo run -p dialectica-cli -- inspect fixtures/golden-policy-capsule/expected-bundle
+cargo run -p dialectica-cli -- ontology-plan fixtures/golden-policy-capsule/expected-bundle
+cargo run -p dialectica-cli -- schema-export schemas/capsule-3.0
 ```
 
 ## Planned Environment Variables
@@ -56,7 +60,8 @@ Local-only values:
 - `DIALECTICA_ENV=local`
 - `DIALECTICA_DATABASE_URL=postgres://postgres:postgres@localhost:5432/dialectica`
 - `DIALECTICA_ARTIFACT_ROOT=./artifacts`
-- `DIALECTICA_SCHEMA_VERSION=0.1.0`
+- `DIALECTICA_CAPSULE_SPEC_VERSION=3.0`
+- `DIALECTICA_LEGACY_BUNDLE_SCHEMA_VERSION=0.1.0`
 
 ## Local Data
 
@@ -73,11 +78,12 @@ Allowed fixture content:
 
 1. Run formatter.
 2. Run unit tests.
-3. Parse example capsule envelopes.
-4. Validate golden fixture.
-5. Inspect bundle output.
-6. Run source and temporal evals.
-7. Update docs if contract behavior changed.
+3. Validate and inspect the canonical v3 fixture.
+4. Parse example capsule envelopes.
+5. Validate the legacy migration fixture.
+6. Inspect bundle output.
+7. Run source and temporal evals after `dialectica-eval` is real.
+8. Update docs if contract behavior changed.
 
 ## Windows Notes
 

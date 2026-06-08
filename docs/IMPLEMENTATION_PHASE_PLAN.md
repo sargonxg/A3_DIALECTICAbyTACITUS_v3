@@ -18,10 +18,12 @@ Status: in progress, first slice implemented.
 
 Delivered in the first coding pass:
 
-- typed Rust bundle structs in `dialectica-capsule`;
+- typed Rust v3 package structs and legacy bundle structs in
+  `dialectica-capsule`;
 - Serde load path for a bundle directory;
 - JSON Schema export;
 - deterministic validation findings;
+- canonical v3 conflict Situation Capsule fixture;
 - sourceability checks for graph edges;
 - registered graph node and edge checks;
 - capsule-specific ontology blueprint planner and JSON Schema export;
@@ -30,9 +32,12 @@ Delivered in the first coding pass:
 - golden policy expected-bundle fixture;
 - CLI `validate`, `inspect`, and `schema-export`.
 - CLI `ontology-plan`.
+- CI validation and inspection for the canonical v3 fixture.
 
 Remaining:
 
+- implement source-pack to v3 package generation;
+- implement deterministic `.capsule` archive assembly;
 - expand validation to all required Lane A cases;
 - add ontology blueprint compatibility checks for example capsule types;
 - validate the four single-file example capsules against a shared envelope
@@ -45,17 +50,21 @@ Verification:
 cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule/expected-bundle
 cargo run -p dialectica-cli -- inspect fixtures/golden-policy-capsule/expected-bundle
 cargo run -p dialectica-cli -- ontology-plan fixtures/golden-policy-capsule/expected-bundle
-cargo run -p dialectica-cli -- schema-export schemas/capsule-0.1.0
+cargo run -p dialectica-cli -- validate fixtures/canonical-capsules/conflict-situation-capsule
+cargo run -p dialectica-cli -- inspect fixtures/canonical-capsules/conflict-situation-capsule
+cargo run -p dialectica-cli -- schema-export schemas/capsule-3.0
 cargo test --locked --workspace
 ```
 
 ## Phase 2: Deterministic Compiler
 
-Goal: build a capsule from canonical records into a bundle directory.
+Goal: build a capsule from canonical records into a v3 package directory and
+portable `.capsule` archive.
 
 Deliver:
 
 - deterministic JSON and JSONL ordering;
+- deterministic `.capsule` archive entry ordering;
 - checksums for every layer;
 - bundle digest;
 - signature envelope placeholder;
