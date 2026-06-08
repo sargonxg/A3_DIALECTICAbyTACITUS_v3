@@ -3,9 +3,9 @@
 Status: active control file for the first functional DIALECTICA build.
 
 Current audit result: executable v3 contract scaffold plus fixture-mode
-source/proposal/review/promotion/compiler/archive/context/API contract verified
-on 2026-06-08; the live ingestion and durable capsule-building service is not
-yet implemented. See
+source/proposal/review/promotion/compiler/archive/context/API contract and local
+document-folder capsule builder verified on 2026-06-08; PDF/OCR/conversation
+ingestion and the durable capsule-building service are not yet implemented. See
 [Code Audit 2026-06-08](CODE_AUDIT_2026_06_08.md),
 [Missing Work Audit 2026-06-08](MISSING_WORK_AUDIT_2026_06_08.md), and
 [LLM Context Extraction Architecture](LLM_CONTEXT_EXTRACTION_ARCHITECTURE.md).
@@ -39,12 +39,14 @@ The first functional app is not complete until a developer can:
 | --- | --- | --- | --- |
 | Workspace | `Cargo.toml` | created | keep all crates in one Cargo workspace |
 | Capsule contract | `crates/dialectica-capsule` | v3 package validator plus legacy structs, validation, and schema export implemented | expand validators and checksum/signature contract |
+| Builder | `crates/dialectica-builder` | local text-document folder to source pack, proposals, caveated decisions, package, `.capsule`, PRAXIS pack, and import receipt implemented | add PDF/conversation ingestion and human-editable proposal/review cycles |
 | Extractor | `crates/dialectica-extractor` | fixture-mode source-pack, proposal envelope, model receipt, build-plan, reviewer decision, promotion normalization, schema export, and review-trigger routing implemented | provider traits and live model orchestration |
 | Compiler | `crates/dialectica-compiler` | deterministic fixture-mode v3 package writer, `.capsule` archive writer, PRAXIS context-pack exporter, and review-blocking tests implemented | harden canonical checksums, signature envelope, and generated-fixture comparison |
 | Store | `crates/dialectica-store` | scaffolded with migration family names only | SQLx migrations and repository interfaces |
 | Evals | `crates/dialectica-eval` | scaffolded with check result primitive only | fixture outcome, source-fidelity, temporal, reasoning, and PRAXIS comparison evals |
-| CLI | `crates/dialectica-cli` | `doctor`, `validate`, `inspect`, `ontology-plan`, `ladybug-check`, `source-pack-check`, `proposal-check`, `build-plan`, `review-check`, `promote-check`, `build-fixture`, `archive`, `context-pack`, and `schema-export` implemented | add durable job commands after store exists |
+| CLI | `crates/dialectica-cli` | `welcome`, `build-docs`, `doctor`, `validate`, `inspect`, `ontology-plan`, `ladybug-check`, `source-pack-check`, `proposal-check`, `build-plan`, `review-check`, `promote-check`, `build-fixture`, `archive`, `context-pack`, `praxis-pack`, `mcp-config`, and `schema-export` implemented | add durable job commands after store exists |
 | API | `services/dialectica-api` | fixture-backed Axum health, version, manifest, graph-preview, context-pack, and read-receipt routes implemented | store-backed jobs, auth, and artifact lookup |
+| MCP | `services/dialectica-mcp` | Codex stdio MCP server with welcome, build, inspect, archive, PRAXIS pack, ontology-plan, resources, and prompt implemented | add hosted/authenticated MCP only after threat model and store-backed jobs |
 | Task handler | `services/dialectica-task-handler` | scaffolded binary that prints store env | Cloud Tasks-compatible HTTP handler |
 | Contract tests | `tests/dialectica-contract-tests` | canonical v3 fixture, source-pack/proposal validation, review-gate routing, reviewer-decision validation, promotion normalization, generated compiler package, archive, context-pack, API route, and legacy migration tests implemented | deep-validator and store-backed job tests |
 
@@ -66,6 +68,10 @@ Verified as working:
 - fixture compiler writes a valid canonical v3 package;
 - fixture archive writer emits `.capsule` with `mimetype` first;
 - fixture context-pack export produces PRAXIS-readable JSON;
+- local document-folder builder produces a compiled package, `.capsule`,
+  `praxis-context-pack.json`, `praxis-import.json`, and build-source trace;
+- Codex MCP stdio server advertises the capsule build tools, resources, and
+  prompt;
 - fixture Axum API serves health, version, manifest, graph preview, context
   pack, and deterministic read receipts;
 - schema export works;
@@ -75,7 +81,7 @@ Verified as working:
 
 Not yet built:
 
-- live document/PDF/conversation source-pack ingestion;
+- PDF/OCR/conversation source-pack ingestion;
 - live LLM extraction orchestration and provider clients;
 - production-grade Merkle/checksum/signature envelope;
 - store-backed HTTP API routes and build jobs;
@@ -95,6 +101,10 @@ cargo fmt --all -- --check
 cargo check --locked --workspace --all-targets
 cargo clippy --locked --workspace --all-targets -- -D warnings
 cargo test --locked --workspace
+cargo run -p dialectica-cli -- welcome
+cargo run -p dialectica-cli -- build-docs --type situation --input .\docs --out $env:TEMP\dialectica-doc-capsule --title "Local Situation Capsule" --workflow decision_brief
+cargo run -p dialectica-cli -- inspect $env:TEMP\dialectica-doc-capsule\package
+cargo run -p dialectica-cli -- mcp-config
 cargo run -p dialectica-cli -- doctor
 cargo run -p dialectica-cli -- validate fixtures/canonical-capsules/conflict-situation-capsule
 cargo run -p dialectica-cli -- inspect fixtures/canonical-capsules/conflict-situation-capsule

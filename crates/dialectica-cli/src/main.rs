@@ -12,7 +12,12 @@ fn main() {
     let command = args.next().unwrap_or_else(|| "help".to_owned());
 
     match command.as_str() {
+        "welcome" => print_welcome(),
         "doctor" => print_doctor(),
+        "build-docs" => {
+            let remaining = args.collect::<Vec<_>>();
+            build_documents_from_args(&remaining);
+        }
         "validate" => {
             let Some(path) = args.next() else {
                 eprintln!("missing bundle directory");
@@ -158,6 +163,11 @@ fn main() {
                 .unwrap_or_else(|| "decision_brief".to_owned());
             print_context_pack(Path::new(&package_dir), &workflow);
         }
+        "praxis-pack" => {
+            let remaining = args.collect::<Vec<_>>();
+            write_context_pack_from_args(&remaining);
+        }
+        "mcp-config" => print_mcp_config(),
         "ladybug-plan" => {
             let Some(path) = args.next() else {
                 eprintln!("missing capsule directory");
@@ -217,7 +227,9 @@ fn main() {
 fn print_help() {
     println!("dialectica-cli");
     println!("commands:");
+    println!("  welcome                 print the DIALECTICA operator welcome");
     println!("  doctor                  print scaffold health");
+    println!("  build-docs --type <user|situation|tool|output> --input <dir> --out <dir> [--title <title>] [--workflow <workflow>] [--mode <assisted|auto-draft|plus-promoted>]");
     println!("  validate <bundle-dir>   validate a capsule bundle directory");
     println!("  inspect <bundle-dir>    print capsule bundle summary");
     println!("  ontology-plan <dir>     print capsule-specific ontology blueprint");
@@ -229,11 +241,28 @@ fn print_help() {
     println!("  build-fixture <fixture-dir> --out <dir>");
     println!("  archive <compiled-dir> --out <file.capsule>");
     println!("  context-pack <compiled-dir> [--workflow <workflow>]");
+    println!("  praxis-pack <compiled-dir> --out <file.json> [--workflow <workflow>]");
+    println!("  mcp-config              print a Codex MCP config snippet");
     println!("  ladybug-plan <dir>      print embedded Ladybug projection plan");
     println!("  ladybug-build <dir>     build graph/ladybug/capsule.lbug from graph.jsonld");
     println!("  ladybug-check <dir>     validate embedded Ladybug projection files");
     println!("  ladybug-query <dir> <q> run a read-only Cypher query against capsule.lbug");
     println!("  schema-export <dir>     export JSON Schema snapshots");
+}
+
+fn print_welcome() {
+    println!("DIALECTICA by TACITUS");
+    println!(
+        "Build your PRAXIS context capsule from documents, notes, sources, and review decisions."
+    );
+    println!("Capsule classes: user, situation, tool, output.");
+    println!("Local build loop:");
+    println!("  dialectica build-docs --type situation --input ./docs --out ./local-capsules/conflict --workflow conflict_map");
+    println!("Outputs:");
+    println!("  package/                  canonical v3 capsule package");
+    println!("  *.capsule                 portable capsule archive");
+    println!("  praxis-context-pack.json  PRAXIS agent context handoff");
+    println!("  praxis-import.json        local/cloud bridge receipt");
 }
 
 fn print_doctor() {
@@ -250,6 +279,140 @@ fn print_doctor() {
     println!("legacy_schema_version={}", manifest.schema_version);
     println!("compiler={}", dialectica_compiler::COMPILER_ID);
     println!("export_ready={}", manifest.is_export_ready());
+}
+
+fn build_documents_from_args(args: &[String]) {
+    let Some(capsule_type_text) = option_value(args, "--type") else {
+        eprintln!("missing --type <user|situation|tool|output>");
+        std::process::exit(2);
+    };
+    let Some(input_dir) = option_value(args, "--input") else {
+        eprintln!("missing --input <directory>");
+        std::process::exit(2);
+    };
+    let Some(output_dir) = option_value(args, "--out") else {
+        eprintln!("missing --out <directory>");
+        std::process::exit(2);
+    };
+    let capsule_type = match dialectica_builder::parse_capsule_type(&capsule_type_text) {
+        Ok(value) => value,
+        Err(error) => {
+            eprintln!("{error}");
+            std::process::exit(2);
+        }
+    };
+    let mode = option_value(args, "--mode").unwrap_or_else(|| "assisted".to_owned());
+    let build_mode = match dialectica_builder::parse_build_mode(&mode) {
+        Ok(value) => value,
+        Err(error) => {
+            eprintln!("{error}");
+            std::process::exit(2);
+        }
+    };
+    let workflow = option_value(args, "--workflow").unwrap_or_else(|| match capsule_type {
+        dialectica_extractor::CapsuleType::User => "user_context".to_owned(),
+        dialectica_extractor::CapsuleType::Situation => "decision_brief".to_owned(),
+        dialectica_extractor::CapsuleType::Tool => "method_application".to_owned(),
+        dialectica_extractor::CapsuleType::Output => "output_review".to_owned(),
+    });
+
+    match dialectica_builder::build_documents_capsule(&dialectica_builder::BuildDocumentsOptions {
+        input_dir: Path::new(&input_dir).to_path_buf(),
+        output_dir: Path::new(&output_dir).to_path_buf(),
+        capsule_type,
+        build_mode,
+        title: option_value(args, "--title"),
+        workflow,
+    }) {
+        Ok(receipt) => {
+            println!("capsule_id={}", receipt.capsule_id);
+            println!("capsule_type={}", receipt.capsule_type);
+            println!("title={}", receipt.title);
+            println!("workflow={}", receipt.workflow);
+            println!("package_dir={}", receipt.package_dir.display());
+            println!("archive_path={}", receipt.archive_path.display());
+            println!("context_pack_path={}", receipt.context_pack_path.display());
+            println!(
+                "praxis_import_path={}",
+                receipt.praxis_import_path.display()
+            );
+            println!("source_pack_path={}", receipt.source_pack_path.display());
+            println!("proposal_dir={}", receipt.proposal_dir.display());
+            println!(
+                "review_decision_path={}",
+                receipt.review_decision_path.display()
+            );
+            println!("source_document_count={}", receipt.source_document_count);
+            println!("source_span_count={}", receipt.source_span_count);
+            println!("skipped_file_count={}", receipt.skipped_file_count);
+            println!("proposal_count={}", receipt.proposal_count);
+            println!("decision_count={}", receipt.decision_count);
+            println!("caveated_record_count={}", receipt.caveated_record_count);
+            println!("bundle_digest={}", receipt.bundle_digest);
+            println!("archive_digest={}", receipt.archive_digest);
+            println!("valid=true");
+        }
+        Err(error) => {
+            eprintln!("{error}");
+            println!("valid=false");
+            std::process::exit(1);
+        }
+    }
+}
+
+fn write_context_pack_from_args(args: &[String]) {
+    let Some(package_dir) = args.first() else {
+        eprintln!("missing compiled package directory");
+        std::process::exit(2);
+    };
+    let Some(output_file) = option_value(args, "--out") else {
+        eprintln!("missing --out <file.json>");
+        std::process::exit(2);
+    };
+    let workflow = option_value(args, "--workflow").unwrap_or_else(|| "decision_brief".to_owned());
+
+    match dialectica_compiler::export_praxis_context_pack(Path::new(package_dir), &workflow) {
+        Ok(pack) => {
+            let text = match serde_json::to_string_pretty(&pack) {
+                Ok(value) => value,
+                Err(error) => {
+                    eprintln!("failed to serialize context pack: {error}");
+                    std::process::exit(1);
+                }
+            };
+            let path = Path::new(&output_file);
+            if let Some(parent) = path.parent() {
+                if let Err(error) = std::fs::create_dir_all(parent) {
+                    eprintln!("{error}");
+                    std::process::exit(1);
+                }
+            }
+            if let Err(error) = std::fs::write(path, format!("{text}\n")) {
+                eprintln!("{error}");
+                std::process::exit(1);
+            }
+            println!("context_pack_path={}", path.display());
+            println!("capsule_id={}", pack.capsule_id);
+            println!("workflow={}", pack.workflow);
+            println!("valid=true");
+        }
+        Err(error) => {
+            eprintln!("{error}");
+            println!("valid=false");
+            std::process::exit(1);
+        }
+    }
+}
+
+fn print_mcp_config() {
+    let cwd = std::env::current_dir()
+        .map(|path| path.display().to_string())
+        .unwrap_or_else(|_| ".".to_owned())
+        .replace('\\', "\\\\");
+    println!("[mcp_servers.dialectica]");
+    println!("command = \"cargo\"");
+    println!("args = [\"run\", \"-p\", \"dialectica-mcp\", \"--\"]");
+    println!("cwd = \"{cwd}\"");
 }
 
 fn validate_bundle(path: &Path) {
@@ -690,6 +853,16 @@ fn parse_option_value(
         (Some(value), _) if value != option_name => Some(value),
         _ => None,
     }
+}
+
+fn option_value(args: &[String], option_name: &str) -> Option<String> {
+    args.windows(2).find_map(|pair| {
+        if pair[0] == option_name {
+            Some(pair[1].clone())
+        } else {
+            None
+        }
+    })
 }
 
 fn is_v3_package(path: &Path) -> bool {

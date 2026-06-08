@@ -52,6 +52,7 @@ jobs:
           test -f docs/MISSING_WORK_AUDIT_2026_06_08.md
           test -f docs/POST_BUILD_AUDIT_2026_06_08.md
           test -f docs/CODE_QUALITY_TOOLING.md
+          test -f docs/CODEX_MCP_CAPSULE_BUILDER.md
           test -f docs/LLM_CONTEXT_EXTRACTION_ARCHITECTURE.md
           test -f docs/SCAFFOLD_AUDIT.md
           test -f docs/FOUNDATION_BUILD.md
@@ -145,6 +146,20 @@ jobs:
         run: cargo test --locked --workspace
       - name: CLI doctor
         run: cargo run -p dialectica-cli -- doctor
+      - name: CLI welcome
+        run: cargo run -p dialectica-cli -- welcome
+      - name: Build local document capsule
+        run: |
+          input="$(mktemp -d)"
+          output="$(mktemp -d)/capsule"
+          printf '%s\n' 'The ministry announced a tariff timetable. Exporters warned that implementation dates remain unclear.' > "$input/source.md"
+          cargo run -p dialectica-cli -- build-docs --type situation --input "$input" --out "$output" --title "Tariff Timetable Situation" --workflow decision_brief
+          cargo run -p dialectica-cli -- validate "$output/package"
+          cargo run -p dialectica-cli -- inspect "$output/package"
+          python -m json.tool "$output/praxis-context-pack.json" > /dev/null
+          python -m json.tool "$output/praxis-import.json" > /dev/null
+      - name: Print MCP config
+        run: cargo run -p dialectica-cli -- mcp-config
       - name: Validate canonical v3 capsule
         run: cargo run -p dialectica-cli -- validate fixtures/canonical-capsules/conflict-situation-capsule
       - name: Inspect canonical v3 capsule

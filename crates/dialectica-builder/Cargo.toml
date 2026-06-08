@@ -1,27 +1,18 @@
 [package]
-name = "dialectica-cli"
+name = "dialectica-builder"
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
 repository.workspace = true
-autobins = false
-
-[[bin]]
-name = "dialectica"
-path = "src/main.rs"
-
-[features]
-default = []
-ladybug = ["dialectica-graph/ladybug"]
 
 [dependencies]
-dialectica-builder = { path = "../dialectica-builder" }
 dialectica-capsule = { path = "../dialectica-capsule" }
 dialectica-compiler = { path = "../dialectica-compiler" }
 dialectica-extractor = { path = "../dialectica-extractor" }
-dialectica-graph = { path = "../dialectica-graph" }
+serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+sha2 = "0.10"
 
 [lints]
 workspace = true

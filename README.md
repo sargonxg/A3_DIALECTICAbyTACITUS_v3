@@ -34,15 +34,17 @@ Current truth:
   migration fixture validation, source-pack validation, fixture-mode extraction
   proposal validation, review-trigger routing, reviewer-decision validation,
   promotion normalization, deterministic fixture-mode v3 package compilation,
-  `.capsule` archive writing, PRAXIS context-pack export, Axum fixture API
-  routes, build-plan printing, schema export, and CLI
+  deterministic local document-folder capsule building, `.capsule` archive
+  writing, PRAXIS context-pack export, PRAXIS local import receipts, Codex MCP
+  stdio tools/resources/prompts, Axum fixture API routes, build-plan printing,
+  schema export, and CLI
   `doctor`/`validate`/`inspect`/`ontology-plan`/`ladybug-*`/`source-pack-check`/
   `proposal-check`/`build-plan`/`review-check`/`promote-check`/`schema-export`.
-  `build-fixture`/`archive`/`context-pack`.
-- **Not built yet**: live document/PDF/conversation ingestion, live model
-  provider calls, PostgreSQL migrations, durable build jobs, task handler,
-  cloud artifact storage, auth, deployment wiring, and PRAXIS frontend
-  integration.
+  `welcome`/`build-docs`/`build-fixture`/`archive`/`context-pack`/
+  `praxis-pack`/`mcp-config`.
+- **Not built yet**: PDF/OCR/conversation ingestion, live model provider
+  calls, PostgreSQL migrations, durable build jobs, task handler, cloud
+  artifact storage, auth, deployment wiring, and PRAXIS frontend integration.
 - **Next build**: durable build state and store-backed job records first,
   ingestion/model-provider adapters second, PRAXIS frontend integration after
   the local API/context-pack contract remains stable.
@@ -256,6 +258,7 @@ Current coding scaffold:
 ```text
 Cargo workspace
   crates/dialectica-capsule       contract types and validation
+  crates/dialectica-builder       local document-folder capsule builder
   crates/dialectica-extractor     source-pack/proposal/review/promotion contracts
   crates/dialectica-compiler      deterministic bundle assembly
   crates/dialectica-graph         Ladybug projection planning/build/check/query
@@ -263,6 +266,7 @@ Cargo workspace
   crates/dialectica-eval          quality and outcome checks
   crates/dialectica-cli           local validation and fixture commands
   services/dialectica-api         PRAXIS-facing API
+  services/dialectica-mcp         Codex MCP stdio capsule builder
   services/dialectica-task-handler Cloud Tasks entrypoint
   tests/dialectica-contract-tests workspace contract tests
 ```
@@ -280,6 +284,12 @@ gap-control standard is in
 Current executable surface:
 
 ```powershell
+cargo install --path crates/dialectica-cli
+dialectica welcome
+cargo run -p dialectica-cli -- welcome
+cargo run -p dialectica-cli -- build-docs --type situation --input .\docs --out $env:TEMP\dialectica-doc-capsule --title "Local Situation Capsule" --workflow decision_brief
+cargo run -p dialectica-cli -- inspect $env:TEMP\dialectica-doc-capsule\package
+cargo run -p dialectica-cli -- mcp-config
 cargo run -p dialectica-cli -- doctor
 cargo run -p dialectica-cli -- validate fixtures/canonical-capsules/conflict-situation-capsule
 cargo run -p dialectica-cli -- inspect fixtures/canonical-capsules/conflict-situation-capsule
@@ -677,12 +687,14 @@ Start here:
    current audit, missing work, and next coding prompt.
 8. [Code Quality Tooling](docs/CODE_QUALITY_TOOLING.md): Graphify, Serena,
    ECC/Codex skills, and verification loop.
-9. [Capsule Spec](docs/CAPSULE_SPEC.md): portable bundle contract.
-10. [Engineering Baseline](docs/ENGINEERING_BASELINE.md): crate ownership and
+9. [Codex MCP Capsule Builder](docs/CODEX_MCP_CAPSULE_BUILDER.md): local CLI
+   and MCP build loop for PRAXIS capsule artifacts.
+10. [Capsule Spec](docs/CAPSULE_SPEC.md): portable bundle contract.
+11. [Engineering Baseline](docs/ENGINEERING_BASELINE.md): crate ownership and
    command gates.
-11. [Improvement Guidelines](docs/IMPROVEMENT_GUIDELINES.md): current gaps and
+12. [Improvement Guidelines](docs/IMPROVEMENT_GUIDELINES.md): current gaps and
    quality bar.
-12. [Scaffold Audit](docs/SCAFFOLD_AUDIT.md): what is real now, what is still
+13. [Scaffold Audit](docs/SCAFFOLD_AUDIT.md): what is real now, what is still
    missing, and what blocks the functional engine.
 
 Use [docs/README.md](docs/README.md) for the full documentation index and
@@ -698,6 +710,10 @@ cargo fmt --all -- --check
 cargo check --locked --workspace --all-targets
 cargo clippy --locked --workspace --all-targets -- -D warnings
 cargo test --locked --workspace
+cargo run -p dialectica-cli -- welcome
+cargo run -p dialectica-cli -- build-docs --type situation --input .\docs --out $env:TEMP\dialectica-doc-capsule --title "Local Situation Capsule" --workflow decision_brief
+cargo run -p dialectica-cli -- inspect $env:TEMP\dialectica-doc-capsule\package
+cargo run -p dialectica-cli -- mcp-config
 cargo run -p dialectica-cli -- doctor
 cargo run -p dialectica-cli -- validate fixtures/canonical-capsules/conflict-situation-capsule
 cargo run -p dialectica-cli -- inspect fixtures/canonical-capsules/conflict-situation-capsule

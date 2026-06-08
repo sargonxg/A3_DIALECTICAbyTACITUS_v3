@@ -468,3 +468,39 @@ Evidence:
 - Which first policy domain should be the golden demo capsule?
 - Which PRAXIS surface should show capsule receipts first?
 - Which expert-review workflow is required for the first pilot?
+
+## 2026-06-08 - Codex-Mediated Local Capsule Builder And MCP
+
+Status: implemented for local text-like document folders; PDF/OCR,
+conversation ingestion, durable jobs, and cloud artifact lookup remain next.
+
+Actions:
+
+- added `crates/dialectica-builder` to convert local `.txt`, `.md`,
+  `.markdown`, `.json`, `.jsonl`, `.csv`, and `.tsv` files into a source pack,
+  proposal set, caveated reviewer decisions, compiled v3 package, `.capsule`
+  archive, PRAXIS context pack, and `praxis-import.json` bridge record;
+- added CLI commands `welcome`, `build-docs`, `praxis-pack`, and `mcp-config`;
+- added `services/dialectica-mcp`, a Codex-friendly stdio MCP server with
+  tools for welcome, build, inspect, archive, PRAXIS context-pack export,
+  ontology planning, and config discovery;
+- added `docs/CODEX_MCP_CAPSULE_BUILDER.md` as the operator guide;
+- updated README, local-development docs, and coding ledger with the new local
+  build path.
+
+Evidence:
+
+- `cargo test -p dialectica-builder` builds a package from two local documents
+  and validates it;
+- `cargo test -p dialectica-mcp` verifies initialize, tools/list, and welcome
+  tool responses;
+- `cargo run -p dialectica-cli -- build-docs --type situation --input <temp>\docs --out <temp>\capsule --title "Tariff Timetable Situation" --workflow decision_brief` writes package, `.capsule`, PRAXIS context pack, and bridge receipt with `valid=true`.
+
+Next:
+
+1. add editable reviewer-decision commands so a human can replace the local
+   `approve_with_caveats` defaults;
+2. add PDF/OCR and conversation ingestion adapters;
+3. persist build sessions and artifacts in PostgreSQL/Cloud Storage;
+4. add PRAXIS import route and UI in the PRAXIS repo after the local bridge
+   record is stable.

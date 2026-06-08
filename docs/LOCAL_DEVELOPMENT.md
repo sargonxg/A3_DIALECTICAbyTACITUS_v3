@@ -31,6 +31,10 @@ cargo fmt --all -- --check
 cargo check --locked --workspace --all-targets
 cargo clippy --locked --workspace --all-targets -- -D warnings
 cargo test --locked --workspace
+cargo run -p dialectica-cli -- welcome
+cargo run -p dialectica-cli -- build-docs --type situation --input .\docs --out $env:TEMP\dialectica-doc-capsule --title "Local Situation Capsule" --workflow decision_brief
+cargo run -p dialectica-cli -- inspect $env:TEMP\dialectica-doc-capsule\package
+cargo run -p dialectica-cli -- mcp-config
 cargo run -p dialectica-cli -- doctor
 cargo run -p dialectica-cli -- validate fixtures/canonical-capsules/conflict-situation-capsule
 cargo run -p dialectica-cli -- inspect fixtures/canonical-capsules/conflict-situation-capsule
@@ -69,6 +73,21 @@ cargo run -p dialectica-cli -- context-pack $env:TEMP\dialectica-golden-v3 --wor
 ```
 
 These commands run without cloud credentials and do not call model providers.
+
+Local document capsule builder:
+
+```powershell
+cargo run -p dialectica-cli -- build-docs --type situation --input .\docs --out $env:TEMP\dialectica-doc-capsule --title "Local Situation Capsule" --workflow decision_brief
+cargo run -p dialectica-cli -- validate $env:TEMP\dialectica-doc-capsule\package
+cargo run -p dialectica-cli -- inspect $env:TEMP\dialectica-doc-capsule\package
+```
+
+Codex MCP registration:
+
+```powershell
+cargo run -p dialectica-cli -- mcp-config
+cargo run -p dialectica-mcp
+```
 
 Local API preview:
 

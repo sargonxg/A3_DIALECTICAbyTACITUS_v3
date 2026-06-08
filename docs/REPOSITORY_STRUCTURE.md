@@ -52,6 +52,7 @@ Reusable Rust libraries.
 Active crates:
 
 - `dialectica-capsule`;
+- `dialectica-builder`;
 - `dialectica-extractor`;
 - `dialectica-graph`;
 - `dialectica-store`;
@@ -66,6 +67,7 @@ Deployable Rust service binaries.
 Active services:
 
 - `dialectica-api`;
+- `dialectica-mcp`;
 - `dialectica-task-handler`;
 
 Add optional `dialectica-worker` only after pull-based background processing is

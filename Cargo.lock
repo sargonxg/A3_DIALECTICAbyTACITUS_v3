@@ -290,6 +290,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "dialectica-builder"
+version = "0.1.0"
+dependencies = [
+ "dialectica-capsule",
+ "dialectica-compiler",
+ "dialectica-extractor",
+ "serde",
+ "serde_json",
+ "sha2",
+]
+
+[[package]]
 name = "dialectica-capsule"
 version = "0.1.0"
 dependencies = [
@@ -303,6 +315,7 @@ dependencies = [
 name = "dialectica-cli"
 version = "0.1.0"
 dependencies = [
+ "dialectica-builder",
  "dialectica-capsule",
  "dialectica-compiler",
  "dialectica-extractor",
@@ -354,6 +367,19 @@ dependencies = [
  "serde",
  "serde_json",
  "sha2",
+]
+
+[[package]]
+name = "dialectica-mcp"
+version = "0.1.0"
+dependencies = [
+ "dialectica-builder",
+ "dialectica-capsule",
+ "dialectica-compiler",
+ "dialectica-extractor",
+ "dialectica-graph",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]

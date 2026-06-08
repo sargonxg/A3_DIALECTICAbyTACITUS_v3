@@ -1,6 +1,7 @@
 [workspace]
 members = [
   "crates/dialectica-capsule",
+  "crates/dialectica-builder",
   "crates/dialectica-cli",
   "crates/dialectica-compiler",
   "crates/dialectica-eval",
@@ -8,6 +9,7 @@ members = [
   "crates/dialectica-graph",
   "crates/dialectica-store",
   "services/dialectica-api",
+  "services/dialectica-mcp",
   "services/dialectica-task-handler",
   "tests/dialectica-contract-tests",
 ]

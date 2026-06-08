@@ -10,7 +10,7 @@ Turn the current contract scaffold into a working local capsule engine:
 
 ```text
 source pack
-  -> fixture-mode LLM proposal records
+  -> fixture-mode or local-document proposal records
   -> review-trigger routing
   -> reviewer decisions
   -> reviewed canonical records
@@ -37,6 +37,8 @@ Already implemented:
 - first validation report with precise findings;
 - schema export including `ontology_blueprint.schema.json`;
 - CLI `doctor`;
+- CLI `welcome`;
+- CLI `build-docs`;
 - CLI `validate`;
 - CLI `inspect`;
 - CLI `ontology-plan`;
@@ -48,6 +50,10 @@ Already implemented:
 - CLI `build-fixture`;
 - CLI `archive`;
 - CLI `context-pack`;
+- CLI `praxis-pack`;
+- CLI `mcp-config`;
+- local document-folder builder;
+- Codex MCP stdio adapter;
 - deterministic fixture-mode v3 package writer;
 - deterministic `.capsule` archive writer;
 - fixture-mode PRAXIS context-pack exporter;
@@ -67,7 +73,7 @@ Already implemented:
 
 Not yet implemented:
 
-- live document/PDF/conversation ingestion;
+- PDF/OCR/conversation ingestion;
 - live model-provider extraction calls;
 - production-grade Merkle/checksum/signature envelope;
 - store-backed HTTP API routes and durable build jobs;

@@ -10,6 +10,7 @@ agents do not improvise the stack.
 | Layer | Language | Why |
 | --- | --- | --- |
 | Capsule contract | Rust | type safety, schema ownership, deterministic validation |
+| Local capsule builder | Rust | deterministic document-to-capsule proof loop and PRAXIS artifact bridge |
 | LLM extraction orchestration | Rust | proposal schemas, review routing, source-bound model calls, and deterministic promotion gates |
 | Compiler | Rust | reproducible bundle writes, checksums, signing path |
 | API and task handler | Rust | Cloud Run services, strong boundaries, low runtime overhead |
@@ -28,6 +29,11 @@ dialectica-capsule
   owns portable bundle structs, ontology blueprint planning, schema generation,
   validation, and versioning
 
+dialectica-builder
+  owns local document-folder ingestion, deterministic source-pack/proposal
+  creation, caveated reviewer decisions, package/archive/context-pack writes,
+  and PRAXIS import receipts
+
 dialectica-extractor
   owns source-pack inputs, extraction proposal schemas, model invocation
   receipts, review-trigger routing, reviewer decisions, promotion
@@ -45,10 +51,14 @@ dialectica-eval
 
 dialectica-cli
   owns local developer workflows: doctor, validate, inspect, ontology-plan,
-  build-fixture, archive, context-pack
+  welcome, build-docs, build-fixture, archive, context-pack, praxis-pack,
+  mcp-config
 
 dialectica-api
   owns PRAXIS-facing HTTP endpoints
+
+dialectica-mcp
+  owns local Codex MCP stdio tools, resources, and prompts for capsule building
 
 dialectica-task-handler
   owns Cloud Tasks execution endpoints
@@ -58,11 +68,13 @@ Dependency direction:
 
 ```text
 api/task-handler -> store/extractor/compiler/capsule/eval
+builder          -> compiler/extractor/capsule
 extractor        -> capsule
 compiler         -> capsule/extractor/graph
 store            -> capsule-compatible IDs and records
 eval             -> capsule
-cli              -> capsule/compiler/eval/store as needed
+mcp              -> builder/compiler/capsule/graph
+cli              -> builder/capsule/compiler/eval/store as needed
 capsule          -> no project-local dependencies
 ```
 
@@ -92,12 +104,16 @@ still decide whether the records can be promoted.
    fixture mode.
 6. `dialectica-compiler`: deterministic v3 package writer, archive writer, and
    context-pack export: implemented for fixture mode.
-7. `dialectica-api`: health, version, manifest, graph preview, context pack:
+7. `dialectica-builder`: local text-document folder to package/archive/PRAXIS
+   bridge: implemented for local mode.
+8. `dialectica-mcp`: Codex stdio adapter over builder/compiler tools:
+   implemented for local mode.
+9. `dialectica-api`: health, version, manifest, graph preview, context pack:
    implemented for fixture mode.
-8. `dialectica-store`: migrations and repository interfaces.
-9. `dialectica-task-handler`: queued compile path.
-10. `dialectica-eval`: fixture eval reports.
-11. Python reports and adapters where they reduce implementation risk.
+10. `dialectica-store`: migrations and repository interfaces.
+11. `dialectica-task-handler`: queued compile path.
+12. `dialectica-eval`: fixture eval reports.
+13. Python reports and adapters where they reduce implementation risk.
 
 ## Required Local Gate
 
@@ -106,6 +122,10 @@ cargo fmt --all -- --check
 cargo check --locked --workspace --all-targets
 cargo clippy --locked --workspace --all-targets -- -D warnings
 cargo test --locked --workspace
+cargo run -p dialectica-cli -- welcome
+cargo run -p dialectica-cli -- build-docs --type situation --input .\docs --out $env:TEMP\dialectica-doc-capsule --title "Local Situation Capsule" --workflow decision_brief
+cargo run -p dialectica-cli -- inspect $env:TEMP\dialectica-doc-capsule\package
+cargo run -p dialectica-cli -- mcp-config
 cargo run -p dialectica-cli -- doctor
 cargo run -p dialectica-cli -- validate fixtures/canonical-capsules/conflict-situation-capsule
 cargo run -p dialectica-cli -- inspect fixtures/canonical-capsules/conflict-situation-capsule
