@@ -144,8 +144,9 @@ Evidence:
   unsupported old types;
 - graph registry keeps the broad node and edge vocabulary while narrowing the
   top-level capsule API;
-- LadybugDB remains documented as an optional projection adapter, not canonical
-  state.
+- superseded by 2026-06-08 Ladybug implementation pass: LadybugDB is now the
+  required embedded projection for promoted capsules, while JSON/JSONL/JSON-LD
+  remain canonical truth.
 - terminology scan found no banned product-shortcut, messy-context,
   proprietary-license, or placeholder-marker language in the checked repository
   scope.
@@ -322,6 +323,30 @@ Evidence:
 - current branch remains ahead of `origin/main` until the user explicitly asks
   for push.
 
+## 2026-06-08 - Ladybug Embedded Projection Implementation
+
+Status: implemented locally; validation and push evidence must be recorded in
+the final handoff for the commit.
+
+Actions:
+
+- added `crates/dialectica-graph` for Ladybug projection planning, manifest
+  validation, feature-gated projection builds, and read-only Cypher queries;
+- promoted `graph/ladybug/capsule.lbug` and its manifest/schema/query/receipt
+  files into the required v3 capsule validation surface;
+- generated the first canonical Situation Capsule Ladybug projection fixture;
+- added CLI commands `ladybug-plan`, `ladybug-check`, `ladybug-build`, and
+  `ladybug-query`;
+- added ADR-008 to make the portability decision explicit.
+
+Implementation constraints:
+
+- default builds validate Ladybug projection manifests without linking `lbug`;
+- build/query commands require `--features ladybug`;
+- Windows feature builds need `sh` on `PATH` or a CMake-capable fallback;
+- the embedded Ladybug database is projection state only and must remain
+  rebuildable from `graph.jsonld`.
+
 ## Active Decisions
 
 | ID | Decision | Status | Where |
@@ -343,7 +368,8 @@ Evidence:
 3. Add local fixture proposal records and reviewer decisions.
 4. Implement deterministic v3 package writer in `crates/dialectica-compiler`.
 5. Add `.capsule` archive writing with `mimetype` first, stable entry order,
-   LF line endings, and explicit cache exclusion from digest scope.
+   LF line endings, and explicit handling for required `graph/ladybug/`
+   projection files versus optional non-canonical cache files.
 6. Add `build-fixture` so a canonical capsule can be generated from source-pack
    records and review decisions.
 7. Add checksum, Merkle-root, and signature placeholders with stable diff

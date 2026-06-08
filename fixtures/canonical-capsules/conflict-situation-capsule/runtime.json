@@ -8,5 +8,5 @@
   },
   "must_surface_disputed": true,
   "must_cite": true,
-  "cache_policy": "cache/ is optional and regenerable; canonical files are sufficient."
+  "graph_policy": "Use graph.jsonld for the semantic source graph and graph/ladybug/capsule.lbug for read-only embedded Cypher traversal. Rebuild the Ladybug projection from graph.jsonld when the manifest digest changes."
 }

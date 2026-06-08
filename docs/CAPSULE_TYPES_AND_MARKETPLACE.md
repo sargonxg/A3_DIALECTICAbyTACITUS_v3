@@ -134,8 +134,9 @@ Example:
 ## Embedded Graph
 
 Each capsule contains an embedded graph in the signed `.capsule` package.
-`graph.jsonld` is canonical at the bundle layer; graph databases are adapters
-or caches.
+`graph.jsonld` is the deterministic semantic source graph, and
+`graph/ladybug/capsule.lbug` is the required read-only embedded graph
+projection for traversal, graph previews, and local Cypher queries.
 
 ```text
 Capsule
@@ -151,11 +152,12 @@ Capsule
   +-- g:runtime                 retrieval, citation, composition contract
 ```
 
-Ladybug, Oxigraph, PostgreSQL, Graphiti, or GraphRAG systems may be used as
-projections for exploration, algorithms, temporal graph memory, validation, or
-visualization. They do not replace the capsule contract. The package must
-remain portable as JSON/JSONL/JSON-LD/Markdown plus checksums and review
-receipts.
+Ladybug is the required embedded projection. Oxigraph, PostgreSQL, Graphiti, or
+GraphRAG systems may still be used as derived service-side projections for RDF
+validation, operations, temporal graph memory, retrieval, or visualization.
+They do not replace the capsule contract. The package must remain portable as
+JSON/JSONL/JSON-LD/Markdown plus the embedded Ladybug projection, checksums,
+and review receipts.
 
 ## Example: Conflict Situation Capsule
 

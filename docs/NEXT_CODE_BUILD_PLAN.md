@@ -121,7 +121,8 @@ Deliver:
 - deterministic JSON writer;
 - deterministic JSONL writer;
 - archive writer for `.capsule`;
-- Merkle root scope that excludes only `cache/`;
+- Merkle root and projection-digest scope for open canonical files plus
+  required `graph/ladybug/*` projection receipts;
 - compiler receipt with input record counts and review state.
 
 Acceptance:
@@ -175,8 +176,8 @@ Deliver:
 
 Acceptance:
 
-- PRAXIS can read the context-pack JSON without needing PostgreSQL or a graph
-  database;
+- PRAXIS can read the context-pack JSON without PostgreSQL and can inspect the
+  capsule graph through the embedded Ladybug database;
 - PRAXIS can also read `agent_context.md` directly as the bounded first LLM
   context block;
 - rejected and expired objects are hidden by default;
@@ -251,7 +252,8 @@ Acceptance:
 
 - Keep capsule bundle and PostgreSQL canonical.
 - Keep Firestore as PRAXIS visibility mirror only.
-- Keep Ladybug, Oxigraph, Graphiti, MCP, and vector stores as optional
+- Keep Ladybug required as the embedded graph projection for promoted capsules.
+- Keep Oxigraph, Graphiti, MCP, vector stores, and memory systems as optional
   adapters/caches until an ADR promotes one.
 - Keep ontology blueprints capsule-specific.
 - Keep every promoted object source-backed or review-backed.

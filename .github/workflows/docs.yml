@@ -73,6 +73,7 @@ jobs:
           test -f docs/PRAXIS_REPO_ALIGNMENT.md
           test -f docs/RESEARCH_BACKLOG.md
           test -f docs/BUILD_LEDGER.md
+          test -f docs/decisions/ADR-008-ladybug-required-embedded-graph-projection.md
           test -f docs/decisions/ADR-007-llm-extraction-proposal-boundary.md
           test -f docs/decisions/ADR-006-open-source-license-and-citation.md
           test -f fixtures/example-capsules/README.md
@@ -93,6 +94,11 @@ jobs:
           test -f fixtures/canonical-capsules/conflict-situation-capsule/runtime.json
           test -f fixtures/canonical-capsules/conflict-situation-capsule/agent_context.md
           test -f fixtures/canonical-capsules/conflict-situation-capsule/operations.md
+          test -f fixtures/canonical-capsules/conflict-situation-capsule/graph/ladybug/capsule.lbug
+          test -f fixtures/canonical-capsules/conflict-situation-capsule/graph/ladybug/projection_manifest.json
+          test -f fixtures/canonical-capsules/conflict-situation-capsule/graph/ladybug/schema.cypher
+          test -f fixtures/canonical-capsules/conflict-situation-capsule/graph/ladybug/queries.cypher
+          test -f fixtures/canonical-capsules/conflict-situation-capsule/graph/ladybug/build_receipt.json
           test -f fixtures/golden-policy-capsule/expected-bundle/manifest.json
           test -f fixtures/golden-policy-capsule/expected-bundle/source_ledger.jsonl
           test -f fixtures/golden-policy-capsule/expected-bundle/temporal_ledger.jsonl
@@ -101,6 +107,8 @@ jobs:
           test -f fixtures/golden-policy-capsule/expected-bundle/agent_guidance.json
           test -f schemas/capsule-3.0/praxis_capsule_manifest.schema.json
           test -f schemas/capsule-3.0/praxis_capsule_package.schema.json
+          test -f schemas/capsule-3.0/ladybug_projection_manifest.schema.json
+          test -f schemas/capsule-3.0/ladybug_projection_build_receipt.schema.json
           test -f schemas/capsule-0.1.0/manifest.schema.json
           test -f schemas/capsule-0.1.0/capsule.schema.json
           test -f schemas/capsule-0.1.0/ontology_blueprint.schema.json
@@ -124,6 +132,8 @@ jobs:
         run: cargo run -p dialectica-cli -- validate fixtures/canonical-capsules/conflict-situation-capsule
       - name: Inspect canonical v3 capsule
         run: cargo run -p dialectica-cli -- inspect fixtures/canonical-capsules/conflict-situation-capsule
+      - name: Check canonical v3 Ladybug projection manifest
+        run: cargo run -p dialectica-cli -- ladybug-check fixtures/canonical-capsules/conflict-situation-capsule
       - name: Validate golden capsule
         run: cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule/expected-bundle
       - name: Inspect golden capsule

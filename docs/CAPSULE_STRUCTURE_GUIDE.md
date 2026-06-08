@@ -33,11 +33,12 @@ PRAXIS Capsule (.capsule)
   +-- runtime.json           verbs, citation, composition, refusal rules
   +-- agent_context.md       bounded self-citing context block for LLMs
   +-- operations.md          engine-less operating card
-  +-- cache/                 optional Ladybug/Oxigraph/vector/FTS caches
+  +-- graph/ladybug/         required embedded Ladybug projection
 ```
 
-`cache/` is optional and regenerable. PRAXIS must be able to load the capsule
-from canonical files with no graph engine running.
+`graph/ladybug/` is required for promoted capsules. PRAXIS must be able to read
+the open files for auditability and the Ladybug database for fast read-only
+graph traversal.
 
 ## Required Layer Contract
 
@@ -78,8 +79,9 @@ Every promoted graph object needs:
 - a human-readable explanation;
 - enough stable identifiers for PRAXIS graph preview and composition.
 
-Graph engines such as Ladybug may accelerate traversal, full-text search, and
-vector search, but they remain optional caches.
+Ladybug accelerates traversal and Cypher inspection and is required for
+promoted capsules. Other graph engines, full-text search, and vector indexes
+remain optional derived caches.
 
 ## Semantic Layer Requirements
 
@@ -121,7 +123,8 @@ contain stakeholder, source-proof, scenario, and ontology lenses; it is still a
 - which workflows are allowed;
 - which verbs are available;
 - which claims require citation;
-- how to traverse or ignore optional graph caches;
+- how to traverse the required Ladybug projection or fall back to `graph.jsonld`
+  for audit/debug workflows;
 - which reasoning devices to apply first;
 - which traps must trigger critique;
 - which output contract controls the answer;

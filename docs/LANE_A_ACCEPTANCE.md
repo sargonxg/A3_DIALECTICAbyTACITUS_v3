@@ -64,7 +64,10 @@ Required canonical files:
 for User, Tool, and Output Capsules. Situation Capsules may use the substrate
 files as their payload.
 
-`cache/` is optional and must remain regenerable.
+`graph/ladybug/` is required for promoted v3 capsules and must remain
+regenerable from `graph.jsonld` with digest-verified projection receipts.
+Other cache material remains optional and outside the canonical validation
+surface.
 
 ## Required Rust Types
 

@@ -95,6 +95,9 @@ The foundation build must include:
 - canonical files: `claims.jsonl`, `graph.jsonld`, `episodes.json`,
   `evidence/sources.jsonl`, `reasoning/`, `review/review.json`,
   `runtime.json`, `agent_context.md`, and `operations.md`;
+- required embedded graph projection:
+  `graph/ladybug/capsule.lbug` plus projection manifest, schema, query, and
+  build receipt;
 - source and provenance records linked to claims and graph nodes;
 - temporal episode model;
 - ontology named graph and capsule-specific semantic cores;
@@ -166,5 +169,5 @@ Phase 1 is done when a developer can run one local command to:
 2. validate it against the v3 capsule spec;
 3. inspect the source ledger and review ledger;
 4. export the bundle as a `.capsule` archive and extracted directory
-   projection;
+   projection with embedded Ladybug graph queryability;
 5. run contract tests in CI.

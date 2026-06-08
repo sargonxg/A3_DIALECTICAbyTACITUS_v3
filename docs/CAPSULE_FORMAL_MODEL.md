@@ -49,9 +49,10 @@ Every valid promoted capsule must satisfy:
 - every Situation claim has provenance, trust layer, temporality, and source
   span or review lineage;
 - substrate and guidance objects are connected in `graph.jsonld`;
-- the capsule remains usable without Ladybug, Oxigraph, vector search, or any
-  graph database;
-- `cache/` is optional, regenerable, and excluded from integrity hashes;
+- the capsule remains auditable from open files and queryable through the
+  required embedded Ladybug projection;
+- non-required caches are optional, regenerable, and excluded from promotion
+  decisions;
 - `agent_context.md` and `operations.md` are generated from canonical files;
 - every agent-proposed improvement enters as T3 until human gated;
 - conflicts are surfaced and never silently merged;
@@ -69,7 +70,7 @@ Canonical:
 
 Derived:
 
-- Ladybug cache;
+- Ladybug embedded projection;
 - Oxigraph cache;
 - embeddings;
 - graph projections;
@@ -79,6 +80,8 @@ Derived:
 - PRAXIS Firestore visibility mirrors.
 
 Derived data can be rebuilt from canonical records and capsule artifacts.
+Ladybug is the required derived graph artifact for promoted capsules, not a
+backdoor write path for promoted claims.
 
 ## Capsule Health
 

@@ -3,7 +3,8 @@
 Date: 2026-06-07
 
 Status: research-backed design update for embedded graph, ontology, adapter,
-and deployment decisions.
+and deployment decisions. Updated by ADR-008 on 2026-06-08 to make Ladybug the
+required embedded projection for promoted capsules.
 
 ## Research Sources Checked
 
@@ -28,7 +29,7 @@ Primary source anchors:
 
 ## Main Findings
 
-### 1. LadybugDB Is A Strong Adapter Candidate, Not The First Source Of Truth
+### 1. LadybugDB Is The Required Embedded Projection, Not The Source Of Truth
 
 LadybugDB positions itself as an embedded graph database with Cypher querying,
 Rust/Python/Node access, columnar storage, full-text and vector retrieval
@@ -38,11 +39,14 @@ graphs rather than operating directly on all database tables.
 
 Design consequence:
 
-- add `ladybug_projection_v1` as an optional graph adapter profile;
-- use LadybugDB later for local capsule graph exploration, graph algorithms,
+- make `ladybug_projection_v1` required for promoted capsules;
+- build `graph/ladybug/capsule.lbug` from `graph.jsonld` with schema, query,
+  digest, and build receipts;
+- use LadybugDB for local capsule graph exploration, read-only Cypher,
   influence/community analysis, and fast projected graph queries;
-- keep PostgreSQL and signed bundle files canonical until evals prove the
-  adapter should become operationally required.
+- keep PostgreSQL, signed bundle records, and `graph.jsonld` as canonical
+  sources of truth; Ladybug is queryable projection state, not promoted claim
+  or review state.
 
 ### 2. Standards Should Shape The Bundle Without Forcing An RDF Runtime
 
@@ -154,12 +158,13 @@ Required `agent_guidance.json` fields:
 | `embedded_graph_v1` | required | canonical compact graph inside the bundle |
 | `postgres_projection_v1` | required for runtime | relational graph tables and JSONB extension fields |
 | `jsonld_projection_v1` | required for export compatibility | semantic linked-data view |
-| `ladybug_projection_v1` | optional | local/analytical graph acceleration and algorithms |
+| `ladybug_projection_v1` | required for promoted capsules | embedded read-only Cypher traversal, graph previews, local analysis, and algorithms |
 | `graphiti_projection_v1` | optional | temporal graph research and future memory adapter |
 | `graphrag_projection_v1` | optional | corpus-level community summaries and large-source synthesis |
 
-No adapter may become authoritative without an ADR, eval evidence, and an
-operations runbook.
+No projection may become the only authoritative claim, source, or review store.
+ADR-008 authorizes Ladybug as a required embedded projection because it remains
+digest-checked and rebuildable from the capsule graph.
 
 ## Ontology Profile
 

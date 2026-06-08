@@ -7,12 +7,14 @@ Current fixture:
 
 - `conflict-situation-capsule/`: minimal canonical Situation Capsule with
   `manifest.json.type = "situation"`, source-backed claim, `graph.jsonld`,
-  episode, reasoning device, trap, annotation, review file, runtime contract,
-  `agent_context.md`, and `operations.md`.
+  embedded `graph/ladybug/capsule.lbug` projection, episode, reasoning device,
+  trap, annotation, review file, runtime contract, `agent_context.md`, and
+  `operations.md`.
 
 Run:
 
 ```powershell
 cargo run -p dialectica-cli -- validate fixtures/canonical-capsules/conflict-situation-capsule
 cargo run -p dialectica-cli -- inspect fixtures/canonical-capsules/conflict-situation-capsule
+cargo run -p dialectica-cli -- ladybug-check fixtures/canonical-capsules/conflict-situation-capsule
 ```

@@ -47,8 +47,8 @@ official sources + papers
 | Temporal KGC survey, <https://arxiv.org/abs/2201.08236> | 2026-06-07 | Static knowledge graph assumptions fail when facts change over time. | Capsule graph edges and claims must carry temporal scope and supersession status. | Recheck before adding temporal reasoning algorithms. |
 | Temporal KG representation survey, <https://arxiv.org/abs/2403.04782> | 2026-06-07 | Temporal KG methods model the dynamic evolution of entities and relations. | Add valid time and ingestion/provenance time to graph and claim records. | Recheck before ML-based temporal embedding work. |
 | RAG paper, <https://arxiv.org/abs/2005.11401> | 2026-06-07 | Retrieval improves knowledge-intensive generation, but provenance and updating world knowledge remain central problems. | PRAXIS Capsules must preserve source receipts and freshness, not only retrieval snippets. | Recheck if building retrieval eval baselines. |
-| LadybugDB homepage, <https://ladybugdb.com/> | 2026-06-07 | LadybugDB is positioned as an embedded columnar graph database with Cypher and Rust/Python/Node access. | Keep `ladybug_projection_v1` as an optional local graph analysis adapter. | Recheck license, crate maturity, and performance before dependency adoption. |
-| LadybugDB get started, <https://docs.ladybugdb.com/get-started/> | 2026-06-07 | Ladybug can run embedded, including in-memory mode for temporary graph analysis. | Useful for local graph previews and algorithm experiments, not canonical capsule state. | Recheck Rust API before implementing projection. |
+| LadybugDB homepage, <https://ladybugdb.com/> | 2026-06-07 | LadybugDB is positioned as an embedded columnar graph database with Cypher and Rust/Python/Node access. | Superseded by ADR-008: require `ladybug_projection_v1` as embedded projection state for promoted capsules, while keeping JSON/JSONL/JSON-LD canonical. | Recheck license, crate maturity, and performance before major projection-schema changes. |
+| LadybugDB get started, <https://docs.ladybugdb.com/get-started/> | 2026-06-07 | Ladybug can run embedded, including in-memory mode for temporary graph analysis. | Use for local graph previews, read-only Cypher, and algorithm experiments; never as the only claim/source/review state. | Recheck Rust API before changing projection builder commands. |
 | JSON-LD 1.1, <https://www.w3.org/TR/json-ld11/> | 2026-06-07 | JSON-LD is JSON-compatible linked data and can serialize RDF-style graphs. | Export `graph_semantics.jsonld` while keeping JSON-first Rust validation. | Recheck before linked-data export. |
 | PROV-O, <https://www.w3.org/TR/prov-o/> | 2026-06-07 | PROV-O models provenance across systems and contexts. | Source, extraction, review, compile, and export events should map cleanly to provenance records. | Recheck before provenance export or external audit features. |
 | SKOS, <https://www.w3.org/TR/skos-reference/> | 2026-06-07 | SKOS supports concept schemes, labels, semantic relations, mappings, and documentation properties. | Use SKOS-shaped ontology slices for terms, synonyms, broader/narrower links, and cross-frame mappings. | Recheck before ontology import/export. |
@@ -73,7 +73,7 @@ official sources + papers
 | MCP tools spec, <https://modelcontextprotocol.io/specification/2025-11-25/server/tools> | MCP tools are model-controlled, can expose structured output schemas, and the spec recommends human-visible tool exposure and confirmations for safety. | Future MCP adapters should expose capsule resources read-only first; write/promote tools require human confirmation and output schemas. |
 | MCP authorization spec, <https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization> | MCP authorization emphasizes exact redirect validation, PKCE, token audience binding, secure token storage, and SSRF-aware client metadata handling. | Do not ship an MCP server without an auth threat model, token audience checks, and server-side request controls. |
 | Zep temporal knowledge graph explainer, <https://www.getzep.com/ai-agents/temporal-knowledge-graph/> | The current framing stresses bi-temporal facts: valid time and ingestion/provenance time. | DIALECTICA temporal ledgers and graph edges should continue to model both real-world validity and learned-at/provenance time. |
-| LadybugDB docs, <https://docs.ladybugdb.com/> | Ladybug is positioned as an embedded graph database with property-graph modeling and interoperability with formats/stores such as Parquet, Arrow, and DuckDB. | Keep `ladybug_projection_v1` optional for graph exploration and analytics; signed bundles and PostgreSQL remain canonical. |
+| LadybugDB docs, <https://docs.ladybugdb.com/> | Ladybug is positioned as an embedded graph database with property-graph modeling and interoperability with formats/stores such as Parquet, Arrow, and DuckDB. | ADR-008 promotes `ladybug_projection_v1` to required embedded graph projection; signed bundle records, JSON-LD, and PostgreSQL remain the truth/operations layers. |
 | OpenAI Agents SDK tracing, <https://openai.github.io/openai-agents-js/guides/tracing/> | Current JS docs say tracing captures LLM generations, tool calls, handoffs, guardrails, and custom events. | Capsule compilation, context-pack generation, and PRAXIS use should emit run receipts compatible with agent trace spans. |
 | OpenAI Agents SDK guardrails, <https://openai.github.io/openai-agents-js/guides/guardrails/> | Current JS docs support input, output, and tool guardrails. | Model-powered extraction and capsule-use tools should have explicit guardrails before promotion or external actions. |
 | Gemma 4 12B Developer Guide, <https://developers.googleblog.com/gemma-4-12b-the-developer-guide/> | Google describes Gemma 4 12B as a unified multimodal model where downstream adapters such as LoRA can tune the shared multimodal token loop in one pass. | Treat Gemma-class fine-tuning as a future extractor-distillation option, especially for structured extraction over text, scanned documents, images, audio, and video. Do not make it a foundation dependency. |
@@ -87,7 +87,8 @@ official sources + papers
 - A capsule is the product contract, not a prompt, cache, or chat transcript.
 - The embedded graph is mandatory because PRAXIS needs source, time,
   relationship, reasoning, language, review, and rights traversal without a
-  required graph database.
+  running graph database. Promoted capsules therefore ship both `graph.jsonld`
+  and `graph/ladybug/capsule.lbug`.
 - Actor/claim/time graphs are one important ontology profile, not the universal
   model for every capsule. Each capsule type should generate its own ontology
   blueprint and semantic layers before graph extraction is promoted.
@@ -107,7 +108,7 @@ official sources + papers
 
 Refresh these sources immediately before implementation:
 
-1. LadybugDB crate/API docs before adding a dependency.
+1. LadybugDB crate/API docs before changing the projection schema or builder.
 2. MCP specification and security guidance before exposing capsule resources.
 3. Cloud Run, Cloud SQL, and Cloud Tasks limits before staging deployment.
 4. Firestore data model in PRAXIS before writing the mirror adapter.

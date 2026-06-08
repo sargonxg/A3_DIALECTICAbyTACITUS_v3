@@ -95,8 +95,8 @@ Initial jobs:
 - `capsule-backfill`: rebuild capsule records from fixture or source batches;
 - `capsule-eval`: run eval suites against capsule bundles;
 - `source-reindex`: regenerate embeddings or graph slices after schema changes.
-- `graph-projection-eval`: compare PostgreSQL, JSON-LD, and optional LadybugDB
-  graph projections against fixture and PRAXIS retrieval outcomes.
+- `graph-projection-eval`: compare PostgreSQL, JSON-LD, and required embedded
+  Ladybug graph projections against fixture and PRAXIS retrieval outcomes.
 
 ### Optional Worker Pools
 
@@ -172,8 +172,9 @@ true:
 - ingestion workers require persistent warm pools with custom autoscaling;
 - graph services need long-lived memory, special topology, or co-scheduled
   components;
-- optional graph projection adapters require persistent warm services rather
-  than task-scoped Cloud Run jobs;
+- optional graph service adapters require persistent warm services rather than
+  task-scoped Cloud Run jobs; embedded Ladybug projection builds remain
+  task/job-scoped and do not require a running graph service;
 - policy teams require private multi-tenant network isolation not practical in
   Cloud Run;
 - model-adapter workloads need GPUs or custom hardware scheduling;

@@ -1,5 +1,5 @@
 [package]
-name = "dialectica-cli"
+name = "dialectica-graph"
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
@@ -8,13 +8,14 @@ repository.workspace = true
 
 [features]
 default = []
-ladybug = ["dialectica-graph/ladybug"]
+ladybug = ["dep:lbug"]
 
 [dependencies]
 dialectica-capsule = { path = "../dialectica-capsule" }
-dialectica-compiler = { path = "../dialectica-compiler" }
-dialectica-graph = { path = "../dialectica-graph" }
+lbug = { version = "0.17.1", optional = true }
+serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+sha2 = "0.10"
 
 [lints]
 workspace = true

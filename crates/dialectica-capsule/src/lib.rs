@@ -14,6 +14,7 @@ use std::{
 use schemars::{schema::RootSchema, schema_for, JsonSchema};
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use serde_json::Value;
+use sha2::{Digest, Sha256};
 
 /// Current canonical PRAXIS Capsule format version.
 pub const CAPSULE_SPEC_VERSION: &str = "3.0";
@@ -65,6 +66,20 @@ const REQUIRED_V3_LAYERS: &[&str] = &[
     "reasoning",
     "governance",
     "runtime",
+];
+
+pub const LADYBUG_PROJECTION_PROFILE: &str = "ladybug_projection_v1";
+pub const LADYBUG_DATABASE_PATH: &str = "graph/ladybug/capsule.lbug";
+pub const LADYBUG_PROJECTION_MANIFEST_PATH: &str = "graph/ladybug/projection_manifest.json";
+pub const LADYBUG_SCHEMA_PATH: &str = "graph/ladybug/schema.cypher";
+pub const LADYBUG_QUERIES_PATH: &str = "graph/ladybug/queries.cypher";
+pub const LADYBUG_BUILD_RECEIPT_PATH: &str = "graph/ladybug/build_receipt.json";
+const REQUIRED_LADYBUG_PROJECTION_FILES: &[&str] = &[
+    LADYBUG_DATABASE_PATH,
+    LADYBUG_PROJECTION_MANIFEST_PATH,
+    LADYBUG_SCHEMA_PATH,
+    LADYBUG_QUERIES_PATH,
+    LADYBUG_BUILD_RECEIPT_PATH,
 ];
 
 const REGISTERED_NODE_TYPES: &[&str] = &[
@@ -692,6 +707,42 @@ pub struct PraxisCapsuleManifest {
     pub layers_present: Vec<String>,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+pub struct LadybugProjectionManifest {
+    pub schema_version: String,
+    pub capsule_id: String,
+    pub profile: String,
+    pub engine: String,
+    pub engine_crate: String,
+    pub engine_crate_version: String,
+    pub storage_version: u64,
+    pub database_path: String,
+    pub source_graph_path: String,
+    pub source_graph_digest: String,
+    pub projection_digest: String,
+    pub schema_path: String,
+    pub schema_digest: String,
+    pub query_path: String,
+    pub query_digest: String,
+    pub node_count: usize,
+    pub edge_count: usize,
+    pub read_only: bool,
+    pub rebuildable: bool,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+pub struct LadybugProjectionBuildReceipt {
+    pub schema_version: String,
+    pub capsule_id: String,
+    pub profile: String,
+    pub built_at_unix_seconds: u64,
+    pub source_graph_digest: String,
+    pub projection_digest: String,
+    pub node_count: usize,
+    pub edge_count: usize,
+    pub query_check: String,
+}
+
 impl PraxisCapsuleManifest {
     pub fn has_required_identity(&self) -> bool {
         !self.capsule_id.trim().is_empty()
@@ -728,6 +779,7 @@ impl PraxisCapsulePackage {
 
         validate_v3_manifest(self, &mut report);
         validate_v3_required_files(self, &mut report);
+        validate_v3_ladybug_projection(self, &mut report);
         validate_v3_compiled_views(self, &mut report);
         validate_v3_minimum_records(self, &mut report);
 
@@ -1017,7 +1069,32 @@ pub fn export_schema_dir(path: &Path) -> Result<(), CapsuleLoadError> {
         "ontology_blueprint.schema.json",
         schema_for!(CapsuleOntologyBlueprint),
     )?;
+    write_schema(
+        path,
+        "ladybug_projection_manifest.schema.json",
+        schema_for!(LadybugProjectionManifest),
+    )?;
+    write_schema(
+        path,
+        "ladybug_projection_build_receipt.schema.json",
+        schema_for!(LadybugProjectionBuildReceipt),
+    )?;
 
+    Ok(())
+}
+
+pub fn validate_ladybug_projection_files(root: &Path) -> Result<(), CapsuleLoadError> {
+    for relative in REQUIRED_LADYBUG_PROJECTION_FILES {
+        if !root.join(relative).is_file() {
+            return Err(CapsuleLoadError::new(format!(
+                "required Ladybug projection file '{}' is missing",
+                relative
+            )));
+        }
+    }
+
+    let manifest: LadybugProjectionManifest = read_json(root, LADYBUG_PROJECTION_MANIFEST_PATH)?;
+    validate_ladybug_projection_manifest(root, &manifest)?;
     Ok(())
 }
 
@@ -1477,11 +1554,102 @@ fn validate_v3_required_files(package: &PraxisCapsulePackage, report: &mut Valid
         }
     }
 
+    for relative in REQUIRED_LADYBUG_PROJECTION_FILES {
+        if !root.join(relative).is_file() {
+            report.push(ValidationFinding::error(
+                "missing_ladybug_projection_file",
+                *relative,
+                format!("Required Ladybug projection file '{relative}' is missing."),
+                Some(manifest.capsule_id.clone()),
+                "Build graph/ladybug/capsule.lbug from graph.jsonld before exporting a promoted v3 capsule.",
+            ));
+        }
+    }
+
     validate_mimetype(root, manifest, report);
     validate_json_file(root, "graph.jsonld", manifest, report);
     validate_json_file(root, "episodes.json", manifest, report);
     validate_json_file(root, "runtime.json", manifest, report);
     validate_json_file(root, "review/review.json", manifest, report);
+}
+
+fn validate_v3_ladybug_projection(package: &PraxisCapsulePackage, report: &mut ValidationReport) {
+    let root = &package.root;
+    let manifest = &package.manifest;
+
+    let projection_path = root.join(LADYBUG_PROJECTION_MANIFEST_PATH);
+    if !projection_path.is_file() {
+        return;
+    }
+
+    let projection: LadybugProjectionManifest =
+        match read_json(root, LADYBUG_PROJECTION_MANIFEST_PATH) {
+            Ok(projection) => projection,
+            Err(error) => {
+                report.push(ValidationFinding::error(
+                    "invalid_ladybug_projection_manifest",
+                    LADYBUG_PROJECTION_MANIFEST_PATH,
+                    error.to_string(),
+                    Some(manifest.capsule_id.clone()),
+                    "Emit valid JSON that matches ladybug_projection_manifest.schema.json.",
+                ));
+                return;
+            }
+        };
+
+    if let Err(error) = validate_ladybug_projection_manifest(root, &projection) {
+        report.push(ValidationFinding::error(
+            "invalid_ladybug_projection",
+            LADYBUG_PROJECTION_MANIFEST_PATH,
+            error.to_string(),
+            Some(manifest.capsule_id.clone()),
+            "Regenerate the Ladybug projection from graph.jsonld and update its receipt.",
+        ));
+    }
+
+    if projection.capsule_id != manifest.capsule_id {
+        report.push(ValidationFinding::error(
+            "ladybug_capsule_id_mismatch",
+            LADYBUG_PROJECTION_MANIFEST_PATH,
+            format!(
+                "Ladybug projection capsule_id '{}' does not match manifest capsule_id '{}'.",
+                projection.capsule_id, manifest.capsule_id
+            ),
+            Some(manifest.capsule_id.clone()),
+            "Regenerate the Ladybug projection from this capsule directory.",
+        ));
+    }
+
+    if projection.node_count == 0 {
+        report.push(ValidationFinding::warning(
+            "ladybug_projection_empty",
+            LADYBUG_PROJECTION_MANIFEST_PATH,
+            "Ladybug projection has no nodes.",
+            Some(manifest.capsule_id.clone()),
+            "Inspect graph.jsonld and regenerate the projection.",
+        ));
+    }
+
+    match read_json::<LadybugProjectionBuildReceipt>(root, LADYBUG_BUILD_RECEIPT_PATH) {
+        Ok(receipt) => {
+            if let Err(error) = validate_ladybug_build_receipt(&projection, &receipt) {
+                report.push(ValidationFinding::error(
+                    "invalid_ladybug_build_receipt",
+                    LADYBUG_BUILD_RECEIPT_PATH,
+                    error.to_string(),
+                    Some(manifest.capsule_id.clone()),
+                    "Regenerate the Ladybug projection so the build receipt matches the manifest.",
+                ));
+            }
+        }
+        Err(error) => report.push(ValidationFinding::error(
+            "invalid_ladybug_build_receipt",
+            LADYBUG_BUILD_RECEIPT_PATH,
+            error.to_string(),
+            Some(manifest.capsule_id.clone()),
+            "Emit valid JSON that matches ladybug_projection_build_receipt.schema.json.",
+        )),
+    }
 }
 
 fn validate_v3_compiled_views(package: &PraxisCapsulePackage, report: &mut ValidationReport) {
@@ -1581,6 +1749,103 @@ fn validate_json_file(
             "Emit valid JSON for every canonical capsule file.",
         ));
     }
+}
+
+fn validate_ladybug_projection_manifest(
+    root: &Path,
+    manifest: &LadybugProjectionManifest,
+) -> Result<(), CapsuleLoadError> {
+    if manifest.profile != LADYBUG_PROJECTION_PROFILE {
+        return Err(CapsuleLoadError::new(format!(
+            "expected Ladybug profile {}, found {}",
+            LADYBUG_PROJECTION_PROFILE, manifest.profile
+        )));
+    }
+    if manifest.engine != "ladybug" || manifest.engine_crate != "lbug" {
+        return Err(CapsuleLoadError::new(
+            "Ladybug projection manifest must use engine 'ladybug' and crate 'lbug'",
+        ));
+    }
+    if manifest.database_path != normalize_relative_path(LADYBUG_DATABASE_PATH)
+        || manifest.source_graph_path != "graph.jsonld"
+        || manifest.schema_path != normalize_relative_path(LADYBUG_SCHEMA_PATH)
+        || manifest.query_path != normalize_relative_path(LADYBUG_QUERIES_PATH)
+    {
+        return Err(CapsuleLoadError::new(
+            "Ladybug projection manifest paths must match the v3 capsule layout",
+        ));
+    }
+    if !manifest.read_only || !manifest.rebuildable {
+        return Err(CapsuleLoadError::new(
+            "Ladybug projection must be marked read_only=true and rebuildable=true",
+        ));
+    }
+
+    assert_digest(
+        "graph.jsonld",
+        &manifest.source_graph_digest,
+        &root.join("graph.jsonld"),
+    )?;
+    assert_digest(
+        LADYBUG_DATABASE_PATH,
+        &manifest.projection_digest,
+        &root.join(LADYBUG_DATABASE_PATH),
+    )?;
+    assert_digest(
+        LADYBUG_SCHEMA_PATH,
+        &manifest.schema_digest,
+        &root.join(LADYBUG_SCHEMA_PATH),
+    )?;
+    assert_digest(
+        LADYBUG_QUERIES_PATH,
+        &manifest.query_digest,
+        &root.join(LADYBUG_QUERIES_PATH),
+    )?;
+
+    Ok(())
+}
+
+fn validate_ladybug_build_receipt(
+    manifest: &LadybugProjectionManifest,
+    receipt: &LadybugProjectionBuildReceipt,
+) -> Result<(), CapsuleLoadError> {
+    if receipt.schema_version != "ladybug_projection_build_receipt_v1" {
+        return Err(CapsuleLoadError::new(
+            "Ladybug build receipt schema_version must be ladybug_projection_build_receipt_v1",
+        ));
+    }
+    if receipt.profile != LADYBUG_PROJECTION_PROFILE {
+        return Err(CapsuleLoadError::new(format!(
+            "expected Ladybug build receipt profile {}, found {}",
+            LADYBUG_PROJECTION_PROFILE, receipt.profile
+        )));
+    }
+    if receipt.capsule_id != manifest.capsule_id
+        || receipt.source_graph_digest != manifest.source_graph_digest
+        || receipt.projection_digest != manifest.projection_digest
+        || receipt.node_count != manifest.node_count
+        || receipt.edge_count != manifest.edge_count
+    {
+        return Err(CapsuleLoadError::new(
+            "Ladybug build receipt must match capsule_id, digests, and counts from projection_manifest.json",
+        ));
+    }
+    if receipt.query_check.trim().is_empty() {
+        return Err(CapsuleLoadError::new(
+            "Ladybug build receipt query_check must not be empty",
+        ));
+    }
+    Ok(())
+}
+
+fn assert_digest(relative: &str, expected: &str, path: &Path) -> Result<(), CapsuleLoadError> {
+    let actual = digest_file(path)?;
+    if expected != actual {
+        return Err(CapsuleLoadError::new(format!(
+            "digest mismatch for {relative}: expected {expected}, found {actual}"
+        )));
+    }
+    Ok(())
 }
 
 fn validate_manifest(bundle: &CapsuleBundle, report: &mut ValidationReport) {
@@ -1895,6 +2160,17 @@ fn count_jsonl_records(path: &Path) -> Result<usize, CapsuleLoadError> {
     Ok(text.lines().filter(|line| !line.trim().is_empty()).count())
 }
 
+fn digest_file(path: &Path) -> Result<String, CapsuleLoadError> {
+    let bytes = fs::read(path).map_err(|error| {
+        CapsuleLoadError::new(format!("failed to read {}: {error}", path.display()))
+    })?;
+    Ok(format!("sha256:{:x}", Sha256::digest(bytes)))
+}
+
+fn normalize_relative_path(path: &str) -> String {
+    path.replace('\\', "/")
+}
+
 fn write_schema(path: &Path, filename: &str, schema: RootSchema) -> Result<(), CapsuleLoadError> {
     let output = path.join(filename);
     let json = serde_json::to_string_pretty(&schema).map_err(|error| {
@@ -1913,7 +2189,13 @@ pub fn schema_version_dir(base: impl Into<PathBuf>) -> PathBuf {
 
 #[cfg(test)]
 mod tests {
-    use super::{CapsuleManifest, ReviewState};
+    use std::{
+        fs,
+        path::{Path, PathBuf},
+        time::{SystemTime, UNIX_EPOCH},
+    };
+
+    use super::{CapsuleManifest, PraxisCapsulePackage, ReviewState, CAPSULE_MIME_TYPE};
 
     #[test]
     fn approved_manifest_with_digest_is_export_ready() {
@@ -1953,5 +2235,81 @@ mod tests {
 
         assert!(!manifest.is_export_ready());
         assert!(!manifest.has_approved_capsule_type());
+    }
+
+    #[test]
+    fn v3_package_requires_ladybug_projection_files() {
+        let root = temp_package_dir("missing_ladybug_projection");
+        write_minimal_v3_package(&root);
+
+        let package = PraxisCapsulePackage::load_from_dir(&root).expect("package should load");
+        let report = package.validate();
+
+        assert!(report
+            .findings
+            .iter()
+            .any(|finding| finding.code == "missing_ladybug_projection_file"));
+
+        fs::remove_dir_all(root).ok();
+    }
+
+    fn temp_package_dir(name: &str) -> PathBuf {
+        let unique = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .expect("system time should be valid")
+            .as_nanos();
+        let root = std::env::temp_dir().join(format!("dialectica_{name}_{unique}"));
+        fs::create_dir_all(&root).expect("temp package root should be created");
+        root
+    }
+
+    fn write_minimal_v3_package(root: &Path) {
+        fs::create_dir_all(root.join("evidence")).expect("evidence dir should be created");
+        fs::create_dir_all(root.join("reasoning")).expect("reasoning dir should be created");
+        fs::create_dir_all(root.join("review")).expect("review dir should be created");
+        fs::write(root.join("mimetype"), CAPSULE_MIME_TYPE).expect("mimetype should write");
+        fs::write(
+            root.join("manifest.json"),
+            r#"{
+  "capsule_id": "cap_missing_ladybug_test",
+  "spec_version": "3.0",
+  "version": 1,
+  "type": "situation",
+  "category": "test",
+  "title": "Missing Ladybug Test",
+  "owner_uid": null,
+  "situation_id": null,
+  "cores": ["aco"],
+  "created_at": "2026-06-08T00:00:00Z",
+  "updated_at": "2026-06-08T00:00:00Z",
+  "provenance_root_hash": "sha256:test",
+  "signature": "test",
+  "depends_on": [],
+  "layers_present": ["evidence", "claims", "situation", "temporal", "ontology", "reasoning", "governance", "runtime"]
+}
+"#,
+        )
+        .expect("manifest should write");
+        fs::write(root.join("claims.jsonl"), "{\"id\":\"clm_test\"}\n")
+            .expect("claims should write");
+        fs::write(
+            root.join("graph.jsonld"),
+            r#"{"@id":"urn:praxis:capsule:cap_missing_ladybug_test","@graph":[]}"#,
+        )
+        .expect("graph should write");
+        fs::write(root.join("episodes.json"), "{}").expect("episodes should write");
+        fs::write(
+            root.join("evidence").join("sources.jsonl"),
+            "{\"id\":\"src_test\"}\n",
+        )
+        .expect("sources should write");
+        fs::write(root.join("reasoning").join("devices.json"), "[]").expect("devices should write");
+        fs::write(root.join("reasoning").join("annotations.json"), "[]")
+            .expect("annotations should write");
+        fs::write(root.join("reasoning").join("traps.json"), "[]").expect("traps should write");
+        fs::write(root.join("review").join("review.json"), "{}").expect("review should write");
+        fs::write(root.join("runtime.json"), "{}").expect("runtime should write");
+        fs::write(root.join("agent_context.md"), "test").expect("agent context should write");
+        fs::write(root.join("operations.md"), "test").expect("operations should write");
     }
 }

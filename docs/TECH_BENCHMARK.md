@@ -20,7 +20,7 @@ policy-grade capsule compiler for PRAXIS.
 | Awesome Graph Universe | The graph ecosystem is broad: property graphs, RDF stores, ETL, visualization, GraphRAG infrastructure, and graph stream processors. | Use as a discovery index, not as a reason to reopen stack selection. Evaluate one adapter class at a time. |
 | GraphGeeks Agentic Graph RAG workshop | Hybrid graph, vector, and full-text retrieval needs extraction evals, observability, and guardrails. | Use as a reference for future PRAXIS context-pack retrieval and eval design after deterministic capsule export works. |
 | Gemma/Unsloth LoRA extractor pattern | Small fine-tuned models can become schema-faithful extraction adapters when trained on reviewed examples. | Capture as a future distillation lane; do not add fine-tuned models before source-pack, review, and eval data exist. |
-| LadybugDB | Embedded property graph projection with Cypher, Rust/Python/Node access, and graph algorithms is attractive for local graph analysis. | Treat as optional `ladybug_projection_v1`, not canonical state, until evals and runbooks justify it. |
+| LadybugDB | Embedded property graph projection with Cypher, Rust/Python/Node access, and graph algorithms is attractive for portable capsule graph analysis. | Adopt as required `ladybug_projection_v1` for promoted capsules, with JSON/JSONL/JSON-LD remaining canonical truth. |
 | LangGraph | Long-running agents need persistence, human-in-the-loop, streaming, and memory. | PRAXIS owns visible agent runs; DIALECTICA supplies durable capsule context and receipts. |
 | OpenAI Agents SDK | Specialist agents, tools, guardrails, state, tracing, and evals are now standard building blocks. | Keep agent boundaries explicit and make capsule validation/human review guardrails. |
 | Model Context Protocol | Resources/tools are becoming a standard way to expose context to agents. | Expose capsule resources later through MCP, with strict read-only defaults and provenance. |
@@ -52,8 +52,9 @@ policy-grade capsule compiler for PRAXIS.
   in one practical workflow.
 - Gemma/Unsloth-style LoRA fine-tuning maps well to typed extraction proposals,
   but only after DIALECTICA has reviewed capsule data and a benchmark gate.
-- LadybugDB is an embedded graph database candidate for projected capsule graph
-  exploration, Cypher query workflows, and graph algorithms.
+- LadybugDB is the embedded graph projection for promoted capsules, supporting
+  local graph exploration, Cypher query workflows, and graph algorithms without
+  requiring a running graph database.
 - LangGraph is a low-level orchestration runtime for long-running stateful
   agents with persistence, human-in-the-loop, memory, and tracing.
 - The OpenAI Agents SDK is appropriate when an application owns orchestration,
@@ -108,12 +109,14 @@ The marketplace should not sell prompts. It should list signed, versioned,
 reviewed context capsules with rights, lineage, caveats, freshness, graph
 previews, and eval snapshots.
 
-### 8. Graph Adapters Must Stay Derived Until Proven
+### 8. Graph Services Must Stay Derived; Ladybug Must Stay Rebuildable
 
 LadybugDB and similar engines are valuable because they can make graph
-exploration and algorithms practical. They should read capsule graph records and
-write projection receipts, not become the source of promoted claims or review
-state.
+exploration and algorithms practical. ADR-008 promotes Ladybug into the required
+embedded projection, but it must read capsule graph records and write projection
+receipts rather than become the source of promoted claims or review state.
+Other graph services stay optional derived adapters until evals and runbooks
+justify promotion.
 
 ## Foundation Recommendation
 

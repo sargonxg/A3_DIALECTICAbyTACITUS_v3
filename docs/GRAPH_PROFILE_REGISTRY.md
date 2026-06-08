@@ -274,7 +274,7 @@ Graph adapters are projections of the embedded graph, not canonical state.
 | `embedded_graph_v1` | required | compact graph inside the signed bundle |
 | `postgres_projection_v1` | required for runtime | relational graph tables plus JSONB extension fields |
 | `jsonld_projection_v1` | required for export compatibility | JSON-LD semantic export |
-| `ladybug_projection_v1` | optional | embedded graph database projection for local graph exploration, algorithms, and large capsule graph analysis |
+| `ladybug_projection_v1` | required for promoted capsules | embedded graph database projection for local graph exploration, read-only Cypher, algorithms, and PRAXIS graph preview |
 | `graphiti_projection_v1` | optional | temporal graph research and future memory adapter |
 | `graphrag_projection_v1` | optional | corpus-level community summaries and large-source synthesis |
 

@@ -60,10 +60,12 @@ Filename pattern:
 Portability rule:
 
 - canonical files are open JSON, JSONL, JSON-LD, and Markdown;
-- `cache/` is optional, regenerable, and excluded from integrity hashes;
-- a capsule must remain fully usable with no graph engine running;
-- Ladybug, Oxigraph, vector indexes, and full-text indexes are acceleration,
-  never the source of truth.
+- `graph.jsonld` is the rebuildable semantic graph contract;
+- `graph/ladybug/capsule.lbug` is required for every promoted capsule as the
+  embedded queryable graph projection;
+- Ladybug projections are read-only for PRAXIS and must carry digest receipts;
+- non-required caches remain optional, regenerable, and excluded from promotion
+  decisions.
 
 ## 3. Layer Model
 
@@ -384,17 +386,20 @@ layers. The substrate and guidance layers form a single connected graph:
 claims <-> evidence, claims <-> episodes, claims <-> annotations/heuristics/traps,
 actors <-> relations, and runtime rules <-> outputs.
 
-For speed, a capsule may ship optional engine caches in `cache/`:
+For queryability, a promoted capsule must ship a Ladybug projection:
 
 ```text
-cache/capsule.ladybug
-cache/capsule.oxigraph/
+graph/ladybug/capsule.lbug
+graph/ladybug/projection_manifest.json
+graph/ladybug/schema.cypher
+graph/ladybug/queries.cypher
+graph/ladybug/build_receipt.json
 ```
 
-Ladybug may materialize graph traversal, vector search, and full-text search.
-Oxigraph may materialize RDF for SPARQL and SHACL validation. Both are
-regenerable from `graph.jsonld`, excluded from the integrity hash, and never the
-source of truth.
+Ladybug materializes graph traversal and read-only Cypher inspection. The
+projection is required for promoted capsules and signed by digest, but it is
+still rebuildable from `graph.jsonld`. Oxigraph, vector indexes, and full-text
+indexes may be added later as optional derived caches.
 
 ## 9. Trust Layers
 
@@ -459,7 +464,10 @@ and what to produce.
 - SHACL shapes per loaded core validate the graph.
 - `provenance_root_hash` is a Merkle root over canonical files only.
 - `signature` signs the manifest and root hash.
-- `cache/` is excluded from the root hash.
+- `graph/ladybug/projection_manifest.json` records the exact digest of
+  `graph.jsonld`, `capsule.lbug`, `schema.cypher`, and `queries.cypher`.
+- The Ladybug database is opened read-only by PRAXIS. DIALECTICA rebuild jobs
+  own writes and must regenerate receipts.
 - Generated `agent_context.md` and `operations.md` must be reproducible from
   canonical files.
 
@@ -489,9 +497,13 @@ and what to produce.
 ├── runtime.json
 ├── agent_context.md
 ├── operations.md
-└── cache/
-    ├── capsule.ladybug
-    └── capsule.oxigraph/
+└── graph/
+    └── ladybug/
+        ├── capsule.lbug
+        ├── projection_manifest.json
+        ├── schema.cypher
+        ├── queries.cypher
+        └── build_receipt.json
 ```
 
 Situation Capsules may omit `payload.situation.json` when the substrate files
@@ -507,12 +519,12 @@ The first build must hold scope without weakening the target:
 - required compiled views: `agent_context.md` and `operations.md`;
 - required guidance objects: `devices`, `annotations`, and `traps`;
 - supported but initially sparse: `heuristics`, `salience`, `precedents`,
-  `memory`, Ladybug cache, Oxigraph cache;
+  `memory`, Oxigraph cache, and non-required retrieval caches;
 - ship one canonical Situation Capsule fixture and keep User, Tool, and Output
   examples aligned to the same manifest vocabulary;
-- all promoted capsules must validate as v3 and remain usable without a graph
-  engine.
+- all promoted capsules must validate as v3 and include a read-only embedded
+  Ladybug graph projection.
 
 Substrate is the knowledge. Guidance is the judgment. The capsule carries both
-as a portable `.capsule` that any agent can use, with or without a database,
-and that humans gate as it grows into the Canon.
+as a portable `.capsule` with open semantic files and an embedded queryable
+graph database that humans gate as it grows into the Canon.

@@ -9,7 +9,8 @@ to add every dependency immediately.
 - Prefer boring infrastructure for the foundation build.
 - Keep the capsule bundle readable without proprietary services.
 - Keep PostgreSQL as the first operational source of truth.
-- Treat graph, ontology, and model providers as adapters.
+- Treat graph, ontology, and model providers as adapters, with Ladybug as the
+  required embedded query projection for promoted capsules.
 - Pin versions once implementation begins.
 
 ## Runtime Language
@@ -93,7 +94,10 @@ PostgreSQL is insufficient.
 
 ## Graph and Semantic Adapters
 
-Graph and semantic engines are future adapters, not foundation build dependencies.
+Graph and semantic engines stay derived from capsule records. Ladybug is the
+exception that ADR-008 promotes into the required embedded projection shipped
+inside every promoted capsule. PostgreSQL remains the operational service
+store, and JSON-LD remains the portable semantic source graph.
 
 Candidate adapter classes:
 
@@ -101,9 +105,9 @@ Candidate adapter classes:
 - RDF/OWL export adapter;
 - property graph export adapter;
 - temporal graph summarizer;
-- ontology mapping service.
-- LadybugDB projection adapter for embedded graph exploration and graph
-  algorithms after the embedded graph contract is validated.
+- ontology mapping service;
+- LadybugDB projection adapter for required embedded graph exploration,
+  read-only Cypher, and graph algorithms in promoted capsules.
 
 Promotion rule:
 
@@ -120,7 +124,7 @@ Current adapter posture:
 | --- | --- | --- |
 | PostgreSQL projection | required | keeps runtime simple and deployable on Cloud SQL |
 | JSON-LD export | required | preserves standards-compatible semantic layer |
-| LadybugDB | optional research adapter | promising embedded property graph engine, but not needed before Lane A/B validation |
+| LadybugDB / `lbug` | required projection dependency | embedded property graph engine required for promoted capsule graph projection; compile with `--features ladybug` for build/query commands |
 | Graphiti | optional research adapter | useful temporal graph pattern, but would add Python/service dependencies |
 | GraphRAG | optional research adapter | useful for corpus-level community summaries after small deterministic graph slices work |
 | Kuzu/LanceDB/BAML/Opik-style hybrid RAG | optional research pattern | useful as a reference for graph + vector + full-text retrieval, extraction observability, and guardrail evaluation after PRAXIS context-pack export works |

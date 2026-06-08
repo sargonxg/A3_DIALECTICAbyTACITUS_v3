@@ -1,0 +1,21 @@
+{
+  "schema_version": "ladybug_projection_manifest_v1",
+  "capsule_id": "cap_conflict_situation_fixture_v3",
+  "profile": "ladybug_projection_v1",
+  "engine": "ladybug",
+  "engine_crate": "lbug",
+  "engine_crate_version": "0.17.1",
+  "storage_version": 41,
+  "database_path": "graph/ladybug/capsule.lbug",
+  "source_graph_path": "graph.jsonld",
+  "source_graph_digest": "sha256:f28a32eceba22140f2e14a19508e4bd8ad7a38c262fe9baa6efea9f1c11c3208",
+  "projection_digest": "sha256:8ee639b5cec225f95127ab60250fc611fdc60e90b61a9214b5a495177ffd8ea3",
+  "schema_path": "graph/ladybug/schema.cypher",
+  "schema_digest": "sha256:8d9e6dd563f98f12b29e1de2bc6ecfd6c6a41640ec9e75505ab4124ffc3ad21a",
+  "query_path": "graph/ladybug/queries.cypher",
+  "query_digest": "sha256:3a891075f87d1ab0f61d28ea75cb2359bc14ba565d87aa2577ecf7cc6af0580b",
+  "node_count": 9,
+  "edge_count": 3,
+  "read_only": true,
+  "rebuildable": true
+}

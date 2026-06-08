@@ -1,0 +1,91 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "LadybugProjectionManifest",
+  "type": "object",
+  "required": [
+    "capsule_id",
+    "database_path",
+    "edge_count",
+    "engine",
+    "engine_crate",
+    "engine_crate_version",
+    "node_count",
+    "profile",
+    "projection_digest",
+    "query_digest",
+    "query_path",
+    "read_only",
+    "rebuildable",
+    "schema_digest",
+    "schema_path",
+    "schema_version",
+    "source_graph_digest",
+    "source_graph_path",
+    "storage_version"
+  ],
+  "properties": {
+    "capsule_id": {
+      "type": "string"
+    },
+    "database_path": {
+      "type": "string"
+    },
+    "edge_count": {
+      "type": "integer",
+      "format": "uint",
+      "minimum": 0.0
+    },
+    "engine": {
+      "type": "string"
+    },
+    "engine_crate": {
+      "type": "string"
+    },
+    "engine_crate_version": {
+      "type": "string"
+    },
+    "node_count": {
+      "type": "integer",
+      "format": "uint",
+      "minimum": 0.0
+    },
+    "profile": {
+      "type": "string"
+    },
+    "projection_digest": {
+      "type": "string"
+    },
+    "query_digest": {
+      "type": "string"
+    },
+    "query_path": {
+      "type": "string"
+    },
+    "read_only": {
+      "type": "boolean"
+    },
+    "rebuildable": {
+      "type": "boolean"
+    },
+    "schema_digest": {
+      "type": "string"
+    },
+    "schema_path": {
+      "type": "string"
+    },
+    "schema_version": {
+      "type": "string"
+    },
+    "source_graph_digest": {
+      "type": "string"
+    },
+    "source_graph_path": {
+      "type": "string"
+    },
+    "storage_version": {
+      "type": "integer",
+      "format": "uint64",
+      "minimum": 0.0
+    }
+  }
+}

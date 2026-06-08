@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "LadybugProjectionBuildReceipt",
+  "type": "object",
+  "required": [
+    "built_at_unix_seconds",
+    "capsule_id",
+    "edge_count",
+    "node_count",
+    "profile",
+    "projection_digest",
+    "query_check",
+    "schema_version",
+    "source_graph_digest"
+  ],
+  "properties": {
+    "built_at_unix_seconds": {
+      "type": "integer",
+      "format": "uint64",
+      "minimum": 0.0
+    },
+    "capsule_id": {
+      "type": "string"
+    },
+    "edge_count": {
+      "type": "integer",
+      "format": "uint",
+      "minimum": 0.0
+    },
+    "node_count": {
+      "type": "integer",
+      "format": "uint",
+      "minimum": 0.0
+    },
+    "profile": {
+      "type": "string"
+    },
+    "projection_digest": {
+      "type": "string"
+    },
+    "query_check": {
+      "type": "string"
+    },
+    "schema_version": {
+      "type": "string"
+    },
+    "source_graph_digest": {
+      "type": "string"
+    }
+  }
+}

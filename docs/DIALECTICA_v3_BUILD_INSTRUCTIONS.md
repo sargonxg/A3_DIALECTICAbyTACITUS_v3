@@ -53,7 +53,7 @@ The technical thesis:
 
 The build thesis:
 
-> Contract first, engine-light first, source-cited always. Use graph and semantic engines as adapters and caches, never as the only copy of truth.
+> Contract first, source-cited always, portable graph inside the capsule. Use service-side graph and semantic engines as derived adapters, never as the only copy of truth.
 
 ## 1. Product Boundary and Naming
 
@@ -83,10 +83,10 @@ Product shape:
 ## 2. Non-Negotiable Architecture Rules
 
 1. The signed capsule bundle is canonical.
-   The bundle contains canonical JSON/JSONL records, deterministic semantic projections, compiled agent views, and optional cache files.
+   The bundle contains canonical JSON/JSONL records, deterministic semantic projections, a required embedded Ladybug graph projection, compiled agent views, and optional non-canonical cache files.
 
 2. Engines are adapters, not truth.
-   PostgreSQL, Ladybug, Oxigraph, Graphiti, Spanner Graph, and any future graph engine may index, project, query, or accelerate a capsule. None may become the only copy of a capsule.
+   PostgreSQL, Oxigraph, Graphiti, Spanner Graph, and any future graph engine may index, project, query, or accelerate a capsule. Ladybug is the required embedded query projection shipped with promoted capsules. None may become the only copy of claims, sources, review state, or semantic graph truth.
 
 3. Engine-less mode is mandatory.
    A capsule must remain usable by an LLM or local Python code from the bundle alone. No graph server may be required to inspect, cite, compose, critique, improve, or apply a device to the foundation build capsule.
@@ -107,7 +107,7 @@ Product shape:
    Do not spend the foundation build rebuilding generic storage, retrieval, entity resolution, or graph database infrastructure. Use adapters and narrow smoke tests.
 
 9. Start boring where boring is correct.
-   For foundation build operational storage, prefer Cloud SQL PostgreSQL with JSONB, relational constraints, full text search, and pgvector. Add graph engines after bundle, engine-less operations, and evaluation are working.
+   For foundation build operational storage, prefer Cloud SQL PostgreSQL with JSONB, relational constraints, full text search, and pgvector. Build Ladybug as the embedded per-capsule graph projection; add heavier graph services only after bundle, engine-less operations, and evaluation are working.
 
 10. A demo without eval is not proof.
     Build the benchmark as a first-class product artifact. PRAXIS-with-capsules must beat a generic LLM on citation coverage, temporal correctness, contradiction handling, assumption handling, and analyst usefulness.
@@ -190,11 +190,17 @@ The canonical artifact is a signed capsule bundle:
 │   ├── agent_context.md
 │   ├── operations.md
 │   └── capsule_summary.json
+├── graph/
+│   └── ladybug/
+│       ├── capsule.lbug
+│       ├── projection_manifest.json
+│       ├── schema.cypher
+│       ├── queries.cypher
+│       └── build_receipt.json
 ├── eval/
 │   ├── expected_behaviors.json
 │   └── eval_receipts.jsonl
 └── cache/
-    ├── ladybug/              # optional, regenerable
     ├── oxigraph/             # optional, regenerable
     └── indexes/              # optional, regenerable
 ```
@@ -272,16 +278,18 @@ The foundation build graph is a portable graph record set plus deterministic pro
 - `episodes.jsonl`
 - `claims.jsonl`
 - `graph.jsonld`
-- optional SQL adjacency tables
-- optional engine cache files
+- `graph/ladybug/capsule.lbug`
+- SQL adjacency tables in PostgreSQL for runtime operations
+- optional non-canonical service/index cache files
 
 For foundation build, queries must work through:
 
 1. pure-Python over bundle records;
-2. PostgreSQL adjacency and full-text/vector indexes;
-3. optional Ladybug and Oxigraph adapters after smoke tests pass.
+2. read-only Ladybug embedded projection for local Cypher traversal;
+3. PostgreSQL adjacency and full-text/vector indexes for deployed operations;
+4. optional Oxigraph and other semantic adapters after smoke tests pass.
 
-This avoids making Graphiti, Ladybug, Oxigraph, or Spanner Graph a blocker for the first proof.
+This avoids making Graphiti, Oxigraph, Spanner Graph, or a running graph service a blocker for the first proof while still giving every promoted capsule a queryable embedded graph.
 
 ### 6.2 Ontology Cores
 
@@ -371,7 +379,7 @@ Backends:
 
 - `PurePythonBackend`: mandatory, offline, uses bundle records.
 - `PostgresBackend`: foundation build operational store, uses SQL, full-text search, pgvector, adjacency tables.
-- `LadybugBackend`: optional embedded property graph/vector/cache after P6 smoke.
+- `LadybugBackend`: required embedded property graph projection for promoted capsules; build/query behind the Rust `ladybug` feature and validate manifests in default builds.
 - `OxigraphBackend`: optional RDF/SPARQL/JSON-LD validation and semantic query backend after P6 smoke.
 - `GraphitiBackend`: optional temporal/episodic substrate after P7, not required for foundation build.
 - `SpannerGraphBackend`: enterprise production adapter, not foundation build.
@@ -380,7 +388,11 @@ Ladybug note:
 
 - Current install docs use `pip install ladybug` and `cargo add lbug`.
 - Do not use stale package names such as `real_ladybug`.
-- Pin only after P0 install and smoke test succeeds on this machine or CI image.
+- DIALECTICA uses the Rust crate `lbug = 0.17.1` through
+  `crates/dialectica-graph`.
+- On Windows, feature builds currently need `sh` on `PATH` for the prebuilt
+  downloader path; Git Bash provides it. Without `sh`, the crate falls back to
+  CMake and fails if CMake is absent.
 
 Graphiti note:
 
@@ -1368,11 +1380,12 @@ Acceptance:
 - rejected proposal remains in review history;
 - expert signoff can promote to T1 and is recorded.
 
-### P7 - Optional Engine Adapters
+### P7 - Embedded And Optional Engine Adapters
 
 Deliver:
 
-- Ladybug adapter if P0 smoke passed;
+- Ladybug projection builder, validator, read-only query smoke, and digest
+  receipts for promoted capsules;
 - Oxigraph adapter if P0 smoke passed;
 - semantic projection validation;
 - engine availability in `/health`;
@@ -1380,11 +1393,13 @@ Deliver:
 
 Acceptance:
 
-- cache materialization is reproducible from bundle records;
-- deleting cache and rematerializing yields equivalent query output;
+- `graph/ladybug/capsule.lbug` materialization is reproducible from
+  `graph.jsonld` records;
+- deleting `graph/ladybug/` and rematerializing yields digest-checked,
+  equivalent query output;
 - engine-less tests still pass when adapters are disabled;
 - Oxigraph validates JSON-LD projection where available;
-- Ladybug query smoke passes where available.
+- Ladybug query smoke passes in CI or in a documented local environment.
 
 Do not add Graphiti in this phase unless Ladybug/Oxigraph and Postgres paths are stable.
 
@@ -1513,7 +1528,9 @@ Optional adapter smoke failures must not fail the whole build until the phase th
 - Do not build a separate public DIALECTICA app for foundation build.
 - Do not add a new PRAXIS top-level surface unless the human explicitly asks.
 - Do not call the public object `Context Capsule`.
-- Do not use graph-engine binary files as canonical state.
+- Do not use graph-engine binary files as the only canonical state; the
+  embedded Ladybug projection must always be rebuildable from signed capsule
+  records and `graph.jsonld`.
 - Do not require a running graph DB for foundation build operations.
 - Do not use Graphiti as required infrastructure before engine-less operations pass.
 - Do not use Ladybug package names from stale docs; verify current install path in P0.
@@ -1581,8 +1598,11 @@ DIALECTICA v3 is working when:
 - a PRAXIS agent can produce a cited, trust-calibrated memo;
 - the agent can ask for more evidence through capsule operations;
 - temporal changes and disputed claims are handled explicitly;
-- the capsule can be operated with no graph database;
-- optional graph/semantic engines improve speed or query depth without becoming canonical;
+- the capsule can be operated with no running graph database;
+- the required embedded Ladybug graph improves traversal without replacing
+  JSON/JSONL/JSON-LD truth;
+- optional graph/semantic services improve speed or query depth without
+  becoming canonical;
 - machine improvements enter a human-gated proposal loop;
 - the eval report proves the capsule advantage over raw LLM generation.
 

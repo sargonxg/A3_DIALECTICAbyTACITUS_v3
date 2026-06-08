@@ -228,7 +228,7 @@ Missing in the PRAXIS repo:
 
 These are valuable after the local loop and API are real.
 
-- optional Ladybug graph projection;
+- broadened Ladybug graph algorithms beyond the required embedded projection;
 - optional Oxigraph/RDF projection;
 - optional MCP read-only capsule resource server;
 - optional marketplace listing and expert-pick workflows;

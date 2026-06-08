@@ -84,3 +84,4 @@ Architecture decisions:
 - [ADR-005: Benchmark-Informed Capsule Engine Posture](decisions/ADR-005-benchmark-informed-capsule-engine-posture.md)
 - [ADR-006: Open Source License and Citation](decisions/ADR-006-open-source-license-and-citation.md)
 - [ADR-007: LLM Extraction Proposal Boundary](decisions/ADR-007-llm-extraction-proposal-boundary.md)
+- [ADR-008: Ladybug Required Embedded Graph Projection](decisions/ADR-008-ladybug-required-embedded-graph-projection.md)

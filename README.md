@@ -5,6 +5,7 @@
 ![Status](https://img.shields.io/badge/status-build%20cockpit-blue)
 ![Runtime](https://img.shields.io/badge/runtime-Cloud%20Run%20first-4285F4)
 ![Store](https://img.shields.io/badge/store-Cloud%20SQL%20PostgreSQL-336791)
+![Graph](https://img.shields.io/badge/graph-Ladybug%20embedded-111827)
 ![Capsule](https://img.shields.io/badge/capsule-signed%20bundle-111827)
 ![PRAXIS](https://img.shields.io/badge/serves-PRAXIS%20Capsules-0F766E)
 ![License](https://img.shields.io/badge/license-Apache--2.0-blue)
@@ -29,8 +30,9 @@ The technical thesis is:
 Current truth:
 
 - **Works now**: Rust contract validation, canonical v3 Situation Capsule
-  fixture validation, legacy migration fixture validation, schema export, and
-  CLI `doctor`/`validate`/`inspect`/`ontology-plan`/`schema-export`.
+  fixture validation with required embedded Ladybug projection, legacy
+  migration fixture validation, schema export, and CLI
+  `doctor`/`validate`/`inspect`/`ontology-plan`/`ladybug-*`/`schema-export`.
 - **Not built yet**: source-pack ingestion, LLM extraction proposals, human
   review UI, deterministic compiler, `.capsule` archive writer, PRAXIS
   context-pack export, PostgreSQL migrations, API routes, task handler, and
@@ -219,10 +221,11 @@ architecture and implementation docs.
 
 ## Build Architecture
 
-The first working version is contract-first and engine-light before it becomes
-engine-rich. The capsule bundle format, provenance model, review ledger, graph
-slice, semantic layer, and PRAXIS integration contract must work before
-advanced graph/AI adapters become required.
+The first working version is contract-first and engine-specific where the
+product needs it. The capsule bundle format, provenance model, review ledger,
+`graph.jsonld`, required embedded Ladybug projection, semantic layer, and
+PRAXIS integration contract must work before broader graph/AI adapters are
+added.
 
 Core services:
 
@@ -247,6 +250,7 @@ Cargo workspace
   crates/dialectica-capsule       contract types and validation
   crates/dialectica-extractor     planned source-pack/proposal crate
   crates/dialectica-compiler      deterministic bundle assembly
+  crates/dialectica-graph         Ladybug projection planning/build/check/query
   crates/dialectica-store         PostgreSQL repositories and migrations
   crates/dialectica-eval          quality and outcome checks
   crates/dialectica-cli           local validation and fixture commands
@@ -271,6 +275,8 @@ Current executable surface:
 cargo run -p dialectica-cli -- doctor
 cargo run -p dialectica-cli -- validate fixtures/canonical-capsules/conflict-situation-capsule
 cargo run -p dialectica-cli -- inspect fixtures/canonical-capsules/conflict-situation-capsule
+cargo run -p dialectica-cli -- ladybug-check fixtures/canonical-capsules/conflict-situation-capsule
+cargo run -p dialectica-cli --features ladybug -- ladybug-query fixtures/canonical-capsules/conflict-situation-capsule "MATCH (n:CapsuleNode) RETURN count(n) AS node_count;"
 cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule/expected-bundle
 cargo run -p dialectica-cli -- inspect fixtures/golden-policy-capsule/expected-bundle
 cargo run -p dialectica-cli -- ontology-plan fixtures/golden-policy-capsule/expected-bundle
@@ -279,9 +285,10 @@ cargo run -p dialectica-cli -- schema-export schemas/capsule-3.0
 
 This proves the repository is not only product copy. It already has typed Rust
 capsule contracts, v3 package validation, schema export, a canonical v3
-Situation Capsule fixture, a legacy migration fixture, and a capsule-specific
-ontology planner. It does not yet build capsules from documents or serve PRAXIS;
-that boundary is tracked in the code audit and build ledger.
+Situation Capsule fixture with a real embedded `graph/ladybug/capsule.lbug`, a
+legacy migration fixture, a capsule-specific ontology planner, and Ladybug
+projection check/query commands. It does not yet build capsules from documents
+or serve PRAXIS; that boundary is tracked in the code audit and build ledger.
 
 LLM extraction architecture:
 
@@ -312,7 +319,10 @@ Canonical stores:
 - **Cloud Storage** for immutable source artifacts and signed capsule bundles.
 - **Firestore adapter** where PRAXIS needs capsule visibility in its current
   user-facing surfaces.
-- Optional graph/semantic adapters only after the base contract is stable.
+- **Embedded Ladybug projection** inside every promoted capsule so PRAXIS and
+  agents can query the capsule graph offline.
+- Optional semantic/vector/MCP/memory adapters only after the base contract is
+  stable.
 
 ## Capsule Formal Model
 
@@ -368,7 +378,9 @@ adapters**.
 ```mermaid
 flowchart LR
 Canonical["Canonical records<br/>Postgres + source artifacts"] --> Export[".capsule package"]
+  Canonical --> Ladybug["Required Ladybug projection"]
   Canonical --> Derived["Derived adapters"]
+  Ladybug --> Query["Read-only Cypher + graph preview"]
   Derived --> Graph["Graph summaries"]
   Derived --> Vector["Embeddings"]
   Derived --> MCP["MCP/resources"]
@@ -376,8 +388,10 @@ Canonical["Canonical records<br/>Postgres + source artifacts"] --> Export[".caps
   Export --> PraxisPack["PRAXIS context pack"]
 ```
 
-Graph, vector, MCP, and memory planes can make retrieval better, but they do not
-replace the `.capsule` package or PostgreSQL ledger in the foundation build.
+Ladybug makes the capsule graph immediately queryable, but it does not replace
+`graph.jsonld`, the `.capsule` package, source spans, review receipts, or the
+PostgreSQL operational ledger. Other graph, vector, MCP, and memory planes are
+derived adapters.
 
 ## Capsule Types
 
@@ -425,8 +439,8 @@ and audit:
   supersedes, uses device, reviewed by, and forbidden for;
 - every edge carries provenance, temporal scope, confidence, review state, and
   an explanation;
-- JSON-LD, PROV-O, SKOS, SHACL, ODRL, VC/DID, and OPA are design anchors, not
-  mandatory runtime dependencies.
+- JSON-LD, PROV-O, SKOS, SHACL, ODRL, VC/DID, and OPA are design anchors.
+  Ladybug is the required embedded query projection for promoted capsules.
 
 ```mermaid
 flowchart TB
@@ -441,7 +455,9 @@ flowchart TB
   Situation --> Graph
   Method --> Graph
   Output --> Graph
-  Graph --> Preview["PRAXIS graph preview"]
+  Graph --> Ladybug["graph/ladybug/capsule.lbug"]
+  Ladybug --> Preview["PRAXIS graph preview"]
+  Ladybug --> Cypher["read-only Cypher"]
   Graph --> Pack["PRAXIS context pack"]
   Review["Human review"] --> Graph
 ```
@@ -577,8 +593,9 @@ conclusions, refresh triggers, and implementation constraints.
 Start from [docs/RESEARCH_LEDGER.md](docs/RESEARCH_LEDGER.md) before adding a
 graph, memory, MCP, ontology, agent, or cloud adapter. The current conclusion is
 clear: the signed capsule bundle and Cloud SQL PostgreSQL records are
-canonical; Firestore is the PRAXIS visibility mirror; graph/vector/MCP/memory
-systems are derived adapters until an ADR and eval evidence promote them.
+canonical; Firestore is the PRAXIS visibility mirror; Ladybug is the required
+embedded graph projection for promoted capsules; vector/MCP/memory systems are
+derived adapters until an ADR and eval evidence promote them.
 
 ## Repository Map
 
@@ -605,8 +622,9 @@ Keep the README as the front door, not the full table of contents.
    freshness, supersession, and uncertainty.
 4. Postgres first: keep the foundation build operational store simple, inspectable, and
    migratable.
-5. Graph as adapter: graph engines enrich the capsule, but they are not the only
-   copy of truth.
+5. Ladybug embedded graph: promoted capsules carry `graph/ladybug/capsule.lbug`
+   for read-only Cypher and PRAXIS graph previews, while `graph.jsonld` remains
+   the rebuildable semantic graph contract.
 6. Human-gated promotion: expert review is a first-class capability, not a
    future admin screen.
 7. PRAXIS-compatible output: every capsule should be useful to PRAXIS agentic
@@ -663,6 +681,8 @@ cargo test --locked --workspace
 cargo run -p dialectica-cli -- doctor
 cargo run -p dialectica-cli -- validate fixtures/canonical-capsules/conflict-situation-capsule
 cargo run -p dialectica-cli -- inspect fixtures/canonical-capsules/conflict-situation-capsule
+cargo run -p dialectica-cli -- ladybug-check fixtures/canonical-capsules/conflict-situation-capsule
+cargo run -p dialectica-cli --features ladybug -- ladybug-query fixtures/canonical-capsules/conflict-situation-capsule "MATCH (n:CapsuleNode) RETURN count(n) AS node_count;"
 cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule/expected-bundle
 cargo run -p dialectica-cli -- inspect fixtures/golden-policy-capsule/expected-bundle
 cargo run -p dialectica-cli -- ontology-plan fixtures/golden-policy-capsule/expected-bundle

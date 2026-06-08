@@ -11,10 +11,11 @@ tool capsule may need method steps, required inputs, philosophical lenses,
 failure modes, and reviewer caveats. An output capsule may need artifact
 sections, source receipts, review caveats, and reuse rules.
 
-The graph is **embedded** because `graph.jsonld` travels with the `.capsule`
-package. It can be visualized in PRAXIS, projected into PostgreSQL tables,
-materialized into Ladybug or Oxigraph caches, or served through an MCP resource
-without requiring a dedicated graph database.
+The graph is **embedded** because `graph.jsonld` and
+`graph/ladybug/capsule.lbug` travel with the `.capsule` package. `graph.jsonld`
+is the rebuildable semantic graph. Ladybug is the required embedded query
+projection for promoted capsules, so PRAXIS, reviewers, and agents can inspect
+relationships through read-only Cypher without a remote graph service.
 
 The canonical graph vocabulary lives in
 [Graph Profile Registry](GRAPH_PROFILE_REGISTRY.md). Use that file before
@@ -42,8 +43,10 @@ the capsule being built.
 ## Design Rule
 
 PostgreSQL operational records and the signed v3 `.capsule` package are
-canonical. Graph engines, embedding stores, MCP servers, and memory layers are
-derived views until an ADR promotes one of them.
+canonical. ADR-008 promotes Ladybug to the required embedded graph projection
+for promoted capsules. Embedding stores, MCP servers, memory layers, Oxigraph,
+Graphiti, and other graph systems remain derived views until another ADR
+promotes them.
 
 This keeps the first backend operable while preserving a path to richer graph
 systems later.
@@ -70,9 +73,9 @@ g:governance
 g:runtime
 ```
 
-PRAXIS graph previews, PostgreSQL graph tables, Ladybug caches, Oxigraph
-stores, and compact UI payloads are projections from `graph.jsonld`, not
-replacement sources of truth.
+PRAXIS graph previews, PostgreSQL graph tables, `graph/ladybug/capsule.lbug`,
+Oxigraph stores, and compact UI payloads are projections from `graph.jsonld`,
+not replacement sources of source/review truth.
 
 The ontology blueprint is a planner contract generated from the manifest or
 package. It guides the creation of `graph.jsonld`, `reasoning/`, `runtime.json`,
@@ -272,19 +275,21 @@ ontology_mappings(id, capsule_id, entity_id, term_id, confidence, review_state)
 JSONB columns can store extension fields. pgvector can support semantic search
 without introducing a separate vector database.
 
-## LadybugDB Projection Adapter
+## LadybugDB Required Projection
 
-LadybugDB is a candidate adapter for capsule graph exploration, not canonical
-state. Its useful fit is:
+LadybugDB is the required embedded graph projection for promoted capsules. Its
+fit is:
 
-- local or service-side projected graph analysis;
-- Cypher query workflows for graph inspectors;
+- local and service-side projected graph analysis;
+- read-only Cypher query workflows for graph inspectors and PRAXIS agents;
 - influence, community, and centrality algorithms over selected capsule graphs;
-- large embedded graph previews where PostgreSQL traversal becomes awkward.
+- embedded graph previews where PostgreSQL traversal becomes awkward;
+- offline portability when a capsule is shared outside the build service.
 
-The adapter should read from `graph.jsonld` or PostgreSQL graph tables and
-write projection receipts. It must not write promoted capsule facts without the
-normal source-span and review path.
+The projection reads from `graph.jsonld` or PostgreSQL graph tables and writes
+projection receipts. It must not write promoted capsule facts without the normal
+source-span and review path. PRAXIS opens the database read-only; DIALECTICA
+rebuild jobs own writes.
 
 Initial adapter profile:
 
@@ -292,10 +297,36 @@ Initial adapter profile:
 {
   "adapter_profile": "ladybug_projection_v1",
   "source": "graph.jsonld",
-  "mode": "derived_projection",
-  "allowed_outputs": ["algorithm_scores", "layout_hints", "query_receipts"],
+  "mode": "required_embedded_projection",
+  "path": "graph/ladybug/capsule.lbug",
+  "allowed_outputs": ["algorithm_scores", "layout_hints", "query_receipts", "graph_preview_v1"],
   "forbidden_outputs": ["canonical_claim", "review_promotion"]
 }
+```
+
+Required files:
+
+```text
+graph/ladybug/capsule.lbug
+graph/ladybug/projection_manifest.json
+graph/ladybug/schema.cypher
+graph/ladybug/queries.cypher
+graph/ladybug/build_receipt.json
+```
+
+Local commands:
+
+```powershell
+cargo run -p dialectica-cli -- ladybug-check fixtures/canonical-capsules/conflict-situation-capsule
+cargo run -p dialectica-cli --features ladybug -- ladybug-build fixtures/canonical-capsules/conflict-situation-capsule
+cargo run -p dialectica-cli --features ladybug -- ladybug-query fixtures/canonical-capsules/conflict-situation-capsule "MATCH (n:CapsuleNode) RETURN count(n) AS node_count;"
+```
+
+On Windows, put Git Bash on `PATH` before compiling the `ladybug` feature so
+the `lbug` crate can run its prebuilt-library downloader:
+
+```powershell
+$env:PATH='C:\Program Files\Git\bin;' + $env:PATH
 ```
 
 ## PRAXIS Visualization Contract
