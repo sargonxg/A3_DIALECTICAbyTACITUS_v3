@@ -328,23 +328,26 @@ when it changes:
 Follow [Next Code Build Plan](NEXT_CODE_BUILD_PLAN.md) and
 [Improvement Guidelines](IMPROVEMENT_GUIDELINES.md):
 
-1. harden deterministic checksum/signature semantics beyond fixture placeholders;
-2. add byte-for-byte generated fixture comparison once canonical generated
+1. add editable reviewer-decision commands or API routes so humans can replace
+   local `approve_with_caveats` defaults;
+2. harden deterministic checksum/signature semantics beyond fixture placeholders;
+3. add byte-for-byte generated fixture comparison once canonical generated
    output is accepted;
-3. add store-backed build job state and repository interfaces;
-4. add source-pack ingestion adapters for documents, PDFs, and user/assistant
-   discussion turns;
-5. deepen v3 validation across claims, sources, graph, review, reasoning, and
-   runtime records;
-6. add provider traits and live model extraction behind proposal-only
+4. add source-pack ingestion adapters for PDFs, OCR, scanned images, and web
+   capture;
+5. add provider traits and live model extraction behind proposal-only
    boundaries;
-7. add PostgreSQL migrations for capsule build state and artifacts;
-8. add task-handler routes after store-backed jobs exist;
-9. start PRAXIS frontend integration only after the API/context-pack contract is
+6. deepen v3 validation across claims, sources, graph, review, reasoning, and
+   runtime records;
+7. add store-backed build job state and repository interfaces;
+8. add PostgreSQL migrations for capsule build state and artifacts;
+9. add task-handler routes after store-backed jobs exist;
+10. start PRAXIS frontend integration only after the API/context-pack contract is
    stable.
 
-Do not start Cloud Run, MCP, or PRAXIS production integration work until the
-local fixture can also persist build state and expose store-backed artifacts.
+Do not start Cloud Run, hosted MCP, or PRAXIS production integration work until
+the local fixture can also persist build state and expose store-backed
+artifacts.
 
 Gap-control rule: every P0/P1 issue in
 `docs/IMPROVEMENT_GUIDELINES.md` must be closed with a command, fixture, test,

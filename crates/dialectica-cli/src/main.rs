@@ -163,6 +163,15 @@ fn main() {
                 .unwrap_or_else(|| "decision_brief".to_owned());
             print_context_pack(Path::new(&package_dir), &workflow);
         }
+        "eval" => {
+            let Some(package_dir) = args.next() else {
+                eprintln!("missing compiled package directory");
+                std::process::exit(2);
+            };
+            let workflow = parse_option_value(args.next(), args.next(), "--workflow")
+                .unwrap_or_else(|| "decision_brief".to_owned());
+            print_eval_report(Path::new(&package_dir), &workflow);
+        }
         "praxis-pack" => {
             let remaining = args.collect::<Vec<_>>();
             write_context_pack_from_args(&remaining);
@@ -241,6 +250,7 @@ fn print_help() {
     println!("  build-fixture <fixture-dir> --out <dir>");
     println!("  archive <compiled-dir> --out <file.capsule>");
     println!("  context-pack <compiled-dir> [--workflow <workflow>]");
+    println!("  eval <compiled-dir> [--workflow <workflow>]");
     println!("  praxis-pack <compiled-dir> --out <file.json> [--workflow <workflow>]");
     println!("  mcp-config              print a Codex MCP config snippet");
     println!("  ladybug-plan <dir>      print embedded Ladybug projection plan");
@@ -338,9 +348,14 @@ fn build_documents_from_args(args: &[String]) {
             );
             println!("source_pack_path={}", receipt.source_pack_path.display());
             println!("proposal_dir={}", receipt.proposal_dir.display());
+            println!("review_queue_path={}", receipt.review_queue_path.display());
             println!(
                 "review_decision_path={}",
                 receipt.review_decision_path.display()
+            );
+            println!(
+                "promotion_summary_path={}",
+                receipt.promotion_summary_path.display()
             );
             println!("source_document_count={}", receipt.source_document_count);
             println!("source_span_count={}", receipt.source_span_count);
@@ -700,6 +715,28 @@ fn print_context_pack(package_dir: &Path, workflow: &str) {
                 std::process::exit(1);
             }
         },
+        Err(error) => {
+            eprintln!("{error}");
+            std::process::exit(1);
+        }
+    }
+}
+
+fn print_eval_report(package_dir: &Path, workflow: &str) {
+    match dialectica_eval::evaluate_praxis_mvp(package_dir, workflow) {
+        Ok(report) => {
+            let passed = report.passed;
+            match serde_json::to_string_pretty(&report) {
+                Ok(text) => println!("{text}"),
+                Err(error) => {
+                    eprintln!("failed to serialize eval report: {error}");
+                    std::process::exit(1);
+                }
+            }
+            if !passed {
+                std::process::exit(1);
+            }
+        }
         Err(error) => {
             eprintln!("{error}");
             std::process::exit(1);

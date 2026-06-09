@@ -1012,6 +1012,10 @@ fn operations_markdown(manifest: &PraxisCapsuleManifest) -> String {
 }
 
 fn write_ladybug_projection(output_dir: &Path) -> Result<(), CompilerError> {
+    let build_error = match dialectica_graph::build_ladybug_projection(output_dir) {
+        Ok(_) => return Ok(()),
+        Err(error) => error,
+    };
     let plan = dialectica_graph::plan_ladybug_projection(output_dir)
         .map_err(|error| CompilerError::InvalidInput(error.to_string()))?;
     let ladybug_dir = output_dir.join("graph").join("ladybug");
@@ -1069,7 +1073,7 @@ fn write_ladybug_projection(output_dir: &Path) -> Result<(), CompilerError> {
         projection_digest,
         node_count: plan.node_count,
         edge_count: plan.edge_count,
-        query_check: "fixture_projection_digest_verified".to_owned(),
+        query_check: format!("projection_rebuild_required: {build_error}"),
     };
     write_json(
         &output_dir.join(LADYBUG_PROJECTION_MANIFEST_PATH),
@@ -1316,6 +1320,7 @@ mod tests {
         load_build_request, load_source_pack, ProposalSet, ReviewDecisionStatus,
         ReviewerDecisionSet,
     };
+    use serde_json::Value;
 
     use super::{
         can_emit_bundle, compile_fixture, compile_from_parts, export_praxis_context_pack,
@@ -1349,6 +1354,15 @@ mod tests {
         );
         assert!(!report.has_errors(), "{:#?}", report.findings);
         assert!(out.join("graph/ladybug/projection_manifest.json").is_file());
+        let build_receipt: Value = serde_json::from_str(
+            &fs::read_to_string(out.join("graph/ladybug/build_receipt.json"))
+                .expect("ladybug build receipt should read"),
+        )
+        .expect("ladybug build receipt should parse");
+        assert!(build_receipt["query_check"]
+            .as_str()
+            .expect("query_check should be text")
+            .contains("projection_rebuild_required"));
         assert!(fs::read_to_string(out.join("agent_context.md"))
             .expect("agent context should read")
             .contains("# CONTRACT"));

@@ -104,6 +104,10 @@ fn tools_list_contains_stable_names_and_schemas() {
     assert!(names.contains(&"dialectica_build_capsule"));
     assert!(names.contains(&"dialectica_validate_capsule"));
     assert!(names.contains(&"dialectica_capsule_status"));
+    assert!(names.contains(&"dialectica_capture_discussion"));
+    assert!(names.contains(&"dialectica_review_queue"));
+    assert!(names.contains(&"dialectica_ladybug_query"));
+    assert!(names.contains(&"dialectica_praxis_handoff"));
     for tool in tools {
         assert_eq!(tool["inputSchema"]["type"], "object");
         assert_eq!(tool["outputSchema"]["type"], "object");
@@ -233,7 +237,85 @@ fn build_capsule_smoke_works_through_mcp() {
         .expect("promotion note")
         .contains("Expert promotion"));
 
+    let review_queue_path = value["result"]["structuredContent"]["review_queue_path"]
+        .as_str()
+        .expect("review queue path should be returned");
+    let review_queue = response(
+        &json!({
+            "jsonrpc": "2.0",
+            "id": 11,
+            "method": "tools/call",
+            "params": {
+                "name": "dialectica_review_queue",
+                "arguments": {
+                    "review_queue_file": review_queue_path
+                }
+            }
+        })
+        .to_string(),
+    );
+    assert_eq!(review_queue["result"]["isError"], false);
+    assert_eq!(
+        review_queue["result"]["structuredContent"]["schema_version"],
+        "review_queue_v1"
+    );
+    assert!(
+        review_queue["result"]["structuredContent"]["required_decision_count"]
+            .as_u64()
+            .expect("decision count should be numeric")
+            > 0
+    );
+
+    let handoff = response(
+        &json!({
+            "jsonrpc": "2.0",
+            "id": 12,
+            "method": "tools/call",
+            "params": {
+                "name": "dialectica_praxis_handoff",
+                "arguments": {
+                    "package_dir": package_dir
+                }
+            }
+        })
+        .to_string(),
+    );
+    assert_eq!(handoff["result"]["isError"], false);
+    assert_eq!(
+        handoff["result"]["structuredContent"]["schema_version"],
+        "praxis_capsule_import_v1"
+    );
+    assert!(handoff["result"]["structuredContent"]["handoff_note"]
+        .as_str()
+        .expect("handoff note should be text")
+        .contains("praxis-context-pack.json"));
+
     let _ = fs::remove_dir_all(root);
+}
+
+#[test]
+fn ladybug_query_rejects_mutating_cypher_before_execution() {
+    let value = response(
+        &json!({
+            "jsonrpc": "2.0",
+            "id": 12,
+            "method": "tools/call",
+            "params": {
+                "name": "dialectica_ladybug_query",
+                "arguments": {
+                    "package_dir": canonical_capsule_fixture(),
+                    "query": "MATCH (n) DETACH DELETE n RETURN count(n)"
+                }
+            }
+        })
+        .to_string(),
+    );
+
+    assert_eq!(value["result"]["isError"], true);
+    assert!(value["result"]["content"][0]["text"]
+        .as_str()
+        .expect("tool error should be text")
+        .contains("read-only"));
 }
 
 #[test]

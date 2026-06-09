@@ -45,6 +45,7 @@ cargo run -p dialectica-cli -- build-docs `
 
 cargo run -p dialectica-cli -- inspect $env:TEMP\dialectica-situation-capsule\package
 cargo run -p dialectica-cli -- validate $env:TEMP\dialectica-situation-capsule\package
+cargo run -p dialectica-cli -- eval $env:TEMP\dialectica-situation-capsule\package --workflow decision_brief
 ```
 
 Install the local CLI binary as `dialectica`:
@@ -62,11 +63,14 @@ The output directory contains:
 | `*.capsule` | portable archive for download, sharing, and storage |
 | `praxis-context-pack.json` | compact context pack PRAXIS can inject into agent workflows |
 | `praxis-import.json` | bridge record with local paths and future cloud handoff fields |
-| `build-source/` | source pack, proposal set, and reviewer decision trace |
+| `build-source/review_queue.json` | object-level human gates Codex can inspect before promoted use |
+| `build-source/promotion_summary.json` | promoted, rejected, evidence-requested, and caveated record summary |
+| `build-source/` | source pack, proposal set, reviewer decisions, review queue, and promotion trace |
 
 Supported local source files in this slice: `.txt`, `.md`, `.markdown`,
-`.json`, `.jsonl`, `.csv`, and `.tsv`. PDF, OCR, scanned images, web capture,
-and conversation ingestion belong to the next ingestion adapter lane.
+`.json`, `.jsonl`, `.csv`, and `.tsv`. JSONL files with `role` and `content`
+turns are captured as user/assistant discussion transcripts. PDF, OCR, scanned
+images, and web capture belong to the next ingestion adapter lane.
 
 ## Codex MCP Setup
 
@@ -101,12 +105,16 @@ Tools:
 | --- | --- |
 | `dialectica_welcome` | returns the operator welcome |
 | `dialectica_build_capsule` | builds a capsule from local documents |
+| `dialectica_capture_discussion` | writes a user/assistant discussion JSONL source file for capsule ingestion |
 | `dialectica_inspect_capsule` | inspects a compiled package and Ladybug projection metadata |
 | `dialectica_validate_capsule` | validates a compiled package and returns precise findings |
 | `dialectica_capsule_status` | returns manifest, review, Ladybug, archive, PRAXIS pack, and hosted-readiness status |
+| `dialectica_review_queue` | reads the local review queue for object-level human gates |
 | `dialectica_archive_capsule` | writes a portable `.capsule` archive |
 | `dialectica_export_praxis_pack` | emits PRAXIS-readable context JSON |
 | `dialectica_ontology_plan` | returns the capsule-specific ontology blueprint |
+| `dialectica_ladybug_query` | runs a single read-only Cypher query against a queryable embedded Ladybug projection |
+| `dialectica_praxis_handoff` | reads `praxis-import.json` and returns the PRAXIS handoff receipt |
 | `dialectica_mcp_config` | returns the local Codex MCP config snippet |
 
 Every tool advertises both `inputSchema` and `outputSchema`. Successful tool
@@ -120,12 +128,16 @@ block for older clients. Invalid tool arguments return an MCP tool result with
 | --- | --- | --- | --- |
 | `dialectica_welcome` | none | none | `{ "welcome": string }` |
 | `dialectica_build_capsule` | `capsule_type`, `input_dir`, `out_dir` | `title`, `workflow`, `mode` | builder receipt paths, counts, digests, and `promotion_note` |
+| `dialectica_capture_discussion` | `out_file`, `turns` | turn `timestamp` values | discussion JSONL path and turn count |
 | `dialectica_inspect_capsule` | `package_dir` | none | manifest, review state, counts, validation boolean, Ladybug status |
 | `dialectica_validate_capsule` | `package_dir` | none | `valid`, finding counts, and `findings` |
 | `dialectica_capsule_status` | `package_dir` | `archive_file`, `praxis_pack_file` | manifest, review state, validation summary, Ladybug status, archive status, PRAXIS pack status, hosted MCP note |
+| `dialectica_review_queue` | `review_queue_file` or `build_source_dir` | none | local `review_queue_v1` artifact |
 | `dialectica_archive_capsule` | `package_dir` | `out_file` | archive receipt with path, entries, and digest |
 | `dialectica_export_praxis_pack` | `package_dir` | `workflow`, `out_file` | full context pack or written-pack receipt |
 | `dialectica_ontology_plan` | `package_dir` | none | capsule ontology blueprint |
+| `dialectica_ladybug_query` | `package_dir`, `query` | none | columns, rows, and row count; query must be one read-only `MATCH` or `RETURN` statement and must not contain mutating Cypher keywords |
+| `dialectica_praxis_handoff` | `import_file` or `package_dir` | none | local PRAXIS import receipt plus handoff note |
 | `dialectica_mcp_config` | none | none | `{ "config": string }` |
 
 Path inputs are local-stdio only. Existing input directories are canonicalized.
@@ -158,6 +170,13 @@ Validate and check status:
 ```json
 {"jsonrpc":"2.0","id":4,"method":"tools/call","params":{"name":"dialectica_validate_capsule","arguments":{"package_dir":"C:\\Users\\giuli\\AppData\\Local\\Temp\\dialectica-mcp-situation\\package"}}}
 {"jsonrpc":"2.0","id":5,"method":"tools/call","params":{"name":"dialectica_capsule_status","arguments":{"package_dir":"C:\\Users\\giuli\\AppData\\Local\\Temp\\dialectica-mcp-situation\\package"}}}
+```
+
+Read review gates and PRAXIS handoff:
+
+```json
+{"jsonrpc":"2.0","id":6,"method":"tools/call","params":{"name":"dialectica_review_queue","arguments":{"review_queue_file":"C:\\Users\\giuli\\AppData\\Local\\Temp\\dialectica-mcp-situation\\build-source\\review_queue.json"}}}
+{"jsonrpc":"2.0","id":7,"method":"tools/call","params":{"name":"dialectica_praxis_handoff","arguments":{"package_dir":"C:\\Users\\giuli\\AppData\\Local\\Temp\\dialectica-mcp-situation\\package"}}}
 ```
 
 Resources:

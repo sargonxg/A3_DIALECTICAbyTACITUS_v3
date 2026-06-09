@@ -542,3 +542,61 @@ Next:
 2. add hosted MCP only after Cloud SQL/Cloud Storage artifacts, auth, tenant
    checks, and token audience validation are implemented;
 3. add object-level review editing before any expert-promotion claim.
+
+## 2026-06-09 - Local MVP Capsule Engine Hardening
+
+Status: implemented for the local proof lane; hosted persistence, live model
+providers, review UI, and PRAXIS frontend wiring remain next.
+
+Actions:
+
+- added `build-source/review_queue.json` and
+  `build-source/promotion_summary.json` to local `build-docs` outputs;
+- added JSONL discussion capture detection so user/assistant transcripts become
+  `conversation_jsonl` source documents with conversation locators;
+- enriched `praxis-import.json` with Ladybug projection status and context-pack
+  section metadata;
+- changed the compiler to attempt a real Ladybug projection when the feature is
+  available and otherwise mark the projection as rebuild-required;
+- added MCP tools for discussion capture, review-queue reading, read-only
+  Ladybug query, and PRAXIS handoff;
+- replaced the eval scaffold with deterministic PRAXIS MVP checks and exposed
+  `dialectica eval <compiled-dir>`.
+
+Evidence:
+
+- RED/GREEN builder tests cover review queue, promotion summary,
+  `praxis-import.json` Ladybug status, and conversation JSONL capture;
+- `cargo test --locked -p dialectica-builder` passes;
+- `cargo test --locked -p dialectica-compiler` passes;
+- `cargo test --locked -p dialectica-mcp` passes and verifies the new tool
+  names plus review queue access, PRAXIS handoff access, and mutating Ladybug
+  query rejection through MCP;
+- `cargo test --locked -p dialectica-eval` passes;
+- `cargo run -q -p dialectica-cli -- eval fixtures/canonical-capsules/conflict-situation-capsule --workflow conflict_map`
+  returns `passed=true` and `score=100`.
+- continuation audit rebuilt a local capsule from `docs`, validated and
+  inspected it, ran `dialectica eval`, checked default Ladybug status as
+  `projection_rebuildable`, built the feature-gated Ladybug projection, and
+  queried `node_count=324`;
+- full repo gate passed on 2026-06-09:
+  `cargo fmt --all -- --check`, `cargo check --locked --workspace --all-targets`,
+  `cargo clippy --locked --workspace --all-targets -- -D warnings`,
+  `cargo test --locked --workspace`, `python -m compileall tools/python`,
+  `python -m unittest discover tools/python/tests`, and `git diff --check`;
+- repo-local CLI gate also passed, including `doctor`, canonical and golden
+  fixture validation, Ladybug fixture query, golden fixture rebuild/archive,
+  context-pack export, and schema export.
+- `graphify update .` refreshed `graphify-out/GRAPH_REPORT.md` and
+  `graphify-out/graph.json` from commit `9eb9347f`, reporting 561 nodes, 1235
+  edges, and 25 communities.
+
+Next:
+
+1. add editable review-decision commands or API routes;
+2. add env-gated live LLM provider traits behind proposal-only records;
+3. deepen validators across graph, ontology, claims, review, runtime, and
+   PRAXIS context-pack references;
+4. add PostgreSQL build-session persistence after the local proof remains
+   stable;
+5. wire PRAXIS to consume `praxis-context-pack.json` and `praxis-import.json`.

@@ -19,6 +19,7 @@ ladybug = ["dialectica-graph/ladybug"]
 dialectica-builder = { path = "../dialectica-builder" }
 dialectica-capsule = { path = "../dialectica-capsule" }
 dialectica-compiler = { path = "../dialectica-compiler" }
+dialectica-eval = { path = "../dialectica-eval" }
 dialectica-extractor = { path = "../dialectica-extractor" }
 dialectica-graph = { path = "../dialectica-graph" }
 serde_json = "1"

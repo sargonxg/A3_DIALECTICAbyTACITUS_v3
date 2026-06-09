@@ -51,8 +51,10 @@ Already implemented:
 - CLI `archive`;
 - CLI `context-pack`;
 - CLI `praxis-pack`;
+- CLI `eval`;
 - CLI `mcp-config`;
 - local document-folder builder;
+- JSONL user/assistant discussion capture as a local source type;
 - Codex MCP stdio adapter;
 - deterministic fixture-mode v3 package writer;
 - deterministic `.capsule` archive writer;
@@ -78,8 +80,8 @@ Not yet implemented:
 - production-grade Merkle/checksum/signature envelope;
 - store-backed HTTP API routes and durable build jobs;
 - PostgreSQL migrations;
-- document/PDF/user discussion ingestion;
-- human review queue;
+- PDF/OCR/scanned image/web ingestion and richer conversation adapters;
+- interactive human review UI and editable review-decision workflow;
 - PRAXIS frontend integration.
 
 Current proof commands:

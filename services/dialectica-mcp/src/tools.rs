@@ -14,6 +14,7 @@ use crate::WELCOME;
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum PathKind {
     ExistingDir,
+    ExistingFile,
     OutputDir,
     OutputFile,
 }
@@ -22,12 +23,16 @@ pub fn call_tool(name: &str, arguments: &Value) -> Value {
     let result = match name {
         "dialectica_welcome" => Ok(json!({ "welcome": WELCOME })),
         "dialectica_build_capsule" => build_capsule_tool(arguments),
+        "dialectica_capture_discussion" => capture_discussion_tool(arguments),
         "dialectica_inspect_capsule" => inspect_capsule_tool(arguments),
         "dialectica_validate_capsule" => validate_capsule_tool(arguments),
         "dialectica_capsule_status" => capsule_status_tool(arguments),
+        "dialectica_review_queue" => review_queue_tool(arguments),
         "dialectica_archive_capsule" => archive_capsule_tool(arguments),
         "dialectica_export_praxis_pack" => export_praxis_pack_tool(arguments),
         "dialectica_ontology_plan" => ontology_plan_tool(arguments),
+        "dialectica_ladybug_query" => ladybug_query_tool(arguments),
+        "dialectica_praxis_handoff" => praxis_handoff_tool(arguments),
         "dialectica_mcp_config" => Ok(json!({ "config": mcp_config_snippet() })),
         _ => Err(format!("unknown tool: {name}")),
     };
@@ -66,6 +71,56 @@ fn build_capsule_tool(arguments: &Value) -> Result<Value, String> {
         "Local MCP builds create draft or assisted capsule artifacts. Expert promotion remains an explicit review decision outside this tool."
     );
     Ok(value)
+}
+
+fn capture_discussion_tool(arguments: &Value) -> Result<Value, String> {
+    let out_file = required_path(arguments, "out_file", PathKind::OutputFile)?;
+    if out_file.extension().and_then(|value| value.to_str()) != Some("jsonl") {
+        return Err("discussion capture output must use the .jsonl extension".to_owned());
+    }
+    let turns = arguments
+        .get("turns")
+        .and_then(Value::as_array)
+        .ok_or_else(|| "missing required argument: turns".to_owned())?;
+    if turns.is_empty() {
+        return Err("turns must contain at least one discussion turn".to_owned());
+    }
+
+    let mut text = String::new();
+    for (index, turn) in turns.iter().enumerate() {
+        let role = turn
+            .get("role")
+            .and_then(Value::as_str)
+            .ok_or_else(|| format!("turns[{index}].role is required"))?;
+        let content = turn
+            .get("content")
+            .and_then(Value::as_str)
+            .ok_or_else(|| format!("turns[{index}].content is required"))?;
+        if role.trim().is_empty() || content.trim().is_empty() {
+            return Err(format!("turns[{index}] role and content must not be empty"));
+        }
+        let timestamp = turn
+            .get("timestamp")
+            .and_then(Value::as_str)
+            .unwrap_or("unspecified");
+        let record = json!({
+            "role": role,
+            "timestamp": timestamp,
+            "content": content
+        });
+        text.push_str(&serde_json::to_string(&record).map_err(|error| error.to_string())?);
+        text.push('\n');
+    }
+    if let Some(parent) = out_file.parent() {
+        fs::create_dir_all(parent).map_err(|error| error.to_string())?;
+    }
+    fs::write(&out_file, text).map_err(|error| error.to_string())?;
+    Ok(json!({
+        "discussion_file": out_file,
+        "turn_count": turns.len(),
+        "source_type": "conversation_jsonl",
+        "next_step": "Use dialectica_build_capsule with the parent directory as input_dir."
+    }))
 }
 
 fn inspect_capsule_tool(arguments: &Value) -> Result<Value, String> {
@@ -161,6 +216,19 @@ fn capsule_status_tool(arguments: &Value) -> Result<Value, String> {
     }))
 }
 
+fn review_queue_tool(arguments: &Value) -> Result<Value, String> {
+    let review_queue_file =
+        match optional_path(arguments, "review_queue_file", PathKind::ExistingFile)? {
+            Some(path) => path,
+            None => {
+                let build_source_dir =
+                    required_path(arguments, "build_source_dir", PathKind::ExistingDir)?;
+                resolve_existing_file(&build_source_dir.join("review_queue.json"))?
+            }
+        };
+    read_json_file(&review_queue_file)
+}
+
 fn archive_capsule_tool(arguments: &Value) -> Result<Value, String> {
     let package_dir = required_path(arguments, "package_dir", PathKind::ExistingDir)?;
     let output_file = optional_path(arguments, "out_file", PathKind::OutputFile)?
@@ -196,6 +264,44 @@ fn ontology_plan_tool(arguments: &Value) -> Result<Value, String> {
     let package =
         PraxisCapsulePackage::load_from_dir(&package_dir).map_err(|error| error.to_string())?;
     serde_json::to_value(package.manifest.ontology_blueprint()).map_err(|error| error.to_string())
+}
+
+fn ladybug_query_tool(arguments: &Value) -> Result<Value, String> {
+    let package_dir = required_path(arguments, "package_dir", PathKind::ExistingDir)?;
+    let query = required_string(arguments, "query")?;
+    let trimmed = query.trim();
+    validate_read_only_ladybug_query(trimmed)?;
+    let output = dialectica_graph::query_ladybug_projection(&package_dir, trimmed)
+        .map_err(|error| error.to_string())?;
+    let row_count = output.rows.len();
+    Ok(json!({
+        "package_dir": package_dir,
+        "query": trimmed,
+        "columns": output.columns,
+        "rows": output.rows,
+        "row_count": row_count
+    }))
+}
+
+fn praxis_handoff_tool(arguments: &Value) -> Result<Value, String> {
+    let import_file = match optional_path(arguments, "import_file", PathKind::ExistingFile)? {
+        Some(path) => path,
+        None => {
+            let package_dir = required_path(arguments, "package_dir", PathKind::ExistingDir)?;
+            package_dir
+                .parent()
+                .ok_or_else(|| {
+                    "package_dir has no parent for praxis-import.json discovery".to_owned()
+                })?
+                .join("praxis-import.json")
+        }
+    };
+    let import_file = resolve_existing_file(&import_file)?;
+    let mut value = read_json_file(&import_file)?;
+    value["handoff_note"] = json!(
+        "Attach praxis-context-pack.json to PRAXIS agent context and keep the .capsule archive as the portable source-of-truth artifact."
+    );
+    Ok(value)
 }
 
 pub fn read_resource(params: &Value) -> Value {
@@ -271,6 +377,33 @@ pub fn tool_definitions() -> Vec<Value> {
             "outputSchema": loose_object_schema()
         }),
         json!({
+            "name": "dialectica_capture_discussion",
+            "title": "Capture Discussion",
+            "description": "Write a local user/assistant discussion transcript as JSONL so it can be ingested as capsule source material.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "out_file": { "type": "string", "description": "Local .jsonl file to write." },
+                    "turns": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "role": { "type": "string" },
+                                "timestamp": { "type": "string" },
+                                "content": { "type": "string" }
+                            },
+                            "required": ["role", "content"],
+                            "additionalProperties": false
+                        }
+                    }
+                },
+                "required": ["out_file", "turns"],
+                "additionalProperties": false
+            },
+            "outputSchema": loose_object_schema()
+        }),
+        json!({
             "name": "dialectica_inspect_capsule",
             "title": "Inspect Capsule",
             "description": "Inspect a compiled v3 package and its embedded Ladybug projection metadata.",
@@ -304,6 +437,20 @@ pub fn tool_definitions() -> Vec<Value> {
                     "praxis_pack_file": { "type": "string" }
                 },
                 "required": ["package_dir"],
+                "additionalProperties": false
+            },
+            "outputSchema": loose_object_schema()
+        }),
+        json!({
+            "name": "dialectica_review_queue",
+            "title": "Read Review Queue",
+            "description": "Read a local build review_queue.json artifact so Codex can show required human gates before PRAXIS use.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "review_queue_file": { "type": "string" },
+                    "build_source_dir": { "type": "string" }
+                },
                 "additionalProperties": false
             },
             "outputSchema": loose_object_schema()
@@ -344,6 +491,35 @@ pub fn tool_definitions() -> Vec<Value> {
             "title": "Capsule Ontology Plan",
             "description": "Return the capsule-specific ontology blueprint from the compiled manifest.",
             "inputSchema": package_dir_input_schema(),
+            "outputSchema": loose_object_schema()
+        }),
+        json!({
+            "name": "dialectica_ladybug_query",
+            "title": "Query Ladybug Projection",
+            "description": "Run a read-only Cypher query against the embedded Ladybug capsule projection when the Ladybug feature is available.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "package_dir": { "type": "string" },
+                    "query": { "type": "string" }
+                },
+                "required": ["package_dir", "query"],
+                "additionalProperties": false
+            },
+            "outputSchema": loose_object_schema()
+        }),
+        json!({
+            "name": "dialectica_praxis_handoff",
+            "title": "PRAXIS Handoff",
+            "description": "Read the local praxis-import.json bridge receipt and return the paths/status needed to attach the capsule to PRAXIS agent context.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "import_file": { "type": "string" },
+                    "package_dir": { "type": "string" }
+                },
+                "additionalProperties": false
+            },
             "outputSchema": loose_object_schema()
         }),
         json!({
@@ -479,12 +655,61 @@ fn normalize_local_path(raw: &str, kind: PathKind) -> Result<PathBuf, String> {
             ensure_within_configured_roots(&canonical)?;
             Ok(canonical)
         }
+        PathKind::ExistingFile => resolve_existing_file(&absolute),
         PathKind::OutputDir | PathKind::OutputFile => {
             reject_dangerous_output_target(&absolute)?;
             ensure_output_within_configured_roots(&absolute)?;
             Ok(absolute)
         }
     }
+}
+
+fn resolve_existing_file(path: &Path) -> Result<PathBuf, String> {
+    let canonical = fs::canonicalize(path)
+        .map_err(|error| format!("failed to resolve file {}: {error}", path.display()))?;
+    if !canonical.is_file() {
+        return Err(format!("path is not a file: {}", canonical.display()));
+    }
+    ensure_within_configured_roots(&canonical)?;
+    Ok(canonical)
+}
+
+fn validate_read_only_ladybug_query(query: &str) -> Result<(), String> {
+    if query.is_empty() {
+        return Err("Ladybug MCP query must not be empty".to_owned());
+    }
+    if query.contains(';') {
+        return Err("Ladybug MCP query must be one read-only statement".to_owned());
+    }
+
+    let lower = query.to_ascii_lowercase();
+    let tokens = lower
+        .split(|character: char| !(character.is_ascii_alphanumeric() || character == '_'))
+        .filter(|token| !token.is_empty())
+        .collect::<Vec<_>>();
+    let Some(first) = tokens.first() else {
+        return Err("Ladybug MCP query must not be empty".to_owned());
+    };
+    if !matches!(*first, "match" | "return") {
+        return Err(
+            "Ladybug MCP query must be read-only and start with MATCH or RETURN".to_owned(),
+        );
+    }
+
+    const MUTATING_KEYWORDS: &[&str] = &[
+        "call", "copy", "create", "delete", "detach", "drop", "load", "merge", "remove", "set",
+    ];
+    if let Some(keyword) = tokens
+        .iter()
+        .copied()
+        .find(|token| MUTATING_KEYWORDS.contains(token))
+    {
+        return Err(format!(
+            "Ladybug MCP query must be read-only; rejected Cypher keyword `{keyword}`"
+        ));
+    }
+
+    Ok(())
 }
 
 fn reject_dangerous_output_target(path: &Path) -> Result<(), String> {
@@ -641,6 +866,11 @@ fn write_json<T: Serialize>(path: &Path, value: &T) -> Result<(), String> {
     }
     let text = serde_json::to_string_pretty(value).map_err(|error| error.to_string())?;
     fs::write(path, format!("{text}\n")).map_err(|error| error.to_string())
+}
+
+fn read_json_file(path: &Path) -> Result<Value, String> {
+    let text = fs::read_to_string(path).map_err(|error| error.to_string())?;
+    serde_json::from_str(&text).map_err(|error| error.to_string())
 }
 
 fn digest_file(path: &Path) -> Result<String, String> {

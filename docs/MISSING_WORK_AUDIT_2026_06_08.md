@@ -22,7 +22,7 @@ route durable human review, build graphs and semantic layers at scale, persist
 | Fixture extraction proposals and model receipts | Working |
 | Fixture review-trigger router | Working |
 | Fixture reviewer decisions and promotion normalization | Working |
-| Live source-pack ingestion | Missing |
+| Live source-pack ingestion | Partial local text/JSONL discussion path working |
 | Live LLM extraction orchestration | Missing |
 | Interactive review UI and live reviewer workflow | Missing |
 | Deterministic fixture-mode v3 compiler | Working |
@@ -53,7 +53,8 @@ Implemented for fixture mode:
 
 Still missing:
 
-- real document/PDF/conversation ingestion;
+- richer document/PDF/OCR/web ingestion beyond the local text and JSONL
+  discussion path;
 - full source text extraction;
 - binary artifact staging;
 - PDF/document/conversation source categories;
@@ -110,7 +111,7 @@ Still missing:
 
 - review coverage matrix;
 - caveat and expiry propagation;
-- interactive review queue and reviewer UI.
+- editable review-decision commands, interactive review queue, and reviewer UI.
 
 Acceptance:
 
