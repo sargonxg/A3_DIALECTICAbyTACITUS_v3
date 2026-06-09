@@ -1,16 +1,16 @@
 # Graph Report - A3_DIALECTICAbyTACITUS_v3  (2026-06-08)
 
 ## Corpus Check
-- 20 files · ~95,487 words
+- 20 files · ~95,508 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 460 nodes · 1003 edges · 22 communities (18 shown, 4 thin omitted)
+- 460 nodes · 1003 edges · 25 communities (19 shown, 6 thin omitted)
 - Extraction: 92% EXTRACTED · 8% INFERRED · 0% AMBIGUOUS · INFERRED: 77 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `70e53870`
+- Built from commit: `77108c28`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -32,8 +32,11 @@
 - [[_COMMUNITY_Community 14|Community 14]]
 - [[_COMMUNITY_Community 15|Community 15]]
 - [[_COMMUNITY_Community 16|Community 16]]
+- [[_COMMUNITY_Community 17|Community 17]]
 - [[_COMMUNITY_Community 18|Community 18]]
+- [[_COMMUNITY_Community 20|Community 20]]
 - [[_COMMUNITY_Community 21|Community 21]]
+- [[_COMMUNITY_Community 24|Community 24]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `main()` - 29 edges
@@ -59,7 +62,7 @@
 - `export_praxis_pack_tool()` --calls--> `export_praxis_context_pack()`  [INFERRED]
   services/dialectica-mcp/src/lib.rs → crates/dialectica-compiler/src/lib.rs
 
-## Communities (22 total, 4 thin omitted)
+## Communities (25 total, 6 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.07
@@ -98,40 +101,44 @@ Cohesion: 0.13
 Nodes (23): build_ladybug_projection(), edge_insert_cypher(), edge_type(), GraphProjectionError, json_string(), JsonLdGraph, label(), LadybugProjectionPlan (+15 more)
 
 ### Community 9 - "Community 9"
-Cohesion: 0.15
-Nodes (15): count_jsonl_records(), is_canonical_capsule_type(), PraxisCapsulePackage, read_optional_string(), validate_json_file(), validate_ladybug_build_receipt(), validate_mimetype(), validate_rights_profile() (+7 more)
+Cohesion: 0.24
+Nodes (13): read_optional_string(), validate_json_file(), validate_language_profile(), validate_manifest(), validate_mimetype(), validate_rights_profile(), validate_source_spans(), validate_v3_compiled_views() (+5 more)
 
 ### Community 10 - "Community 10"
-Cohesion: 0.2
-Nodes (8): CapsuleBundle, read_jsonl(), temp_package_dir(), v3_package_requires_ladybug_projection_files(), validate_graph_slice(), validate_source_spans(), validate_temporal_ledger(), write_minimal_v3_package()
+Cohesion: 0.22
+Nodes (7): CapsuleBundle, read_jsonl(), temp_package_dir(), v3_package_requires_ladybug_projection_files(), validate_graph_slice(), validate_temporal_ledger(), write_minimal_v3_package()
 
 ### Community 11 - "Community 11"
-Cohesion: 0.19
-Nodes (10): canonical_to_legacy_capsule_type(), capsule_type_blueprint(), CapsuleOntologyBlueprint, default_graph_profile(), merge_unique(), merge_universal_layers(), PraxisCapsuleManifest, semantic_layer() (+2 more)
+Cohesion: 0.21
+Nodes (9): capsule_type_blueprint(), CapsuleOntologyBlueprint, default_graph_profile(), merge_unique(), merge_universal_layers(), semantic_layer(), strings(), universal_review_gates() (+1 more)
 
 ### Community 12 - "Community 12"
 Cohesion: 0.18
 Nodes (7): CapsuleReport, Small report helpers for local capsule fixture inspection., Human-readable summary extracted from a capsule manifest., Build a compact report from a manifest-like mapping., summarize_manifest(), Local analysis helpers for DIALECTICA fixtures., CapsuleReportTests
 
 ### Community 13 - "Community 13"
-Cohesion: 0.24
-Nodes (5): CapsuleManifest, is_approved_capsule_type(), ReviewState, validate_language_profile(), validate_manifest()
+Cohesion: 0.27
+Nodes (9): approved_manifest_with_digest_is_export_ready(), assert_digest(), draft_manifest_is_not_export_ready(), export_schema_dir(), unsupported_capsule_type_is_not_export_ready(), validate_ladybug_build_receipt(), validate_ladybug_projection_files(), validate_ladybug_projection_manifest() (+1 more)
 
 ### Community 14 - "Community 14"
-Cohesion: 0.24
-Nodes (9): approved_manifest_with_digest_is_export_ready(), assert_digest(), draft_manifest_is_not_export_ready(), export_schema_dir(), unsupported_capsule_type_is_not_export_ready(), v3_manifest_builds_macro_type_ontology_blueprint(), validate_ladybug_projection_files(), validate_ladybug_projection_manifest() (+1 more)
+Cohesion: 0.29
+Nodes (3): CapsuleManifest, is_approved_capsule_type(), ReviewState
+
+### Community 15 - "Community 15"
+Cohesion: 0.4
+Nodes (3): canonical_to_legacy_capsule_type(), is_canonical_capsule_type(), PraxisCapsuleManifest
 
 ## Knowledge Gaps
 - **78 isolated node(s):** `BuildDocumentsOptions`, `BuildDocumentsReceipt`, `SourceSummary`, `CollectedFiles`, `ValidationSeverity` (+73 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **4 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **6 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `read_to_string()` connect `Community 1` to `Community 2`, `Community 3`, `Community 4`, `Community 5`, `Community 6`, `Community 8`, `Community 9`, `Community 10`, `Community 14`?**
+- **Why does `read_to_string()` connect `Community 1` to `Community 2`, `Community 3`, `Community 4`, `Community 5`, `Community 6`, `Community 8`, `Community 9`, `Community 10`, `Community 13`, `Community 16`?**
   _High betweenness centrality (0.173) - this node is a cross-community bridge._
-- **Why does `read_json()` connect `Community 5` to `Community 0`, `Community 1`, `Community 4`, `Community 6`, `Community 9`, `Community 10`, `Community 14`?**
+- **Why does `read_json()` connect `Community 5` to `Community 0`, `Community 1`, `Community 4`, `Community 6`, `Community 9`, `Community 10`, `Community 13`, `Community 16`?**
   _High betweenness centrality (0.117) - this node is a cross-community bridge._
 - **Why does `build_documents_capsule()` connect `Community 2` to `Community 1`, `Community 3`, `Community 7`?**
   _High betweenness centrality (0.102) - this node is a cross-community bridge._

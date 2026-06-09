@@ -423,7 +423,7 @@
       "source_file": "crates/dialectica-capsule/src/lib.rs",
       "source_location": "L122",
       "id": "src_lib_is_approved_capsule_type",
-      "community": 13,
+      "community": 14,
       "norm_label": "is_approved_capsule_type()"
     },
     {
@@ -432,7 +432,7 @@
       "source_file": "crates/dialectica-capsule/src/lib.rs",
       "source_location": "L128",
       "id": "src_lib_is_canonical_capsule_type",
-      "community": 9,
+      "community": 15,
       "norm_label": "is_canonical_capsule_type()"
     },
     {
@@ -450,7 +450,7 @@
       "source_file": "crates/dialectica-capsule/src/lib.rs",
       "source_location": "L145",
       "id": "src_lib_canonical_to_legacy_capsule_type",
-      "community": 11,
+      "community": 15,
       "norm_label": "canonical_to_legacy_capsule_type()"
     },
     {
@@ -459,7 +459,7 @@
       "source_file": "crates/dialectica-capsule/src/lib.rs",
       "source_location": "L159",
       "id": "src_lib_reviewstate",
-      "community": 13,
+      "community": 14,
       "norm_label": "reviewstate"
     },
     {
@@ -468,7 +468,7 @@
       "source_file": "crates/dialectica-capsule/src/lib.rs",
       "source_location": "L176",
       "id": "src_lib_reviewstate_allows_praxis_use",
-      "community": 13,
+      "community": 14,
       "norm_label": ".allows_praxis_use()"
     },
     {
@@ -513,7 +513,7 @@
       "source_file": "crates/dialectica-capsule/src/lib.rs",
       "source_location": "L242",
       "id": "src_lib_validationreport",
-      "community": 9,
+      "community": 21,
       "norm_label": "validationreport"
     },
     {
@@ -522,7 +522,7 @@
       "source_file": "crates/dialectica-capsule/src/lib.rs",
       "source_location": "L248",
       "id": "src_lib_validationreport_has_errors",
-      "community": 9,
+      "community": 21,
       "norm_label": ".has_errors()"
     },
     {
@@ -540,7 +540,7 @@
       "source_file": "crates/dialectica-capsule/src/lib.rs",
       "source_location": "L261",
       "id": "src_lib_capsuleloaderror",
-      "community": 16,
+      "community": 18,
       "norm_label": "capsuleloaderror"
     },
     {
@@ -549,7 +549,7 @@
       "source_file": "crates/dialectica-capsule/src/lib.rs",
       "source_location": "L266",
       "id": "src_lib_capsuleloaderror_new",
-      "community": 16,
+      "community": 18,
       "norm_label": ".new()"
     },
     {
@@ -558,7 +558,7 @@
       "source_file": "crates/dialectica-capsule/src/lib.rs",
       "source_location": "L274",
       "id": "src_lib_capsuleloaderror_fmt",
-      "community": 16,
+      "community": 18,
       "norm_label": ".fmt()"
     },
     {
@@ -567,7 +567,7 @@
       "source_file": "crates/dialectica-capsule/src/lib.rs",
       "source_location": "L283",
       "id": "src_lib_capsulemanifest",
-      "community": 13,
+      "community": 14,
       "norm_label": "capsulemanifest"
     },
     {
@@ -576,7 +576,7 @@
       "source_file": "crates/dialectica-capsule/src/lib.rs",
       "source_location": "L311",
       "id": "src_lib_capsulemanifest_new",
-      "community": 14,
+      "community": 13,
       "norm_label": ".new()"
     },
     {
@@ -585,7 +585,7 @@
       "source_file": "crates/dialectica-capsule/src/lib.rs",
       "source_location": "L345",
       "id": "src_lib_capsulemanifest_has_required_identity",
-      "community": 13,
+      "community": 14,
       "norm_label": ".has_required_identity()"
     },
     {
@@ -594,7 +594,7 @@
       "source_file": "crates/dialectica-capsule/src/lib.rs",
       "source_location": "L353",
       "id": "src_lib_capsulemanifest_has_approved_capsule_type",
-      "community": 13,
+      "community": 14,
       "norm_label": ".has_approved_capsule_type()"
     },
     {
@@ -603,7 +603,7 @@
       "source_file": "crates/dialectica-capsule/src/lib.rs",
       "source_location": "L358",
       "id": "src_lib_capsulemanifest_is_export_ready",
-      "community": 13,
+      "community": 14,
       "norm_label": ".is_export_ready()"
     },
     {
@@ -612,7 +612,7 @@
       "source_file": "crates/dialectica-capsule/src/lib.rs",
       "source_location": "L366",
       "id": "src_lib_capsulemanifest_ontology_blueprint",
-      "community": 13,
+      "community": 14,
       "norm_label": ".ontology_blueprint()"
     },
     {
@@ -882,7 +882,7 @@
       "source_file": "crates/dialectica-capsule/src/lib.rs",
       "source_location": "L700",
       "id": "src_lib_praxiscapsulemanifest",
-      "community": 11,
+      "community": 15,
       "norm_label": "praxiscapsulemanifest"
     },
     {
@@ -909,7 +909,7 @@
       "source_file": "crates/dialectica-capsule/src/lib.rs",
       "source_location": "L760",
       "id": "src_lib_praxiscapsulemanifest_has_required_identity",
-      "community": 13,
+      "community": 9,
       "norm_label": ".has_required_identity()"
     },
     {
@@ -918,7 +918,7 @@
       "source_file": "crates/dialectica-capsule/src/lib.rs",
       "source_location": "L767",
       "id": "src_lib_praxiscapsulemanifest_is_canonical_type",
-      "community": 9,
+      "community": 15,
       "norm_label": ".is_canonical_type()"
     },
     {
@@ -927,7 +927,7 @@
       "source_file": "crates/dialectica-capsule/src/lib.rs",
       "source_location": "L773",
       "id": "src_lib_praxiscapsulemanifest_ontology_blueprint",
-      "community": 11,
+      "community": 15,
       "norm_label": ".ontology_blueprint()"
     },
     {
@@ -936,7 +936,7 @@
       "source_file": "crates/dialectica-capsule/src/lib.rs",
       "source_location": "L800",
       "id": "src_lib_praxiscapsulepackage",
-      "community": 9,
+      "community": 16,
       "norm_label": "praxiscapsulepackage"
     },
     {
@@ -945,7 +945,7 @@
       "source_file": "crates/dialectica-capsule/src/lib.rs",
       "source_location": "L806",
       "id": "src_lib_praxiscapsulepackage_load_from_dir",
-      "community": 9,
+      "community": 16,
       "norm_label": ".load_from_dir()"
     },
     {
@@ -963,7 +963,7 @@
       "source_file": "crates/dialectica-capsule/src/lib.rs",
       "source_location": "L825",
       "id": "src_lib_praxiscapsulepackage_inspection",
-      "community": 9,
+      "community": 16,
       "norm_label": ".inspection()"
     },
     {
@@ -1008,7 +1008,7 @@
       "source_file": "crates/dialectica-capsule/src/lib.rs",
       "source_location": "L926",
       "id": "src_lib_capsulebundle_ontology_blueprint",
-      "community": 14,
+      "community": 11,
       "norm_label": ".ontology_blueprint()"
     },
     {
@@ -1062,7 +1062,7 @@
       "source_file": "crates/dialectica-extractor/src/lib.rs",
       "source_location": "L938",
       "id": "src_lib_export_schema_dir",
-      "community": 14,
+      "community": 13,
       "norm_label": "export_schema_dir()"
     },
     {
@@ -1071,7 +1071,7 @@
       "source_file": "crates/dialectica-capsule/src/lib.rs",
       "source_location": "L1122",
       "id": "src_lib_validate_ladybug_projection_files",
-      "community": 14,
+      "community": 13,
       "norm_label": "validate_ladybug_projection_files()"
     },
     {
@@ -1206,7 +1206,7 @@
       "source_file": "crates/dialectica-capsule/src/lib.rs",
       "source_location": "L1790",
       "id": "src_lib_validate_ladybug_projection_manifest",
-      "community": 14,
+      "community": 13,
       "norm_label": "validate_ladybug_projection_manifest()"
     },
     {
@@ -1215,7 +1215,7 @@
       "source_file": "crates/dialectica-capsule/src/lib.rs",
       "source_location": "L1844",
       "id": "src_lib_validate_ladybug_build_receipt",
-      "community": 9,
+      "community": 13,
       "norm_label": "validate_ladybug_build_receipt()"
     },
     {
@@ -1224,7 +1224,7 @@
       "source_file": "crates/dialectica-capsule/src/lib.rs",
       "source_location": "L1877",
       "id": "src_lib_assert_digest",
-      "community": 14,
+      "community": 13,
       "norm_label": "assert_digest()"
     },
     {
@@ -1233,7 +1233,7 @@
       "source_file": "crates/dialectica-capsule/src/lib.rs",
       "source_location": "L1887",
       "id": "src_lib_validate_manifest",
-      "community": 13,
+      "community": 9,
       "norm_label": "validate_manifest()"
     },
     {
@@ -1260,7 +1260,7 @@
       "source_file": "crates/dialectica-capsule/src/lib.rs",
       "source_location": "L2076",
       "id": "src_lib_validate_language_profile",
-      "community": 13,
+      "community": 9,
       "norm_label": "validate_language_profile()"
     },
     {
@@ -1278,7 +1278,7 @@
       "source_file": "crates/dialectica-capsule/src/lib.rs",
       "source_location": "L2100",
       "id": "src_lib_validate_source_spans",
-      "community": 10,
+      "community": 9,
       "norm_label": "validate_source_spans()"
     },
     {
@@ -1350,7 +1350,7 @@
       "source_file": "crates/dialectica-capsule/src/lib.rs",
       "source_location": "L2194",
       "id": "src_lib_count_jsonl_records",
-      "community": 9,
+      "community": 16,
       "norm_label": "count_jsonl_records()"
     },
     {
@@ -1377,7 +1377,7 @@
       "source_file": "crates/dialectica-extractor/src/lib.rs",
       "source_location": "L1174",
       "id": "src_lib_write_schema",
-      "community": 14,
+      "community": 13,
       "norm_label": "write_schema()"
     },
     {
@@ -1395,7 +1395,7 @@
       "source_file": "crates/dialectica-capsule/src/lib.rs",
       "source_location": "L2240",
       "id": "src_lib_approved_manifest_with_digest_is_export_ready",
-      "community": 14,
+      "community": 13,
       "norm_label": "approved_manifest_with_digest_is_export_ready()"
     },
     {
@@ -1404,7 +1404,7 @@
       "source_file": "crates/dialectica-capsule/src/lib.rs",
       "source_location": "L2253",
       "id": "src_lib_draft_manifest_is_not_export_ready",
-      "community": 14,
+      "community": 13,
       "norm_label": "draft_manifest_is_not_export_ready()"
     },
     {
@@ -1413,7 +1413,7 @@
       "source_file": "crates/dialectica-capsule/src/lib.rs",
       "source_location": "L2266",
       "id": "src_lib_unsupported_capsule_type_is_not_export_ready",
-      "community": 14,
+      "community": 13,
       "norm_label": "unsupported_capsule_type_is_not_export_ready()"
     },
     {
@@ -1422,7 +1422,7 @@
       "source_file": "crates/dialectica-capsule/src/lib.rs",
       "source_location": "L2280",
       "id": "src_lib_v3_manifest_builds_macro_type_ontology_blueprint",
-      "community": 14,
+      "community": 11,
       "norm_label": "v3_manifest_builds_macro_type_ontology_blueprint()"
     },
     {
@@ -2268,7 +2268,7 @@
       "source_file": "crates/dialectica-eval/src/lib.rs",
       "source_location": "L1",
       "id": "crates_dialectica_eval_src_lib_rs",
-      "community": 15,
+      "community": 17,
       "norm_label": "lib.rs"
     },
     {
@@ -2277,7 +2277,7 @@
       "source_file": "crates/dialectica-eval/src/lib.rs",
       "source_location": "L5",
       "id": "src_lib_evalcheck",
-      "community": 15,
+      "community": 17,
       "norm_label": "evalcheck"
     },
     {
@@ -2286,7 +2286,7 @@
       "source_file": "crates/dialectica-eval/src/lib.rs",
       "source_location": "L16",
       "id": "src_lib_evalcheck_pass",
-      "community": 15,
+      "community": 17,
       "norm_label": ".pass()"
     },
     {
@@ -2295,7 +2295,7 @@
       "source_file": "crates/dialectica-eval/src/lib.rs",
       "source_location": "L30",
       "id": "src_lib_pass_helper_marks_check_successful",
-      "community": 15,
+      "community": 17,
       "norm_label": "pass_helper_marks_check_successful()"
     },
     {
@@ -3159,7 +3159,7 @@
       "source_file": "crates/dialectica-store/src/lib.rs",
       "source_location": "L1",
       "id": "crates_dialectica_store_src_lib_rs",
-      "community": 17,
+      "community": 19,
       "norm_label": "lib.rs"
     },
     {
@@ -3168,7 +3168,7 @@
       "source_file": "crates/dialectica-store/src/lib.rs",
       "source_location": "L9",
       "id": "src_lib_first_migration_families",
-      "community": 17,
+      "community": 19,
       "norm_label": "first_migration_families()"
     },
     {
@@ -3177,7 +3177,7 @@
       "source_file": "crates/dialectica-store/src/lib.rs",
       "source_location": "L18",
       "id": "src_lib_first_migration_tracks_review_data",
-      "community": 17,
+      "community": 19,
       "norm_label": "first_migration_tracks_review_data()"
     },
     {
@@ -3762,7 +3762,7 @@
       "source_file": "tests/dialectica-contract-tests/src/lib.rs",
       "source_location": "L1",
       "id": "tests_dialectica_contract_tests_src_lib_rs",
-      "community": 20,
+      "community": 23,
       "norm_label": "lib.rs"
     },
     {
@@ -3771,7 +3771,7 @@
       "source_file": "tests/dialectica-contract-tests/tests/capsule_contract.rs",
       "source_location": "L1",
       "id": "tests_dialectica_contract_tests_tests_capsule_contract_rs",
-      "community": 19,
+      "community": 22,
       "norm_label": "capsule_contract.rs"
     },
     {
@@ -3780,7 +3780,7 @@
       "source_file": "tests/dialectica-contract-tests/tests/capsule_contract.rs",
       "source_location": "L4",
       "id": "tests_capsule_contract_scaffold_manifest_uses_current_schema_and_review_gate",
-      "community": 19,
+      "community": 22,
       "norm_label": "scaffold_manifest_uses_current_schema_and_review_gate()"
     },
     {
@@ -4059,7 +4059,7 @@
       "source_file": "tools/python/dialectica_tools/capsule_report.py",
       "source_location": "L21",
       "id": "dialectica_tools_capsule_report_rationale_21",
-      "community": 21,
+      "community": 24,
       "norm_label": "return whether the review state is usable for praxis workflows."
     },
     {
@@ -4122,7 +4122,7 @@
       "source_file": "tools/python/tests/test_example_capsules.py",
       "source_location": "L1",
       "id": "tools_python_tests_test_example_capsules_py",
-      "community": 18,
+      "community": 20,
       "norm_label": "test_example_capsules.py"
     },
     {
@@ -4131,7 +4131,7 @@
       "source_file": "tools/python/tests/test_example_capsules.py",
       "source_location": "L33",
       "id": "tests_test_example_capsules_examplecapsuletests",
-      "community": 18,
+      "community": 20,
       "norm_label": "examplecapsuletests"
     },
     {
@@ -4140,7 +4140,7 @@
       "source_file": "tools/python/tests/test_example_capsules.py",
       "source_location": "L34",
       "id": "tests_test_example_capsules_examplecapsuletests_test_example_capsules_share_required_bundle_sections",
-      "community": 18,
+      "community": 20,
       "norm_label": ".test_example_capsules_share_required_bundle_sections()"
     }
   ],
@@ -4151,9 +4151,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L33",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_builder_src_lib_rs",
-      "target": "src_lib_builddocumentsoptions",
-      "confidence_score": 1.0
+      "target": "src_lib_builddocumentsoptions"
     },
     {
       "relation": "contains",
@@ -4161,9 +4161,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L43",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_builder_src_lib_rs",
-      "target": "src_lib_builddocumentsreceipt",
-      "confidence_score": 1.0
+      "target": "src_lib_builddocumentsreceipt"
     },
     {
       "relation": "contains",
@@ -4171,9 +4171,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L67",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_builder_src_lib_rs",
-      "target": "src_lib_buildererror",
-      "confidence_score": 1.0
+      "target": "src_lib_buildererror"
     },
     {
       "relation": "contains",
@@ -4181,9 +4181,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L105",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_builder_src_lib_rs",
-      "target": "src_lib_build_documents_capsule",
-      "confidence_score": 1.0
+      "target": "src_lib_build_documents_capsule"
     },
     {
       "relation": "contains",
@@ -4191,9 +4191,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L335",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_builder_src_lib_rs",
-      "target": "src_lib_parse_capsule_type",
-      "confidence_score": 1.0
+      "target": "src_lib_parse_capsule_type"
     },
     {
       "relation": "contains",
@@ -4201,9 +4201,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L347",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_builder_src_lib_rs",
-      "target": "src_lib_parse_build_mode",
-      "confidence_score": 1.0
+      "target": "src_lib_parse_build_mode"
     },
     {
       "relation": "contains",
@@ -4211,9 +4211,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L358",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_builder_src_lib_rs",
-      "target": "src_lib_build_proposals",
-      "confidence_score": 1.0
+      "target": "src_lib_build_proposals"
     },
     {
       "relation": "contains",
@@ -4221,9 +4221,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L565",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_builder_src_lib_rs",
-      "target": "src_lib_auto_decision_set",
-      "confidence_score": 1.0
+      "target": "src_lib_auto_decision_set"
     },
     {
       "relation": "contains",
@@ -4231,9 +4231,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L611",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_builder_src_lib_rs",
-      "target": "src_lib_proposal",
-      "confidence_score": 1.0
+      "target": "src_lib_proposal"
     },
     {
       "relation": "contains",
@@ -4241,9 +4241,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L637",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_builder_src_lib_rs",
-      "target": "src_lib_gate",
-      "confidence_score": 1.0
+      "target": "src_lib_gate"
     },
     {
       "relation": "contains",
@@ -4251,9 +4251,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L647",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_builder_src_lib_rs",
-      "target": "src_lib_write_build_source",
-      "confidence_score": 1.0
+      "target": "src_lib_write_build_source"
     },
     {
       "relation": "contains",
@@ -4261,9 +4261,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L675",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_builder_src_lib_rs",
-      "target": "src_lib_write_praxis_import",
-      "confidence_score": 1.0
+      "target": "src_lib_write_praxis_import"
     },
     {
       "relation": "contains",
@@ -4271,9 +4271,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L720",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_builder_src_lib_rs",
-      "target": "src_lib_ontology_payload",
-      "confidence_score": 1.0
+      "target": "src_lib_ontology_payload"
     },
     {
       "relation": "contains",
@@ -4281,9 +4281,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L732",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_builder_src_lib_rs",
-      "target": "src_lib_reasoning_payload",
-      "confidence_score": 1.0
+      "target": "src_lib_reasoning_payload"
     },
     {
       "relation": "contains",
@@ -4291,9 +4291,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L777",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_builder_src_lib_rs",
-      "target": "src_lib_output_rule_payload",
-      "confidence_score": 1.0
+      "target": "src_lib_output_rule_payload"
     },
     {
       "relation": "contains",
@@ -4301,9 +4301,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L820",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_builder_src_lib_rs",
-      "target": "src_lib_reasoning_device_id",
-      "confidence_score": 1.0
+      "target": "src_lib_reasoning_device_id"
     },
     {
       "relation": "contains",
@@ -4311,9 +4311,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L829",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_builder_src_lib_rs",
-      "target": "src_lib_node_type_for",
-      "confidence_score": 1.0
+      "target": "src_lib_node_type_for"
     },
     {
       "relation": "contains",
@@ -4321,9 +4321,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L838",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_builder_src_lib_rs",
-      "target": "src_lib_default_reviewer_role",
-      "confidence_score": 1.0
+      "target": "src_lib_default_reviewer_role"
     },
     {
       "relation": "contains",
@@ -4331,9 +4331,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L848",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_builder_src_lib_rs",
-      "target": "src_lib_output_intent",
-      "confidence_score": 1.0
+      "target": "src_lib_output_intent"
     },
     {
       "relation": "contains",
@@ -4341,9 +4341,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L857",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_builder_src_lib_rs",
-      "target": "src_lib_sourcesummary",
-      "confidence_score": 1.0
+      "target": "src_lib_sourcesummary"
     },
     {
       "relation": "contains",
@@ -4351,9 +4351,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L864",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_builder_src_lib_rs",
-      "target": "src_lib_collectedfiles",
-      "confidence_score": 1.0
+      "target": "src_lib_collectedfiles"
     },
     {
       "relation": "contains",
@@ -4361,9 +4361,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L869",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_builder_src_lib_rs",
-      "target": "src_lib_collect_document_files",
-      "confidence_score": 1.0
+      "target": "src_lib_collect_document_files"
     },
     {
       "relation": "contains",
@@ -4371,9 +4371,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L877",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_builder_src_lib_rs",
-      "target": "src_lib_collect_document_files_inner",
-      "confidence_score": 1.0
+      "target": "src_lib_collect_document_files_inner"
     },
     {
       "relation": "contains",
@@ -4381,9 +4381,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L902",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_builder_src_lib_rs",
-      "target": "src_lib_should_skip_dir",
-      "confidence_score": 1.0
+      "target": "src_lib_should_skip_dir"
     },
     {
       "relation": "contains",
@@ -4391,9 +4391,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L909",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_builder_src_lib_rs",
-      "target": "src_lib_is_supported_document",
-      "confidence_score": 1.0
+      "target": "src_lib_is_supported_document"
     },
     {
       "relation": "contains",
@@ -4401,9 +4401,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L921",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_builder_src_lib_rs",
-      "target": "src_lib_source_type",
-      "confidence_score": 1.0
+      "target": "src_lib_source_type"
     },
     {
       "relation": "contains",
@@ -4411,9 +4411,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L934",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_builder_src_lib_rs",
-      "target": "src_lib_source_quote",
-      "confidence_score": 1.0
+      "target": "src_lib_source_quote"
     },
     {
       "relation": "contains",
@@ -4421,9 +4421,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L949",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_builder_src_lib_rs",
-      "target": "src_lib_compact_sentence",
-      "confidence_score": 1.0
+      "target": "src_lib_compact_sentence"
     },
     {
       "relation": "contains",
@@ -4431,9 +4431,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L957",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_builder_src_lib_rs",
-      "target": "src_lib_take_chars",
-      "confidence_score": 1.0
+      "target": "src_lib_take_chars"
     },
     {
       "relation": "contains",
@@ -4441,9 +4441,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L965",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_builder_src_lib_rs",
-      "target": "src_lib_title_case",
-      "confidence_score": 1.0
+      "target": "src_lib_title_case"
     },
     {
       "relation": "contains",
@@ -4451,9 +4451,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L980",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_builder_src_lib_rs",
-      "target": "src_lib_sanitize_identifier",
-      "confidence_score": 1.0
+      "target": "src_lib_sanitize_identifier"
     },
     {
       "relation": "contains",
@@ -4461,9 +4461,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L1000",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_builder_src_lib_rs",
-      "target": "src_lib_workflow_slug",
-      "confidence_score": 1.0
+      "target": "src_lib_workflow_slug"
     },
     {
       "relation": "contains",
@@ -4471,9 +4471,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L1004",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_builder_src_lib_rs",
-      "target": "src_lib_normalize_relative",
-      "confidence_score": 1.0
+      "target": "src_lib_normalize_relative"
     },
     {
       "relation": "contains",
@@ -4481,9 +4481,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L1008",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_builder_src_lib_rs",
-      "target": "src_lib_local_file_uri",
-      "confidence_score": 1.0
+      "target": "src_lib_local_file_uri"
     },
     {
       "relation": "contains",
@@ -4491,9 +4491,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L1012",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_builder_src_lib_rs",
-      "target": "src_lib_current_stamp",
-      "confidence_score": 1.0
+      "target": "src_lib_current_stamp"
     },
     {
       "relation": "contains",
@@ -4501,9 +4501,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L1020",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_builder_src_lib_rs",
-      "target": "src_lib_digest_strings",
-      "confidence_score": 1.0
+      "target": "src_lib_digest_strings"
     },
     {
       "relation": "contains",
@@ -4511,9 +4511,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L1029",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_builder_src_lib_rs",
-      "target": "src_lib_digest_bytes",
-      "confidence_score": 1.0
+      "target": "src_lib_digest_bytes"
     },
     {
       "relation": "contains",
@@ -4521,9 +4521,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L1033",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_builder_src_lib_rs",
-      "target": "src_lib_digest_json_value",
-      "confidence_score": 1.0
+      "target": "src_lib_digest_json_value"
     },
     {
       "relation": "contains",
@@ -4531,9 +4531,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L1037",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_builder_src_lib_rs",
-      "target": "src_lib_write_json",
-      "confidence_score": 1.0
+      "target": "src_lib_write_json"
     },
     {
       "relation": "contains",
@@ -4541,9 +4541,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L1046",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_builder_src_lib_rs",
-      "target": "src_lib_write_jsonl",
-      "confidence_score": 1.0
+      "target": "src_lib_write_jsonl"
     },
     {
       "relation": "contains",
@@ -4551,9 +4551,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L1069",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_builder_src_lib_rs",
-      "target": "src_lib_local_documents_compile_to_portable_capsule_and_praxis_pack",
-      "confidence_score": 1.0
+      "target": "src_lib_local_documents_compile_to_portable_capsule_and_praxis_pack"
     },
     {
       "relation": "contains",
@@ -4561,9 +4561,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L1114",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_builder_src_lib_rs",
-      "target": "src_lib_fresh_temp_dir",
-      "confidence_score": 1.0
+      "target": "src_lib_fresh_temp_dir"
     },
     {
       "relation": "method",
@@ -4571,9 +4571,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L75",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_buildererror",
-      "target": "src_lib_buildererror_fmt",
-      "confidence_score": 1.0
+      "target": "src_lib_buildererror_fmt"
     },
     {
       "relation": "method",
@@ -4581,9 +4581,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L100",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_buildererror",
-      "target": "src_lib_buildererror_from",
-      "confidence_score": 1.0
+      "target": "src_lib_buildererror_from"
     },
     {
       "relation": "calls",
@@ -4592,9 +4592,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L120",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_build_documents_capsule",
-      "target": "src_lib_collect_document_files",
-      "confidence_score": 1.0
+      "target": "src_lib_collect_document_files"
     },
     {
       "relation": "calls",
@@ -4603,9 +4603,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L128",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_build_documents_capsule",
-      "target": "src_lib_current_stamp",
-      "confidence_score": 1.0
+      "target": "src_lib_current_stamp"
     },
     {
       "relation": "calls",
@@ -4614,9 +4614,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L130",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_build_documents_capsule",
-      "target": "src_lib_title_case",
-      "confidence_score": 1.0
+      "target": "src_lib_title_case"
     },
     {
       "relation": "calls",
@@ -4625,9 +4625,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L138",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_build_documents_capsule",
-      "target": "src_lib_digest_strings",
-      "confidence_score": 1.0
+      "target": "src_lib_digest_strings"
     },
     {
       "relation": "calls",
@@ -4636,9 +4636,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L161",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_build_documents_capsule",
-      "target": "src_lib_normalize_relative",
-      "confidence_score": 1.0
+      "target": "src_lib_normalize_relative"
     },
     {
       "relation": "calls",
@@ -4647,9 +4647,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L167",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_build_documents_capsule",
-      "target": "src_lib_sanitize_identifier",
-      "confidence_score": 1.0
+      "target": "src_lib_sanitize_identifier"
     },
     {
       "relation": "calls",
@@ -4658,9 +4658,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L170",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_build_documents_capsule",
-      "target": "src_lib_source_quote",
-      "confidence_score": 1.0
+      "target": "src_lib_source_quote"
     },
     {
       "relation": "calls",
@@ -4669,9 +4669,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L179",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_build_documents_capsule",
-      "target": "src_lib_source_type",
-      "confidence_score": 1.0
+      "target": "src_lib_source_type"
     },
     {
       "relation": "calls",
@@ -4680,9 +4680,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L181",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_build_documents_capsule",
-      "target": "src_lib_local_file_uri",
-      "confidence_score": 1.0
+      "target": "src_lib_local_file_uri"
     },
     {
       "relation": "calls",
@@ -4691,9 +4691,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L185",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_build_documents_capsule",
-      "target": "src_lib_digest_bytes",
-      "confidence_score": 1.0
+      "target": "src_lib_digest_bytes"
     },
     {
       "relation": "calls",
@@ -4702,9 +4702,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L224",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_build_documents_capsule",
-      "target": "src_lib_output_intent",
-      "confidence_score": 1.0
+      "target": "src_lib_output_intent"
     },
     {
       "relation": "calls",
@@ -4713,9 +4713,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L228",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_build_documents_capsule",
-      "target": "src_lib_default_reviewer_role",
-      "confidence_score": 1.0
+      "target": "src_lib_default_reviewer_role"
     },
     {
       "relation": "calls",
@@ -4724,9 +4724,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L235",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_build_documents_capsule",
-      "target": "src_lib_build_proposals",
-      "confidence_score": 1.0
+      "target": "src_lib_build_proposals"
     },
     {
       "relation": "calls",
@@ -4735,9 +4735,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L242",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_build_documents_capsule",
-      "target": "src_lib_digest_json_value",
-      "confidence_score": 1.0
+      "target": "src_lib_digest_json_value"
     },
     {
       "relation": "calls",
@@ -4746,9 +4746,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L271",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_build_documents_capsule",
-      "target": "src_lib_auto_decision_set",
-      "confidence_score": 1.0
+      "target": "src_lib_auto_decision_set"
     },
     {
       "relation": "calls",
@@ -4757,9 +4757,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L280",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_build_documents_capsule",
-      "target": "src_lib_write_build_source",
-      "confidence_score": 1.0
+      "target": "src_lib_write_build_source"
     },
     {
       "relation": "calls",
@@ -4768,9 +4768,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L297",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_build_documents_capsule",
-      "target": "src_lib_write_json",
-      "confidence_score": 1.0
+      "target": "src_lib_write_json"
     },
     {
       "relation": "calls",
@@ -4779,9 +4779,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L298",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_build_documents_capsule",
-      "target": "src_lib_write_praxis_import",
-      "confidence_score": 1.0
+      "target": "src_lib_write_praxis_import"
     },
     {
       "relation": "calls",
@@ -4790,9 +4790,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L1085",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_local_documents_compile_to_portable_capsule_and_praxis_pack",
-      "target": "src_lib_build_documents_capsule",
-      "confidence_score": 1.0
+      "target": "src_lib_build_documents_capsule"
     },
     {
       "relation": "calls",
@@ -4911,9 +4911,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L367",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_build_proposals",
-      "target": "src_lib_sanitize_identifier",
-      "confidence_score": 1.0
+      "target": "src_lib_sanitize_identifier"
     },
     {
       "relation": "calls",
@@ -4922,9 +4922,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L368",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_build_proposals",
-      "target": "src_lib_proposal",
-      "confidence_score": 1.0
+      "target": "src_lib_proposal"
     },
     {
       "relation": "calls",
@@ -4933,9 +4933,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L463",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_build_proposals",
-      "target": "src_lib_ontology_payload",
-      "confidence_score": 1.0
+      "target": "src_lib_ontology_payload"
     },
     {
       "relation": "calls",
@@ -4944,9 +4944,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L479",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_build_proposals",
-      "target": "src_lib_reasoning_payload",
-      "confidence_score": 1.0
+      "target": "src_lib_reasoning_payload"
     },
     {
       "relation": "calls",
@@ -4955,9 +4955,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L554",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_build_proposals",
-      "target": "src_lib_output_rule_payload",
-      "confidence_score": 1.0
+      "target": "src_lib_output_rule_payload"
     },
     {
       "relation": "calls",
@@ -4977,9 +4977,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L654",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_write_build_source",
-      "target": "src_lib_write_json",
-      "confidence_score": 1.0
+      "target": "src_lib_write_json"
     },
     {
       "relation": "calls",
@@ -4988,9 +4988,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L663",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_write_build_source",
-      "target": "src_lib_write_jsonl",
-      "confidence_score": 1.0
+      "target": "src_lib_write_jsonl"
     },
     {
       "relation": "calls",
@@ -4999,9 +4999,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L687",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_write_praxis_import",
-      "target": "src_lib_write_json",
-      "confidence_score": 1.0
+      "target": "src_lib_write_json"
     },
     {
       "relation": "calls",
@@ -5010,9 +5010,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L871",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_collect_document_files",
-      "target": "src_lib_collect_document_files_inner",
-      "confidence_score": 1.0
+      "target": "src_lib_collect_document_files_inner"
     },
     {
       "relation": "calls",
@@ -5021,9 +5021,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L887",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_collect_document_files_inner",
-      "target": "src_lib_should_skip_dir",
-      "confidence_score": 1.0
+      "target": "src_lib_should_skip_dir"
     },
     {
       "relation": "calls",
@@ -5032,9 +5032,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L892",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_collect_document_files_inner",
-      "target": "src_lib_is_supported_document",
-      "confidence_score": 1.0
+      "target": "src_lib_is_supported_document"
     },
     {
       "relation": "calls",
@@ -5043,9 +5043,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L941",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_source_quote",
-      "target": "src_lib_take_chars",
-      "confidence_score": 1.0
+      "target": "src_lib_take_chars"
     },
     {
       "relation": "calls",
@@ -5054,9 +5054,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L954",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_compact_sentence",
-      "target": "src_lib_take_chars",
-      "confidence_score": 1.0
+      "target": "src_lib_take_chars"
     },
     {
       "relation": "contains",
@@ -5075,9 +5075,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L1001",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_workflow_slug",
-      "target": "src_lib_sanitize_identifier",
-      "confidence_score": 1.0
+      "target": "src_lib_sanitize_identifier"
     },
     {
       "relation": "calls",
@@ -5086,9 +5086,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L1034",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_digest_json_value",
-      "target": "src_lib_digest_bytes",
-      "confidence_score": 1.0
+      "target": "src_lib_digest_bytes"
     },
     {
       "relation": "contains",
@@ -5128,9 +5128,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L440",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_dialectica_mcp_src_lib_rs",
-      "target": "src_lib_write_json",
-      "confidence_score": 1.0
+      "target": "src_lib_write_json"
     },
     {
       "relation": "calls",
@@ -5139,9 +5139,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L213",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_export_praxis_pack_tool",
-      "target": "src_lib_write_json",
-      "confidence_score": 1.0
+      "target": "src_lib_write_json"
     },
     {
       "relation": "calls",
@@ -5150,9 +5150,9 @@
       "source_file": "crates/dialectica-builder/src/lib.rs",
       "source_location": "L1070",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_local_documents_compile_to_portable_capsule_and_praxis_pack",
-      "target": "src_lib_fresh_temp_dir",
-      "confidence_score": 1.0
+      "target": "src_lib_fresh_temp_dir"
     },
     {
       "relation": "calls",
@@ -8069,9 +8069,9 @@
       "source_file": "crates/dialectica-cli/src/main.rs",
       "source_location": "L253",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_cli_src_main_rs",
-      "target": "src_main_print_welcome",
-      "confidence_score": 1.0
+      "target": "src_main_print_welcome"
     },
     {
       "relation": "contains",
@@ -8089,9 +8089,9 @@
       "source_file": "crates/dialectica-cli/src/main.rs",
       "source_location": "L284",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_cli_src_main_rs",
-      "target": "src_main_build_documents_from_args",
-      "confidence_score": 1.0
+      "target": "src_main_build_documents_from_args"
     },
     {
       "relation": "contains",
@@ -8099,9 +8099,9 @@
       "source_file": "crates/dialectica-cli/src/main.rs",
       "source_location": "L363",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_cli_src_main_rs",
-      "target": "src_main_write_context_pack_from_args",
-      "confidence_score": 1.0
+      "target": "src_main_write_context_pack_from_args"
     },
     {
       "relation": "contains",
@@ -8109,9 +8109,9 @@
       "source_file": "crates/dialectica-cli/src/main.rs",
       "source_location": "L407",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_cli_src_main_rs",
-      "target": "src_main_print_mcp_config",
-      "confidence_score": 1.0
+      "target": "src_main_print_mcp_config"
     },
     {
       "relation": "contains",
@@ -8379,9 +8379,9 @@
       "source_file": "crates/dialectica-cli/src/main.rs",
       "source_location": "L858",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "crates_dialectica_cli_src_main_rs",
-      "target": "src_main_option_value",
-      "confidence_score": 1.0
+      "target": "src_main_option_value"
     },
     {
       "relation": "contains",
@@ -8400,9 +8400,9 @@
       "source_file": "crates/dialectica-cli/src/main.rs",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_main_main",
-      "target": "src_main_print_welcome",
-      "confidence_score": 1.0
+      "target": "src_main_print_welcome"
     },
     {
       "relation": "calls",
@@ -8422,9 +8422,9 @@
       "source_file": "crates/dialectica-cli/src/main.rs",
       "source_location": "L19",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_main_main",
-      "target": "src_main_build_documents_from_args",
-      "confidence_score": 1.0
+      "target": "src_main_build_documents_from_args"
     },
     {
       "relation": "calls",
@@ -8565,9 +8565,9 @@
       "source_file": "crates/dialectica-cli/src/main.rs",
       "source_location": "L168",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_main_main",
-      "target": "src_main_write_context_pack_from_args",
-      "confidence_score": 1.0
+      "target": "src_main_write_context_pack_from_args"
     },
     {
       "relation": "calls",
@@ -8576,9 +8576,9 @@
       "source_file": "crates/dialectica-cli/src/main.rs",
       "source_location": "L170",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_main_main",
-      "target": "src_main_print_mcp_config",
-      "confidence_score": 1.0
+      "target": "src_main_print_mcp_config"
     },
     {
       "relation": "calls",
@@ -8651,9 +8651,9 @@
       "source_file": "services/dialectica-mcp/src/main.rs",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_dialectica_mcp_src_main_rs",
-      "target": "src_main_main",
-      "confidence_score": 1.0
+      "target": "src_main_main"
     },
     {
       "relation": "contains",
@@ -8705,9 +8705,9 @@
       "source_file": "crates/dialectica-cli/src/main.rs",
       "source_location": "L285",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_main_build_documents_from_args",
-      "target": "src_main_option_value",
-      "confidence_score": 1.0
+      "target": "src_main_option_value"
     },
     {
       "relation": "calls",
@@ -8716,9 +8716,9 @@
       "source_file": "crates/dialectica-cli/src/main.rs",
       "source_location": "L368",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_main_write_context_pack_from_args",
-      "target": "src_main_option_value",
-      "confidence_score": 1.0
+      "target": "src_main_option_value"
     },
     {
       "relation": "calls",
@@ -13381,9 +13381,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L23",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_dialectica_mcp_src_lib_rs",
-      "target": "src_lib_mcpservererror",
-      "confidence_score": 1.0
+      "target": "src_lib_mcpservererror"
     },
     {
       "relation": "contains",
@@ -13391,9 +13391,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L51",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_dialectica_mcp_src_lib_rs",
-      "target": "src_lib_run_stdio",
-      "confidence_score": 1.0
+      "target": "src_lib_run_stdio"
     },
     {
       "relation": "contains",
@@ -13401,9 +13401,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L68",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_dialectica_mcp_src_lib_rs",
-      "target": "src_lib_handle_jsonrpc_line",
-      "confidence_score": 1.0
+      "target": "src_lib_handle_jsonrpc_line"
     },
     {
       "relation": "contains",
@@ -13411,9 +13411,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L83",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_dialectica_mcp_src_lib_rs",
-      "target": "src_lib_handle_jsonrpc_value",
-      "confidence_score": 1.0
+      "target": "src_lib_handle_jsonrpc_value"
     },
     {
       "relation": "contains",
@@ -13421,9 +13421,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L104",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_dialectica_mcp_src_lib_rs",
-      "target": "src_lib_initialize_result",
-      "confidence_score": 1.0
+      "target": "src_lib_initialize_result"
     },
     {
       "relation": "contains",
@@ -13431,9 +13431,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L125",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_dialectica_mcp_src_lib_rs",
-      "target": "src_lib_call_tool",
-      "confidence_score": 1.0
+      "target": "src_lib_call_tool"
     },
     {
       "relation": "contains",
@@ -13441,9 +13441,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L148",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_dialectica_mcp_src_lib_rs",
-      "target": "src_lib_build_capsule_tool",
-      "confidence_score": 1.0
+      "target": "src_lib_build_capsule_tool"
     },
     {
       "relation": "contains",
@@ -13451,9 +13451,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L174",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_dialectica_mcp_src_lib_rs",
-      "target": "src_lib_inspect_capsule_tool",
-      "confidence_score": 1.0
+      "target": "src_lib_inspect_capsule_tool"
     },
     {
       "relation": "contains",
@@ -13461,9 +13461,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L195",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_dialectica_mcp_src_lib_rs",
-      "target": "src_lib_archive_capsule_tool",
-      "confidence_score": 1.0
+      "target": "src_lib_archive_capsule_tool"
     },
     {
       "relation": "contains",
@@ -13471,9 +13471,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L205",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_dialectica_mcp_src_lib_rs",
-      "target": "src_lib_export_praxis_pack_tool",
-      "confidence_score": 1.0
+      "target": "src_lib_export_praxis_pack_tool"
     },
     {
       "relation": "contains",
@@ -13481,9 +13481,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L224",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_dialectica_mcp_src_lib_rs",
-      "target": "src_lib_ontology_plan_tool",
-      "confidence_score": 1.0
+      "target": "src_lib_ontology_plan_tool"
     },
     {
       "relation": "contains",
@@ -13491,9 +13491,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L231",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_dialectica_mcp_src_lib_rs",
-      "target": "src_lib_read_resource",
-      "confidence_score": 1.0
+      "target": "src_lib_read_resource"
     },
     {
       "relation": "contains",
@@ -13501,9 +13501,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L252",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_dialectica_mcp_src_lib_rs",
-      "target": "src_lib_read_prompt",
-      "confidence_score": 1.0
+      "target": "src_lib_read_prompt"
     },
     {
       "relation": "contains",
@@ -13511,9 +13511,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L272",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_dialectica_mcp_src_lib_rs",
-      "target": "src_lib_tool_definitions",
-      "confidence_score": 1.0
+      "target": "src_lib_tool_definitions"
     },
     {
       "relation": "contains",
@@ -13521,9 +13521,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L353",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_dialectica_mcp_src_lib_rs",
-      "target": "src_lib_resource_definitions",
-      "confidence_score": 1.0
+      "target": "src_lib_resource_definitions"
     },
     {
       "relation": "contains",
@@ -13531,9 +13531,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L379",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_dialectica_mcp_src_lib_rs",
-      "target": "src_lib_prompt_definitions",
-      "confidence_score": 1.0
+      "target": "src_lib_prompt_definitions"
     },
     {
       "relation": "contains",
@@ -13541,9 +13541,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L392",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_dialectica_mcp_src_lib_rs",
-      "target": "src_lib_tool_json",
-      "confidence_score": 1.0
+      "target": "src_lib_tool_json"
     },
     {
       "relation": "contains",
@@ -13551,9 +13551,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L402",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_dialectica_mcp_src_lib_rs",
-      "target": "src_lib_tool_text",
-      "confidence_score": 1.0
+      "target": "src_lib_tool_text"
     },
     {
       "relation": "contains",
@@ -13561,9 +13561,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L409",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_dialectica_mcp_src_lib_rs",
-      "target": "src_lib_required_string",
-      "confidence_score": 1.0
+      "target": "src_lib_required_string"
     },
     {
       "relation": "contains",
@@ -13571,9 +13571,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L413",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_dialectica_mcp_src_lib_rs",
-      "target": "src_lib_optional_string",
-      "confidence_score": 1.0
+      "target": "src_lib_optional_string"
     },
     {
       "relation": "contains",
@@ -13581,9 +13581,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L420",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_dialectica_mcp_src_lib_rs",
-      "target": "src_lib_default_workflow",
-      "confidence_score": 1.0
+      "target": "src_lib_default_workflow"
     },
     {
       "relation": "contains",
@@ -13591,9 +13591,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L430",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_dialectica_mcp_src_lib_rs",
-      "target": "src_lib_mcp_config_snippet",
-      "confidence_score": 1.0
+      "target": "src_lib_mcp_config_snippet"
     },
     {
       "relation": "contains",
@@ -13601,9 +13601,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L448",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_dialectica_mcp_src_lib_rs",
-      "target": "src_lib_jsonrpc_result",
-      "confidence_score": 1.0
+      "target": "src_lib_jsonrpc_result"
     },
     {
       "relation": "contains",
@@ -13611,9 +13611,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L456",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_dialectica_mcp_src_lib_rs",
-      "target": "src_lib_jsonrpc_error",
-      "confidence_score": 1.0
+      "target": "src_lib_jsonrpc_error"
     },
     {
       "relation": "contains",
@@ -13621,9 +13621,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L474",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_dialectica_mcp_src_lib_rs",
-      "target": "src_lib_initialize_advertises_dialectica_tools",
-      "confidence_score": 1.0
+      "target": "src_lib_initialize_advertises_dialectica_tools"
     },
     {
       "relation": "contains",
@@ -13631,9 +13631,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L490",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_dialectica_mcp_src_lib_rs",
-      "target": "src_lib_tools_list_contains_build_capsule",
-      "confidence_score": 1.0
+      "target": "src_lib_tools_list_contains_build_capsule"
     },
     {
       "relation": "contains",
@@ -13641,9 +13641,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L504",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_dialectica_mcp_src_lib_rs",
-      "target": "src_lib_welcome_tool_returns_operator_copy",
-      "confidence_score": 1.0
+      "target": "src_lib_welcome_tool_returns_operator_copy"
     },
     {
       "relation": "method",
@@ -13651,9 +13651,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L29",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_mcpservererror",
-      "target": "src_lib_mcpservererror_fmt",
-      "confidence_score": 1.0
+      "target": "src_lib_mcpservererror_fmt"
     },
     {
       "relation": "method",
@@ -13661,9 +13661,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L46",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_mcpservererror",
-      "target": "src_lib_mcpservererror_from",
-      "confidence_score": 1.0
+      "target": "src_lib_mcpservererror_from"
     },
     {
       "relation": "calls",
@@ -13672,9 +13672,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L163",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_build_capsule_tool",
-      "target": "src_lib_mcpservererror_from",
-      "confidence_score": 1.0
+      "target": "src_lib_mcpservererror_from"
     },
     {
       "relation": "calls",
@@ -13683,9 +13683,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L175",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_inspect_capsule_tool",
-      "target": "src_lib_mcpservererror_from",
-      "confidence_score": 1.0
+      "target": "src_lib_mcpservererror_from"
     },
     {
       "relation": "calls",
@@ -13694,9 +13694,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L196",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_archive_capsule_tool",
-      "target": "src_lib_mcpservererror_from",
-      "confidence_score": 1.0
+      "target": "src_lib_mcpservererror_from"
     },
     {
       "relation": "calls",
@@ -13705,9 +13705,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L206",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_export_praxis_pack_tool",
-      "target": "src_lib_mcpservererror_from",
-      "confidence_score": 1.0
+      "target": "src_lib_mcpservererror_from"
     },
     {
       "relation": "calls",
@@ -13716,9 +13716,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L225",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_ontology_plan_tool",
-      "target": "src_lib_mcpservererror_from",
-      "confidence_score": 1.0
+      "target": "src_lib_mcpservererror_from"
     },
     {
       "relation": "calls",
@@ -13727,9 +13727,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L59",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_run_stdio",
-      "target": "src_lib_handle_jsonrpc_line",
-      "confidence_score": 1.0
+      "target": "src_lib_handle_jsonrpc_line"
     },
     {
       "relation": "calls",
@@ -13738,9 +13738,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L72",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_handle_jsonrpc_line",
-      "target": "src_lib_jsonrpc_error",
-      "confidence_score": 1.0
+      "target": "src_lib_jsonrpc_error"
     },
     {
       "relation": "calls",
@@ -13749,9 +13749,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L76",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_handle_jsonrpc_line",
-      "target": "src_lib_handle_jsonrpc_value",
-      "confidence_score": 1.0
+      "target": "src_lib_handle_jsonrpc_value"
     },
     {
       "relation": "calls",
@@ -13760,9 +13760,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L475",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_initialize_advertises_dialectica_tools",
-      "target": "src_lib_handle_jsonrpc_line",
-      "confidence_score": 1.0
+      "target": "src_lib_handle_jsonrpc_line"
     },
     {
       "relation": "calls",
@@ -13771,9 +13771,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L492",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_tools_list_contains_build_capsule",
-      "target": "src_lib_handle_jsonrpc_line",
-      "confidence_score": 1.0
+      "target": "src_lib_handle_jsonrpc_line"
     },
     {
       "relation": "calls",
@@ -13782,9 +13782,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L505",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_welcome_tool_returns_operator_copy",
-      "target": "src_lib_handle_jsonrpc_line",
-      "confidence_score": 1.0
+      "target": "src_lib_handle_jsonrpc_line"
     },
     {
       "relation": "calls",
@@ -13793,9 +13793,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L87",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_handle_jsonrpc_value",
-      "target": "src_lib_jsonrpc_error",
-      "confidence_score": 1.0
+      "target": "src_lib_jsonrpc_error"
     },
     {
       "relation": "calls",
@@ -13804,9 +13804,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L92",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_handle_jsonrpc_value",
-      "target": "src_lib_jsonrpc_result",
-      "confidence_score": 1.0
+      "target": "src_lib_jsonrpc_result"
     },
     {
       "relation": "calls",
@@ -13815,9 +13815,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L92",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_handle_jsonrpc_value",
-      "target": "src_lib_initialize_result",
-      "confidence_score": 1.0
+      "target": "src_lib_initialize_result"
     },
     {
       "relation": "calls",
@@ -13826,9 +13826,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L95",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_handle_jsonrpc_value",
-      "target": "src_lib_call_tool",
-      "confidence_score": 1.0
+      "target": "src_lib_call_tool"
     },
     {
       "relation": "calls",
@@ -13837,9 +13837,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L97",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_handle_jsonrpc_value",
-      "target": "src_lib_read_resource",
-      "confidence_score": 1.0
+      "target": "src_lib_read_resource"
     },
     {
       "relation": "calls",
@@ -13848,9 +13848,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L99",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_handle_jsonrpc_value",
-      "target": "src_lib_read_prompt",
-      "confidence_score": 1.0
+      "target": "src_lib_read_prompt"
     },
     {
       "relation": "calls",
@@ -13859,9 +13859,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L133",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_call_tool",
-      "target": "src_lib_build_capsule_tool",
-      "confidence_score": 1.0
+      "target": "src_lib_build_capsule_tool"
     },
     {
       "relation": "calls",
@@ -13870,9 +13870,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L134",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_call_tool",
-      "target": "src_lib_inspect_capsule_tool",
-      "confidence_score": 1.0
+      "target": "src_lib_inspect_capsule_tool"
     },
     {
       "relation": "calls",
@@ -13881,9 +13881,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L135",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_call_tool",
-      "target": "src_lib_archive_capsule_tool",
-      "confidence_score": 1.0
+      "target": "src_lib_archive_capsule_tool"
     },
     {
       "relation": "calls",
@@ -13892,9 +13892,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L136",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_call_tool",
-      "target": "src_lib_export_praxis_pack_tool",
-      "confidence_score": 1.0
+      "target": "src_lib_export_praxis_pack_tool"
     },
     {
       "relation": "calls",
@@ -13903,9 +13903,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L137",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_call_tool",
-      "target": "src_lib_ontology_plan_tool",
-      "confidence_score": 1.0
+      "target": "src_lib_ontology_plan_tool"
     },
     {
       "relation": "calls",
@@ -13914,9 +13914,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L143",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_call_tool",
-      "target": "src_lib_tool_json",
-      "confidence_score": 1.0
+      "target": "src_lib_tool_json"
     },
     {
       "relation": "calls",
@@ -13925,9 +13925,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L144",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_call_tool",
-      "target": "src_lib_tool_text",
-      "confidence_score": 1.0
+      "target": "src_lib_tool_text"
     },
     {
       "relation": "calls",
@@ -13936,9 +13936,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L149",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_build_capsule_tool",
-      "target": "src_lib_required_string",
-      "confidence_score": 1.0
+      "target": "src_lib_required_string"
     },
     {
       "relation": "calls",
@@ -13947,9 +13947,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L154",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_build_capsule_tool",
-      "target": "src_lib_optional_string",
-      "confidence_score": 1.0
+      "target": "src_lib_optional_string"
     },
     {
       "relation": "calls",
@@ -13958,9 +13958,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L158",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_build_capsule_tool",
-      "target": "src_lib_default_workflow",
-      "confidence_score": 1.0
+      "target": "src_lib_default_workflow"
     },
     {
       "relation": "calls",
@@ -13969,9 +13969,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L175",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_inspect_capsule_tool",
-      "target": "src_lib_required_string",
-      "confidence_score": 1.0
+      "target": "src_lib_required_string"
     },
     {
       "relation": "calls",
@@ -13980,9 +13980,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L196",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_archive_capsule_tool",
-      "target": "src_lib_required_string",
-      "confidence_score": 1.0
+      "target": "src_lib_required_string"
     },
     {
       "relation": "calls",
@@ -13991,9 +13991,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L197",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_archive_capsule_tool",
-      "target": "src_lib_optional_string",
-      "confidence_score": 1.0
+      "target": "src_lib_optional_string"
     },
     {
       "relation": "calls",
@@ -14002,9 +14002,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L206",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_export_praxis_pack_tool",
-      "target": "src_lib_required_string",
-      "confidence_score": 1.0
+      "target": "src_lib_required_string"
     },
     {
       "relation": "calls",
@@ -14013,9 +14013,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L208",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_export_praxis_pack_tool",
-      "target": "src_lib_optional_string",
-      "confidence_score": 1.0
+      "target": "src_lib_optional_string"
     },
     {
       "relation": "calls",
@@ -14024,9 +14024,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L225",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_ontology_plan_tool",
-      "target": "src_lib_required_string",
-      "confidence_score": 1.0
+      "target": "src_lib_required_string"
     },
     {
       "relation": "calls",
@@ -14035,9 +14035,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L399",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_tool_json",
-      "target": "src_lib_tool_text",
-      "confidence_score": 1.0
+      "target": "src_lib_tool_text"
     },
     {
       "relation": "calls",
@@ -14046,9 +14046,9 @@
       "source_file": "services/dialectica-mcp/src/lib.rs",
       "source_location": "L410",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_lib_required_string",
-      "target": "src_lib_optional_string",
-      "confidence_score": 1.0
+      "target": "src_lib_optional_string"
     },
     {
       "relation": "contains",
@@ -14721,5 +14721,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "70e53870c15e955747892ec88a19c356449599b4"
+  "built_at_commit": "77108c28df0b891d519c9f451c3beacb794e0d26"
 }
