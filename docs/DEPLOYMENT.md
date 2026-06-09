@@ -77,6 +77,29 @@ Responsibilities:
 - review and promotion commands;
 - health, readiness, and version endpoints.
 
+### `dialectica-mcp`
+
+Local stdio binary now; hosted Cloud Run HTTP service later only after the
+store-backed artifact path and auth threat model are implemented.
+
+Current responsibilities:
+
+- local Codex stdio tools for build, inspect, validate, archive, status,
+  PRAXIS pack export, ontology planning, resources, and prompts;
+- JSON-RPC lifecycle and tool schema compatibility for protocol
+  `2025-11-25`;
+- local filesystem path handling with optional `DIALECTICA_MCP_ROOTS`.
+
+Hosted `/mcp` responsibilities later:
+
+- Streamable HTTP endpoint at `/mcp`;
+- OAuth or service-to-service authentication;
+- tenant/project ownership checks before every capsule lookup or artifact
+  export;
+- token audience validation;
+- artifact addressing by `build_id`, `capsule_id`, or `artifact_id`, never raw
+  local filesystem paths.
+
 ### `dialectica-task-handler`
 
 Cloud Run HTTP service for Cloud Tasks.
@@ -134,6 +157,9 @@ Cloud Storage stores:
 - compressed capsule exports;
 - checksum and signature files;
 - eval artifacts.
+
+Hosted MCP must read and write artifacts through this storage plane. It must
+not accept arbitrary filesystem paths from clients.
 
 ### Secrets
 
@@ -220,6 +246,8 @@ probes need distinct liveness and dependency-readiness checks.
 - Cloud SQL staging instance is reachable.
 - Staging bucket stores a fixture bundle.
 - Cloud Tasks can dispatch one idempotent task.
+- Hosted MCP remains disabled until auth, tenant ownership checks, and
+  store-backed artifact IDs are implemented.
 
 ### Phase D2: PRAXIS Staging Integration
 
@@ -227,6 +255,8 @@ probes need distinct liveness and dependency-readiness checks.
 - PRAXIS can inspect source and review status.
 - PRAXIS can use one capsule in a controlled answer workflow.
 - Eval report compares raw and capsule-augmented output.
+- Optional hosted MCP exposes `/mcp` only to authenticated PRAXIS/Codex clients
+  and only through artifact IDs or signed artifact URLs.
 
 ### Phase D3: Production Pilot
 

@@ -46,7 +46,7 @@ The first functional app is not complete until a developer can:
 | Evals | `crates/dialectica-eval` | scaffolded with check result primitive only | fixture outcome, source-fidelity, temporal, reasoning, and PRAXIS comparison evals |
 | CLI | `crates/dialectica-cli` | `welcome`, `build-docs`, `doctor`, `validate`, `inspect`, `ontology-plan`, `ladybug-check`, `source-pack-check`, `proposal-check`, `build-plan`, `review-check`, `promote-check`, `build-fixture`, `archive`, `context-pack`, `praxis-pack`, `mcp-config`, and `schema-export` implemented | add durable job commands after store exists |
 | API | `services/dialectica-api` | fixture-backed Axum health, version, manifest, graph-preview, context-pack, and read-receipt routes implemented | store-backed jobs, auth, and artifact lookup |
-| MCP | `services/dialectica-mcp` | Codex stdio MCP server with welcome, build, inspect, archive, PRAXIS pack, ontology-plan, resources, and prompt implemented | add hosted/authenticated MCP only after threat model and store-backed jobs |
+| MCP | `services/dialectica-mcp` | Hardened Codex stdio MCP server with protocol router, output schemas, structuredContent, welcome, build, inspect, validate, status, archive, PRAXIS pack, ontology-plan, resources, and prompt implemented | add hosted/authenticated Streamable HTTP `/mcp` only after threat model, auth, tenant checks, and store-backed artifact IDs |
 | Task handler | `services/dialectica-task-handler` | scaffolded binary that prints store env | Cloud Tasks-compatible HTTP handler |
 | Contract tests | `tests/dialectica-contract-tests` | canonical v3 fixture, source-pack/proposal validation, review-gate routing, reviewer-decision validation, promotion normalization, generated compiler package, archive, context-pack, API route, and legacy migration tests implemented | deep-validator and store-backed job tests |
 
@@ -70,8 +70,9 @@ Verified as working:
 - fixture context-pack export produces PRAXIS-readable JSON;
 - local document-folder builder produces a compiled package, `.capsule`,
   `praxis-context-pack.json`, `praxis-import.json`, and build-source trace;
-- Codex MCP stdio server advertises the capsule build tools, resources, and
-  prompt;
+- Codex MCP stdio server advertises schema-backed capsule build, inspect,
+  validate, status, archive, PRAXIS pack, ontology, resource, and prompt
+  surfaces;
 - fixture Axum API serves health, version, manifest, graph preview, context
   pack, and deterministic read receipts;
 - schema export works;

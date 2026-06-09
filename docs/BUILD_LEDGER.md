@@ -504,3 +504,41 @@ Next:
 3. persist build sessions and artifacts in PostgreSQL/Cloud Storage;
 4. add PRAXIS import route and UI in the PRAXIS repo after the local bridge
    record is stable.
+
+## 2026-06-09 - Hardened Local MCP Protocol And Tool Contracts
+
+Status: implemented for local stdio; hosted Streamable HTTP remains design-only
+until auth and store-backed artifact IDs exist.
+
+Actions:
+
+- split `services/dialectica-mcp` into stdio entrypoint, JSON-RPC protocol
+  router, and reusable tool handlers;
+- added strict protocol `2025-11-25` initialization, initialized notification
+  handling, parse/invalid-request/method/params error shapes, and multi-message
+  stdio test coverage;
+- added `outputSchema` and `structuredContent` for tool success results;
+- added `dialectica_validate_capsule` and `dialectica_capsule_status`;
+- normalized local paths, rejected parent traversal and dangerous output
+  targets, and added optional `DIALECTICA_MCP_ROOTS` enforcement;
+- documented local stdio vs future hosted `/mcp` behavior.
+
+Evidence:
+
+- `cargo test -p dialectica-mcp` passes protocol, schema, structured-content,
+  error, status, validation, build-smoke, and archive-safety tests;
+- the full gate passes: `cargo fmt --all -- --check`,
+  `cargo check --locked --workspace --all-targets`,
+  `cargo clippy --locked --workspace --all-targets -- -D warnings`,
+  `cargo test --locked --workspace`, `python -m compileall tools/python`, and
+  `python -m unittest discover tools/python/tests`;
+- stdio smoke with `cargo run -q -p dialectica-mcp --` returns initialize and
+  `tools/list` responses, and `cargo run -q -p dialectica-cli -- mcp-config`
+  prints the expected Codex config snippet.
+
+Next:
+
+1. keep PRAXIS production integration on REST/API context-pack contracts first;
+2. add hosted MCP only after Cloud SQL/Cloud Storage artifacts, auth, tenant
+   checks, and token audience validation are implemented;
+3. add object-level review editing before any expert-promotion claim.

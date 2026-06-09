@@ -1,6 +1,6 @@
 # Codex MCP Capsule Builder
 
-Status: implemented for the local text-document build loop.
+Status: implemented for the local hardened stdio build loop.
 
 This is the current operator path for building a PRAXIS Capsule with Codex.
 It runs locally, does not require cloud credentials, and produces artifacts
@@ -86,7 +86,12 @@ cwd = "C:\\Users\\giuli\\A3_DIALECTICAbyTACITUS_v3"
 ```
 
 The MCP server uses the official stdio shape: newline-delimited UTF-8 JSON-RPC
-messages over stdin/stdout. It writes logs only to stderr.
+messages over stdin/stdout. It writes logs only to stderr and keeps stdout
+MCP-only.
+
+The local server supports MCP protocol version `2025-11-25`. It accepts the
+normal `initialize` request followed by the `notifications/initialized`
+notification. Unsupported protocol versions return a JSON-RPC `-32602` error.
 
 ## MCP Surface
 
@@ -97,10 +102,63 @@ Tools:
 | `dialectica_welcome` | returns the operator welcome |
 | `dialectica_build_capsule` | builds a capsule from local documents |
 | `dialectica_inspect_capsule` | inspects a compiled package and Ladybug projection metadata |
+| `dialectica_validate_capsule` | validates a compiled package and returns precise findings |
+| `dialectica_capsule_status` | returns manifest, review, Ladybug, archive, PRAXIS pack, and hosted-readiness status |
 | `dialectica_archive_capsule` | writes a portable `.capsule` archive |
 | `dialectica_export_praxis_pack` | emits PRAXIS-readable context JSON |
 | `dialectica_ontology_plan` | returns the capsule-specific ontology blueprint |
 | `dialectica_mcp_config` | returns the local Codex MCP config snippet |
+
+Every tool advertises both `inputSchema` and `outputSchema`. Successful tool
+calls return `structuredContent` plus the same JSON serialized in a text content
+block for older clients. Invalid tool arguments return an MCP tool result with
+`isError: true`; malformed JSON-RPC requests return JSON-RPC errors.
+
+### Tool Contracts
+
+| Tool | Required input | Optional input | Structured output |
+| --- | --- | --- | --- |
+| `dialectica_welcome` | none | none | `{ "welcome": string }` |
+| `dialectica_build_capsule` | `capsule_type`, `input_dir`, `out_dir` | `title`, `workflow`, `mode` | builder receipt paths, counts, digests, and `promotion_note` |
+| `dialectica_inspect_capsule` | `package_dir` | none | manifest, review state, counts, validation boolean, Ladybug status |
+| `dialectica_validate_capsule` | `package_dir` | none | `valid`, finding counts, and `findings` |
+| `dialectica_capsule_status` | `package_dir` | `archive_file`, `praxis_pack_file` | manifest, review state, validation summary, Ladybug status, archive status, PRAXIS pack status, hosted MCP note |
+| `dialectica_archive_capsule` | `package_dir` | `out_file` | archive receipt with path, entries, and digest |
+| `dialectica_export_praxis_pack` | `package_dir` | `workflow`, `out_file` | full context pack or written-pack receipt |
+| `dialectica_ontology_plan` | `package_dir` | none | capsule ontology blueprint |
+| `dialectica_mcp_config` | none | none | `{ "config": string }` |
+
+Path inputs are local-stdio only. Existing input directories are canonicalized.
+Output targets reject filesystem roots, parent traversal, and archive writes
+inside the package directory. Set `DIALECTICA_MCP_ROOTS` to a semicolon-delimited
+root list to force local MCP paths under explicit filesystem roots.
+
+### Example Tool Calls
+
+Initialize:
+
+```json
+{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-11-25","capabilities":{"roots":{"listChanged":true}},"clientInfo":{"name":"codex","version":"1"}}}
+```
+
+List tools:
+
+```json
+{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}
+```
+
+Build a local situation capsule:
+
+```json
+{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"dialectica_build_capsule","arguments":{"capsule_type":"situation","input_dir":"docs","out_dir":"C:\\Users\\giuli\\AppData\\Local\\Temp\\dialectica-mcp-situation","title":"Local Situation Capsule","workflow":"decision_brief","mode":"assisted"}}}
+```
+
+Validate and check status:
+
+```json
+{"jsonrpc":"2.0","id":4,"method":"tools/call","params":{"name":"dialectica_validate_capsule","arguments":{"package_dir":"C:\\Users\\giuli\\AppData\\Local\\Temp\\dialectica-mcp-situation\\package"}}}
+{"jsonrpc":"2.0","id":5,"method":"tools/call","params":{"name":"dialectica_capsule_status","arguments":{"package_dir":"C:\\Users\\giuli\\AppData\\Local\\Temp\\dialectica-mcp-situation\\package"}}}
+```
 
 Resources:
 
@@ -109,6 +167,7 @@ Resources:
 | `dialectica://welcome` | operator welcome |
 | `dialectica://builder/contract` | what each capsule build contains |
 | `dialectica://praxis/bridge` | how PRAXIS consumes local and cloud artifacts |
+| `dialectica://hosted/mcp` | future hosted `/mcp` behavior and auth/path restrictions |
 
 Prompt:
 
@@ -128,11 +187,22 @@ Local bridge now:
 Cloud bridge next:
 
 1. upload `*.capsule` to Cloud Storage;
-2. persist `praxis-import.json` in Firestore or Cloud SQL;
-3. expose a DIALECTICA API route that returns the context pack and signed
-   artifact URL by `capsule_id`;
+2. persist build, review, artifact, and export state in Cloud SQL PostgreSQL;
+3. expose authenticated DIALECTICA API/MCP routes that return the context pack
+   and signed artifact URL by `build_id`, `capsule_id`, or `artifact_id`;
 4. let PRAXIS load the context pack into Ask PRAXIS and keep the archive as the
    downloadable source-of-truth artifact.
+
+## Local vs Hosted MCP
+
+| Concern | Local stdio MCP now | Hosted Streamable HTTP MCP later |
+| --- | --- | --- |
+| Transport | newline-delimited JSON-RPC over stdin/stdout | single `/mcp` endpoint using Streamable HTTP |
+| Auth | local process trust and OS permissions | OAuth/service auth, tenant ownership checks, token audience validation |
+| Inputs | local filesystem paths under optional `DIALECTICA_MCP_ROOTS` | `build_id`, `capsule_id`, and artifact IDs only |
+| Artifact storage | local directories and `.capsule` files | Cloud Storage objects plus Cloud SQL state |
+| PRAXIS access | local `praxis-context-pack.json` or archive handoff | authenticated API/MCP call or signed artifact URL |
+| Promotion | draft/assisted outputs with caveats | same review gates; no silent canonical promotion |
 
 ## Human Gate Posture
 

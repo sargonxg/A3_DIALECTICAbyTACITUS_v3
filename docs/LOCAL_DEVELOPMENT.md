@@ -89,6 +89,15 @@ cargo run -p dialectica-cli -- mcp-config
 cargo run -p dialectica-mcp
 ```
 
+Optional local path boundary:
+
+```powershell
+$env:DIALECTICA_MCP_ROOTS = "$PWD;$env:TEMP"
+```
+
+`DIALECTICA_MCP_ROOTS` is a semicolon-delimited local stdio guard. Hosted MCP
+must use artifact IDs instead of filesystem paths.
+
 Local API preview:
 
 ```powershell

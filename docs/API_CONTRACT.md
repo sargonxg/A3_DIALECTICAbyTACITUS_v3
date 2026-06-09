@@ -161,6 +161,35 @@ Response:
 }
 ```
 
+## MCP Lanes
+
+The local Codex bridge is `dialectica-mcp` over stdio. It accepts local
+filesystem paths for package build, validation, archive, and export because it
+runs inside the operator's machine and can be constrained with
+`DIALECTICA_MCP_ROOTS`.
+
+Hosted MCP is a separate future lane:
+
+```http
+POST /mcp
+GET /mcp
+```
+
+Hosted `/mcp` uses Streamable HTTP and must follow the same API trust model as
+the REST endpoints:
+
+- require OAuth or service-to-service authentication;
+- validate token audience and tenant/project ownership;
+- address work by `build_id`, `capsule_id`, and artifact IDs;
+- store artifacts in Cloud Storage and state in Cloud SQL PostgreSQL;
+- return PRAXIS context packs by authenticated API/MCP call or signed artifact
+  URL;
+- reject raw filesystem paths in all hosted inputs.
+
+The REST/API context-pack contract remains the first PRAXIS production
+integration path. Hosted MCP is an adapter over the same handler core, not a
+parallel source of truth.
+
 ### Combine Capsules
 
 ```http

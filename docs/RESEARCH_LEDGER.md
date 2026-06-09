@@ -96,6 +96,17 @@ official sources + papers
 | Serena Codex client docs, <https://oraios.github.io/serena/02-usage/030_clients.html> | Official docs support Codex setup with `serena start-mcp-server --project-from-cwd --context=codex`. | Keep Serena in the Codex MCP baseline and use it for symbol-aware navigation when exposed in-session. |
 | Serena running docs, <https://oraios.github.io/serena/02-usage/020_running.html> | Official docs describe `serena start-mcp-server` and note project activation/lifecycle considerations. | Verify Serena availability before relying on it; if tools are absent, fall back to `rg`, Graphify, and source reads rather than blocking. |
 
+## 2026-06-09 MCP Hardening Refresh
+
+| Source | Fresh finding | DIALECTICA consequence |
+| --- | --- | --- |
+| MCP transports spec, <https://modelcontextprotocol.io/specification/2025-11-25/basic/transports> | Stdio uses newline-delimited UTF-8 JSON-RPC over stdin/stdout and forbids non-MCP stdout. Streamable HTTP uses a single endpoint such as `/mcp` and requires HTTP security controls including origin validation and authentication. | Keep local `dialectica-mcp` stdout MCP-only. Design hosted MCP as `/mcp`, not legacy SSE, and require auth before deployment. |
+| MCP lifecycle spec, <https://modelcontextprotocol.io/specification/2025-11-25/basic/lifecycle> | Initialization negotiates protocol version and capabilities, then the client sends `notifications/initialized`; unsupported versions can be reported with JSON-RPC `-32602`. | The stdio server now accepts protocol `2025-11-25`, accepts initialized notifications without response, and returns explicit JSON-RPC errors for unsupported versions. |
+| MCP tools spec, <https://modelcontextprotocol.io/specification/2025-11-25/server/tools> | Tools are listed with `inputSchema`; structured tool results may use `structuredContent`, and tools may advertise `outputSchema`. Structured content should also be serialized as text for compatibility. | Every DIALECTICA tool now advertises `outputSchema` and returns `structuredContent` plus JSON text on success. |
+| MCP authorization spec, <https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization> | HTTP-based MCP authorization should follow OAuth-style protected-resource behavior; stdio should retrieve credentials from the environment instead. | Local stdio remains filesystem/OS scoped. Hosted MCP requires OAuth/service auth, tenant ownership checks, and token audience validation. |
+| MCP roots spec, <https://modelcontextprotocol.io/specification/2025-11-25/client/roots> | Roots define filesystem boundaries and servers should validate paths against provided roots. | Local MCP canonicalizes input paths and can enforce semicolon-delimited `DIALECTICA_MCP_ROOTS`; hosted MCP must not accept filesystem paths. |
+| MCP security best practices, <https://modelcontextprotocol.io/docs/tutorials/security/security_best_practices> | MCP implementations must account for token passthrough, confused-deputy, SSRF, session hijacking, local server compromise, and scope minimization. | Hosted MCP is blocked until auth, SSRF posture, tenant scoping, and artifact ID boundaries are implemented and tested. |
+
 ## Adopted Product Rules
 
 - A capsule is the product contract, not a prompt, cache, or chat transcript.
