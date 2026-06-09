@@ -1,26 +1,29 @@
 # Next Code Build Plan
 
-Date: 2026-06-08
+Date: 2026-06-09
 
-Status: active implementation plan for the next coding session.
+Status: active implementation plan after the local MVP capsule-loop hardening
+commit. The local proof lane is working; the next build slice is editable
+review decisions, not cloud persistence or live model providers.
 
 ## Objective
 
-Turn the current contract scaffold into a working local capsule engine:
+Turn the current local capsule engine into an editable review loop:
 
 ```text
-source pack
+source pack / local documents / JSONL discussion source
   -> fixture-mode or local-document proposal records
   -> review-trigger routing
-  -> reviewer decisions
-  -> reviewed canonical records
-  -> deterministic v3 .capsule compiler
-  -> PRAXIS context pack
-  -> local API preview
+  -> generated review_queue.json
+  -> human-edited reviewer decisions
+  -> re-run promotion
+  -> recompile deterministic v3 .capsule + PRAXIS context pack
 ```
 
-The next build should not add broad infrastructure. It should make one capsule
-build path executable end to end with local files and no cloud credentials.
+The next build should not add broad infrastructure. It should prove that human
+review changes the promoted PRAXIS context: a reject removes the object from
+the context pack, and an approval without caveats removes draft caveats where
+appropriate.
 
 Read [Improvement Guidelines](IMPROVEMENT_GUIDELINES.md) before implementing
 this plan. That file records the active gap audit and quality bar for the
@@ -75,7 +78,7 @@ Already implemented:
 
 Not yet implemented:
 
-- PDF/OCR/conversation ingestion;
+- editable review-decision commands or API routes;
 - live model-provider extraction calls;
 - production-grade Merkle/checksum/signature envelope;
 - store-backed HTTP API routes and durable build jobs;

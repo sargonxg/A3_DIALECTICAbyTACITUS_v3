@@ -11,12 +11,13 @@ For a coding session, start with the shortest authoritative path:
 5. [Missing Work Audit 2026-06-08](MISSING_WORK_AUDIT_2026_06_08.md)
 6. [Code Audit 2026-06-08](CODE_AUDIT_2026_06_08.md)
 7. [Post-Build Audit 2026-06-08](POST_BUILD_AUDIT_2026_06_08.md)
-8. [Code Quality Tooling](CODE_QUALITY_TOOLING.md)
-9. [Codex MCP Capsule Builder](CODEX_MCP_CAPSULE_BUILDER.md)
-10. [Capsule Specification](CAPSULE_SPEC.md)
-11. [Engineering Baseline](ENGINEERING_BASELINE.md)
-12. [Improvement Guidelines](IMPROVEMENT_GUIDELINES.md)
-13. [Scaffold Audit](SCAFFOLD_AUDIT.md)
+8. [Build Ledger](BUILD_LEDGER.md)
+9. [Code Quality Tooling](CODE_QUALITY_TOOLING.md)
+10. [Codex MCP Capsule Builder](CODEX_MCP_CAPSULE_BUILDER.md)
+11. [Capsule Specification](CAPSULE_SPEC.md)
+12. [Engineering Baseline](ENGINEERING_BASELINE.md)
+13. [Improvement Guidelines](IMPROVEMENT_GUIDELINES.md)
+14. [Scaffold Audit](SCAFFOLD_AUDIT.md)
 
 Use the full index below when a task needs product narrative, ontology research,
 deployment, PRAXIS integration, security, or operations context.

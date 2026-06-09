@@ -472,7 +472,8 @@ Evidence:
 ## 2026-06-08 - Codex-Mediated Local Capsule Builder And MCP
 
 Status: implemented for local text-like document folders; PDF/OCR,
-conversation ingestion, durable jobs, and cloud artifact lookup remain next.
+richer conversation adapters, durable jobs, and cloud artifact lookup remain
+next.
 
 Actions:
 
@@ -500,7 +501,7 @@ Next:
 
 1. add editable reviewer-decision commands so a human can replace the local
    `approve_with_caveats` defaults;
-2. add PDF/OCR and conversation ingestion adapters;
+2. add PDF/OCR and richer conversation adapters;
 3. persist build sessions and artifacts in PostgreSQL/Cloud Storage;
 4. add PRAXIS import route and UI in the PRAXIS repo after the local bridge
    record is stable.
@@ -600,3 +601,26 @@ Next:
 4. add PostgreSQL build-session persistence after the local proof remains
    stable;
 5. wire PRAXIS to consume `praxis-context-pack.json` and `praxis-import.json`.
+
+## 2026-06-09 - Future-Agent Handoff Consolidation
+
+Status: documentation consolidated for GitHub main sync.
+
+Actions:
+
+- aligned the root README, docs index, coding ledger, missing-work audit, and
+  next-code build plan with the verified local MVP capsule loop;
+- clarified that local JSONL discussion capture is implemented, while
+  PDF/OCR/scanned-image/web ingestion and richer conversation adapters remain
+  future work;
+- made editable review decisions the explicit next implementation slice before
+  cloud persistence, live model providers, hosted MCP, or PRAXIS frontend work;
+- kept `BUILD_LEDGER.md` in the fast-path docs so future agents can start from
+  the latest verified evidence instead of stale plan text.
+
+Next:
+
+1. push `main` to GitHub after this consolidation commit;
+2. implement editable review decisions and recompile tests;
+3. only then resume persistence, provider, hosted MCP, or PRAXIS integration
+   planning.

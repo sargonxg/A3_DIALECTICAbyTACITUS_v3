@@ -237,7 +237,8 @@ Missing:
 - file hashing;
 - text extraction;
 - PDF page locators;
-- user/assistant discussion capture;
+- richer conversation adapters beyond local JSONL user/assistant discussion
+  capture;
 - source trust classification;
 - private-data flags;
 - rights/access gates.

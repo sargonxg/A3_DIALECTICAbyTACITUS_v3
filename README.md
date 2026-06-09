@@ -35,19 +35,22 @@ Current truth:
   proposal validation, review-trigger routing, reviewer-decision validation,
   promotion normalization, deterministic fixture-mode v3 package compilation,
   deterministic local document-folder capsule building, `.capsule` archive
-  writing, PRAXIS context-pack export, PRAXIS local import receipts, Codex MCP
-  stdio tools/resources/prompts, Axum fixture API routes, build-plan printing,
-  schema export, and CLI
+  writing, PRAXIS context-pack export, PRAXIS local import receipts,
+  review-queue and promotion-summary artifacts, JSONL user/assistant
+  discussion capture as local source material, deterministic MVP eval checks,
+  Codex MCP stdio tools/resources/prompts, Axum fixture API routes, build-plan
+  printing, schema export, and CLI
   `doctor`/`validate`/`inspect`/`ontology-plan`/`ladybug-*`/`source-pack-check`/
   `proposal-check`/`build-plan`/`review-check`/`promote-check`/`schema-export`.
   `welcome`/`build-docs`/`build-fixture`/`archive`/`context-pack`/
-  `praxis-pack`/`mcp-config`.
-- **Not built yet**: PDF/OCR/conversation ingestion, live model provider
-  calls, PostgreSQL migrations, durable build jobs, task handler, cloud
-  artifact storage, auth, deployment wiring, and PRAXIS frontend integration.
-- **Next build**: durable build state and store-backed job records first,
-  ingestion/model-provider adapters second, PRAXIS frontend integration after
-  the local API/context-pack contract remains stable.
+  `praxis-pack`/`mcp-config`/`eval`.
+- **Not built yet**: editable review-decision workflow, PDF/OCR/scanned-image
+  and web ingestion, richer conversation adapters, live model provider calls,
+  PostgreSQL migrations, durable build jobs, task handler, cloud artifact
+  storage, auth, deployment wiring, and PRAXIS frontend integration.
+- **Next build**: editable review decisions first, so a human-edited reject or
+  approval can re-run promotion and recompilation before cloud persistence or
+  live provider work starts.
 
 Start with [docs/CODING_LEDGER.md](docs/CODING_LEDGER.md) and
 [docs/NEXT_CODE_BUILD_PLAN.md](docs/NEXT_CODE_BUILD_PLAN.md). Use
