@@ -11,13 +11,11 @@ For a coding session, start with the shortest authoritative path:
 5. [Missing Work Audit 2026-06-08](MISSING_WORK_AUDIT_2026_06_08.md)
 6. [Code Audit 2026-06-08](CODE_AUDIT_2026_06_08.md)
 7. [Post-Build Audit 2026-06-08](POST_BUILD_AUDIT_2026_06_08.md)
-8. [Build Ledger](BUILD_LEDGER.md)
-9. [Code Quality Tooling](CODE_QUALITY_TOOLING.md)
-10. [Codex MCP Capsule Builder](CODEX_MCP_CAPSULE_BUILDER.md)
-11. [Capsule Specification](CAPSULE_SPEC.md)
-12. [Engineering Baseline](ENGINEERING_BASELINE.md)
-13. [Improvement Guidelines](IMPROVEMENT_GUIDELINES.md)
-14. [Scaffold Audit](SCAFFOLD_AUDIT.md)
+8. [Code Quality Tooling](CODE_QUALITY_TOOLING.md)
+9. [Capsule Specification](CAPSULE_SPEC.md)
+10. [Engineering Baseline](ENGINEERING_BASELINE.md)
+11. [Improvement Guidelines](IMPROVEMENT_GUIDELINES.md)
+12. [Scaffold Audit](SCAFFOLD_AUDIT.md)
 
 Use the full index below when a task needs product narrative, ontology research,
 deployment, PRAXIS integration, security, or operations context.
@@ -92,3 +90,5 @@ Architecture decisions:
 - [ADR-006: Open Source License and Citation](decisions/ADR-006-open-source-license-and-citation.md)
 - [ADR-007: LLM Extraction Proposal Boundary](decisions/ADR-007-llm-extraction-proposal-boundary.md)
 - [ADR-008: Ladybug Required Embedded Graph Projection](decisions/ADR-008-ladybug-required-embedded-graph-projection.md)
+- [ADR-009: Place The First Capsule Diff Engine In The Compiler](decisions/ADR-009-diff-engine-placement.md)
+- [ADR-010: Add Visibility And Attribution Fields To Capsule Manifests](decisions/ADR-010-visibility-attribution-manifest-fields.md)

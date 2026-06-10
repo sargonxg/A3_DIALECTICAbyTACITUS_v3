@@ -3,8 +3,9 @@
 Date: 2026-06-09
 
 Status: active implementation plan after the local MVP capsule-loop hardening
-commit. The local proof lane is working; the next build slice is editable
-review decisions, not cloud persistence or live model providers.
+commit and the 2026-06-09 strategic v3 plan review. The local proof lane is
+working; the next build slice is editable review decisions, not cloud
+persistence or live model providers.
 
 ## Objective
 
@@ -28,6 +29,148 @@ appropriate.
 Read [Improvement Guidelines](IMPROVEMENT_GUIDELINES.md) before implementing
 this plan. That file records the active gap audit and quality bar for the
 first executable build.
+
+## Strategic v3 Incorporation
+
+The 2026-06-09 strategic plan is accepted as a planning layer, not as proof of
+implemented behavior. The repo governance remains binding:
+
+- `docs/SOURCE_OF_TRUTH.md`, `docs/CODING_LEDGER.md`, this file, and ADRs
+  control implementation order;
+- every new schema family or architectural boundary needs an ADR before code;
+- no planned capability should be described as functional until it has command,
+  fixture, and test evidence.
+
+The amended strategic sequence is:
+
+```text
+editable review decisions
+  -> capsule diff + change memo
+  -> deterministic integrity envelope
+  -> elicitation protocols
+  -> composition inspector + visibility/attribution
+  -> live provider and richer ingestion
+  -> store-backed API and durable jobs
+  -> PRAXIS staging integration
+  -> scorecard, Living Capsule export, publish validation
+```
+
+The local Demo Gate is: real or fixture documents -> reviewed capsule ->
+signed or verifiable package -> version-to-version diff -> cited change memo.
+This gate must stay laptop-local and must not require Cloud Run, PostgreSQL,
+hosted MCP, or PRAXIS production calls.
+
+## Planned Strategic Slices After Editable Review
+
+### Slice C: Diff Engine And Change Memo
+
+Status: planned, ADR required.
+
+Governance: [ADR-009](decisions/ADR-009-diff-engine-placement.md) proposes
+placing the first diff engine inside `dialectica-compiler`.
+
+Deliver:
+
+- `schemas/capsule-3.0/capsule_diff.schema.json`;
+- golden old/new capsule fixture pair with planted deltas;
+- deterministic `diff.json`;
+- cited `change-memo.md` renderer;
+- CLI `diff` command and local MCP diff tool;
+- eval check for diff correctness.
+
+Acceptance:
+
+- golden-pair diff output is byte-identical across runs;
+- memo citations resolve to source or review receipts in the newer capsule;
+- no store, cloud, hosted MCP, or live provider call is required.
+
+### Slice D: Deterministic Integrity Envelope
+
+Status: planned, depends on deterministic byte-output hardening.
+
+Deliver:
+
+- explicit canonical-file digest scope;
+- Merkle root over canonical files, excluding rebuildable projections/receipts
+  only where the manifest already documents that scope;
+- `capsule verify` CLI;
+- tamper tests;
+- Ed25519 signing plan that separates author identity from publisher identity.
+
+Acceptance:
+
+- one-byte mutation fails verification;
+- fixture packages verify in CI;
+- signing does not hide or overwrite author/publisher attribution.
+
+### Slice I: Elicitation Protocols
+
+Status: planned, ADR-007 proposal-only boundary applies.
+
+Deliver:
+
+- `schemas/capsule-3.0/elicitation_protocol.schema.json`;
+- fixture protocols `user.v1`, `situation.v1`, `tool.v1`, and `output.v1`;
+- scripted Tool interview fixture using the existing JSONL discussion-capture
+  source path;
+- completeness scoring;
+- local API and MCP read surfaces for protocols and session state.
+
+Acceptance:
+
+- scripted `tool.v1` fixture produces a valid Tool capsule with transcript-span
+  provenance for derived records;
+- records remain proposals until Rust validation and review promotion.
+
+### Slice J: Composition, Inspector, Visibility, And Attribution
+
+Status: planned, ADR required.
+
+Governance:
+[ADR-010](decisions/ADR-010-visibility-attribution-manifest-fields.md)
+proposes the visibility and attribution contract.
+
+Deliver:
+
+- deterministic compile of `1 User + 0..n Situation + 0..n Tool + 1 Output`;
+- strictest-wins merge of runtime and output contracts;
+- context budget tiers `S`, `M`, and `L`;
+- compile-inspector payload with contribution map, compression report, merged
+  contract, and compiled hash;
+- manifest/listing visibility and attribution fields;
+- device/heuristic attribution ids in PRAXIS context packs.
+
+Acceptance:
+
+- permuting input capsule order never changes the compiled hash;
+- inspector payload is contract-tested;
+- generated fixture memo carries Tool device attribution end to end.
+
+## Documentation Hygiene Proposal
+
+`graphify-out/` is generated output and should not be versioned. Keep Graphify
+as a local orientation command (`graphify update .`), then verify important
+claims against source files.
+
+After the strategic ADRs are reviewed, create `docs/ARCHIVE/` and move docs
+that are historical, duplicated, or replaced by the active build path. The
+active tier should remain the 12-file start path in `AGENTS.md` plus accepted
+ADRs and narrow API/schema contracts.
+
+Proposed archive candidates after inbound-link review:
+
+- historical planning: `FOUNDATION_BUILD.md`, `IMPLEMENTATION_PHASE_PLAN.md`,
+  `IMPLEMENTATION_BLUEPRINT.md`, `ROADMAP.md`, `REPOSITORY_CONCEPT_REVIEW.md`;
+- narrative/background: `ABOUT_DIALECTICA.md`, `GITHUB_PROFILE.md`,
+  `TECH_BENCHMARK.md`, `CAPSULE_BUILD_EXAMPLES.md`, `INTELLECTUAL_TOOLS.md`,
+  `AGENTIC_WORKFLOWS.md`;
+- older ops/reference docs once active content is lifted:
+  `CI_CD.md`, `DEPLOYMENT.md`, `LOCAL_DEVELOPMENT.md`, `PYTHON_TOOLING.md`,
+  `DEPENDENCIES.md`, `OPERATIONS.md`.
+
+Do not archive `CAPSULE_SPEC.md`, `API_CONTRACT.md`, `DATA_MODEL.md`,
+`PRAXIS_INTEGRATION.md`, `GRAPH_PROFILE_REGISTRY.md`, accepted ADRs, or any
+current audit/ledger file until links and source-of-truth priority are updated.
 
 ## Current Executable Surface
 

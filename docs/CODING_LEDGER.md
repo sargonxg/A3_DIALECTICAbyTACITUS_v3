@@ -10,6 +10,11 @@ ingestion and the durable capsule-building service are not yet implemented. See
 [Missing Work Audit 2026-06-08](MISSING_WORK_AUDIT_2026_06_08.md), and
 [LLM Context Extraction Architecture](LLM_CONTEXT_EXTRACTION_ARCHITECTURE.md).
 
+Strategic update: the 2026-06-09 DIALECTICA v3 strategic plan adds diff,
+elicitation, composition, visibility, attribution, scorecard, Living Capsule,
+and publish-validation slices. These are ledgered as planned work below. They
+are not implemented until they have command, fixture, and test evidence.
+
 This ledger turns the architecture docs into a coding sequence. Keep it updated
 whenever a crate, service, migration, fixture, or deployment gate changes.
 
@@ -85,6 +90,11 @@ Not yet built:
 - PDF/OCR/conversation source-pack ingestion;
 - live LLM extraction orchestration and provider clients;
 - production-grade Merkle/checksum/signature envelope;
+- capsule diff engine and cited change-memo renderer;
+- typed elicitation protocols and resumable protocol sessions;
+- deterministic multi-capsule composition and compile inspector payload;
+- strict visibility, share-grant, lineage, author, publisher, and reasoning
+  attribution contracts;
 - store-backed HTTP API routes and build jobs;
 - task-handler route;
 - PostgreSQL migrations;
@@ -92,6 +102,31 @@ Not yet built:
 - ontology/semantic-layer creation workflow;
 - human review queue;
 - frontend integration in PRAXIS.
+
+## 2026-06-10 Strategic v3 Ledger Entries
+
+These entries fold the strategic plan into the active coding ledger without
+claiming implementation.
+
+| Slice | Status | Owner crate/surface | First implementation |
+| --- | --- | --- | --- |
+| Editable review decisions | next executable slice | `dialectica-extractor`, `dialectica-builder`, CLI/API tests | human-editable decisions replace local defaults, then promotion recompiles |
+| Diff engine and change memo | planned after editable review | `dialectica-compiler`, CLI, MCP, schema export | compare two compiled packages into deterministic `diff.json` and cited memo; see ADR-009 |
+| Integrity envelope | planned before signed demo claims | `dialectica-compiler`, `dialectica-capsule`, CLI | Merkle/digest scope, `capsule verify`, tamper tests, author/publisher signature chain |
+| Elicitation protocols | planned after diff/integrity local proof | `dialectica-extractor`, `dialectica-builder`, API, MCP | protocol fixtures for user/situation/tool/output, transcript-backed proposals, completeness scoring |
+| Composition inspector and attribution | planned before PRAXIS Studio dependency | `dialectica-compiler`, `dialectica-capsule`, API contract | deterministic multi-capsule compile, contribution map, merged contract, device attribution; see ADR-010 |
+| Store-backed jobs and PRAXIS staging | deferred until local contracts settle | `dialectica-store`, `dialectica-api`, `dialectica-task-handler` | persisted build/review/export state, OIDC PRAXIS staging path |
+| Scorecard, Living Capsule, publish validation | deferred release evidence | `dialectica-eval`, CLI/API export paths | reproducible scorecard, public weekly artifact, listing validation |
+
+Order rule:
+
+```text
+editable review -> diff -> integrity -> elicitation -> composition -> store/API -> PRAXIS -> scorecard/export/publish
+```
+
+Never move store, hosted MCP, Cloud Run, or PRAXIS production integration ahead
+of the local Demo Gate: reviewed capsule -> verifiable package -> diff -> cited
+change memo.
 
 ## Command Gate
 
@@ -297,6 +332,53 @@ Done when:
 - eval report clearly says what improved and what failed;
 - failure cases update the ledger instead of being hidden.
 
+### Lane G: Capsule Diff And Change Memo
+
+Goal: make version-to-version capsule change visible, cited, and testable.
+
+Governance: [ADR-009](decisions/ADR-009-diff-engine-placement.md).
+
+Deliver:
+
+- `capsule_diff.schema.json`;
+- golden old/new capsule fixture pair;
+- CLI and MCP diff surfaces;
+- cited `change-memo.md` renderer;
+- diff-correctness eval check.
+
+Done when:
+
+- golden diff and memo are deterministic;
+- added, retracted, superseded, review-transition, temporal, source, and
+  reasoning deltas are represented;
+- memo citations resolve to source or review receipts.
+
+### Lane H: Elicitation And Composition Contracts
+
+Goal: provide the engine contracts PRAXIS Capsule Studio and Context Inspector
+need without adding a new product surface.
+
+Governance:
+[ADR-010](decisions/ADR-010-visibility-attribution-manifest-fields.md) for
+visibility and attribution fields; ADR-007 remains binding for proposal-only
+elicitation outputs.
+
+Deliver:
+
+- typed elicitation protocol schema and four fixture protocols;
+- scripted Tool interview fixture through JSONL discussion capture;
+- deterministic multi-capsule compile with contribution map and merged
+  contracts;
+- visibility, share-grant, author, publisher, lineage, and device attribution
+  fields in portable contracts.
+
+Done when:
+
+- a scripted expert interview produces a valid Tool capsule with transcript
+  span provenance;
+- `1 User + n Situation + n Tool + 1 Output` compiles deterministically;
+- PRAXIS context packs carry device-level attribution and inspector payloads.
+
 ## No-Touch Rules
 
 - Do not add a required graph database.
@@ -330,19 +412,26 @@ Follow [Next Code Build Plan](NEXT_CODE_BUILD_PLAN.md) and
 
 1. add editable reviewer-decision commands or API routes so humans can replace
    local `approve_with_caveats` defaults;
-2. harden deterministic checksum/signature semantics beyond fixture placeholders;
-3. add byte-for-byte generated fixture comparison once canonical generated
+2. approve or revise ADR-009 and ADR-010 before implementing diff or
+   visibility/attribution contracts;
+3. add the diff engine and cited change memo after editable review behavior is
+   proven;
+4. harden deterministic checksum/signature semantics beyond fixture placeholders;
+5. add byte-for-byte generated fixture comparison once canonical generated
    output is accepted;
-4. add source-pack ingestion adapters for PDFs, OCR, scanned images, and web
+6. add elicitation protocol fixtures through the existing discussion-capture
+   source path;
+7. add deterministic multi-capsule composition and compile-inspector payload;
+8. add source-pack ingestion adapters for PDFs, OCR, scanned images, and web
    capture;
-5. add provider traits and live model extraction behind proposal-only
+9. add provider traits and live model extraction behind proposal-only
    boundaries;
-6. deepen v3 validation across claims, sources, graph, review, reasoning, and
+10. deepen v3 validation across claims, sources, graph, review, reasoning, and
    runtime records;
-7. add store-backed build job state and repository interfaces;
-8. add PostgreSQL migrations for capsule build state and artifacts;
-9. add task-handler routes after store-backed jobs exist;
-10. start PRAXIS frontend integration only after the API/context-pack contract is
+11. add store-backed build job state and repository interfaces;
+12. add PostgreSQL migrations for capsule build state and artifacts;
+13. add task-handler routes after store-backed jobs exist;
+14. start PRAXIS frontend integration only after the API/context-pack contract is
    stable.
 
 Do not start Cloud Run, hosted MCP, or PRAXIS production integration work until
