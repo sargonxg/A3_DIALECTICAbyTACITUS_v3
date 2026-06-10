@@ -84,6 +84,10 @@ fn main() {
                 Path::new(&proposal_dir),
             );
         }
+        "review-draft" => {
+            let remaining = args.collect::<Vec<_>>();
+            draft_review_decisions_from_args(&remaining);
+        }
         "review-check" => {
             let Some(build_request_path) = args.next() else {
                 eprintln!("missing build request path");
@@ -131,6 +135,10 @@ fn main() {
                 Path::new(&proposal_dir),
                 Path::new(&review_dir),
             );
+        }
+        "compile-reviewed" => {
+            let remaining = args.collect::<Vec<_>>();
+            compile_reviewed_from_args(&remaining);
         }
         "build-fixture" => {
             let Some(fixture_dir) = args.next() else {
@@ -245,8 +253,10 @@ fn print_help() {
     println!("  source-pack-check <path> validate a builder source pack");
     println!("  proposal-check <request> <source-pack> <proposal-dir>");
     println!("  build-plan <request> <source-pack> <proposal-dir>");
+    println!("  review-draft <request> <source-pack> <proposal-dir> --out <review-dir> [--decided-at <timestamp>]");
     println!("  review-check <request> <source-pack> <proposal-dir> <review-dir>");
     println!("  promote-check <request> <source-pack> <proposal-dir> <review-dir>");
+    println!("  compile-reviewed <request> <source-pack> <proposal-dir> <review-dir> --out <dir>");
     println!("  build-fixture <fixture-dir> --out <dir>");
     println!("  archive <compiled-dir> --out <file.capsule>");
     println!("  context-pack <compiled-dir> [--workflow <workflow>]");
@@ -619,6 +629,60 @@ fn check_review_decisions(
     }
 }
 
+fn draft_review_decisions_from_args(args: &[String]) {
+    let Some(build_request_path) = args.first() else {
+        eprintln!("missing build request path");
+        std::process::exit(2);
+    };
+    let Some(source_pack_path) = args.get(1) else {
+        eprintln!("missing source pack path");
+        std::process::exit(2);
+    };
+    let Some(proposal_dir) = args.get(2) else {
+        eprintln!("missing proposal directory");
+        std::process::exit(2);
+    };
+    let Some(output_dir) = option_value(args, "--out") else {
+        eprintln!("missing --out <review-dir>");
+        std::process::exit(2);
+    };
+    let decided_at =
+        option_value(args, "--decided-at").unwrap_or_else(|| "1970-01-01T00:00:00Z".to_owned());
+
+    let build_request = load_build_request_or_exit(Path::new(build_request_path));
+    let source_pack = load_source_pack_or_exit(Path::new(source_pack_path));
+    let proposal_set = load_proposal_set_or_exit(Path::new(proposal_dir));
+    let decision_set = dialectica_extractor::draft_reviewer_decision_set(
+        &build_request,
+        &proposal_set,
+        &decided_at,
+    );
+    let report = dialectica_extractor::validate_reviewer_decision_set(
+        &source_pack,
+        &build_request,
+        &proposal_set,
+        &decision_set,
+    );
+    print_build_validation_report(&report);
+    if report.has_errors() {
+        println!("valid=false");
+        std::process::exit(1);
+    }
+
+    let output_dir = Path::new(&output_dir);
+    let output_file = output_dir.join("decision_set.json");
+    if let Err(error) = write_reviewer_decision_set(&output_file, &decision_set) {
+        eprintln!("{error}");
+        println!("valid=false");
+        std::process::exit(1);
+    }
+
+    println!("decision_set_path={}", output_file.display());
+    println!("decision_set_id={}", decision_set.decision_set_id);
+    println!("decision_count={}", decision_set.decisions.len());
+    println!("valid=true");
+}
+
 fn check_promotion(
     build_request_path: &Path,
     source_pack_path: &Path,
@@ -659,6 +723,58 @@ fn check_promotion(
         }
         Err(report) => {
             print_build_validation_report(&report);
+            println!("valid=false");
+            std::process::exit(1);
+        }
+    }
+}
+
+fn compile_reviewed_from_args(args: &[String]) {
+    let Some(build_request_path) = args.first() else {
+        eprintln!("missing build request path");
+        std::process::exit(2);
+    };
+    let Some(source_pack_path) = args.get(1) else {
+        eprintln!("missing source pack path");
+        std::process::exit(2);
+    };
+    let Some(proposal_dir) = args.get(2) else {
+        eprintln!("missing proposal directory");
+        std::process::exit(2);
+    };
+    let Some(review_dir) = args.get(3) else {
+        eprintln!("missing review decision directory");
+        std::process::exit(2);
+    };
+    let Some(output_dir) = option_value(args, "--out") else {
+        eprintln!("missing --out <dir>");
+        std::process::exit(2);
+    };
+
+    let build_request = load_build_request_or_exit(Path::new(build_request_path));
+    let source_pack = load_source_pack_or_exit(Path::new(source_pack_path));
+    let proposal_set = load_proposal_set_or_exit(Path::new(proposal_dir));
+    let decision_set = load_reviewer_decision_set_or_exit(Path::new(review_dir));
+
+    match dialectica_compiler::compile_from_parts(
+        &build_request,
+        &source_pack,
+        &proposal_set,
+        &decision_set,
+        Path::new(&output_dir),
+    ) {
+        Ok(receipt) => {
+            println!("capsule_id={}", receipt.capsule_id);
+            println!("output_dir={}", receipt.output_dir.display());
+            println!("promoted_record_count={}", receipt.promoted_record_count);
+            println!("rejected_record_count={}", receipt.rejected_record_count);
+            println!("caveated_record_count={}", receipt.caveated_record_count);
+            println!("package_file_count={}", receipt.package_file_count);
+            println!("bundle_digest={}", receipt.bundle_digest);
+            println!("valid=true");
+        }
+        Err(error) => {
+            eprintln!("{error}");
             println!("valid=false");
             std::process::exit(1);
         }
@@ -828,6 +944,18 @@ fn ladybug_query(path: &Path, query: &str) {
             std::process::exit(1);
         }
     }
+}
+
+fn write_reviewer_decision_set(
+    path: &Path,
+    value: &dialectica_extractor::ReviewerDecisionSet,
+) -> Result<(), std::io::Error> {
+    if let Some(parent) = path.parent() {
+        std::fs::create_dir_all(parent)?;
+    }
+    let text = serde_json::to_string_pretty(value)
+        .map_err(|error| std::io::Error::new(std::io::ErrorKind::InvalidData, error))?;
+    std::fs::write(path, format!("{text}\n"))
 }
 
 fn load_legacy_or_exit(path: &Path) -> CapsuleBundle {

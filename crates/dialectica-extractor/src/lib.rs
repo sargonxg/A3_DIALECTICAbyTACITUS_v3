@@ -291,6 +291,47 @@ impl ReviewerDecisionSet {
     }
 }
 
+pub fn draft_reviewer_decision_set(
+    request: &CapsuleBuildRequest,
+    proposal_set: &ProposalSet,
+    decided_at: &str,
+) -> ReviewerDecisionSet {
+    let mut seen = BTreeSet::new();
+    let mut decisions = Vec::new();
+    for gate in route_review_gates(request, proposal_set) {
+        if !seen.insert(gate.proposal_id.clone()) {
+            continue;
+        }
+        decisions.push(ReviewerDecision {
+            decision_id: format!("decision_{}", gate.proposal_id.trim_start_matches("prop_")),
+            proposal_id: gate.proposal_id,
+            object_id: gate.object_id,
+            status: ReviewDecisionStatus::ApproveWithCaveats,
+            reviewer_role: gate.reviewer_role,
+            decided_at: decided_at.to_owned(),
+            rationale: "Draft reviewer decision generated from the review queue. Edit status, rationale, caveats, and requested evidence before promoted use.".to_owned(),
+            caveats: vec![
+                "Generated as an editable DIALECTICA review draft; not expert-reviewed.".to_owned(),
+                "Confirm source meaning, temporal status, ontology fit, rights, and output language before promotion.".to_owned(),
+            ],
+            requested_evidence: Vec::new(),
+        });
+    }
+
+    ReviewerDecisionSet {
+        decision_set_id: format!(
+            "reviewset_{}_editable",
+            proposal_set
+                .extraction_run
+                .run_id
+                .trim_start_matches("run_")
+        ),
+        contract_version: EXTRACTOR_CONTRACT_VERSION.to_owned(),
+        extraction_run_id: proposal_set.extraction_run.run_id.clone(),
+        decisions,
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, JsonSchema)]
 pub struct ReviewerDecision {
     pub decision_id: String,
@@ -1308,11 +1349,12 @@ fn promoted_without_gate(proposal: &ExtractionProposal) -> PromotedRecord {
 #[cfg(test)]
 mod tests {
     use super::{
-        plan_capsule_build, route_review_gates, validate_proposal_set, validate_source_pack,
-        BuildMode, BuildValidationSeverity, CapsuleBuildRequest, CapsuleType, ExtractionProposal,
+        draft_reviewer_decision_set, plan_capsule_build, promote_records, route_review_gates,
+        validate_proposal_set, validate_reviewer_decision_set, validate_source_pack, BuildMode,
+        BuildValidationSeverity, CapsuleBuildRequest, CapsuleType, ExtractionProposal,
         ExtractionRun, ModelInvocationReceipt, PromptInjectionRisk, ProposalKind, ProposalSet,
-        ReviewPolicy, ReviewTrigger, ReviewTriggerLevel, SourceDocument, SourcePack, SourceSpan,
-        TypeInference, TypeInferenceSource, EXTRACTOR_CONTRACT_VERSION,
+        ReviewDecisionStatus, ReviewPolicy, ReviewTrigger, ReviewTriggerLevel, SourceDocument,
+        SourcePack, SourceSpan, TypeInference, TypeInferenceSource, EXTRACTOR_CONTRACT_VERSION,
     };
     use serde_json::json;
 
@@ -1375,6 +1417,46 @@ mod tests {
         assert_eq!(gates.len(), 1);
         assert!(gates[0].blocking);
         assert_eq!(gates[0].proposal_kind, ProposalKind::Claim);
+    }
+
+    #[test]
+    fn drafted_reviewer_decisions_are_editable_before_promotion() {
+        let source_pack = fixture_source_pack();
+        let request = fixture_request();
+        let proposal_set = fixture_proposal_set();
+        let mut decision_set =
+            draft_reviewer_decision_set(&request, &proposal_set, "2026-06-10T00:00:00Z");
+
+        let report =
+            validate_reviewer_decision_set(&source_pack, &request, &proposal_set, &decision_set);
+        assert!(!report.has_errors(), "{:#?}", report.findings);
+        assert_eq!(decision_set.extraction_run_id, "run_conflict_fixture");
+        assert_eq!(decision_set.decisions.len(), 1);
+        assert_eq!(
+            decision_set.decisions[0].status,
+            ReviewDecisionStatus::ApproveWithCaveats
+        );
+        assert!(!decision_set.decisions[0].caveats.is_empty());
+
+        decision_set.decisions[0].status = ReviewDecisionStatus::Approve;
+        decision_set.decisions[0].caveats.clear();
+        decision_set.decisions[0].rationale =
+            "Human reviewer approved the source-backed claim without draft caveats.".to_owned();
+
+        let promoted = promote_records(&request, &source_pack, &proposal_set, &decision_set)
+            .expect("edited approval should promote");
+        assert_eq!(promoted.promoted_records.len(), 1);
+        assert_eq!(promoted.caveated_record_count, 0);
+        assert!(promoted.promoted_records[0].caveats.is_empty());
+
+        decision_set.decisions[0].status = ReviewDecisionStatus::Reject;
+        decision_set.decisions[0].rationale =
+            "Human reviewer rejected the claim for promoted PRAXIS use.".to_owned();
+
+        let promoted = promote_records(&request, &source_pack, &proposal_set, &decision_set)
+            .expect("edited rejection should remain compiler-ready lineage");
+        assert!(promoted.promoted_records.is_empty());
+        assert_eq!(promoted.rejected_proposal_ids, vec!["prop_claim_001"]);
     }
 
     fn fixture_source_pack() -> SourcePack {

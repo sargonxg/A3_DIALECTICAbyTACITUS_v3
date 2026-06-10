@@ -1,15 +1,16 @@
 # Next Code Build Plan
 
-Date: 2026-06-09
+Date: 2026-06-10
 
-Status: active implementation plan after the local MVP capsule-loop hardening
-commit and the 2026-06-09 strategic v3 plan review. The local proof lane is
-working; the next build slice is editable review decisions, not cloud
-persistence or live model providers.
+Status: active implementation plan after the local MVP capsule-loop hardening,
+the 2026-06-09 strategic v3 plan review, and the 2026-06-10 editable review CLI
+slice. The local proof lane can now generate editable review decisions and
+recompile reviewed output; the next build slice is the diff engine and cited
+change memo, not cloud persistence or live model providers.
 
 ## Objective
 
-Turn the current local capsule engine into an editable review loop:
+The current local capsule engine now supports an editable review loop:
 
 ```text
 source pack / local documents / JSONL discussion source
@@ -21,10 +22,9 @@ source pack / local documents / JSONL discussion source
   -> recompile deterministic v3 .capsule + PRAXIS context pack
 ```
 
-The next build should not add broad infrastructure. It should prove that human
-review changes the promoted PRAXIS context: a reject removes the object from
-the context pack, and an approval without caveats removes draft caveats where
-appropriate.
+The next build should not add broad infrastructure. The editable review slice is
+locally proven; continue toward the Demo Gate by producing version-to-version
+diff output and a cited change memo.
 
 Read [Improvement Guidelines](IMPROVEMENT_GUIDELINES.md) before implementing
 this plan. That file records the active gap audit and quality bar for the
@@ -191,8 +191,10 @@ Already implemented:
 - CLI `source-pack-check`;
 - CLI `proposal-check`;
 - CLI `build-plan`;
+- CLI `review-draft`;
 - CLI `review-check`;
 - CLI `promote-check`;
+- CLI `compile-reviewed`;
 - CLI `build-fixture`;
 - CLI `archive`;
 - CLI `context-pack`;
@@ -221,13 +223,13 @@ Already implemented:
 
 Not yet implemented:
 
-- editable review-decision commands or API routes;
+- editable review-decision API routes;
 - live model-provider extraction calls;
 - production-grade Merkle/checksum/signature envelope;
 - store-backed HTTP API routes and durable build jobs;
 - PostgreSQL migrations;
 - PDF/OCR/scanned image/web ingestion and richer conversation adapters;
-- interactive human review UI and editable review-decision workflow;
+- interactive human review UI beyond the local editable CLI workflow;
 - PRAXIS frontend integration.
 
 Current proof commands:
@@ -245,8 +247,10 @@ cargo run -p dialectica-cli -- ontology-plan fixtures/golden-policy-capsule/expe
 cargo run -p dialectica-cli -- source-pack-check fixtures/golden-policy-capsule/source-pack/source_pack.json
 cargo run -p dialectica-cli -- proposal-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals
 cargo run -p dialectica-cli -- build-plan fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals
+cargo run -p dialectica-cli -- review-draft fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals --out $env:TEMP\dialectica-review-draft --decided-at 2026-06-10T00:00:00Z
 cargo run -p dialectica-cli -- review-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals fixtures/golden-policy-capsule/review-decisions
 cargo run -p dialectica-cli -- promote-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals fixtures/golden-policy-capsule/review-decisions
+cargo run -p dialectica-cli -- compile-reviewed fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals fixtures/golden-policy-capsule/review-decisions --out $env:TEMP\dialectica-reviewed-v3
 cargo run -p dialectica-cli -- schema-export schemas/capsule-3.0
 python -m compileall tools/python
 python -m unittest discover tools/python/tests
@@ -254,7 +258,7 @@ python -m unittest discover tools/python/tests
 
 ## Phase 1: Source Pack And Extraction Proposal Contract
 
-Status: fixture-mode contract implemented.
+Status: fixture-mode contract plus editable CLI proof implemented.
 
 Goal: make the input side of the engine real without calling a model provider.
 
@@ -302,6 +306,10 @@ Deliver:
   implemented;
 - lineage preservation for rejected and evidence-requested proposals:
   implemented in promoted-record summaries.
+- editable review draft generation with deterministic caveats: implemented
+  through `dialectica review-draft`;
+- recompilation from edited decisions: implemented through
+  `dialectica compile-reviewed`.
 
 Acceptance:
 
@@ -309,6 +317,8 @@ Acceptance:
 - rejected records remain in lineage but do not enter promoted PRAXIS context;
 - caveats propagate to the compiler input contract;
 - tests prove a missing reviewer decision blocks promoted output.
+- tests prove an edited approval drops draft caveats and an edited rejection
+  stays out of promoted output on the golden policy fixture.
 
 ## Phase 3: Deterministic Bundle Writer
 

@@ -5,10 +5,10 @@ use dialectica_capsule::{
     ValidationSeverity,
 };
 use dialectica_extractor::{
-    export_schema_dir as export_extractor_schema_dir, load_build_request, load_source_pack,
-    plan_capsule_build, promote_records, route_review_gates, validate_proposal_set,
-    validate_reviewer_decision_set, validate_source_pack, BuildValidationSeverity, CapsuleType,
-    ProposalSet, ReviewDecisionStatus, ReviewerDecisionSet,
+    draft_reviewer_decision_set, export_schema_dir as export_extractor_schema_dir,
+    load_build_request, load_source_pack, plan_capsule_build, promote_records, route_review_gates,
+    validate_proposal_set, validate_reviewer_decision_set, validate_source_pack,
+    BuildValidationSeverity, CapsuleType, ProposalSet, ReviewDecisionStatus, ReviewerDecisionSet,
 };
 
 fn golden_bundle_dir() -> std::path::PathBuf {
@@ -209,6 +209,68 @@ fn rejected_reviewer_decision_excludes_proposal_from_promotion() {
     let promoted = promote_records(&build_request, &source_pack, &proposal_set, &decision_set)
         .expect("rejected decision should still produce a promoted record set");
 
+    assert!(promoted
+        .rejected_proposal_ids
+        .iter()
+        .any(|proposal_id| proposal_id == "prop_claim_army_rejected"));
+    assert!(!promoted
+        .promoted_records
+        .iter()
+        .any(|record| record.object_id == "clm_army_rejected_certification"));
+}
+
+#[test]
+fn drafted_golden_review_decisions_accept_human_edits() {
+    let build_request =
+        load_build_request(&golden_build_request_path()).expect("build request should load");
+    let source_pack =
+        load_source_pack(&golden_source_pack_path()).expect("source pack fixture should load");
+    let proposal_set =
+        ProposalSet::load_from_dir(&golden_proposals_dir()).expect("proposals should load");
+    let mut decision_set =
+        draft_reviewer_decision_set(&build_request, &proposal_set, "2026-06-10T00:00:00Z");
+
+    let draft_report =
+        validate_reviewer_decision_set(&source_pack, &build_request, &proposal_set, &decision_set);
+    assert!(!draft_report.has_errors(), "{:#?}", draft_report.findings);
+    assert_eq!(decision_set.decisions.len(), 9);
+    assert!(decision_set.decisions.iter().all(|decision| decision.status
+        == ReviewDecisionStatus::ApproveWithCaveats
+        && !decision.caveats.is_empty()));
+
+    let approved = decision_set
+        .decisions
+        .iter_mut()
+        .find(|decision| decision.proposal_id == "prop_claim_certified_result")
+        .expect("fixture should include certified-result decision");
+    approved.status = ReviewDecisionStatus::Approve;
+    approved.caveats.clear();
+    approved.rationale =
+        "Human reviewer approved this source-backed claim without draft caveats.".to_owned();
+
+    let rejected = decision_set
+        .decisions
+        .iter_mut()
+        .find(|decision| decision.proposal_id == "prop_claim_army_rejected")
+        .expect("fixture should include army-rejection decision");
+    rejected.status = ReviewDecisionStatus::Reject;
+    rejected.caveats.clear();
+    rejected.rationale =
+        "Human reviewer rejected this claim for promoted PRAXIS context.".to_owned();
+
+    let edited_report =
+        validate_reviewer_decision_set(&source_pack, &build_request, &proposal_set, &decision_set);
+    let promoted = promote_records(&build_request, &source_pack, &proposal_set, &decision_set)
+        .expect("edited draft decisions should promote");
+    let certified = promoted
+        .promoted_records
+        .iter()
+        .find(|record| record.object_id == "clm_commission_certified_result")
+        .expect("approved claim should remain promoted");
+
+    assert!(!edited_report.has_errors(), "{:#?}", edited_report.findings);
+    assert_eq!(certified.review_status, Some(ReviewDecisionStatus::Approve));
+    assert!(certified.caveats.is_empty());
     assert!(promoted
         .rejected_proposal_ids
         .iter()

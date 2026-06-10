@@ -624,3 +624,44 @@ Next:
 2. implement editable review decisions and recompile tests;
 3. only then resume persistence, provider, hosted MCP, or PRAXIS integration
    planning.
+
+## 2026-06-10 - Editable Review Decision CLI
+
+Status: implemented locally; ready for diff-engine slice.
+
+Actions:
+
+- added `draft_reviewer_decision_set` in `dialectica-extractor` so a review
+  queue can become an editable `ReviewerDecisionSet` instead of a hidden local
+  default;
+- added `dialectica review-draft` to write `review-decisions/decision_set.json`
+  from a build request, source pack, and proposal directory;
+- added `dialectica compile-reviewed` to re-run promotion and compilation from
+  edited reviewer decisions;
+- added golden-policy contract coverage proving that an edited approval removes
+  draft caveats and an edited rejection stays out of promoted PRAXIS output;
+- updated the coding ledger and next build plan so the next executable slice is
+  the diff engine and cited change memo.
+
+Evidence:
+
+- `cargo test -p dialectica-extractor`
+- `cargo test -p dialectica-cli`
+- `cargo test -p dialectica-contract-tests drafted_golden_review_decisions_accept_human_edits`
+- `cargo run -q -p dialectica-cli -- review-draft fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals --out $env:TEMP\dialectica-review-draft --decided-at 2026-06-10T00:00:00Z`
+- edited the generated temp decision set to approve
+  `prop_claim_certified_result` without caveats and reject
+  `prop_claim_army_rejected`;
+- `cargo run -q -p dialectica-cli -- review-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals $env:TEMP\dialectica-review-draft`
+- `cargo run -q -p dialectica-cli -- promote-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals $env:TEMP\dialectica-review-draft`
+- `cargo run -q -p dialectica-cli -- compile-reviewed fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals $env:TEMP\dialectica-review-draft --out $env:TEMP\dialectica-reviewed-compile`
+- `cargo run -q -p dialectica-cli -- context-pack $env:TEMP\dialectica-reviewed-compile --workflow conflict_map` showed
+  `clm_army_rejected_certification` in `rejected_record_ids` and absent from
+  retrieval records.
+
+Next:
+
+1. implement Slice C: deterministic capsule diff schema/output and cited
+   change-memo renderer under ADR-009;
+2. keep store, hosted MCP, live providers, and PRAXIS production integration
+   behind the local Demo Gate.
