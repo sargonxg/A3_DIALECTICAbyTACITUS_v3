@@ -3,11 +3,12 @@
 use std::{
     error::Error,
     fmt::{Display, Formatter},
+    fs,
     path::Path,
 };
 
 use dialectica_capsule::{PraxisCapsulePackage, ValidationSeverity};
-use dialectica_compiler::export_praxis_context_pack;
+use dialectica_compiler::{export_praxis_context_pack, CapsuleDiff};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
@@ -165,6 +166,77 @@ pub fn evaluate_praxis_mvp(package_dir: &Path, workflow: &str) -> Result<EvalRep
     })
 }
 
+pub fn evaluate_capsule_diff(diff_path: &Path) -> Result<EvalReport, EvalError> {
+    let diff: CapsuleDiff = serde_json::from_str(
+        &fs::read_to_string(diff_path).map_err(|error| EvalError::Capsule(error.to_string()))?,
+    )
+    .map_err(|error| EvalError::Capsule(error.to_string()))?;
+
+    let mut checks = Vec::new();
+    checks.push(
+        if diff.schema_version == dialectica_compiler::CAPSULE_DIFF_SCHEMA_VERSION {
+            EvalCheck::pass("diff_schema_version", "diff schema version is current")
+        } else {
+            EvalCheck::fail(
+                "diff_schema_version",
+                format!("unexpected diff schema version {}", diff.schema_version),
+            )
+        },
+    );
+
+    checks.push(
+        if diff.summary.added_claim_count == diff.claims.added.len()
+            && diff.summary.retracted_claim_count == diff.claims.retracted.len()
+            && diff.summary.superseded_claim_count == diff.claims.superseded.len()
+        {
+            EvalCheck::pass("diff_summary_counts", "claim summary counts match deltas")
+        } else {
+            EvalCheck::fail(
+                "diff_summary_counts",
+                "claim summary counts do not match deltas",
+            )
+        },
+    );
+
+    checks.push(
+        if diff.summary.added_claim_count
+            + diff.summary.retracted_claim_count
+            + diff.summary.superseded_claim_count
+            > 0
+        {
+            EvalCheck::pass(
+                "diff_claim_signal",
+                "diff contains at least one claim delta",
+            )
+        } else {
+            EvalCheck::fail("diff_claim_signal", "diff contains no claim deltas")
+        },
+    );
+
+    checks.push(if cited_changes_have_receipts(&diff) {
+        EvalCheck::pass(
+            "diff_citation_fidelity",
+            "changed/new records carry source hashes or review receipts",
+        )
+    } else {
+        EvalCheck::fail(
+            "diff_citation_fidelity",
+            "one or more changed/new records lack citations",
+        )
+    });
+
+    let passed_count = checks.iter().filter(|check| check.passed).count();
+    let score = ((passed_count * 100) / checks.len()) as u8;
+    Ok(EvalReport {
+        schema_version: "dialectica_eval_report_v1".to_owned(),
+        capsule_id: diff.diff_id,
+        workflow: "capsule_diff".to_owned(),
+        passed: checks.iter().all(|check| check.passed),
+        score,
+        checks,
+    })
+}
+
 fn retrieval_records_have_source_receipts(records: &[Value]) -> bool {
     records.iter().all(|record| {
         record
@@ -194,11 +266,27 @@ fn review_or_caveat_visible(review_state: &str, caveats: &[String], records: &[V
         })
 }
 
+fn cited_changes_have_receipts(diff: &CapsuleDiff) -> bool {
+    diff.claims
+        .added
+        .iter()
+        .all(|record| !record.source_hashes.is_empty() || !record.review_receipt_ids.is_empty())
+        && diff
+            .claims
+            .superseded
+            .iter()
+            .all(|record| !record.source_hashes.is_empty() || !record.review_receipt_ids.is_empty())
+        && diff.review_transitions.iter().all(|transition| {
+            !transition.source_hashes.is_empty() || !transition.review_receipt_ids.is_empty()
+        })
+        && !diff.citations.new_source_hashes.is_empty()
+}
+
 #[cfg(test)]
 mod tests {
     use std::path::{Path, PathBuf};
 
-    use super::{evaluate_praxis_mvp, EvalCheck};
+    use super::{evaluate_capsule_diff, evaluate_praxis_mvp, EvalCheck};
 
     #[test]
     fn pass_helper_marks_check_successful() {
@@ -221,9 +309,27 @@ mod tests {
         assert!(report.score >= 80);
     }
 
+    #[test]
+    fn golden_capsule_diff_passes_diff_correctness_eval() {
+        let report = evaluate_capsule_diff(&golden_diff_fixture()).expect("diff should evaluate");
+
+        assert!(report.passed, "{:#?}", report.checks);
+        assert_eq!(report.workflow, "capsule_diff");
+        assert!(report
+            .checks
+            .iter()
+            .any(|check| check.id == "diff_citation_fidelity" && check.passed));
+    }
+
     fn canonical_capsule_fixture() -> PathBuf {
         Path::new(env!("CARGO_MANIFEST_DIR"))
             .join("../..")
             .join("fixtures/canonical-capsules/conflict-situation-capsule")
+    }
+
+    fn golden_diff_fixture() -> PathBuf {
+        Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("../..")
+            .join("fixtures/golden-policy-capsule/expected-diff/diff.json")
     }
 }

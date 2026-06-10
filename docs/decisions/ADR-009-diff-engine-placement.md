@@ -1,7 +1,7 @@
 # ADR-009: Place The First Capsule Diff Engine In The Compiler
 
 ## Status
-Proposed
+Accepted
 
 ## Date
 2026-06-10

@@ -30,6 +30,14 @@ use serde_json::{json, Value};
 use sha2::{Digest, Sha256};
 use zip::{write::SimpleFileOptions, CompressionMethod, ZipWriter};
 
+mod capsule_diff;
+
+pub use capsule_diff::{
+    diff_capsules, export_schema_dir, render_change_memo, write_capsule_diff, CapsuleDiff,
+    CapsuleDiffEndpoint, CapsuleDiffReceipt, CapsuleDiffSummary, RecordChange, RecordFamilyDelta,
+    RecordRef, SourcePackDelta, CAPSULE_DIFF_SCHEMA_VERSION,
+};
+
 /// Current compiler identifier.
 pub const COMPILER_ID: &str = "dialectica-compiler/0.2.0";
 
@@ -1324,7 +1332,7 @@ mod tests {
 
     use super::{
         can_emit_bundle, compile_fixture, compile_from_parts, export_praxis_context_pack,
-        write_capsule_archive,
+        write_capsule_archive, write_capsule_diff,
     };
 
     #[test]
@@ -1507,6 +1515,75 @@ mod tests {
         let _ = fs::remove_dir_all(out);
     }
 
+    #[test]
+    fn capsule_diff_reports_retractions_supersessions_and_citations() {
+        let old_out = fresh_temp_dir("dialectica_diff_old_fixture");
+        let new_out = fresh_temp_dir("dialectica_diff_new_fixture");
+        let diff_out = fresh_temp_dir("dialectica_diff_output_fixture");
+        compile_fixture(&golden_fixture_dir(), &old_out).expect("old fixture should compile");
+
+        let build_request = load_build_request(&golden_fixture_dir().join("build_request.json"))
+            .expect("build request should load");
+        let source_pack =
+            load_source_pack(&golden_fixture_dir().join("source-pack/source_pack.json"))
+                .expect("source pack should load");
+        let proposal_set = ProposalSet::load_from_dir(&golden_fixture_dir().join("proposals"))
+            .expect("proposal set should load");
+        let mut decision_set =
+            ReviewerDecisionSet::load_from_dir(&golden_fixture_dir().join("review-decisions"))
+                .expect("decision set should load");
+        let rejected = decision_set
+            .decisions
+            .iter_mut()
+            .find(|decision| decision.proposal_id == "prop_claim_army_rejected")
+            .expect("fixture decision should exist");
+        rejected.status = ReviewDecisionStatus::Reject;
+        rejected.caveats.clear();
+        rejected.rationale = "Rejected by test reviewer.".to_owned();
+        compile_from_parts(
+            &build_request,
+            &source_pack,
+            &proposal_set,
+            &decision_set,
+            &new_out,
+        )
+        .expect("new fixture should compile");
+        revise_certified_claim(&new_out);
+
+        let receipt = write_capsule_diff(&old_out, &new_out, &diff_out).expect("diff should write");
+        let diff: super::CapsuleDiff = serde_json::from_str(
+            &fs::read_to_string(&receipt.diff_path).expect("diff should read"),
+        )
+        .expect("diff should parse");
+        let memo = fs::read_to_string(&receipt.change_memo_path).expect("memo should read");
+
+        assert_eq!(receipt.retracted_claim_count, 1);
+        assert_eq!(receipt.superseded_claim_count, 1);
+        assert!(diff
+            .claims
+            .retracted
+            .iter()
+            .any(|record| record.record_id == "clm_army_rejected_certification"));
+        assert!(diff
+            .claims
+            .superseded
+            .iter()
+            .any(|record| record.record_id == "clm_commission_certified_result"));
+        assert!(diff.trust_transitions.iter().any(|transition| {
+            transition.record_id == "clm_commission_certified_result"
+                && transition.from.as_deref() == Some("T2")
+                && transition.to.as_deref() == Some("T1")
+        }));
+        assert!(diff.citations.new_source_hashes.iter().any(|hash| hash
+            == "sha256:3333333333333333333333333333333333333333333333333333333333333333"));
+        assert!(memo.contains("Review receipt: `decision_claim_certified_result`"));
+        assert!(memo.contains("Source hash: `sha256:3333333333333333333333333333333333333333333333333333333333333333`"));
+
+        let _ = fs::remove_dir_all(old_out);
+        let _ = fs::remove_dir_all(new_out);
+        let _ = fs::remove_dir_all(diff_out);
+    }
+
     fn golden_fixture_dir() -> PathBuf {
         Path::new(env!("CARGO_MANIFEST_DIR"))
             .join("../..")
@@ -1517,5 +1594,30 @@ mod tests {
         let root = std::env::temp_dir().join(format!("{}_{}", name, std::process::id()));
         let _ = fs::remove_dir_all(&root);
         root
+    }
+
+    fn revise_certified_claim(package_dir: &Path) {
+        let claims_path = package_dir.join("claims.jsonl");
+        let mut claims = fs::read_to_string(&claims_path)
+            .expect("claims should read")
+            .lines()
+            .map(|line| serde_json::from_str::<Value>(line).expect("claim should parse"))
+            .collect::<Vec<_>>();
+        for claim in &mut claims {
+            if claim.get("claim_id").and_then(Value::as_str)
+                == Some("clm_commission_certified_result")
+            {
+                claim["claim_text"] = Value::String(
+                    "The election commission certified the provisional result and opened the statutory challenge and audit window.".to_owned(),
+                );
+                claim["trust_layer"] = Value::String("T1".to_owned());
+            }
+        }
+        let mut text = String::new();
+        for claim in claims {
+            text.push_str(&serde_json::to_string(&claim).expect("claim should serialize"));
+            text.push('\n');
+        }
+        fs::write(claims_path, text).expect("claims should write");
     }
 }

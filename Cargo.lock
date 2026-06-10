@@ -331,6 +331,7 @@ dependencies = [
  "dialectica-capsule",
  "dialectica-extractor",
  "dialectica-graph",
+ "schemars",
  "serde",
  "serde_json",
  "sha2",
@@ -344,6 +345,7 @@ dependencies = [
  "dialectica-capsule",
  "dialectica-compiler",
  "dialectica-extractor",
+ "serde_json",
 ]
 
 [[package]]

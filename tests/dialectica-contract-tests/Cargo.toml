@@ -10,6 +10,7 @@ repository.workspace = true
 dialectica-capsule = { path = "../../crates/dialectica-capsule" }
 dialectica-compiler = { path = "../../crates/dialectica-compiler" }
 dialectica-extractor = { path = "../../crates/dialectica-extractor" }
+serde_json = "1"
 
 [lints]
 workspace = true

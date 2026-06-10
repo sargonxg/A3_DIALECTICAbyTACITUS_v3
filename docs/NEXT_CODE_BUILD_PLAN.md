@@ -3,10 +3,11 @@
 Date: 2026-06-10
 
 Status: active implementation plan after the local MVP capsule-loop hardening,
-the 2026-06-09 strategic v3 plan review, and the 2026-06-10 editable review CLI
-slice. The local proof lane can now generate editable review decisions and
-recompile reviewed output; the next build slice is the diff engine and cited
-change memo, not cloud persistence or live model providers.
+the 2026-06-09 strategic v3 plan review, and the 2026-06-10 editable review and
+diff CLI slices. The local proof lane can now generate editable review
+decisions, recompile reviewed output, and diff compiled packages into a cited
+change memo; the next build slice is the deterministic integrity envelope, not
+cloud persistence or live model providers.
 
 ## Objective
 
@@ -22,9 +23,9 @@ source pack / local documents / JSONL discussion source
   -> recompile deterministic v3 .capsule + PRAXIS context pack
 ```
 
-The next build should not add broad infrastructure. The editable review slice is
-locally proven; continue toward the Demo Gate by producing version-to-version
-diff output and a cited change memo.
+The next build should not add broad infrastructure. Editable review and local
+diff are proven; continue toward the Demo Gate by adding deterministic
+verification and signature-envelope semantics.
 
 Read [Improvement Guidelines](IMPROVEMENT_GUIDELINES.md) before implementing
 this plan. That file records the active gap audit and quality bar for the
@@ -64,9 +65,9 @@ hosted MCP, or PRAXIS production calls.
 
 ### Slice C: Diff Engine And Change Memo
 
-Status: planned, ADR required.
+Status: implemented as local v1.
 
-Governance: [ADR-009](decisions/ADR-009-diff-engine-placement.md) proposes
+Governance: [ADR-009](decisions/ADR-009-diff-engine-placement.md) accepts
 placing the first diff engine inside `dialectica-compiler`.
 
 Deliver:
@@ -84,9 +85,17 @@ Acceptance:
 - memo citations resolve to source or review receipts in the newer capsule;
 - no store, cloud, hosted MCP, or live provider call is required.
 
+Implemented local proof:
+
+- `schemas/capsule-3.0/capsule_diff.schema.json`;
+- compiler-owned `diff_capsules` and `write_capsule_diff`;
+- CLI `diff` and MCP `dialectica_diff_capsules`;
+- `fixtures/golden-policy-capsule/expected-diff/{diff.json,change-memo.md}`;
+- byte-for-byte contract test and `eval-diff` diff-correctness check.
+
 ### Slice D: Deterministic Integrity Envelope
 
-Status: planned, depends on deterministic byte-output hardening.
+Status: next executable slice.
 
 Deliver:
 
@@ -195,11 +204,13 @@ Already implemented:
 - CLI `review-check`;
 - CLI `promote-check`;
 - CLI `compile-reviewed`;
+- CLI `diff`;
 - CLI `build-fixture`;
 - CLI `archive`;
 - CLI `context-pack`;
 - CLI `praxis-pack`;
 - CLI `eval`;
+- CLI `eval-diff`;
 - CLI `mcp-config`;
 - local document-folder builder;
 - JSONL user/assistant discussion capture as a local source type;
@@ -215,6 +226,7 @@ Already implemented:
 - golden policy extraction run and proposal fixtures;
 - fixture-mode review-trigger routing for Plus/promoted proposals;
 - golden policy reviewer decision fixture;
+- golden policy expected diff fixture and cited change memo;
 - fixture-mode promotion normalization into compiler-ready records;
 - golden policy expected bundle;
 - contract tests for canonical v3 validation, rejected top-level types,
@@ -225,7 +237,7 @@ Not yet implemented:
 
 - editable review-decision API routes;
 - live model-provider extraction calls;
-- production-grade Merkle/checksum/signature envelope;
+- production-grade Merkle/checksum/signature envelope and `capsule verify`;
 - store-backed HTTP API routes and durable build jobs;
 - PostgreSQL migrations;
 - PDF/OCR/scanned image/web ingestion and richer conversation adapters;
@@ -251,6 +263,8 @@ cargo run -p dialectica-cli -- review-draft fixtures/golden-policy-capsule/build
 cargo run -p dialectica-cli -- review-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals fixtures/golden-policy-capsule/review-decisions
 cargo run -p dialectica-cli -- promote-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals fixtures/golden-policy-capsule/review-decisions
 cargo run -p dialectica-cli -- compile-reviewed fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals fixtures/golden-policy-capsule/review-decisions --out $env:TEMP\dialectica-reviewed-v3
+cargo run -p dialectica-cli -- diff $env:TEMP\dialectica-reviewed-v3 $env:TEMP\dialectica-reviewed-v3 --out $env:TEMP\dialectica-diff-smoke
+cargo run -p dialectica-cli -- eval-diff fixtures/golden-policy-capsule/expected-diff/diff.json
 cargo run -p dialectica-cli -- schema-export schemas/capsule-3.0
 python -m compileall tools/python
 python -m unittest discover tools/python/tests

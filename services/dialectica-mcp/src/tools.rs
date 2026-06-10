@@ -29,6 +29,7 @@ pub fn call_tool(name: &str, arguments: &Value) -> Value {
         "dialectica_capsule_status" => capsule_status_tool(arguments),
         "dialectica_review_queue" => review_queue_tool(arguments),
         "dialectica_archive_capsule" => archive_capsule_tool(arguments),
+        "dialectica_diff_capsules" => diff_capsules_tool(arguments),
         "dialectica_export_praxis_pack" => export_praxis_pack_tool(arguments),
         "dialectica_ontology_plan" => ontology_plan_tool(arguments),
         "dialectica_ladybug_query" => ladybug_query_tool(arguments),
@@ -238,6 +239,16 @@ fn archive_capsule_tool(arguments: &Value) -> Result<Value, String> {
     }
     let receipt = dialectica_compiler::write_capsule_archive(&package_dir, &output_file)
         .map_err(|error| error.to_string())?;
+    serde_json::to_value(receipt).map_err(|error| error.to_string())
+}
+
+fn diff_capsules_tool(arguments: &Value) -> Result<Value, String> {
+    let old_package_dir = required_path(arguments, "old_package_dir", PathKind::ExistingDir)?;
+    let new_package_dir = required_path(arguments, "new_package_dir", PathKind::ExistingDir)?;
+    let out_dir = required_path(arguments, "out_dir", PathKind::OutputDir)?;
+    let receipt =
+        dialectica_compiler::write_capsule_diff(&old_package_dir, &new_package_dir, &out_dir)
+            .map_err(|error| error.to_string())?;
     serde_json::to_value(receipt).map_err(|error| error.to_string())
 }
 
@@ -466,6 +477,22 @@ pub fn tool_definitions() -> Vec<Value> {
                     "out_file": { "type": "string" }
                 },
                 "required": ["package_dir"],
+                "additionalProperties": false
+            },
+            "outputSchema": loose_object_schema()
+        }),
+        json!({
+            "name": "dialectica_diff_capsules",
+            "title": "Diff Capsules",
+            "description": "Write deterministic diff.json and change-memo.md artifacts for two compiled local capsule package directories.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "old_package_dir": { "type": "string" },
+                    "new_package_dir": { "type": "string" },
+                    "out_dir": { "type": "string" }
+                },
+                "required": ["old_package_dir", "new_package_dir", "out_dir"],
                 "additionalProperties": false
             },
             "outputSchema": loose_object_schema()

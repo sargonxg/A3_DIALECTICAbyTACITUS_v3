@@ -106,6 +106,7 @@ fn tools_list_contains_stable_names_and_schemas() {
     assert!(names.contains(&"dialectica_capsule_status"));
     assert!(names.contains(&"dialectica_capture_discussion"));
     assert!(names.contains(&"dialectica_review_queue"));
+    assert!(names.contains(&"dialectica_diff_capsules"));
     assert!(names.contains(&"dialectica_ladybug_query"));
     assert!(names.contains(&"dialectica_praxis_handoff"));
     for tool in tools {
@@ -189,6 +190,49 @@ fn validate_and_status_work_for_fixture_capsule() {
         status["result"]["structuredContent"]["ladybug_projection"]["available"],
         true
     );
+}
+
+#[test]
+fn diff_capsules_tool_writes_local_artifacts() {
+    let root = temp_case("diff-tool");
+    let out_dir = root.join("diff");
+
+    let value = response(
+        &json!({
+            "jsonrpc": "2.0",
+            "id": 11,
+            "method": "tools/call",
+            "params": {
+                "name": "dialectica_diff_capsules",
+                "arguments": {
+                    "old_package_dir": canonical_capsule_fixture(),
+                    "new_package_dir": canonical_capsule_fixture(),
+                    "out_dir": out_dir
+                }
+            }
+        })
+        .to_string(),
+    );
+
+    assert_eq!(value["result"]["isError"], false);
+    let diff_path = PathBuf::from(
+        value["result"]["structuredContent"]["diff_path"]
+            .as_str()
+            .expect("diff path should be returned"),
+    );
+    let memo_path = PathBuf::from(
+        value["result"]["structuredContent"]["change_memo_path"]
+            .as_str()
+            .expect("memo path should be returned"),
+    );
+    assert!(diff_path.is_file());
+    assert!(memo_path.is_file());
+    assert_eq!(
+        value["result"]["structuredContent"]["retracted_claim_count"],
+        0
+    );
+
+    let _ = fs::remove_dir_all(root);
 }
 
 #[test]

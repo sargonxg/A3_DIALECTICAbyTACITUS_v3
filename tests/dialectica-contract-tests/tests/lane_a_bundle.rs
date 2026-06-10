@@ -4,6 +4,7 @@ use dialectica_capsule::{
     export_schema_dir, CapsuleBundle, CapsuleManifest, PraxisCapsulePackage, ReviewState,
     ValidationSeverity,
 };
+use dialectica_compiler::export_schema_dir as export_compiler_schema_dir;
 use dialectica_extractor::{
     draft_reviewer_decision_set, export_schema_dir as export_extractor_schema_dir,
     load_build_request, load_source_pack, plan_capsule_build, promote_records, route_review_gates,
@@ -379,6 +380,25 @@ fn extractor_schema_export_writes_builder_contracts() {
         .join("reviewer_decision_set.schema.json")
         .exists());
     assert!(output_dir.join("promoted_record_set.schema.json").exists());
+
+    std::fs::remove_dir_all(output_dir).expect("temp schema dir should clean up");
+}
+
+#[test]
+fn compiler_schema_export_writes_diff_contract() {
+    let output_dir = std::env::temp_dir().join(format!(
+        "dialectica-compiler-schema-test-{}",
+        std::process::id()
+    ));
+    let _ = std::fs::remove_dir_all(&output_dir);
+
+    export_compiler_schema_dir(&output_dir).expect("compiler schema export should succeed");
+
+    let diff_schema = output_dir.join("capsule_diff.schema.json");
+    assert!(diff_schema.exists());
+    assert!(std::fs::read_to_string(diff_schema)
+        .expect("diff schema should be readable")
+        .contains("CapsuleDiff"));
 
     std::fs::remove_dir_all(output_dir).expect("temp schema dir should clean up");
 }

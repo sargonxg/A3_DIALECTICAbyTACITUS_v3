@@ -140,6 +140,10 @@ fn main() {
             let remaining = args.collect::<Vec<_>>();
             compile_reviewed_from_args(&remaining);
         }
+        "diff" => {
+            let remaining = args.collect::<Vec<_>>();
+            diff_capsules_from_args(&remaining);
+        }
         "build-fixture" => {
             let Some(fixture_dir) = args.next() else {
                 eprintln!("missing fixture directory");
@@ -179,6 +183,13 @@ fn main() {
             let workflow = parse_option_value(args.next(), args.next(), "--workflow")
                 .unwrap_or_else(|| "decision_brief".to_owned());
             print_eval_report(Path::new(&package_dir), &workflow);
+        }
+        "eval-diff" => {
+            let Some(diff_path) = args.next() else {
+                eprintln!("missing diff.json path");
+                std::process::exit(2);
+            };
+            print_diff_eval_report(Path::new(&diff_path));
         }
         "praxis-pack" => {
             let remaining = args.collect::<Vec<_>>();
@@ -230,6 +241,10 @@ fn main() {
                 eprintln!("{error}");
                 std::process::exit(1);
             }
+            if let Err(error) = dialectica_compiler::export_schema_dir(Path::new(&path)) {
+                eprintln!("{error}");
+                std::process::exit(1);
+            }
             println!("schema_exported={path}");
         }
         "help" | "--help" | "-h" => print_help(),
@@ -257,10 +272,12 @@ fn print_help() {
     println!("  review-check <request> <source-pack> <proposal-dir> <review-dir>");
     println!("  promote-check <request> <source-pack> <proposal-dir> <review-dir>");
     println!("  compile-reviewed <request> <source-pack> <proposal-dir> <review-dir> --out <dir>");
+    println!("  diff <old-compiled-dir> <new-compiled-dir> --out <dir>");
     println!("  build-fixture <fixture-dir> --out <dir>");
     println!("  archive <compiled-dir> --out <file.capsule>");
     println!("  context-pack <compiled-dir> [--workflow <workflow>]");
     println!("  eval <compiled-dir> [--workflow <workflow>]");
+    println!("  eval-diff <diff.json>");
     println!("  praxis-pack <compiled-dir> --out <file.json> [--workflow <workflow>]");
     println!("  mcp-config              print a Codex MCP config snippet");
     println!("  ladybug-plan <dir>      print embedded Ladybug projection plan");
@@ -781,6 +798,43 @@ fn compile_reviewed_from_args(args: &[String]) {
     }
 }
 
+fn diff_capsules_from_args(args: &[String]) {
+    let Some(old_dir) = args.first() else {
+        eprintln!("missing old compiled capsule directory");
+        std::process::exit(2);
+    };
+    let Some(new_dir) = args.get(1) else {
+        eprintln!("missing new compiled capsule directory");
+        std::process::exit(2);
+    };
+    let Some(output_dir) = option_value(args, "--out") else {
+        eprintln!("missing --out <dir>");
+        std::process::exit(2);
+    };
+
+    match dialectica_compiler::write_capsule_diff(
+        Path::new(old_dir),
+        Path::new(new_dir),
+        Path::new(&output_dir),
+    ) {
+        Ok(receipt) => {
+            println!("diff_id={}", receipt.diff_id);
+            println!("output_dir={}", receipt.output_dir.display());
+            println!("diff_path={}", receipt.diff_path.display());
+            println!("change_memo_path={}", receipt.change_memo_path.display());
+            println!("added_claim_count={}", receipt.added_claim_count);
+            println!("retracted_claim_count={}", receipt.retracted_claim_count);
+            println!("superseded_claim_count={}", receipt.superseded_claim_count);
+            println!("valid=true");
+        }
+        Err(error) => {
+            eprintln!("{error}");
+            println!("valid=false");
+            std::process::exit(1);
+        }
+    }
+}
+
 fn build_fixture(fixture_dir: &Path, output_dir: &Path) {
     match dialectica_compiler::compile_fixture(fixture_dir, output_dir) {
         Ok(receipt) => {
@@ -846,6 +900,28 @@ fn print_eval_report(package_dir: &Path, workflow: &str) {
                 Ok(text) => println!("{text}"),
                 Err(error) => {
                     eprintln!("failed to serialize eval report: {error}");
+                    std::process::exit(1);
+                }
+            }
+            if !passed {
+                std::process::exit(1);
+            }
+        }
+        Err(error) => {
+            eprintln!("{error}");
+            std::process::exit(1);
+        }
+    }
+}
+
+fn print_diff_eval_report(diff_path: &Path) {
+    match dialectica_eval::evaluate_capsule_diff(diff_path) {
+        Ok(report) => {
+            let passed = report.passed;
+            match serde_json::to_string_pretty(&report) {
+                Ok(text) => println!("{text}"),
+                Err(error) => {
+                    eprintln!("failed to serialize diff eval report: {error}");
                     std::process::exit(1);
                 }
             }

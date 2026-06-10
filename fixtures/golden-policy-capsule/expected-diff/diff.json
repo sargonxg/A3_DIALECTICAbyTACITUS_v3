@@ -1,0 +1,126 @@
+{
+  "schema_version": "capsule_diff_v1",
+  "diff_id": "diff_cap_build_conflict_situation_fixture_v1_61e36f94d801_to_cap_build_conflict_situation_fixture_v1_c2b33ffed32c",
+  "old_capsule": {
+    "capsule_id": "cap_build_conflict_situation_fixture_v1",
+    "version": 1,
+    "capsule_type": "situation",
+    "title": "Certification Dispute Conflict Source Pack",
+    "bundle_digest": "sha256:61e36f94d8013e2d83fcbaed590d4508a5d0c1eff24caf623dcdf923b3dfe58d"
+  },
+  "new_capsule": {
+    "capsule_id": "cap_build_conflict_situation_fixture_v1",
+    "version": 1,
+    "capsule_type": "situation",
+    "title": "Certification Dispute Conflict Source Pack",
+    "bundle_digest": "sha256:c2b33ffed32ca6d9504048fd55d24061c6a4ad85341f22a858ff4637d4052581"
+  },
+  "summary": {
+    "added_claim_count": 0,
+    "retracted_claim_count": 1,
+    "superseded_claim_count": 1,
+    "source_added_count": 0,
+    "source_removed_count": 0,
+    "source_changed_count": 0,
+    "review_transition_count": 0,
+    "trust_transition_count": 1,
+    "temporal_transition_count": 0,
+    "episode_boundary_change_count": 0,
+    "reasoning_device_added_count": 0,
+    "reasoning_device_revised_count": 0,
+    "reasoning_device_retracted_count": 0
+  },
+  "claims": {
+    "added": [],
+    "retracted": [
+      {
+        "record_id": "clm_army_rejected_certification",
+        "record_family": "claim",
+        "text": "A regional army command rejected the certification and called for an emergency negotiation forum.",
+        "record_hash": "sha256:8402995c312a65f6f66c89f0db4f795710af736a590b5a174aaa979171a2799e",
+        "source_hashes": [
+          "sha256:4444444444444444444444444444444444444444444444444444444444444444"
+        ],
+        "review_receipt_ids": [
+          "decision_claim_army_rejected"
+        ],
+        "trust_layer": "T2",
+        "review_state": "approved_with_caveats",
+        "temporal_status": "contested"
+      }
+    ],
+    "superseded": [
+      {
+        "record_id": "clm_commission_certified_result",
+        "record_family": "claim",
+        "old_record_hash": "sha256:a1f6b33b13481dcd2eca93ae57120477a19091713e6eb89643fdca25238a644a",
+        "new_record_hash": "sha256:cdd6cd1ee7152304d65813903a8a42533b90e34ef3b31c4e4dc9ef95e22eb8da",
+        "changed_fields": [
+          "claim_text",
+          "trust_layer"
+        ],
+        "source_hashes": [
+          "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+        ],
+        "review_receipt_ids": [
+          "decision_claim_certified_result"
+        ]
+      }
+    ]
+  },
+  "sources": {
+    "added": [],
+    "removed": [],
+    "changed": []
+  },
+  "review_transitions": [],
+  "trust_transitions": [
+    {
+      "record_id": "clm_commission_certified_result",
+      "record_family": "claim",
+      "field": "trust_layer",
+      "from": "T2",
+      "to": "T1",
+      "source_hashes": [
+        "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+      ],
+      "review_receipt_ids": [
+        "decision_claim_certified_result"
+      ]
+    }
+  ],
+  "temporal_transitions": [],
+  "episode_boundary_changes": [],
+  "reasoning_layer_delta": {
+    "devices": {
+      "added": [],
+      "retracted": [],
+      "superseded": []
+    },
+    "heuristics": {
+      "added": [],
+      "retracted": [],
+      "superseded": []
+    },
+    "traps": {
+      "added": [],
+      "retracted": [],
+      "superseded": []
+    }
+  },
+  "contradictions": {
+    "new_contradictions": [],
+    "resolved_contradictions": []
+  },
+  "commitments": {
+    "lifecycle_changes": []
+  },
+  "citations": {
+    "new_source_hashes": [
+      "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+    ],
+    "new_review_receipt_ids": [
+      "decision_claim_certified_result"
+    ]
+  }
+}

@@ -665,3 +665,45 @@ Next:
    change-memo renderer under ADR-009;
 2. keep store, hosted MCP, live providers, and PRAXIS production integration
    behind the local Demo Gate.
+
+## 2026-06-10 - Capsule Diff And Cited Change Memo v1
+
+Status: implemented locally; integrity envelope is the next executable slice.
+
+Actions:
+
+- accepted ADR-009 and placed the first diff engine inside
+  `dialectica-compiler`;
+- added compiler-owned `diff_capsules`, `write_capsule_diff`, and
+  `render_change_memo` APIs for compiled v3 package directories;
+- added `schemas/capsule-3.0/capsule_diff.schema.json`;
+- added CLI `dialectica diff <old-dir> <new-dir> --out <dir>` and
+  `dialectica eval-diff <diff.json>`;
+- added MCP tool `dialectica_diff_capsules` for local read-only diff artifact
+  generation;
+- added `fixtures/golden-policy-capsule/expected-diff/diff.json` and
+  `change-memo.md` with a planted retracted claim and superseded claim;
+- added byte-for-byte contract coverage for the expected diff artifacts and
+  deterministic eval coverage for diff correctness/citation fidelity.
+
+Evidence:
+
+- `cargo test -p dialectica-compiler capsule_diff_reports_retractions_supersessions_and_citations`
+- `cargo test -p dialectica-contract-tests golden_policy_diff_matches_expected_output_byte_for_byte`
+- `cargo test -p dialectica-eval golden_capsule_diff_passes_diff_correctness_eval`
+- `cargo test -p dialectica-mcp`
+- `cargo run -q -p dialectica-cli -- diff <old-compiled-dir> <new-compiled-dir> --out fixtures/golden-policy-capsule/expected-diff`
+- `cargo run -q -p dialectica-cli -- eval-diff fixtures/golden-policy-capsule/expected-diff/diff.json`
+- `cargo run -q -p dialectica-cli -- schema-export schemas/capsule-3.0`
+
+Known limits:
+
+- contradiction and commitment lifecycle arrays exist in the v1 schema but are
+  empty until upstream extraction emits those records explicitly;
+- production signing and tamper detection remain Slice D.
+
+Next:
+
+1. implement Slice D: deterministic integrity envelope with verify/tamper tests;
+2. only after local verify works, continue to elicitation protocols and
+   composition inspector work.

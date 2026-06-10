@@ -1,0 +1,527 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CapsuleDiff",
+  "type": "object",
+  "required": [
+    "citations",
+    "claims",
+    "commitments",
+    "contradictions",
+    "diff_id",
+    "episode_boundary_changes",
+    "new_capsule",
+    "old_capsule",
+    "reasoning_layer_delta",
+    "review_transitions",
+    "schema_version",
+    "sources",
+    "summary",
+    "temporal_transitions",
+    "trust_transitions"
+  ],
+  "properties": {
+    "citations": {
+      "$ref": "#/definitions/DiffCitations"
+    },
+    "claims": {
+      "$ref": "#/definitions/RecordFamilyDelta"
+    },
+    "commitments": {
+      "$ref": "#/definitions/CommitmentDelta"
+    },
+    "contradictions": {
+      "$ref": "#/definitions/ContradictionDelta"
+    },
+    "diff_id": {
+      "type": "string"
+    },
+    "episode_boundary_changes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/RecordChange"
+      }
+    },
+    "new_capsule": {
+      "$ref": "#/definitions/CapsuleDiffEndpoint"
+    },
+    "old_capsule": {
+      "$ref": "#/definitions/CapsuleDiffEndpoint"
+    },
+    "reasoning_layer_delta": {
+      "$ref": "#/definitions/ReasoningLayerDelta"
+    },
+    "review_transitions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/FieldTransition"
+      }
+    },
+    "schema_version": {
+      "type": "string"
+    },
+    "sources": {
+      "$ref": "#/definitions/SourcePackDelta"
+    },
+    "summary": {
+      "$ref": "#/definitions/CapsuleDiffSummary"
+    },
+    "temporal_transitions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/FieldTransition"
+      }
+    },
+    "trust_transitions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/FieldTransition"
+      }
+    }
+  },
+  "definitions": {
+    "CapsuleDiffEndpoint": {
+      "type": "object",
+      "required": [
+        "bundle_digest",
+        "capsule_id",
+        "capsule_type",
+        "title",
+        "version"
+      ],
+      "properties": {
+        "bundle_digest": {
+          "type": "string"
+        },
+        "capsule_id": {
+          "type": "string"
+        },
+        "capsule_type": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
+        }
+      }
+    },
+    "CapsuleDiffSummary": {
+      "type": "object",
+      "required": [
+        "added_claim_count",
+        "episode_boundary_change_count",
+        "reasoning_device_added_count",
+        "reasoning_device_retracted_count",
+        "reasoning_device_revised_count",
+        "retracted_claim_count",
+        "review_transition_count",
+        "source_added_count",
+        "source_changed_count",
+        "source_removed_count",
+        "superseded_claim_count",
+        "temporal_transition_count",
+        "trust_transition_count"
+      ],
+      "properties": {
+        "added_claim_count": {
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0.0
+        },
+        "episode_boundary_change_count": {
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0.0
+        },
+        "reasoning_device_added_count": {
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0.0
+        },
+        "reasoning_device_retracted_count": {
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0.0
+        },
+        "reasoning_device_revised_count": {
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0.0
+        },
+        "retracted_claim_count": {
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0.0
+        },
+        "review_transition_count": {
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0.0
+        },
+        "source_added_count": {
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0.0
+        },
+        "source_changed_count": {
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0.0
+        },
+        "source_removed_count": {
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0.0
+        },
+        "superseded_claim_count": {
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0.0
+        },
+        "temporal_transition_count": {
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0.0
+        },
+        "trust_transition_count": {
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0.0
+        }
+      }
+    },
+    "CommitmentDelta": {
+      "type": "object",
+      "required": [
+        "lifecycle_changes"
+      ],
+      "properties": {
+        "lifecycle_changes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FieldTransition"
+          }
+        }
+      }
+    },
+    "ContradictionDelta": {
+      "type": "object",
+      "required": [
+        "new_contradictions",
+        "resolved_contradictions"
+      ],
+      "properties": {
+        "new_contradictions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "resolved_contradictions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "DiffCitations": {
+      "type": "object",
+      "required": [
+        "new_review_receipt_ids",
+        "new_source_hashes"
+      ],
+      "properties": {
+        "new_review_receipt_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "new_source_hashes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "FieldTransition": {
+      "type": "object",
+      "required": [
+        "field",
+        "record_family",
+        "record_id",
+        "review_receipt_ids",
+        "source_hashes"
+      ],
+      "properties": {
+        "field": {
+          "type": "string"
+        },
+        "from": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "record_family": {
+          "type": "string"
+        },
+        "record_id": {
+          "type": "string"
+        },
+        "review_receipt_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "source_hashes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "to": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "ReasoningLayerDelta": {
+      "type": "object",
+      "required": [
+        "devices",
+        "heuristics",
+        "traps"
+      ],
+      "properties": {
+        "devices": {
+          "$ref": "#/definitions/RecordFamilyDelta"
+        },
+        "heuristics": {
+          "$ref": "#/definitions/RecordFamilyDelta"
+        },
+        "traps": {
+          "$ref": "#/definitions/RecordFamilyDelta"
+        }
+      }
+    },
+    "RecordChange": {
+      "type": "object",
+      "required": [
+        "changed_fields",
+        "new_record_hash",
+        "old_record_hash",
+        "record_family",
+        "record_id",
+        "review_receipt_ids",
+        "source_hashes"
+      ],
+      "properties": {
+        "changed_fields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "new_record_hash": {
+          "type": "string"
+        },
+        "old_record_hash": {
+          "type": "string"
+        },
+        "record_family": {
+          "type": "string"
+        },
+        "record_id": {
+          "type": "string"
+        },
+        "review_receipt_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "source_hashes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "RecordFamilyDelta": {
+      "type": "object",
+      "required": [
+        "added",
+        "retracted",
+        "superseded"
+      ],
+      "properties": {
+        "added": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RecordRef"
+          }
+        },
+        "retracted": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RecordRef"
+          }
+        },
+        "superseded": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RecordChange"
+          }
+        }
+      }
+    },
+    "RecordRef": {
+      "type": "object",
+      "required": [
+        "record_family",
+        "record_hash",
+        "record_id",
+        "review_receipt_ids",
+        "source_hashes"
+      ],
+      "properties": {
+        "record_family": {
+          "type": "string"
+        },
+        "record_hash": {
+          "type": "string"
+        },
+        "record_id": {
+          "type": "string"
+        },
+        "review_receipt_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "review_state": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_hashes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "temporal_status": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "text": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "trust_layer": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "SourceChange": {
+      "type": "object",
+      "required": [
+        "changed_fields",
+        "new_source_hash",
+        "old_source_hash",
+        "source_id"
+      ],
+      "properties": {
+        "changed_fields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "new_source_hash": {
+          "type": "string"
+        },
+        "old_source_hash": {
+          "type": "string"
+        },
+        "source_id": {
+          "type": "string"
+        }
+      }
+    },
+    "SourcePackDelta": {
+      "type": "object",
+      "required": [
+        "added",
+        "changed",
+        "removed"
+      ],
+      "properties": {
+        "added": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SourceRef"
+          }
+        },
+        "changed": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SourceChange"
+          }
+        },
+        "removed": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SourceRef"
+          }
+        }
+      }
+    },
+    "SourceRef": {
+      "type": "object",
+      "required": [
+        "source_hash",
+        "source_id"
+      ],
+      "properties": {
+        "source_hash": {
+          "type": "string"
+        },
+        "source_id": {
+          "type": "string"
+        },
+        "title": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "uri": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
+  }
+}
