@@ -395,10 +395,15 @@ fn compiler_schema_export_writes_diff_contract() {
     export_compiler_schema_dir(&output_dir).expect("compiler schema export should succeed");
 
     let diff_schema = output_dir.join("capsule_diff.schema.json");
+    let integrity_schema = output_dir.join("integrity_envelope.schema.json");
     assert!(diff_schema.exists());
+    assert!(integrity_schema.exists());
     assert!(std::fs::read_to_string(diff_schema)
         .expect("diff schema should be readable")
         .contains("CapsuleDiff"));
+    assert!(std::fs::read_to_string(integrity_schema)
+        .expect("integrity schema should be readable")
+        .contains("IntegrityEnvelope"));
 
     std::fs::remove_dir_all(output_dir).expect("temp schema dir should clean up");
 }

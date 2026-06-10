@@ -404,7 +404,7 @@ pub fn render_change_memo(diff: &CapsuleDiff) -> String {
     memo
 }
 
-pub fn export_schema_dir(path: &Path) -> Result<(), CompilerError> {
+pub fn export_diff_schema_dir(path: &Path) -> Result<(), CompilerError> {
     fs::create_dir_all(path)?;
     write_json(
         path.join("capsule_diff.schema.json").as_path(),

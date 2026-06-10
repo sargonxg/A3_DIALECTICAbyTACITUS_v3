@@ -1,19 +1,19 @@
 {
   "schema_version": "capsule_diff_v1",
-  "diff_id": "diff_cap_build_conflict_situation_fixture_v1_61e36f94d801_to_cap_build_conflict_situation_fixture_v1_c2b33ffed32c",
+  "diff_id": "diff_cap_build_conflict_situation_fixture_v1_59e77c1356fc_to_cap_build_conflict_situation_fixture_v1_3277966be18b",
   "old_capsule": {
     "capsule_id": "cap_build_conflict_situation_fixture_v1",
     "version": 1,
     "capsule_type": "situation",
     "title": "Certification Dispute Conflict Source Pack",
-    "bundle_digest": "sha256:61e36f94d8013e2d83fcbaed590d4508a5d0c1eff24caf623dcdf923b3dfe58d"
+    "bundle_digest": "sha256:59e77c1356fc44c1f5f52e348ed5ea190aff2086b0e7f5544fcfdd6a4fdcd77f"
   },
   "new_capsule": {
     "capsule_id": "cap_build_conflict_situation_fixture_v1",
     "version": 1,
     "capsule_type": "situation",
     "title": "Certification Dispute Conflict Source Pack",
-    "bundle_digest": "sha256:c2b33ffed32ca6d9504048fd55d24061c6a4ad85341f22a858ff4637d4052581"
+    "bundle_digest": "sha256:3277966be18be8968b1d469c7e097a1615ee915a53f44ad18aabf64e882922b7"
   },
   "summary": {
     "added_claim_count": 0,

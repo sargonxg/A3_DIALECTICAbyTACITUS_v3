@@ -10,6 +10,7 @@ repository.workspace = true
 dialectica-capsule = { path = "../dialectica-capsule" }
 dialectica-extractor = { path = "../dialectica-extractor" }
 dialectica-graph = { path = "../dialectica-graph" }
+ed25519-dalek = "2"
 schemars = { version = "0.8", features = ["derive"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"

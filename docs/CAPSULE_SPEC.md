@@ -397,9 +397,10 @@ graph/ladybug/build_receipt.json
 ```
 
 Ladybug materializes graph traversal and read-only Cypher inspection. The
-projection is required for promoted capsules and signed by digest, but it is
-still rebuildable from `graph.jsonld`. Oxigraph, vector indexes, and full-text
-indexes may be added later as optional derived caches.
+projection is required for promoted capsules and carries its own digest
+receipts, but it is still rebuildable from `graph.jsonld` and excluded from the
+external integrity envelope. Oxigraph, vector indexes, and full-text indexes
+may be added later as optional derived caches.
 
 ## 9. Trust Layers
 
@@ -462,8 +463,13 @@ and what to produce.
 ## 12. Validation And Integrity
 
 - SHACL shapes per loaded core validate the graph.
-- `provenance_root_hash` is a Merkle root over canonical files only.
-- `signature` signs the manifest and root hash.
+- `integrity/envelope.json` records canonical file leaves, a path-bound Merkle
+  root, and Ed25519 author/publisher signatures over the envelope payload.
+- The integrity envelope signs canonical package files, including
+  `manifest.json`, and excludes only `integrity/envelope.json` plus rebuildable
+  `graph/ladybug/*` projection files.
+- `provenance_root_hash` and `signature` remain manifest compatibility
+  metadata in v3.0; verification uses the external integrity envelope.
 - `graph/ladybug/projection_manifest.json` records the exact digest of
   `graph.jsonld`, `capsule.lbug`, `schema.cypher`, and `queries.cypher`.
 - The Ladybug database is opened read-only by PRAXIS. DIALECTICA rebuild jobs
@@ -495,6 +501,8 @@ and what to produce.
 ├── review/
 │   └── review.json
 ├── runtime.json
+├── integrity/
+│   └── envelope.json
 ├── agent_context.md
 ├── operations.md
 └── graph/

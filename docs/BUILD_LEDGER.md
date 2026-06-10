@@ -359,6 +359,9 @@ Implementation constraints:
 | ADR-006 | Apache-2.0 open-source license with citation metadata | accepted | `docs/decisions/ADR-006-open-source-license-and-citation.md` |
 | ADR-007 | LLM extraction is proposal-only until validation and review | accepted | `docs/decisions/ADR-007-llm-extraction-proposal-boundary.md` |
 | ADR-008 | Promoted capsules require an embedded Ladybug graph projection | accepted | `docs/decisions/ADR-008-ladybug-required-embedded-graph-projection.md` |
+| ADR-009 | First diff engine lives inside `dialectica-compiler` | accepted | `docs/decisions/ADR-009-diff-engine-placement.md` |
+| ADR-010 | Visibility, attribution, and lineage fields extend manifest/listing contracts | proposed | `docs/decisions/ADR-010-visibility-attribution-manifest-fields.md` |
+| ADR-011 | Signed integrity envelope is separate from `manifest.json` | accepted | `docs/decisions/ADR-011-integrity-envelope.md` |
 
 ## 2026-06-08 - Source Pack And Proposal Contract Implementation
 
@@ -445,8 +448,8 @@ Evidence:
 
 ## Next Build Tasks
 
-1. Harden checksum, Merkle-root, and signature placeholders into a stable
-   promotion envelope.
+1. Build typed elicitation protocol schema and fixtures through the existing
+   discussion-capture source path.
 2. Add byte-for-byte generated-fixture comparison after the generated v3 output
    is accepted as canonical.
 3. Deepen v3 validators for claims, sources, temporal episodes, graph,
@@ -707,3 +710,40 @@ Next:
 1. implement Slice D: deterministic integrity envelope with verify/tamper tests;
 2. only after local verify works, continue to elicitation protocols and
    composition inspector work.
+
+## 2026-06-10 - Deterministic Integrity Envelope v1
+
+Status: implemented locally; production key management and archive-level
+verify are future hardening.
+
+Actions:
+
+- accepted ADR-011 and kept the final package signature outside
+  `manifest.json` to avoid circular manifest hashing;
+- added compiler-owned `integrity/envelope.json` with canonical file leaves,
+  a path-bound Merkle root, author identity, publisher identity, and two
+  Ed25519 fixture signatures;
+- excluded only `integrity/envelope.json` and rebuildable `graph/ladybug/*`
+  projection files from the signed canonical scope;
+- added `dialectica verify <compiled-dir>` with nonzero exit on integrity
+  failure;
+- exported `schemas/capsule-3.0/integrity_envelope.schema.json`;
+- added tamper coverage proving a changed `claims.jsonl` fails verification.
+
+Evidence:
+
+- `cargo test -p dialectica-compiler integrity`;
+- `cargo test -p dialectica-contract-tests compiler_schema_export_writes_diff_contract`;
+- `cargo run -q -p dialectica-cli -- build-fixture fixtures/golden-policy-capsule --out $env:TEMP\dialectica-integrity-v3`;
+- `cargo run -q -p dialectica-cli -- verify $env:TEMP\dialectica-integrity-v3`;
+- tampered copy of `$env:TEMP\dialectica-integrity-v3` with an appended
+  `claims.jsonl` row returned `verified=false` and exit code 1;
+- `cargo run -q -p dialectica-cli -- schema-export schemas/capsule-3.0`;
+- `cargo test -p dialectica-contract-tests golden_policy_diff_matches_expected_output_byte_for_byte`.
+
+Next:
+
+1. implement Slice I: typed elicitation protocol schema and fixtures through
+   the existing JSONL discussion-capture source path;
+2. keep production key custody, Secret Manager signing, DSSE/Sigstore, and
+   archive-level verify behind the local Demo Gate.

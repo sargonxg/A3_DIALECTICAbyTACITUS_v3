@@ -5,7 +5,8 @@ Status: active control file for the first functional DIALECTICA build.
 Current audit result: executable v3 contract scaffold plus fixture-mode
 source/proposal/review/promotion/compiler/archive/context/API contract and local
 document-folder capsule builder verified on 2026-06-08; editable review-decision
-CLI proof and local diff/change-memo proof verified on 2026-06-10;
+CLI proof, local diff/change-memo proof, and deterministic integrity-envelope
+verification proof verified on 2026-06-10;
 PDF/OCR/conversation ingestion and the durable capsule-building service are not
 yet implemented. See
 [Code Audit 2026-06-08](CODE_AUDIT_2026_06_08.md),
@@ -48,10 +49,10 @@ The first functional app is not complete until a developer can:
 | Capsule contract | `crates/dialectica-capsule` | v3 package validator plus legacy structs, validation, and schema export implemented | expand validators and checksum/signature contract |
 | Builder | `crates/dialectica-builder` | local text-document folder and JSONL discussion source to source pack, proposals, review queue, caveated decisions, package, `.capsule`, PRAXIS pack, and import receipt implemented | add PDF/OCR/web ingestion and richer human proposal/review cycles |
 | Extractor | `crates/dialectica-extractor` | fixture-mode source-pack, proposal envelope, model receipt, build-plan, editable reviewer-decision drafts, promotion normalization, schema export, and review-trigger routing implemented | provider traits and live model orchestration |
-| Compiler | `crates/dialectica-compiler` | deterministic fixture-mode v3 package writer, `.capsule` archive writer, PRAXIS context-pack exporter, capsule diff/change-memo writer, and review-blocking tests implemented | harden canonical checksums and signature envelope |
+| Compiler | `crates/dialectica-compiler` | deterministic fixture-mode v3 package writer, `.capsule` archive writer, PRAXIS context-pack exporter, capsule diff/change-memo writer, integrity-envelope writer/verifier, and review-blocking tests implemented | add elicitation and composition compiler contracts after local proof |
 | Store | `crates/dialectica-store` | scaffolded with migration family names only | SQLx migrations and repository interfaces |
 | Evals | `crates/dialectica-eval` | deterministic MVP PRAXIS handoff checks and diff-correctness checks implemented | add fixture outcome, temporal, reasoning-device adherence, and PRAXIS-vs-baseline evals |
-| CLI | `crates/dialectica-cli` | `welcome`, `build-docs`, `doctor`, `validate`, `inspect`, `ontology-plan`, `ladybug-check`, `source-pack-check`, `proposal-check`, `build-plan`, `review-draft`, `review-check`, `promote-check`, `compile-reviewed`, `diff`, `eval`, `eval-diff`, `build-fixture`, `archive`, `context-pack`, `praxis-pack`, `mcp-config`, and `schema-export` implemented | add durable job commands after store exists |
+| CLI | `crates/dialectica-cli` | `welcome`, `build-docs`, `doctor`, `validate`, `verify`, `inspect`, `ontology-plan`, `ladybug-check`, `source-pack-check`, `proposal-check`, `build-plan`, `review-draft`, `review-check`, `promote-check`, `compile-reviewed`, `diff`, `eval`, `eval-diff`, `build-fixture`, `archive`, `context-pack`, `praxis-pack`, `mcp-config`, and `schema-export` implemented | add durable job commands after store exists |
 | API | `services/dialectica-api` | fixture-backed Axum health, version, manifest, graph-preview, context-pack, and read-receipt routes implemented | store-backed jobs, auth, and artifact lookup |
 | MCP | `services/dialectica-mcp` | Hardened Codex stdio MCP server with protocol router, output schemas, structuredContent, welcome, build, discussion capture, inspect, validate, status, review queue, archive, diff, PRAXIS pack, ontology-plan, read-only Ladybug query, PRAXIS handoff, resources, and prompt implemented | add hosted/authenticated Streamable HTTP `/mcp` only after threat model, auth, tenant checks, and store-backed artifact IDs |
 | Task handler | `services/dialectica-task-handler` | scaffolded binary that prints store env | Cloud Tasks-compatible HTTP handler |
@@ -91,7 +92,7 @@ Not yet built:
 
 - PDF/OCR/conversation source-pack ingestion;
 - live LLM extraction orchestration and provider clients;
-- production-grade Merkle/checksum/signature envelope;
+- production key management beyond the deterministic local integrity envelope;
 - cloud/store-backed diff routes beyond the local compiler, CLI, and MCP diff
   proof;
 - typed elicitation protocols and resumable protocol sessions;
@@ -115,8 +116,8 @@ claiming implementation.
 | --- | --- | --- | --- |
 | Editable review decisions | implemented local CLI slice | `dialectica-extractor`, CLI, contract tests | `review-draft` emits editable decisions, edited decisions validate, and `compile-reviewed` recompiles |
 | Diff engine and change memo | implemented local v1 | `dialectica-compiler`, CLI, MCP, schema export, eval | compare two compiled packages into deterministic `diff.json` and cited memo; see ADR-009 |
-| Integrity envelope | next executable slice | `dialectica-compiler`, `dialectica-capsule`, CLI | Merkle/digest scope, `capsule verify`, tamper tests, author/publisher signature chain |
-| Elicitation protocols | planned after diff/integrity local proof | `dialectica-extractor`, `dialectica-builder`, API, MCP | protocol fixtures for user/situation/tool/output, transcript-backed proposals, completeness scoring |
+| Integrity envelope | implemented local v1 | `dialectica-compiler`, CLI, schema export | `integrity/envelope.json`, Merkle/digest scope, `verify`, tamper tests, author/publisher signature chain; see ADR-011 |
+| Elicitation protocols | next executable slice | `dialectica-extractor`, `dialectica-builder`, API, MCP | protocol fixtures for user/situation/tool/output, transcript-backed proposals, completeness scoring |
 | Composition inspector and attribution | planned before PRAXIS Studio dependency | `dialectica-compiler`, `dialectica-capsule`, API contract | deterministic multi-capsule compile, contribution map, merged contract, device attribution; see ADR-010 |
 | Store-backed jobs and PRAXIS staging | deferred until local contracts settle | `dialectica-store`, `dialectica-api`, `dialectica-task-handler` | persisted build/review/export state, OIDC PRAXIS staging path |
 | Scorecard, Living Capsule, publish validation | deferred release evidence | `dialectica-eval`, CLI/API export paths | reproducible scorecard, public weekly artifact, listing validation |
@@ -159,6 +160,7 @@ cargo run -p dialectica-cli -- promote-check fixtures/golden-policy-capsule/buil
 cargo run -p dialectica-cli -- compile-reviewed fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals fixtures/golden-policy-capsule/review-decisions --out $env:TEMP\dialectica-reviewed-v3
 cargo run -p dialectica-cli -- build-fixture fixtures/golden-policy-capsule --out $env:TEMP\dialectica-golden-v3
 cargo run -p dialectica-cli -- validate $env:TEMP\dialectica-golden-v3
+cargo run -p dialectica-cli -- verify $env:TEMP\dialectica-golden-v3
 cargo run -p dialectica-cli -- archive $env:TEMP\dialectica-golden-v3 --out $env:TEMP\dialectica-golden-v3.capsule
 cargo run -p dialectica-cli -- context-pack $env:TEMP\dialectica-golden-v3 --workflow conflict_map
 cargo run -p dialectica-cli -- diff $env:TEMP\dialectica-golden-v3 $env:TEMP\dialectica-golden-v3 --out $env:TEMP\dialectica-diff-smoke
@@ -185,6 +187,7 @@ cargo run -p dialectica-cli -- promote-check fixtures/golden-policy-capsule/buil
 cargo run -p dialectica-cli -- compile-reviewed fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals fixtures/golden-policy-capsule/review-decisions --out $env:TEMP\dialectica-reviewed-v3
 cargo run -p dialectica-cli -- build-fixture fixtures/golden-policy-capsule --out $env:TEMP\dialectica-golden-v3
 cargo run -p dialectica-cli -- validate $env:TEMP\dialectica-golden-v3
+cargo run -p dialectica-cli -- verify $env:TEMP\dialectica-golden-v3
 cargo run -p dialectica-cli -- archive $env:TEMP\dialectica-golden-v3 --out $env:TEMP\dialectica-golden-v3.capsule
 cargo run -p dialectica-cli -- context-pack $env:TEMP\dialectica-golden-v3 --workflow conflict_map
 cargo run -p dialectica-cli -- diff $env:TEMP\dialectica-golden-v3 $env:TEMP\dialectica-golden-v3 --out $env:TEMP\dialectica-diff-smoke
@@ -421,24 +424,23 @@ when it changes:
 Follow [Next Code Build Plan](NEXT_CODE_BUILD_PLAN.md) and
 [Improvement Guidelines](IMPROVEMENT_GUIDELINES.md):
 
-1. harden deterministic checksum/signature semantics beyond fixture placeholders;
+1. add elicitation protocol schema and fixtures through the existing
+   discussion-capture source path;
 2. add byte-for-byte generated fixture comparison once canonical generated
    output is accepted;
 3. approve or revise ADR-010 before implementing visibility/attribution
    contracts;
-4. add elicitation protocol fixtures through the existing discussion-capture
-   source path;
-5. add deterministic multi-capsule composition and compile-inspector payload;
-6. add source-pack ingestion adapters for PDFs, OCR, scanned images, and web
+4. add deterministic multi-capsule composition and compile-inspector payload;
+5. add source-pack ingestion adapters for PDFs, OCR, scanned images, and web
    capture;
-7. add provider traits and live model extraction behind proposal-only
+6. add provider traits and live model extraction behind proposal-only
    boundaries;
-8. deepen v3 validation across claims, sources, graph, review, reasoning, and
+7. deepen v3 validation across claims, sources, graph, review, reasoning, and
    runtime records;
-9. add store-backed build job state and repository interfaces;
-10. add PostgreSQL migrations for capsule build state and artifacts;
-11. add task-handler routes after store-backed jobs exist;
-12. start PRAXIS frontend integration only after the API/context-pack contract is
+8. add store-backed build job state and repository interfaces;
+9. add PostgreSQL migrations for capsule build state and artifacts;
+10. add task-handler routes after store-backed jobs exist;
+11. start PRAXIS frontend integration only after the API/context-pack contract is
    stable.
 
 Do not start Cloud Run, hosted MCP, or PRAXIS production integration work until

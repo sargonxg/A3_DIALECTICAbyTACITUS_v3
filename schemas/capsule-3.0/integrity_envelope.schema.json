@@ -1,0 +1,184 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "IntegrityEnvelope",
+  "type": "object",
+  "required": [
+    "dsse_reserved",
+    "schema_version",
+    "signature_payload",
+    "signature_payload_sha256",
+    "signatures"
+  ],
+  "properties": {
+    "dsse_reserved": true,
+    "schema_version": {
+      "type": "string"
+    },
+    "signature_payload": {
+      "$ref": "#/definitions/IntegritySignaturePayload"
+    },
+    "signature_payload_sha256": {
+      "type": "string"
+    },
+    "signatures": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/IntegritySignature"
+      }
+    }
+  },
+  "definitions": {
+    "IntegrityLeaf": {
+      "type": "object",
+      "required": [
+        "byte_count",
+        "leaf_hash",
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "byte_count": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
+        },
+        "leaf_hash": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "sha256": {
+          "type": "string"
+        }
+      }
+    },
+    "IntegrityScope": {
+      "type": "object",
+      "required": [
+        "excluded_path_prefixes",
+        "excluded_paths",
+        "hash_algorithm",
+        "included_path_count",
+        "merkle_algorithm"
+      ],
+      "properties": {
+        "excluded_path_prefixes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "excluded_paths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "hash_algorithm": {
+          "type": "string"
+        },
+        "included_path_count": {
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0.0
+        },
+        "merkle_algorithm": {
+          "type": "string"
+        }
+      }
+    },
+    "IntegritySignature": {
+      "type": "object",
+      "required": [
+        "identity",
+        "payload_sha256",
+        "role",
+        "signature_ed25519_hex",
+        "signature_id"
+      ],
+      "properties": {
+        "identity": {
+          "$ref": "#/definitions/SignatureIdentity"
+        },
+        "payload_sha256": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        },
+        "signature_ed25519_hex": {
+          "type": "string"
+        },
+        "signature_id": {
+          "type": "string"
+        }
+      }
+    },
+    "IntegritySignaturePayload": {
+      "type": "object",
+      "required": [
+        "author",
+        "canonical_scope",
+        "capsule_id",
+        "leaves",
+        "merkle_root",
+        "publisher",
+        "schema_version",
+        "spec_version"
+      ],
+      "properties": {
+        "author": {
+          "$ref": "#/definitions/SignatureIdentity"
+        },
+        "canonical_scope": {
+          "$ref": "#/definitions/IntegrityScope"
+        },
+        "capsule_id": {
+          "type": "string"
+        },
+        "leaves": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/IntegrityLeaf"
+          }
+        },
+        "merkle_root": {
+          "type": "string"
+        },
+        "publisher": {
+          "$ref": "#/definitions/SignatureIdentity"
+        },
+        "schema_version": {
+          "type": "string"
+        },
+        "spec_version": {
+          "type": "string"
+        }
+      }
+    },
+    "SignatureIdentity": {
+      "type": "object",
+      "required": [
+        "display_name",
+        "identity_id",
+        "public_key_ed25519_hex",
+        "role"
+      ],
+      "properties": {
+        "display_name": {
+          "type": "string"
+        },
+        "identity_id": {
+          "type": "string"
+        },
+        "public_key_ed25519_hex": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

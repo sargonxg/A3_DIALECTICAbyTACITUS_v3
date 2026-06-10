@@ -31,11 +31,17 @@ use sha2::{Digest, Sha256};
 use zip::{write::SimpleFileOptions, CompressionMethod, ZipWriter};
 
 mod capsule_diff;
+mod integrity;
 
 pub use capsule_diff::{
-    diff_capsules, export_schema_dir, render_change_memo, write_capsule_diff, CapsuleDiff,
+    diff_capsules, export_diff_schema_dir, render_change_memo, write_capsule_diff, CapsuleDiff,
     CapsuleDiffEndpoint, CapsuleDiffReceipt, CapsuleDiffSummary, RecordChange, RecordFamilyDelta,
     RecordRef, SourcePackDelta, CAPSULE_DIFF_SCHEMA_VERSION,
+};
+pub use integrity::{
+    verify_integrity_envelope, write_integrity_envelope, IntegrityEnvelope, IntegrityLeaf,
+    IntegrityScope, IntegritySignature, IntegritySignaturePayload, IntegrityVerificationReport,
+    SignatureIdentity, INTEGRITY_ENVELOPE_PATH, INTEGRITY_SCHEMA_VERSION,
 };
 
 /// Current compiler identifier.
@@ -208,6 +214,7 @@ pub fn compile_from_parts(
             report.findings
         )));
     }
+    write_integrity_envelope(output_dir)?;
 
     Ok(CompileReceipt {
         capsule_id: package.manifest.capsule_id,
@@ -435,6 +442,12 @@ pub fn export_praxis_context_pack(
         rejected_record_ids,
         caveats,
     })
+}
+
+pub fn export_schema_dir(path: &Path) -> Result<(), CompilerError> {
+    fs::create_dir_all(path)?;
+    capsule_diff::export_diff_schema_dir(path)?;
+    integrity::export_integrity_schema_dir(path)
 }
 
 fn write_package(
@@ -1332,7 +1345,7 @@ mod tests {
 
     use super::{
         can_emit_bundle, compile_fixture, compile_from_parts, export_praxis_context_pack,
-        write_capsule_archive, write_capsule_diff,
+        verify_integrity_envelope, write_capsule_archive, write_capsule_diff,
     };
 
     #[test]
@@ -1582,6 +1595,41 @@ mod tests {
         let _ = fs::remove_dir_all(old_out);
         let _ = fs::remove_dir_all(new_out);
         let _ = fs::remove_dir_all(diff_out);
+    }
+
+    #[test]
+    fn compiled_fixture_writes_verifiable_integrity_envelope() {
+        let out = fresh_temp_dir("dialectica_integrity_fixture");
+
+        compile_fixture(&golden_fixture_dir(), &out).expect("fixture should compile");
+        let report = verify_integrity_envelope(&out).expect("integrity should verify");
+
+        assert!(out.join("integrity/envelope.json").is_file());
+        assert!(report.verified, "{:#?}", report.findings);
+        assert!(report.checked_file_count >= 10);
+        assert!(report.merkle_root.starts_with("sha256:"));
+
+        let _ = fs::remove_dir_all(out);
+    }
+
+    #[test]
+    fn integrity_verification_catches_tampered_canonical_file() {
+        let out = fresh_temp_dir("dialectica_integrity_tamper_fixture");
+
+        compile_fixture(&golden_fixture_dir(), &out).expect("fixture should compile");
+        let mut claims = fs::read_to_string(out.join("claims.jsonl")).expect("claims should read");
+        claims.push_str("{\"claim_id\":\"tampered\"}\n");
+        fs::write(out.join("claims.jsonl"), claims).expect("claims should write");
+
+        let report = verify_integrity_envelope(&out).expect("integrity report should load");
+
+        assert!(!report.verified);
+        assert!(report
+            .findings
+            .iter()
+            .any(|finding| finding.contains("claims.jsonl")));
+
+        let _ = fs::remove_dir_all(out);
     }
 
     fn golden_fixture_dir() -> PathBuf {

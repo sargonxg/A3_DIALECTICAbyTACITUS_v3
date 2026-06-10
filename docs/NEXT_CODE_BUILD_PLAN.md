@@ -3,11 +3,11 @@
 Date: 2026-06-10
 
 Status: active implementation plan after the local MVP capsule-loop hardening,
-the 2026-06-09 strategic v3 plan review, and the 2026-06-10 editable review and
-diff CLI slices. The local proof lane can now generate editable review
-decisions, recompile reviewed output, and diff compiled packages into a cited
-change memo; the next build slice is the deterministic integrity envelope, not
-cloud persistence or live model providers.
+the 2026-06-09 strategic v3 plan review, and the 2026-06-10 editable review,
+diff, and integrity CLI slices. The local proof lane can now generate editable
+review decisions, recompile reviewed output, verify signed package integrity,
+and diff compiled packages into a cited change memo; the next build slice is
+typed elicitation protocols, not cloud persistence or live model providers.
 
 ## Objective
 
@@ -23,9 +23,10 @@ source pack / local documents / JSONL discussion source
   -> recompile deterministic v3 .capsule + PRAXIS context pack
 ```
 
-The next build should not add broad infrastructure. Editable review and local
-diff are proven; continue toward the Demo Gate by adding deterministic
-verification and signature-envelope semantics.
+The next build should not add broad infrastructure. Editable review, local
+diff, and deterministic verification are proven; continue toward the Demo Gate
+by adding typed elicitation protocols that feed the existing proposal/review
+boundary.
 
 Read [Improvement Guidelines](IMPROVEMENT_GUIDELINES.md) before implementing
 this plan. That file records the active gap audit and quality bar for the
@@ -95,7 +96,7 @@ Implemented local proof:
 
 ### Slice D: Deterministic Integrity Envelope
 
-Status: next executable slice.
+Status: implemented as local v1.
 
 Deliver:
 
@@ -111,6 +112,15 @@ Acceptance:
 - one-byte mutation fails verification;
 - fixture packages verify in CI;
 - signing does not hide or overwrite author/publisher attribution.
+
+Implemented local proof:
+
+- [ADR-011](decisions/ADR-011-integrity-envelope.md);
+- compiler-owned `integrity/envelope.json` writer and verifier;
+- `schemas/capsule-3.0/integrity_envelope.schema.json`;
+- CLI `verify <compiled-dir>`;
+- tamper test that mutates `claims.jsonl` and fails verification;
+- author and publisher Ed25519 fixture signatures over the canonical payload.
 
 ### Slice I: Elicitation Protocols
 
@@ -195,6 +205,7 @@ Already implemented:
 - CLI `welcome`;
 - CLI `build-docs`;
 - CLI `validate`;
+- CLI `verify`;
 - CLI `inspect`;
 - CLI `ontology-plan`;
 - CLI `source-pack-check`;
@@ -237,7 +248,7 @@ Not yet implemented:
 
 - editable review-decision API routes;
 - live model-provider extraction calls;
-- production-grade Merkle/checksum/signature envelope and `capsule verify`;
+- production key management beyond deterministic local fixture signatures;
 - store-backed HTTP API routes and durable build jobs;
 - PostgreSQL migrations;
 - PDF/OCR/scanned image/web ingestion and richer conversation adapters;
@@ -263,6 +274,7 @@ cargo run -p dialectica-cli -- review-draft fixtures/golden-policy-capsule/build
 cargo run -p dialectica-cli -- review-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals fixtures/golden-policy-capsule/review-decisions
 cargo run -p dialectica-cli -- promote-check fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals fixtures/golden-policy-capsule/review-decisions
 cargo run -p dialectica-cli -- compile-reviewed fixtures/golden-policy-capsule/build_request.json fixtures/golden-policy-capsule/source-pack/source_pack.json fixtures/golden-policy-capsule/proposals fixtures/golden-policy-capsule/review-decisions --out $env:TEMP\dialectica-reviewed-v3
+cargo run -p dialectica-cli -- verify $env:TEMP\dialectica-reviewed-v3
 cargo run -p dialectica-cli -- diff $env:TEMP\dialectica-reviewed-v3 $env:TEMP\dialectica-reviewed-v3 --out $env:TEMP\dialectica-diff-smoke
 cargo run -p dialectica-cli -- eval-diff fixtures/golden-policy-capsule/expected-diff/diff.json
 cargo run -p dialectica-cli -- schema-export schemas/capsule-3.0
@@ -368,8 +380,9 @@ Acceptance:
   from promoted PRAXIS export;
 - contract tests compare generated output to the canonical v3 fixture.
 
-Remaining hardening: byte-for-byte generated fixture comparison, stronger
-checksum/signature envelope, and deeper cross-layer validators.
+Remaining hardening: byte-for-byte generated fixture comparison, production
+key management for the local integrity envelope, and deeper cross-layer
+validators.
 
 ## Phase 4: Source-Pack Builder
 

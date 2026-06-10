@@ -25,6 +25,13 @@ fn main() {
             };
             validate_bundle(Path::new(&path));
         }
+        "verify" => {
+            let Some(path) = args.next() else {
+                eprintln!("missing compiled package directory");
+                std::process::exit(2);
+            };
+            verify_package(Path::new(&path));
+        }
         "inspect" => {
             let Some(path) = args.next() else {
                 eprintln!("missing bundle directory");
@@ -263,6 +270,7 @@ fn print_help() {
     println!("  doctor                  print scaffold health");
     println!("  build-docs --type <user|situation|tool|output> --input <dir> --out <dir> [--title <title>] [--workflow <workflow>] [--mode <assisted|auto-draft|plus-promoted>]");
     println!("  validate <bundle-dir>   validate a capsule bundle directory");
+    println!("  verify <compiled-dir>   verify a compiled v3 package integrity envelope");
     println!("  inspect <bundle-dir>    print capsule bundle summary");
     println!("  ontology-plan <dir>     print capsule-specific ontology blueprint");
     println!("  source-pack-check <path> validate a builder source pack");
@@ -480,6 +488,30 @@ fn validate_bundle(path: &Path) {
     println!("valid={}", !report.has_errors());
     if report.has_errors() {
         std::process::exit(1);
+    }
+}
+
+fn verify_package(path: &Path) {
+    match dialectica_compiler::verify_integrity_envelope(path) {
+        Ok(report) => {
+            println!("capsule_id={}", report.capsule_id);
+            println!("verified={}", report.verified);
+            println!("checked_file_count={}", report.checked_file_count);
+            println!("merkle_root={}", report.merkle_root);
+            println!("envelope_merkle_root={}", report.envelope_merkle_root);
+            println!("signature_count={}", report.signature_count);
+            for finding in &report.findings {
+                println!("finding={finding}");
+            }
+            if !report.verified {
+                std::process::exit(1);
+            }
+        }
+        Err(error) => {
+            eprintln!("{error}");
+            println!("verified=false");
+            std::process::exit(1);
+        }
     }
 }
 

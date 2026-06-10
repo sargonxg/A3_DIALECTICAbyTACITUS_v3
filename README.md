@@ -667,10 +667,12 @@ fixture, keep the legacy policy fixture passing during migration, validate a
 source pack, validate fixture-mode extraction proposals, route review triggers,
 validate reviewer decisions, normalize promoted records, print a build plan,
 compile a deterministic v3 package, write a deterministic `.capsule` archive,
-export a PRAXIS context pack, serve fixture-backed Axum API routes, and export
-JSON Schema snapshots. Live model-provider calls, durable storage, PRAXIS
-frontend integration, and cloud deployment wait until this local build loop is
-hardened with store-backed jobs and ingestion adapters.
+export a PRAXIS context pack, diff package versions into cited change memos,
+verify signed package integrity envelopes, serve fixture-backed Axum API
+routes, and export JSON Schema snapshots. Live model-provider calls, durable
+storage, PRAXIS frontend integration, and cloud deployment wait until this
+local build loop is hardened with typed elicitation protocols, composition
+contracts, store-backed jobs, and ingestion adapters.
 
 Start here:
 
