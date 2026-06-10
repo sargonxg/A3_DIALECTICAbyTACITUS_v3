@@ -332,6 +332,7 @@ dependencies = [
  "axum",
  "dialectica-capsule",
  "dialectica-compiler",
+ "dialectica-extractor",
  "serde",
  "serde_json",
  "tokio",

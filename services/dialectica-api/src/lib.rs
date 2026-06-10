@@ -16,18 +16,34 @@ use axum::{
 };
 use dialectica_capsule::{PraxisCapsulePackage, ValidationSeverity, CAPSULE_SPEC_VERSION};
 use dialectica_compiler::{export_praxis_context_pack, PraxisContextPack};
+use dialectica_extractor::{
+    load_elicitation_protocol, score_elicitation_session, CapsuleType,
+    ElicitationCompletenessScore, ElicitationProtocol, ElicitationSession,
+};
 use serde::Deserialize;
 use serde_json::{json, Value};
 
 #[derive(Debug, Clone)]
 pub struct ApiState {
     package_dir: Arc<PathBuf>,
+    protocol_dir: Arc<PathBuf>,
 }
 
 impl ApiState {
     pub fn new(package_dir: impl Into<PathBuf>) -> Self {
         Self {
             package_dir: Arc::new(package_dir.into()),
+            protocol_dir: Arc::new(default_protocol_dir()),
+        }
+    }
+
+    pub fn with_protocol_dir(
+        package_dir: impl Into<PathBuf>,
+        protocol_dir: impl Into<PathBuf>,
+    ) -> Self {
+        Self {
+            package_dir: Arc::new(package_dir.into()),
+            protocol_dir: Arc::new(protocol_dir.into()),
         }
     }
 
@@ -53,6 +69,11 @@ pub fn app(state: ApiState) -> Router {
             "/v1/capsules/{capsule_id}/read-receipts",
             post(record_read_receipt),
         )
+        .route("/v1/protocols/{capsule_type}", get(elicitation_protocol))
+        .route(
+            "/v1/protocols/{capsule_type}/score",
+            post(score_elicitation_protocol),
+        )
         .with_state(state)
 }
 
@@ -65,6 +86,17 @@ pub fn default_fixture_dir() -> PathBuf {
                 .join("fixtures")
                 .join("canonical-capsules")
                 .join("conflict-situation-capsule")
+        })
+}
+
+pub fn default_protocol_dir() -> PathBuf {
+    std::env::var("DIALECTICA_PROTOCOL_DIR")
+        .map(PathBuf::from)
+        .unwrap_or_else(|_| {
+            Path::new(env!("CARGO_MANIFEST_DIR"))
+                .join("../..")
+                .join("fixtures")
+                .join("elicitation-protocols")
         })
 }
 
@@ -90,6 +122,30 @@ async fn version() -> Json<Value> {
         "graph_preview_schema_version": "graph_preview_v1",
         "commit": option_env!("GITHUB_SHA").unwrap_or("local")
     }))
+}
+
+async fn elicitation_protocol(
+    State(state): State<ApiState>,
+    AxumPath(capsule_type): AxumPath<String>,
+) -> Result<Json<ElicitationProtocol>, ApiError> {
+    let requested_type = parse_capsule_type(&capsule_type)?;
+    let protocol = load_protocol(&state, requested_type)?;
+    Ok(Json(protocol))
+}
+
+async fn score_elicitation_protocol(
+    State(state): State<ApiState>,
+    AxumPath(capsule_type): AxumPath<String>,
+    Json(session): Json<ElicitationSession>,
+) -> Result<Json<ElicitationCompletenessScore>, ApiError> {
+    let requested_type = parse_capsule_type(&capsule_type)?;
+    let protocol = load_protocol(&state, requested_type)?;
+    if session.capsule_type != requested_type {
+        return Err(ApiError::bad_request(
+            "session capsule_type must match the protocol route",
+        ));
+    }
+    Ok(Json(score_elicitation_session(&protocol, &session)))
 }
 
 async fn manifest(
@@ -165,6 +221,38 @@ async fn record_read_receipt(
         "bundle_digest": request.bundle_digest,
         "warning_count": request.warnings_triggered.len()
     })))
+}
+
+fn load_protocol(
+    state: &ApiState,
+    capsule_type: CapsuleType,
+) -> Result<ElicitationProtocol, ApiError> {
+    let protocol_path = state
+        .protocol_dir
+        .join(format!("{}.v1.json", capsule_type.as_str()));
+    let protocol = load_elicitation_protocol(&protocol_path)
+        .map_err(|error| ApiError::internal(error.to_string()))?;
+    if protocol.capsule_type != capsule_type {
+        return Err(ApiError::internal(format!(
+            "protocol {} has capsule_type {}, expected {}",
+            protocol.protocol_id,
+            protocol.capsule_type.as_str(),
+            capsule_type.as_str()
+        )));
+    }
+    Ok(protocol)
+}
+
+fn parse_capsule_type(value: &str) -> Result<CapsuleType, ApiError> {
+    match value.trim().to_ascii_lowercase().replace('-', "_").as_str() {
+        "user" => Ok(CapsuleType::User),
+        "situation" => Ok(CapsuleType::Situation),
+        "tool" => Ok(CapsuleType::Tool),
+        "output" => Ok(CapsuleType::Output),
+        _ => Err(ApiError::bad_request(
+            "capsule_type must be user, situation, tool, or output",
+        )),
+    }
 }
 
 fn load_package(state: &ApiState, capsule_id: &str) -> Result<PraxisCapsulePackage, ApiError> {
@@ -492,6 +580,77 @@ mod tests {
         .await;
         assert_eq!(context.0, StatusCode::OK);
         assert_eq!(context.1["workflow"], "decision_brief");
+    }
+
+    #[tokio::test]
+    async fn protocol_routes_serve_and_score_tool_protocol() {
+        let app = app(ApiState::default_fixture());
+
+        let protocol = request_json(app.clone(), Method::GET, "/v1/protocols/tool", None).await;
+        assert_eq!(protocol.0, StatusCode::OK);
+        assert_eq!(protocol.1["protocol_id"], "tool.v1");
+        assert_eq!(
+            protocol.1["completeness"]["criteria"][0]["target_record_family"],
+            "reasoning_device"
+        );
+
+        let score = request_json(
+            app,
+            Method::POST,
+            "/v1/protocols/tool/score",
+            Some(json!({
+                "session_id": "sess_tool_fixture",
+                "protocol_id": "tool.v1",
+                "capsule_type": "tool",
+                "current_stage_id": "output_contract",
+                "answers": [
+                    {
+                        "answer_id": "ans_walkthrough",
+                        "stage_id": "walkthrough",
+                        "source_span_id": "span_walkthrough",
+                        "text": "Expert walkthrough.",
+                        "derived_record_counts": {
+                            "reasoning_device": 10
+                        }
+                    },
+                    {
+                        "answer_id": "ans_traps",
+                        "stage_id": "traps",
+                        "source_span_id": "span_traps",
+                        "text": "Expert traps.",
+                        "derived_record_counts": {
+                            "trap": 3,
+                            "precedent": 2
+                        }
+                    },
+                    {
+                        "answer_id": "ans_precedents",
+                        "stage_id": "precedents",
+                        "source_span_id": "span_precedents",
+                        "text": "Expert precedents.",
+                        "derived_record_counts": {}
+                    },
+                    {
+                        "answer_id": "ans_devices",
+                        "stage_id": "devices",
+                        "source_span_id": "span_devices",
+                        "text": "Expert devices.",
+                        "derived_record_counts": {}
+                    },
+                    {
+                        "answer_id": "ans_output",
+                        "stage_id": "output_contract",
+                        "source_span_id": "span_output",
+                        "text": "Expert output contract.",
+                        "derived_record_counts": {}
+                    }
+                ]
+            })),
+        )
+        .await;
+
+        assert_eq!(score.0, StatusCode::OK);
+        assert_eq!(score.1["complete_enough"], true);
     }
 
     #[tokio::test]

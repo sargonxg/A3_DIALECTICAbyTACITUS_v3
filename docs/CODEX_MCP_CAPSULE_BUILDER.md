@@ -110,6 +110,8 @@ Tools:
 | `dialectica_validate_capsule` | validates a compiled package and returns precise findings |
 | `dialectica_capsule_status` | returns manifest, review, Ladybug, archive, PRAXIS pack, and hosted-readiness status |
 | `dialectica_review_queue` | reads the local review queue for object-level human gates |
+| `dialectica_get_protocol` | returns a typed BUILD elicitation protocol fixture |
+| `dialectica_score_protocol_session` | scores a protocol session against completeness rules |
 | `dialectica_archive_capsule` | writes a portable `.capsule` archive |
 | `dialectica_export_praxis_pack` | emits PRAXIS-readable context JSON |
 | `dialectica_ontology_plan` | returns the capsule-specific ontology blueprint |
@@ -133,6 +135,8 @@ block for older clients. Invalid tool arguments return an MCP tool result with
 | `dialectica_validate_capsule` | `package_dir` | none | `valid`, finding counts, and `findings` |
 | `dialectica_capsule_status` | `package_dir` | `archive_file`, `praxis_pack_file` | manifest, review state, validation summary, Ladybug status, archive status, PRAXIS pack status, hosted MCP note |
 | `dialectica_review_queue` | `review_queue_file` or `build_source_dir` | none | local `review_queue_v1` artifact |
+| `dialectica_get_protocol` | `capsule_type` | none | `elicitation_protocol_v1` fixture for `user`, `situation`, `tool`, or `output` |
+| `dialectica_score_protocol_session` | `capsule_type`, `session` | none | deterministic completeness score; it does not promote derived records |
 | `dialectica_archive_capsule` | `package_dir` | `out_file` | archive receipt with path, entries, and digest |
 | `dialectica_export_praxis_pack` | `package_dir` | `workflow`, `out_file` | full context pack or written-pack receipt |
 | `dialectica_ontology_plan` | `package_dir` | none | capsule ontology blueprint |

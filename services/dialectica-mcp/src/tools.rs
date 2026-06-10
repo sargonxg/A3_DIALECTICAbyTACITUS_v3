@@ -4,7 +4,9 @@ use std::{
 };
 
 use dialectica_capsule::{PraxisCapsulePackage, ValidationSeverity};
-use dialectica_extractor::CapsuleType;
+use dialectica_extractor::{
+    load_elicitation_protocol, score_elicitation_session, CapsuleType, ElicitationSession,
+};
 use serde::Serialize;
 use serde_json::{json, Value};
 use sha2::{Digest, Sha256};
@@ -28,6 +30,8 @@ pub fn call_tool(name: &str, arguments: &Value) -> Value {
         "dialectica_validate_capsule" => validate_capsule_tool(arguments),
         "dialectica_capsule_status" => capsule_status_tool(arguments),
         "dialectica_review_queue" => review_queue_tool(arguments),
+        "dialectica_get_protocol" => get_protocol_tool(arguments),
+        "dialectica_score_protocol_session" => score_protocol_session_tool(arguments),
         "dialectica_archive_capsule" => archive_capsule_tool(arguments),
         "dialectica_diff_capsules" => diff_capsules_tool(arguments),
         "dialectica_export_praxis_pack" => export_praxis_pack_tool(arguments),
@@ -230,6 +234,28 @@ fn review_queue_tool(arguments: &Value) -> Result<Value, String> {
     read_json_file(&review_queue_file)
 }
 
+fn get_protocol_tool(arguments: &Value) -> Result<Value, String> {
+    let capsule_type = parse_capsule_type(&required_string(arguments, "capsule_type")?)?;
+    let protocol = load_protocol(capsule_type)?;
+    serde_json::to_value(protocol).map_err(|error| error.to_string())
+}
+
+fn score_protocol_session_tool(arguments: &Value) -> Result<Value, String> {
+    let capsule_type = parse_capsule_type(&required_string(arguments, "capsule_type")?)?;
+    let protocol = load_protocol(capsule_type)?;
+    let session_value = arguments
+        .get("session")
+        .cloned()
+        .ok_or_else(|| "missing required argument: session".to_owned())?;
+    let session: ElicitationSession =
+        serde_json::from_value(session_value).map_err(|error| error.to_string())?;
+    if session.capsule_type != capsule_type {
+        return Err("session capsule_type must match capsule_type".to_owned());
+    }
+    serde_json::to_value(score_elicitation_session(&protocol, &session))
+        .map_err(|error| error.to_string())
+}
+
 fn archive_capsule_tool(arguments: &Value) -> Result<Value, String> {
     let package_dir = required_path(arguments, "package_dir", PathKind::ExistingDir)?;
     let output_file = optional_path(arguments, "out_file", PathKind::OutputFile)?
@@ -315,6 +341,37 @@ fn praxis_handoff_tool(arguments: &Value) -> Result<Value, String> {
     Ok(value)
 }
 
+fn load_protocol(
+    capsule_type: CapsuleType,
+) -> Result<dialectica_extractor::ElicitationProtocol, String> {
+    let protocol_path = protocol_fixture_dir().join(format!("{}.v1.json", capsule_type.as_str()));
+    let protocol = load_elicitation_protocol(&protocol_path).map_err(|error| error.to_string())?;
+    if protocol.capsule_type != capsule_type {
+        return Err(format!(
+            "protocol {} has capsule_type {}, expected {}",
+            protocol.protocol_id,
+            protocol.capsule_type.as_str(),
+            capsule_type.as_str()
+        ));
+    }
+    Ok(protocol)
+}
+
+fn protocol_fixture_dir() -> PathBuf {
+    std::env::var("DIALECTICA_PROTOCOL_DIR")
+        .map(PathBuf::from)
+        .unwrap_or_else(|_| {
+            Path::new(env!("CARGO_MANIFEST_DIR"))
+                .join("../..")
+                .join("fixtures")
+                .join("elicitation-protocols")
+        })
+}
+
+fn parse_capsule_type(value: &str) -> Result<CapsuleType, String> {
+    dialectica_builder::parse_capsule_type(value).map_err(|error| error.to_string())
+}
+
 pub fn read_resource(params: &Value) -> Value {
     let uri = params.get("uri").and_then(Value::as_str).unwrap_or("");
     let text = match uri {
@@ -328,6 +385,10 @@ pub fn read_resource(params: &Value) -> Value {
         "dialectica://hosted/mcp" => {
             "Future hosted MCP runs at /mcp over Streamable HTTP, requires authentication, validates tenant ownership and token audience, and accepts build_id, capsule_id, or artifact_id instead of raw filesystem paths.".to_owned()
         }
+        "dialectica://protocols/user.v1" => protocol_resource_text(CapsuleType::User),
+        "dialectica://protocols/situation.v1" => protocol_resource_text(CapsuleType::Situation),
+        "dialectica://protocols/tool.v1" => protocol_resource_text(CapsuleType::Tool),
+        "dialectica://protocols/output.v1" => protocol_resource_text(CapsuleType::Output),
         _ => format!("Unknown DIALECTICA resource: {uri}"),
     };
     json!({
@@ -337,6 +398,14 @@ pub fn read_resource(params: &Value) -> Value {
             "text": text
         }]
     })
+}
+
+fn protocol_resource_text(capsule_type: CapsuleType) -> String {
+    match load_protocol(capsule_type) {
+        Ok(protocol) => serde_json::to_string_pretty(&protocol)
+            .unwrap_or_else(|error| format!("failed to serialize protocol: {error}")),
+        Err(error) => format!("failed to load protocol: {error}"),
+    }
 }
 
 pub fn read_prompt(params: &Value) -> Value {
@@ -467,6 +536,35 @@ pub fn tool_definitions() -> Vec<Value> {
             "outputSchema": loose_object_schema()
         }),
         json!({
+            "name": "dialectica_get_protocol",
+            "title": "Get Elicitation Protocol",
+            "description": "Return the typed fixture elicitation protocol for a user, situation, tool, or output capsule.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "capsule_type": { "type": "string", "enum": ["user", "situation", "tool", "output"] }
+                },
+                "required": ["capsule_type"],
+                "additionalProperties": false
+            },
+            "outputSchema": loose_object_schema()
+        }),
+        json!({
+            "name": "dialectica_score_protocol_session",
+            "title": "Score Elicitation Session",
+            "description": "Score an elicitation session against the typed protocol completeness rules. Answers remain source material; derived records still require proposal review.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "capsule_type": { "type": "string", "enum": ["user", "situation", "tool", "output"] },
+                    "session": { "type": "object" }
+                },
+                "required": ["capsule_type", "session"],
+                "additionalProperties": false
+            },
+            "outputSchema": loose_object_schema()
+        }),
+        json!({
             "name": "dialectica_archive_capsule",
             "title": "Archive Capsule",
             "description": "Write a portable .capsule archive from a compiled package. The output must be outside the package directory.",
@@ -588,6 +686,34 @@ pub fn resource_definitions() -> Vec<Value> {
             "title": "Hosted MCP Design Boundary",
             "description": "Future Streamable HTTP /mcp behavior and auth/path restrictions.",
             "mimeType": "text/plain"
+        }),
+        json!({
+            "uri": "dialectica://protocols/user.v1",
+            "name": "protocol-user-v1",
+            "title": "User Capsule Elicitation Protocol",
+            "description": "Typed user-capsule BUILD interview protocol.",
+            "mimeType": "application/json"
+        }),
+        json!({
+            "uri": "dialectica://protocols/situation.v1",
+            "name": "protocol-situation-v1",
+            "title": "Situation Capsule Elicitation Protocol",
+            "description": "Typed situation-capsule BUILD interview protocol.",
+            "mimeType": "application/json"
+        }),
+        json!({
+            "uri": "dialectica://protocols/tool.v1",
+            "name": "protocol-tool-v1",
+            "title": "Tool Capsule Elicitation Protocol",
+            "description": "Typed expert-method BUILD interview protocol.",
+            "mimeType": "application/json"
+        }),
+        json!({
+            "uri": "dialectica://protocols/output.v1",
+            "name": "protocol-output-v1",
+            "title": "Output Capsule Elicitation Protocol",
+            "description": "Typed output-contract BUILD interview protocol.",
+            "mimeType": "application/json"
         }),
     ]
 }

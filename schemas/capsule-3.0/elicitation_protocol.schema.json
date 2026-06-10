@@ -1,0 +1,168 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ElicitationProtocol",
+  "type": "object",
+  "required": [
+    "capsule_type",
+    "completeness",
+    "description",
+    "protocol_id",
+    "schema_version",
+    "stages",
+    "title",
+    "version"
+  ],
+  "properties": {
+    "capsule_type": {
+      "$ref": "#/definitions/CapsuleType"
+    },
+    "completeness": {
+      "$ref": "#/definitions/ElicitationCompleteness"
+    },
+    "description": {
+      "type": "string"
+    },
+    "protocol_id": {
+      "type": "string"
+    },
+    "schema_version": {
+      "type": "string"
+    },
+    "stages": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ElicitationStage"
+      }
+    },
+    "title": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    }
+  },
+  "definitions": {
+    "CapsuleType": {
+      "type": "string",
+      "enum": [
+        "user",
+        "situation",
+        "tool",
+        "output"
+      ]
+    },
+    "ElicitationCompleteness": {
+      "type": "object",
+      "required": [
+        "criteria",
+        "minimum_answered_stages"
+      ],
+      "properties": {
+        "criteria": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ElicitationCompletenessCriterion"
+          }
+        },
+        "minimum_answered_stages": {
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0.0
+        }
+      }
+    },
+    "ElicitationCompletenessCriterion": {
+      "type": "object",
+      "required": [
+        "criterion_id",
+        "description",
+        "minimum_count",
+        "target_record_family"
+      ],
+      "properties": {
+        "criterion_id": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "minimum_count": {
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0.0
+        },
+        "target_record_family": {
+          "type": "string"
+        }
+      }
+    },
+    "ElicitationFollowUpHint": {
+      "type": "object",
+      "required": [
+        "hint_id",
+        "prompt",
+        "trigger"
+      ],
+      "properties": {
+        "hint_id": {
+          "type": "string"
+        },
+        "prompt": {
+          "type": "string"
+        },
+        "trigger": {
+          "type": "string"
+        }
+      }
+    },
+    "ElicitationStage": {
+      "type": "object",
+      "required": [
+        "completion_criteria",
+        "order",
+        "question_templates",
+        "stage_id",
+        "target_record_families",
+        "title"
+      ],
+      "properties": {
+        "completion_criteria": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "follow_up_hints": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ElicitationFollowUpHint"
+          }
+        },
+        "order": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0.0
+        },
+        "question_templates": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "stage_id": {
+          "type": "string"
+        },
+        "target_record_families": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "title": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

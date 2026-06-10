@@ -4,10 +4,11 @@ Date: 2026-06-10
 
 Status: active implementation plan after the local MVP capsule-loop hardening,
 the 2026-06-09 strategic v3 plan review, and the 2026-06-10 editable review,
-diff, and integrity CLI slices. The local proof lane can now generate editable
-review decisions, recompile reviewed output, verify signed package integrity,
-and diff compiled packages into a cited change memo; the next build slice is
-typed elicitation protocols, not cloud persistence or live model providers.
+diff, integrity, and protocol read/score slices. The local proof lane can now
+generate editable review decisions, recompile reviewed output, verify signed
+package integrity, serve typed BUILD protocols, and diff compiled packages into
+a cited change memo; the next build slice is transcript-to-proposal elicitation
+or deterministic composition, not cloud persistence or live model providers.
 
 ## Objective
 
@@ -24,9 +25,9 @@ source pack / local documents / JSONL discussion source
 ```
 
 The next build should not add broad infrastructure. Editable review, local
-diff, and deterministic verification are proven; continue toward the Demo Gate
-by adding typed elicitation protocols that feed the existing proposal/review
-boundary.
+diff, deterministic verification, and protocol read/score are proven; continue
+toward the Demo Gate by either turning protocol sessions into source-backed
+proposals or adding deterministic composition contracts.
 
 Read [Improvement Guidelines](IMPROVEMENT_GUIDELINES.md) before implementing
 this plan. That file records the active gap audit and quality bar for the
@@ -124,7 +125,10 @@ Implemented local proof:
 
 ### Slice I: Elicitation Protocols
 
-Status: planned, ADR-007 proposal-only boundary applies.
+Status: local v1 read/score surface implemented; ADR-007 proposal-only boundary
+still applies to derived records.
+
+Governance: [ADR-012](decisions/ADR-012-elicitation-protocol-contract.md).
 
 Deliver:
 
@@ -140,6 +144,25 @@ Acceptance:
 - scripted `tool.v1` fixture produces a valid Tool capsule with transcript-span
   provenance for derived records;
 - records remain proposals until Rust validation and review promotion.
+
+Implemented local proof:
+
+- `schemas/capsule-3.0/elicitation_protocol.schema.json`;
+- `schemas/capsule-3.0/elicitation_session.schema.json`;
+- `schemas/capsule-3.0/elicitation_completeness_score.schema.json`;
+- fixture protocols `user.v1`, `situation.v1`, `tool.v1`, and `output.v1`;
+- extractor-owned session completeness scoring;
+- REST `GET /v1/protocols/{capsule_type}` and
+  `POST /v1/protocols/{capsule_type}/score`;
+- local MCP `dialectica_get_protocol` and
+  `dialectica_score_protocol_session`.
+
+Remaining before Slice I is complete:
+
+- convert protocol sessions into JSONL transcript source packs;
+- emit derived proposal records behind review gates;
+- scripted `tool.v1` fixture that compiles into a valid Tool capsule with
+  transcript-span provenance.
 
 ### Slice J: Composition, Inspector, Visibility, And Attribution
 
@@ -223,6 +246,8 @@ Already implemented:
 - CLI `eval`;
 - CLI `eval-diff`;
 - CLI `mcp-config`;
+- API protocol read and score routes;
+- MCP protocol read and score tools;
 - local document-folder builder;
 - JSONL user/assistant discussion capture as a local source type;
 - Codex MCP stdio adapter;
@@ -247,6 +272,7 @@ Already implemented:
 Not yet implemented:
 
 - editable review-decision API routes;
+- transcript-to-proposal generation from elicitation sessions;
 - live model-provider extraction calls;
 - production key management beyond deterministic local fixture signatures;
 - store-backed HTTP API routes and durable build jobs;

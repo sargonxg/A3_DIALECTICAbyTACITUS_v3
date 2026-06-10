@@ -362,6 +362,7 @@ Implementation constraints:
 | ADR-009 | First diff engine lives inside `dialectica-compiler` | accepted | `docs/decisions/ADR-009-diff-engine-placement.md` |
 | ADR-010 | Visibility, attribution, and lineage fields extend manifest/listing contracts | proposed | `docs/decisions/ADR-010-visibility-attribution-manifest-fields.md` |
 | ADR-011 | Signed integrity envelope is separate from `manifest.json` | accepted | `docs/decisions/ADR-011-integrity-envelope.md` |
+| ADR-012 | Typed elicitation protocols are engine contracts | accepted | `docs/decisions/ADR-012-elicitation-protocol-contract.md` |
 
 ## 2026-06-08 - Source Pack And Proposal Contract Implementation
 
@@ -448,8 +449,8 @@ Evidence:
 
 ## Next Build Tasks
 
-1. Build typed elicitation protocol schema and fixtures through the existing
-   discussion-capture source path.
+1. Convert typed elicitation sessions into transcript-backed proposal records
+   through the existing discussion-capture source path.
 2. Add byte-for-byte generated-fixture comparison after the generated v3 output
    is accepted as canonical.
 3. Deepen v3 validators for claims, sources, temporal episodes, graph,
@@ -747,3 +748,39 @@ Next:
    the existing JSONL discussion-capture source path;
 2. keep production key custody, Secret Manager signing, DSSE/Sigstore, and
    archive-level verify behind the local Demo Gate.
+
+## 2026-06-10 - Elicitation Protocol Read And Score Surface
+
+Status: implemented locally as the first Slice I contract surface;
+transcript-to-proposal generation remains the next elicitation implementation.
+
+Actions:
+
+- accepted ADR-012 and made elicitation protocols extractor-owned contracts;
+- added `ElicitationProtocol`, `ElicitationSession`, and
+  `ElicitationCompletenessScore` schema exports;
+- added fixture protocols `user.v1`, `situation.v1`, `tool.v1`, and
+  `output.v1`;
+- encoded Tool completeness thresholds for reasoning devices, traps, and
+  precedents;
+- added deterministic completeness scoring in `dialectica-extractor`;
+- added fixture-backed REST routes for protocol read and score;
+- added local MCP tools and resources for protocol read and score.
+
+Evidence:
+
+- `cargo test -p dialectica-extractor elicitation_completeness_scores_protocol_counts`;
+- `cargo test -p dialectica-api protocol_routes_serve_and_score_tool_protocol`;
+- `cargo test -p dialectica-mcp get_protocol_tool_returns_tool_protocol`;
+- `cargo test -p dialectica-mcp score_protocol_session_tool_scores_complete_session`;
+- `cargo test -p dialectica-contract-tests extractor_schema_export_writes_builder_contracts`;
+- `cargo run -q -p dialectica-cli -- schema-export schemas/capsule-3.0`.
+
+Next:
+
+1. convert protocol sessions into JSONL transcript source material and
+   source-backed proposal records;
+2. produce a scripted `tool.v1` fixture that compiles into a valid Tool capsule
+   after review promotion;
+3. continue composition inspector work once the protocol-to-proposal boundary
+   is covered.

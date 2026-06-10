@@ -380,6 +380,11 @@ fn extractor_schema_export_writes_builder_contracts() {
         .join("reviewer_decision_set.schema.json")
         .exists());
     assert!(output_dir.join("promoted_record_set.schema.json").exists());
+    assert!(output_dir.join("elicitation_protocol.schema.json").exists());
+    assert!(output_dir.join("elicitation_session.schema.json").exists());
+    assert!(output_dir
+        .join("elicitation_completeness_score.schema.json")
+        .exists());
 
     std::fs::remove_dir_all(output_dir).expect("temp schema dir should clean up");
 }

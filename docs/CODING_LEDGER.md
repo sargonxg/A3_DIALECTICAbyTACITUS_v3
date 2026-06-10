@@ -5,8 +5,9 @@ Status: active control file for the first functional DIALECTICA build.
 Current audit result: executable v3 contract scaffold plus fixture-mode
 source/proposal/review/promotion/compiler/archive/context/API contract and local
 document-folder capsule builder verified on 2026-06-08; editable review-decision
-CLI proof, local diff/change-memo proof, and deterministic integrity-envelope
-verification proof verified on 2026-06-10;
+CLI proof, local diff/change-memo proof, deterministic integrity-envelope
+verification proof, and typed elicitation protocol read/score proof verified on
+2026-06-10;
 PDF/OCR/conversation ingestion and the durable capsule-building service are not
 yet implemented. See
 [Code Audit 2026-06-08](CODE_AUDIT_2026_06_08.md),
@@ -48,13 +49,13 @@ The first functional app is not complete until a developer can:
 | Workspace | `Cargo.toml` | created | keep all crates in one Cargo workspace |
 | Capsule contract | `crates/dialectica-capsule` | v3 package validator plus legacy structs, validation, and schema export implemented | expand validators and checksum/signature contract |
 | Builder | `crates/dialectica-builder` | local text-document folder and JSONL discussion source to source pack, proposals, review queue, caveated decisions, package, `.capsule`, PRAXIS pack, and import receipt implemented | add PDF/OCR/web ingestion and richer human proposal/review cycles |
-| Extractor | `crates/dialectica-extractor` | fixture-mode source-pack, proposal envelope, model receipt, build-plan, editable reviewer-decision drafts, promotion normalization, schema export, and review-trigger routing implemented | provider traits and live model orchestration |
+| Extractor | `crates/dialectica-extractor` | fixture-mode source-pack, proposal envelope, model receipt, build-plan, editable reviewer-decision drafts, promotion normalization, elicitation protocol/session/score contracts, schema export, and review-trigger routing implemented | protocol-driven transcript-to-proposal generation, provider traits, and live model orchestration |
 | Compiler | `crates/dialectica-compiler` | deterministic fixture-mode v3 package writer, `.capsule` archive writer, PRAXIS context-pack exporter, capsule diff/change-memo writer, integrity-envelope writer/verifier, and review-blocking tests implemented | add elicitation and composition compiler contracts after local proof |
 | Store | `crates/dialectica-store` | scaffolded with migration family names only | SQLx migrations and repository interfaces |
 | Evals | `crates/dialectica-eval` | deterministic MVP PRAXIS handoff checks and diff-correctness checks implemented | add fixture outcome, temporal, reasoning-device adherence, and PRAXIS-vs-baseline evals |
 | CLI | `crates/dialectica-cli` | `welcome`, `build-docs`, `doctor`, `validate`, `verify`, `inspect`, `ontology-plan`, `ladybug-check`, `source-pack-check`, `proposal-check`, `build-plan`, `review-draft`, `review-check`, `promote-check`, `compile-reviewed`, `diff`, `eval`, `eval-diff`, `build-fixture`, `archive`, `context-pack`, `praxis-pack`, `mcp-config`, and `schema-export` implemented | add durable job commands after store exists |
-| API | `services/dialectica-api` | fixture-backed Axum health, version, manifest, graph-preview, context-pack, and read-receipt routes implemented | store-backed jobs, auth, and artifact lookup |
-| MCP | `services/dialectica-mcp` | Hardened Codex stdio MCP server with protocol router, output schemas, structuredContent, welcome, build, discussion capture, inspect, validate, status, review queue, archive, diff, PRAXIS pack, ontology-plan, read-only Ladybug query, PRAXIS handoff, resources, and prompt implemented | add hosted/authenticated Streamable HTTP `/mcp` only after threat model, auth, tenant checks, and store-backed artifact IDs |
+| API | `services/dialectica-api` | fixture-backed Axum health, version, manifest, graph-preview, context-pack, read-receipt, protocol read, and protocol score routes implemented | store-backed jobs, auth, and artifact lookup |
+| MCP | `services/dialectica-mcp` | Hardened Codex stdio MCP server with protocol router, output schemas, structuredContent, welcome, build, discussion capture, inspect, validate, status, review queue, protocol read/score, archive, diff, PRAXIS pack, ontology-plan, read-only Ladybug query, PRAXIS handoff, resources, and prompt implemented | add hosted/authenticated Streamable HTTP `/mcp` only after threat model, auth, tenant checks, and store-backed artifact IDs |
 | Task handler | `services/dialectica-task-handler` | scaffolded binary that prints store env | Cloud Tasks-compatible HTTP handler |
 | Contract tests | `tests/dialectica-contract-tests` | canonical v3 fixture, source-pack/proposal validation, review-gate routing, reviewer-decision validation, promotion normalization, generated compiler package, archive, context-pack, API route, and legacy migration tests implemented | deep-validator and store-backed job tests |
 
@@ -95,7 +96,8 @@ Not yet built:
 - production key management beyond the deterministic local integrity envelope;
 - cloud/store-backed diff routes beyond the local compiler, CLI, and MCP diff
   proof;
-- typed elicitation protocols and resumable protocol sessions;
+- transcript-to-proposal generation from elicitation sessions;
+- durable/resumable protocol sessions beyond fixture read/score;
 - deterministic multi-capsule composition and compile inspector payload;
 - strict visibility, share-grant, lineage, author, publisher, and reasoning
   attribution contracts;
@@ -117,7 +119,7 @@ claiming implementation.
 | Editable review decisions | implemented local CLI slice | `dialectica-extractor`, CLI, contract tests | `review-draft` emits editable decisions, edited decisions validate, and `compile-reviewed` recompiles |
 | Diff engine and change memo | implemented local v1 | `dialectica-compiler`, CLI, MCP, schema export, eval | compare two compiled packages into deterministic `diff.json` and cited memo; see ADR-009 |
 | Integrity envelope | implemented local v1 | `dialectica-compiler`, CLI, schema export | `integrity/envelope.json`, Merkle/digest scope, `verify`, tamper tests, author/publisher signature chain; see ADR-011 |
-| Elicitation protocols | next executable slice | `dialectica-extractor`, `dialectica-builder`, API, MCP | protocol fixtures for user/situation/tool/output, transcript-backed proposals, completeness scoring |
+| Elicitation protocols | implemented local v1 read/score surface | `dialectica-extractor`, API, MCP, schema export | protocol fixtures for user/situation/tool/output, API/MCP read surfaces, deterministic completeness scoring; transcript-backed proposal generation remains next |
 | Composition inspector and attribution | planned before PRAXIS Studio dependency | `dialectica-compiler`, `dialectica-capsule`, API contract | deterministic multi-capsule compile, contribution map, merged contract, device attribution; see ADR-010 |
 | Store-backed jobs and PRAXIS staging | deferred until local contracts settle | `dialectica-store`, `dialectica-api`, `dialectica-task-handler` | persisted build/review/export state, OIDC PRAXIS staging path |
 | Scorecard, Living Capsule, publish validation | deferred release evidence | `dialectica-eval`, CLI/API export paths | reproducible scorecard, public weekly artifact, listing validation |
@@ -424,13 +426,13 @@ when it changes:
 Follow [Next Code Build Plan](NEXT_CODE_BUILD_PLAN.md) and
 [Improvement Guidelines](IMPROVEMENT_GUIDELINES.md):
 
-1. add elicitation protocol schema and fixtures through the existing
-   discussion-capture source path;
-2. add byte-for-byte generated fixture comparison once canonical generated
+1. convert elicitation sessions into transcript-backed proposal records through
+   the existing discussion-capture source path;
+2. add deterministic multi-capsule composition and compile-inspector payload;
+3. add byte-for-byte generated fixture comparison once canonical generated
    output is accepted;
-3. approve or revise ADR-010 before implementing visibility/attribution
+4. approve or revise ADR-010 before implementing visibility/attribution
    contracts;
-4. add deterministic multi-capsule composition and compile-inspector payload;
 5. add source-pack ingestion adapters for PDFs, OCR, scanned images, and web
    capture;
 6. add provider traits and live model extraction behind proposal-only

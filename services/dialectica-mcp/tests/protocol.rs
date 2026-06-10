@@ -106,6 +106,8 @@ fn tools_list_contains_stable_names_and_schemas() {
     assert!(names.contains(&"dialectica_capsule_status"));
     assert!(names.contains(&"dialectica_capture_discussion"));
     assert!(names.contains(&"dialectica_review_queue"));
+    assert!(names.contains(&"dialectica_get_protocol"));
+    assert!(names.contains(&"dialectica_score_protocol_session"));
     assert!(names.contains(&"dialectica_diff_capsules"));
     assert!(names.contains(&"dialectica_ladybug_query"));
     assert!(names.contains(&"dialectica_praxis_handoff"));
@@ -133,6 +135,95 @@ fn tool_call_returns_structured_content_and_text_json() {
     assert_eq!(
         parsed_text["welcome"],
         value["result"]["structuredContent"]["welcome"]
+    );
+}
+
+#[test]
+fn get_protocol_tool_returns_tool_protocol() {
+    let value = response(
+        r#"{"jsonrpc":"2.0","id":33,"method":"tools/call","params":{"name":"dialectica_get_protocol","arguments":{"capsule_type":"tool"}}}"#,
+    );
+
+    assert_eq!(value["result"]["isError"], false);
+    assert_eq!(
+        value["result"]["structuredContent"]["protocol_id"],
+        "tool.v1"
+    );
+    assert_eq!(
+        value["result"]["structuredContent"]["completeness"]["criteria"][0]["target_record_family"],
+        "reasoning_device"
+    );
+}
+
+#[test]
+fn score_protocol_session_tool_scores_complete_session() {
+    let value = response(
+        &json!({
+            "jsonrpc": "2.0",
+            "id": 34,
+            "method": "tools/call",
+            "params": {
+                "name": "dialectica_score_protocol_session",
+                "arguments": {
+                    "capsule_type": "tool",
+                    "session": {
+                        "session_id": "sess_tool_fixture",
+                        "protocol_id": "tool.v1",
+                        "capsule_type": "tool",
+                        "current_stage_id": "output_contract",
+                        "answers": [
+                            {
+                                "answer_id": "ans_walkthrough",
+                                "stage_id": "walkthrough",
+                                "source_span_id": "span_walkthrough",
+                                "text": "Expert walkthrough.",
+                                "derived_record_counts": {
+                                    "reasoning_device": 10
+                                }
+                            },
+                            {
+                                "answer_id": "ans_traps",
+                                "stage_id": "traps",
+                                "source_span_id": "span_traps",
+                                "text": "Expert traps.",
+                                "derived_record_counts": {
+                                    "trap": 3,
+                                    "precedent": 2
+                                }
+                            },
+                            {
+                                "answer_id": "ans_precedents",
+                                "stage_id": "precedents",
+                                "source_span_id": "span_precedents",
+                                "text": "Expert precedents.",
+                                "derived_record_counts": {}
+                            },
+                            {
+                                "answer_id": "ans_devices",
+                                "stage_id": "devices",
+                                "source_span_id": "span_devices",
+                                "text": "Expert devices.",
+                                "derived_record_counts": {}
+                            },
+                            {
+                                "answer_id": "ans_output",
+                                "stage_id": "output_contract",
+                                "source_span_id": "span_output",
+                                "text": "Expert output contract.",
+                                "derived_record_counts": {}
+                            }
+                        ]
+                    }
+                }
+            }
+        })
+        .to_string(),
+    );
+
+    assert_eq!(value["result"]["isError"], false);
+    assert_eq!(
+        value["result"]["structuredContent"]["complete_enough"],
+        true
     );
 }
 

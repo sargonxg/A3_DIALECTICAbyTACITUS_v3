@@ -1,0 +1,99 @@
+{
+  "protocol_id": "tool.v1",
+  "schema_version": "elicitation_protocol_v1",
+  "capsule_type": "tool",
+  "version": "1.0.0",
+  "title": "Tool Capsule Expert Elicitation",
+  "description": "Capture an expert method as review-gated reasoning devices, traps, precedents, salience priors, and output rules.",
+  "stages": [
+    {
+      "stage_id": "walkthrough",
+      "order": 1,
+      "title": "Walkthrough",
+      "question_templates": [
+        "Walk me through how you apply this method to a hard case.",
+        "What do you check first, before you trust the rest of the analysis?"
+      ],
+      "target_record_families": ["reasoning_device", "salience_prior", "graph_pattern"],
+      "completion_criteria": ["Method sequence is explicit.", "First-check heuristic is named."],
+      "follow_up_hints": [
+        {
+          "hint_id": "abstract_method",
+          "trigger": "answer stays abstract",
+          "prompt": "Give the last real case where this step changed your judgment."
+        }
+      ]
+    },
+    {
+      "stage_id": "devices",
+      "order": 2,
+      "title": "Devices And Heuristics",
+      "question_templates": [
+        "Name the mental moves or devices you use.",
+        "For each device, when should PRAXIS apply it and what evidence does it need?"
+      ],
+      "target_record_families": ["reasoning_device", "heuristic", "source_requirement"],
+      "completion_criteria": ["Each device has a trigger.", "Each device has a failure condition."],
+      "follow_up_hints": []
+    },
+    {
+      "stage_id": "traps",
+      "order": 3,
+      "title": "Traps",
+      "question_templates": [
+        "What does everyone get wrong with this method?",
+        "What false confidence should the assistant refuse?"
+      ],
+      "target_record_families": ["trap", "caveat", "language_rule"],
+      "completion_criteria": ["At least three traps are named.", "Refusal or caveat language is provided."],
+      "follow_up_hints": []
+    },
+    {
+      "stage_id": "precedents",
+      "order": 4,
+      "title": "Precedents And Failure Cases",
+      "question_templates": [
+        "Give me a success case, a failure case, and the lesson from each.",
+        "Which precedent should PRAXIS not over-analogize from?"
+      ],
+      "target_record_families": ["precedent", "trap", "heuristic"],
+      "completion_criteria": ["At least two precedents are captured.", "At least one anti-analogy is captured."],
+      "follow_up_hints": []
+    },
+    {
+      "stage_id": "output_contract",
+      "order": 5,
+      "title": "Output Contract",
+      "question_templates": [
+        "What should a good output look like after this tool is applied?",
+        "What must the assistant cite, hedge, or refuse?"
+      ],
+      "target_record_families": ["output_rule", "citation_rule", "rights_rule"],
+      "completion_criteria": ["Must/never rules are explicit.", "Citation behavior is explicit."],
+      "follow_up_hints": []
+    }
+  ],
+  "completeness": {
+    "minimum_answered_stages": 5,
+    "criteria": [
+      {
+        "criterion_id": "devices",
+        "target_record_family": "reasoning_device",
+        "minimum_count": 8,
+        "description": "Complete-enough Tool protocols need at least eight devices or heuristics."
+      },
+      {
+        "criterion_id": "traps",
+        "target_record_family": "trap",
+        "minimum_count": 3,
+        "description": "At least three traps or failure modes must be captured."
+      },
+      {
+        "criterion_id": "precedents",
+        "target_record_family": "precedent",
+        "minimum_count": 2,
+        "description": "At least two precedents or analogies must be captured."
+      }
+    ]
+  }
+}

@@ -1,0 +1,87 @@
+{
+  "protocol_id": "situation.v1",
+  "schema_version": "elicitation_protocol_v1",
+  "capsule_type": "situation",
+  "version": "1.0.0",
+  "title": "Situation Capsule Elicitation",
+  "description": "Interview a human and their documents into a review-gated model of what is happening, what is contested, and what decision the capsule serves.",
+  "stages": [
+    {
+      "stage_id": "decision_served",
+      "order": 1,
+      "title": "Decision Served",
+      "question_templates": [
+        "What decision, briefing, negotiation, or analysis should this situation capsule support?",
+        "What would make the capsule unusable for that decision?"
+      ],
+      "target_record_families": ["output_intent", "constraint", "trap"],
+      "completion_criteria": ["Decision served is explicit.", "At least one misuse condition is named."],
+      "follow_up_hints": []
+    },
+    {
+      "stage_id": "actors_and_interests",
+      "order": 2,
+      "title": "Actors And Interests",
+      "question_templates": [
+        "Who are the actors that matter?",
+        "What does each actor want, fear, control, or owe?"
+      ],
+      "target_record_families": ["graph_node", "graph_edge", "claim"],
+      "completion_criteria": ["Actors are named.", "Interests or constraints are source-linked."],
+      "follow_up_hints": [
+        {
+          "hint_id": "missing_actor",
+          "trigger": "one side of the conflict has no actor",
+          "prompt": "Who would object to this framing?"
+        }
+      ]
+    },
+    {
+      "stage_id": "contested_claims",
+      "order": 3,
+      "title": "Contested Claims",
+      "question_templates": [
+        "What claims are disputed or uncertain?",
+        "Which facts can be asserted, attributed, hedged, or only treated as questions?"
+      ],
+      "target_record_families": ["claim", "caveat", "review_gate"],
+      "completion_criteria": ["Trust layer is assigned.", "Disputes have caveats."],
+      "follow_up_hints": []
+    },
+    {
+      "stage_id": "time_window",
+      "order": 4,
+      "title": "Time Window",
+      "question_templates": [
+        "What is the relevant time window?",
+        "Which deadlines, sequences, or stale facts change the analysis?"
+      ],
+      "target_record_families": ["episode", "temporal_status", "claim"],
+      "completion_criteria": ["Time window is bounded.", "At least one temporal risk is named."],
+      "follow_up_hints": []
+    }
+  ],
+  "completeness": {
+    "minimum_answered_stages": 4,
+    "criteria": [
+      {
+        "criterion_id": "actors",
+        "target_record_family": "graph_node",
+        "minimum_count": 4,
+        "description": "At least four relevant actors or institutions are captured."
+      },
+      {
+        "criterion_id": "claims",
+        "target_record_family": "claim",
+        "minimum_count": 6,
+        "description": "At least six source-bound claims are proposed."
+      },
+      {
+        "criterion_id": "episodes",
+        "target_record_family": "episode",
+        "minimum_count": 2,
+        "description": "At least two temporal episodes or decision moments are captured."
+      }
+    ]
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "protocol_id": "user.v1",
+  "schema_version": "elicitation_protocol_v1",
+  "capsule_type": "user",
+  "version": "1.0.0",
+  "title": "User Capsule Elicitation",
+  "description": "Capture who the agent is working as, who it serves, and the style constraints that must shape PRAXIS output.",
+  "stages": [
+    {
+      "stage_id": "role_mandate",
+      "order": 1,
+      "title": "Role And Mandate",
+      "question_templates": [
+        "What role should the assistant inhabit when working for you?",
+        "What authority, mandate, or institutional duty constrains this work?"
+      ],
+      "target_record_families": ["role", "mandate", "standing_position"],
+      "completion_criteria": ["Role is named.", "Mandate or decision authority is explicit."],
+      "follow_up_hints": [
+        {
+          "hint_id": "authority_gap",
+          "trigger": "role lacks decision authority",
+          "prompt": "Who can approve, reject, or change this work?"
+        }
+      ]
+    },
+    {
+      "stage_id": "audience_voice",
+      "order": 2,
+      "title": "Audience And Voice",
+      "question_templates": [
+        "Who is the primary audience?",
+        "What should the assistant sound like in front of that audience?"
+      ],
+      "target_record_families": ["audience_rule", "voice_rule", "language_rule"],
+      "completion_criteria": ["Audience is named.", "Voice has must and never rules."],
+      "follow_up_hints": []
+    },
+    {
+      "stage_id": "exemplar_analysis",
+      "order": 3,
+      "title": "Exemplar Analysis",
+      "question_templates": [
+        "Share a representative document and explain what makes it good.",
+        "Which habits from this exemplar should PRAXIS preserve?"
+      ],
+      "target_record_families": ["style_exemplar", "output_preference", "trap"],
+      "completion_criteria": ["At least one exemplar is source-linked.", "At least one failure mode is named."],
+      "follow_up_hints": []
+    }
+  ],
+  "completeness": {
+    "minimum_answered_stages": 3,
+    "criteria": [
+      {
+        "criterion_id": "voice_rules",
+        "target_record_family": "voice_rule",
+        "minimum_count": 3,
+        "description": "At least three voice or register rules are captured."
+      },
+      {
+        "criterion_id": "standing_positions",
+        "target_record_family": "standing_position",
+        "minimum_count": 2,
+        "description": "At least two durable positions or preferences are captured."
+      }
+    ]
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ElicitationCompletenessScore",
+  "type": "object",
+  "required": [
+    "answered_stage_count",
+    "complete_enough",
+    "criterion_scores",
+    "minimum_answered_stages",
+    "missing_stage_ids",
+    "protocol_id"
+  ],
+  "properties": {
+    "answered_stage_count": {
+      "type": "integer",
+      "format": "uint",
+      "minimum": 0.0
+    },
+    "complete_enough": {
+      "type": "boolean"
+    },
+    "criterion_scores": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ElicitationCriterionScore"
+      }
+    },
+    "minimum_answered_stages": {
+      "type": "integer",
+      "format": "uint",
+      "minimum": 0.0
+    },
+    "missing_stage_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "protocol_id": {
+      "type": "string"
+    }
+  },
+  "definitions": {
+    "ElicitationCriterionScore": {
+      "type": "object",
+      "required": [
+        "criterion_id",
+        "minimum_count",
+        "observed_count",
+        "passed",
+        "target_record_family"
+      ],
+      "properties": {
+        "criterion_id": {
+          "type": "string"
+        },
+        "minimum_count": {
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0.0
+        },
+        "observed_count": {
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0.0
+        },
+        "passed": {
+          "type": "boolean"
+        },
+        "target_record_family": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

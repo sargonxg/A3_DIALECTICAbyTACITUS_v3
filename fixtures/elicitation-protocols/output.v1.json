@@ -1,0 +1,75 @@
+{
+  "protocol_id": "output.v1",
+  "schema_version": "elicitation_protocol_v1",
+  "capsule_type": "output",
+  "version": "1.0.0",
+  "title": "Output Capsule Elicitation",
+  "description": "Capture what good output looks like: structure, citation behavior, length, register, refusal rules, and review contract.",
+  "stages": [
+    {
+      "stage_id": "exemplar_upload",
+      "order": 1,
+      "title": "Exemplar Upload",
+      "question_templates": [
+        "Share a strong exemplar of the desired output.",
+        "What should PRAXIS copy from this example and what should it ignore?"
+      ],
+      "target_record_families": ["output_exemplar", "style_rule", "trap"],
+      "completion_criteria": ["At least one exemplar is source-linked.", "Transferable and non-transferable traits are separated."],
+      "follow_up_hints": []
+    },
+    {
+      "stage_id": "structure",
+      "order": 2,
+      "title": "Structure",
+      "question_templates": [
+        "What sections are required?",
+        "Which sections are optional, forbidden, or conditional?"
+      ],
+      "target_record_families": ["output_rule", "section_rule", "ordering_rule"],
+      "completion_criteria": ["Required sections are named.", "Ordering rules are explicit."],
+      "follow_up_hints": []
+    },
+    {
+      "stage_id": "citation_register_length",
+      "order": 3,
+      "title": "Citation, Register, And Length",
+      "question_templates": [
+        "How should claims be cited?",
+        "How long should the output be and what register should it use?"
+      ],
+      "target_record_families": ["citation_rule", "language_rule", "length_rule"],
+      "completion_criteria": ["Citation style is explicit.", "Length and register are bounded."],
+      "follow_up_hints": []
+    },
+    {
+      "stage_id": "must_never",
+      "order": 4,
+      "title": "Must And Never Rules",
+      "question_templates": [
+        "What must always appear?",
+        "What must never appear?"
+      ],
+      "target_record_families": ["output_rule", "trap", "rights_rule"],
+      "completion_criteria": ["Must rules are explicit.", "Never rules are explicit."],
+      "follow_up_hints": []
+    }
+  ],
+  "completeness": {
+    "minimum_answered_stages": 4,
+    "criteria": [
+      {
+        "criterion_id": "output_rules",
+        "target_record_family": "output_rule",
+        "minimum_count": 5,
+        "description": "At least five output contract rules are captured."
+      },
+      {
+        "criterion_id": "citation_rules",
+        "target_record_family": "citation_rule",
+        "minimum_count": 2,
+        "description": "At least two citation or source-display rules are captured."
+      }
+    ]
+  }
+}

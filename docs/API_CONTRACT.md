@@ -161,6 +161,30 @@ Response:
 }
 ```
 
+### Get Elicitation Protocol
+
+```http
+GET /v1/protocols/{type}
+```
+
+`type` is one of `user`, `situation`, `tool`, or `output`.
+
+Response is `elicitation_protocol.schema.json`: ordered stages, question
+templates, target record families, follow-up hints, and completeness rules.
+The local fixture-backed API serves `*.v1` protocols from
+`fixtures/elicitation-protocols`.
+
+### Score Elicitation Session
+
+```http
+POST /v1/protocols/{type}/score
+```
+
+Request is `elicitation_session.schema.json`; response is
+`elicitation_completeness_score.schema.json`. Scoring only reports
+complete-enough status. It does not promote derived records; transcript-derived
+records still enter the proposal/review path.
+
 ## MCP Lanes
 
 The local Codex bridge is `dialectica-mcp` over stdio. It accepts local

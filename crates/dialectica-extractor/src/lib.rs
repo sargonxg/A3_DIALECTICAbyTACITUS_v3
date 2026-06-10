@@ -152,6 +152,89 @@ pub struct SourceSpan {
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, JsonSchema)]
+pub struct ElicitationProtocol {
+    pub protocol_id: String,
+    pub schema_version: String,
+    pub capsule_type: CapsuleType,
+    pub version: String,
+    pub title: String,
+    pub description: String,
+    pub stages: Vec<ElicitationStage>,
+    pub completeness: ElicitationCompleteness,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+pub struct ElicitationStage {
+    pub stage_id: String,
+    pub order: u32,
+    pub title: String,
+    pub question_templates: Vec<String>,
+    pub target_record_families: Vec<String>,
+    pub completion_criteria: Vec<String>,
+    #[serde(default)]
+    pub follow_up_hints: Vec<ElicitationFollowUpHint>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+pub struct ElicitationFollowUpHint {
+    pub hint_id: String,
+    pub trigger: String,
+    pub prompt: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+pub struct ElicitationCompleteness {
+    pub minimum_answered_stages: usize,
+    pub criteria: Vec<ElicitationCompletenessCriterion>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+pub struct ElicitationCompletenessCriterion {
+    pub criterion_id: String,
+    pub target_record_family: String,
+    pub minimum_count: usize,
+    pub description: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+pub struct ElicitationSession {
+    pub session_id: String,
+    pub protocol_id: String,
+    pub capsule_type: CapsuleType,
+    pub current_stage_id: String,
+    pub answers: Vec<ElicitationAnswer>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+pub struct ElicitationAnswer {
+    pub answer_id: String,
+    pub stage_id: String,
+    pub source_span_id: String,
+    pub text: String,
+    #[serde(default)]
+    pub derived_record_counts: BTreeMap<String, usize>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+pub struct ElicitationCompletenessScore {
+    pub protocol_id: String,
+    pub complete_enough: bool,
+    pub answered_stage_count: usize,
+    pub minimum_answered_stages: usize,
+    pub missing_stage_ids: Vec<String>,
+    pub criterion_scores: Vec<ElicitationCriterionScore>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+pub struct ElicitationCriterionScore {
+    pub criterion_id: String,
+    pub target_record_family: String,
+    pub observed_count: usize,
+    pub minimum_count: usize,
+    pub passed: bool,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, JsonSchema)]
 pub struct ExtractionRun {
     pub run_id: String,
     pub contract_version: String,
@@ -490,6 +573,72 @@ pub fn load_build_request(path: &Path) -> Result<CapsuleBuildRequest, ExtractorL
     serde_json::from_str(&text).map_err(|error| {
         ExtractorLoadError::new(format!("failed to parse {}: {error}", path.display()))
     })
+}
+
+pub fn load_elicitation_protocol(path: &Path) -> Result<ElicitationProtocol, ExtractorLoadError> {
+    let text = fs::read_to_string(path).map_err(|error| {
+        ExtractorLoadError::new(format!("failed to read {}: {error}", path.display()))
+    })?;
+    serde_json::from_str(&text).map_err(|error| {
+        ExtractorLoadError::new(format!("failed to parse {}: {error}", path.display()))
+    })
+}
+
+pub fn score_elicitation_session(
+    protocol: &ElicitationProtocol,
+    session: &ElicitationSession,
+) -> ElicitationCompletenessScore {
+    let answered_stage_ids = session
+        .answers
+        .iter()
+        .filter(|answer| !answer.text.trim().is_empty())
+        .map(|answer| answer.stage_id.as_str())
+        .collect::<BTreeSet<_>>();
+    let required_stage_ids = protocol
+        .stages
+        .iter()
+        .map(|stage| stage.stage_id.as_str())
+        .collect::<BTreeSet<_>>();
+    let missing_stage_ids = required_stage_ids
+        .difference(&answered_stage_ids)
+        .map(|stage_id| (*stage_id).to_owned())
+        .collect::<Vec<_>>();
+    let mut observed_counts = BTreeMap::<String, usize>::new();
+    for answer in &session.answers {
+        for (family, count) in &answer.derived_record_counts {
+            *observed_counts.entry(family.clone()).or_default() += *count;
+        }
+    }
+    let criterion_scores = protocol
+        .completeness
+        .criteria
+        .iter()
+        .map(|criterion| {
+            let observed_count = observed_counts
+                .get(&criterion.target_record_family)
+                .copied()
+                .unwrap_or_default();
+            ElicitationCriterionScore {
+                criterion_id: criterion.criterion_id.clone(),
+                target_record_family: criterion.target_record_family.clone(),
+                observed_count,
+                minimum_count: criterion.minimum_count,
+                passed: observed_count >= criterion.minimum_count,
+            }
+        })
+        .collect::<Vec<_>>();
+    let answered_stage_count = answered_stage_ids.len();
+    let complete_enough = answered_stage_count >= protocol.completeness.minimum_answered_stages
+        && criterion_scores.iter().all(|score| score.passed);
+
+    ElicitationCompletenessScore {
+        protocol_id: protocol.protocol_id.clone(),
+        complete_enough,
+        answered_stage_count,
+        minimum_answered_stages: protocol.completeness.minimum_answered_stages,
+        missing_stage_ids,
+        criterion_scores,
+    }
 }
 
 pub fn validate_source_pack(source_pack: &SourcePack) -> BuildValidationReport {
@@ -1017,6 +1166,21 @@ pub fn export_schema_dir(path: &Path) -> Result<(), ExtractorLoadError> {
         "promoted_record_set.schema.json",
         schema_for!(PromotedRecordSet),
     )?;
+    write_schema(
+        path,
+        "elicitation_protocol.schema.json",
+        schema_for!(ElicitationProtocol),
+    )?;
+    write_schema(
+        path,
+        "elicitation_session.schema.json",
+        schema_for!(ElicitationSession),
+    )?;
+    write_schema(
+        path,
+        "elicitation_completeness_score.schema.json",
+        schema_for!(ElicitationCompletenessScore),
+    )?;
     Ok(())
 }
 
@@ -1350,12 +1514,16 @@ fn promoted_without_gate(proposal: &ExtractionProposal) -> PromotedRecord {
 mod tests {
     use super::{
         draft_reviewer_decision_set, plan_capsule_build, promote_records, route_review_gates,
-        validate_proposal_set, validate_reviewer_decision_set, validate_source_pack, BuildMode,
-        BuildValidationSeverity, CapsuleBuildRequest, CapsuleType, ExtractionProposal,
+        score_elicitation_session, validate_proposal_set, validate_reviewer_decision_set,
+        validate_source_pack, BuildMode, BuildValidationSeverity, CapsuleBuildRequest, CapsuleType,
+        ElicitationAnswer, ElicitationCompleteness, ElicitationCompletenessCriterion,
+        ElicitationProtocol, ElicitationSession, ElicitationStage, ExtractionProposal,
         ExtractionRun, ModelInvocationReceipt, PromptInjectionRisk, ProposalKind, ProposalSet,
         ReviewDecisionStatus, ReviewPolicy, ReviewTrigger, ReviewTriggerLevel, SourceDocument,
         SourcePack, SourceSpan, TypeInference, TypeInferenceSource, EXTRACTOR_CONTRACT_VERSION,
     };
+    use std::collections::BTreeMap;
+
     use serde_json::json;
 
     #[test]
@@ -1457,6 +1625,87 @@ mod tests {
             .expect("edited rejection should remain compiler-ready lineage");
         assert!(promoted.promoted_records.is_empty());
         assert_eq!(promoted.rejected_proposal_ids, vec!["prop_claim_001"]);
+    }
+
+    #[test]
+    fn elicitation_completeness_scores_protocol_counts() {
+        let protocol = ElicitationProtocol {
+            protocol_id: "tool.v1".to_owned(),
+            schema_version: "elicitation_protocol_v1".to_owned(),
+            capsule_type: CapsuleType::Tool,
+            version: "1.0.0".to_owned(),
+            title: "Tool Capsule Expert Elicitation".to_owned(),
+            description: "Fixture protocol".to_owned(),
+            stages: vec![
+                ElicitationStage {
+                    stage_id: "walkthrough".to_owned(),
+                    order: 1,
+                    title: "Walkthrough".to_owned(),
+                    question_templates: vec!["Walk me through the method.".to_owned()],
+                    target_record_families: vec!["reasoning_device".to_owned()],
+                    completion_criteria: vec!["At least one concrete step.".to_owned()],
+                    follow_up_hints: Vec::new(),
+                },
+                ElicitationStage {
+                    stage_id: "traps".to_owned(),
+                    order: 2,
+                    title: "Traps".to_owned(),
+                    question_templates: vec!["What do people get wrong?".to_owned()],
+                    target_record_families: vec!["trap".to_owned()],
+                    completion_criteria: vec!["Named failure cases.".to_owned()],
+                    follow_up_hints: Vec::new(),
+                },
+            ],
+            completeness: ElicitationCompleteness {
+                minimum_answered_stages: 2,
+                criteria: vec![
+                    ElicitationCompletenessCriterion {
+                        criterion_id: "devices".to_owned(),
+                        target_record_family: "reasoning_device".to_owned(),
+                        minimum_count: 8,
+                        description: "Minimum method devices.".to_owned(),
+                    },
+                    ElicitationCompletenessCriterion {
+                        criterion_id: "traps".to_owned(),
+                        target_record_family: "trap".to_owned(),
+                        minimum_count: 3,
+                        description: "Minimum traps.".to_owned(),
+                    },
+                ],
+            },
+        };
+        let session = ElicitationSession {
+            session_id: "sess_tool_fixture".to_owned(),
+            protocol_id: "tool.v1".to_owned(),
+            capsule_type: CapsuleType::Tool,
+            current_stage_id: "traps".to_owned(),
+            answers: vec![
+                ElicitationAnswer {
+                    answer_id: "ans_walkthrough".to_owned(),
+                    stage_id: "walkthrough".to_owned(),
+                    source_span_id: "span_walkthrough".to_owned(),
+                    text: "The expert supplied the method steps.".to_owned(),
+                    derived_record_counts: BTreeMap::from([("reasoning_device".to_owned(), 10)]),
+                },
+                ElicitationAnswer {
+                    answer_id: "ans_traps".to_owned(),
+                    stage_id: "traps".to_owned(),
+                    source_span_id: "span_traps".to_owned(),
+                    text: "The expert supplied common failure modes.".to_owned(),
+                    derived_record_counts: BTreeMap::from([("trap".to_owned(), 3)]),
+                },
+            ],
+        };
+
+        let score = score_elicitation_session(&protocol, &session);
+
+        assert!(score.complete_enough);
+        assert_eq!(score.answered_stage_count, 2);
+        assert!(score.missing_stage_ids.is_empty());
+        assert!(score
+            .criterion_scores
+            .iter()
+            .all(|criterion| criterion.passed));
     }
 
     fn fixture_source_pack() -> SourcePack {
