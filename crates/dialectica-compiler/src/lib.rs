@@ -46,6 +46,7 @@ pub use integrity::{
 
 /// Current compiler identifier.
 pub const COMPILER_ID: &str = "dialectica-compiler/0.2.0";
+pub const DIALECTICA_PRAXIS_CONTEXT_CONTRACT_VERSION: &str = "2026-05-15.prx-dialectica-context.v1";
 
 /// Returns true when the legacy compiler may emit a signed bundle for this manifest.
 pub fn can_emit_bundle(manifest: &CapsuleManifest) -> bool {
@@ -145,6 +146,50 @@ pub struct PraxisContextPack {
     pub claim_ids: Vec<String>,
     pub rejected_record_ids: Vec<String>,
     pub caveats: Vec<String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DialecticaPraxisContextExport {
+    pub contract_version: String,
+    pub package_id: String,
+    pub exported_at: String,
+    pub title: String,
+    pub claims: Vec<DialecticaPraxisClaim>,
+    pub assumptions: Vec<String>,
+    pub uncertainties: Vec<String>,
+    pub evidence_gaps: Vec<String>,
+    pub source_receipts: Vec<DialecticaPraxisSourceReceipt>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DialecticaPraxisClaim {
+    pub id: String,
+    pub kind: DialecticaPraxisClaimKind,
+    pub text: String,
+    pub source_ids: Vec<String>,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum DialecticaPraxisClaimKind {
+    Fact,
+    EvidenceGap,
+    ConflictingClaim,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DialecticaPraxisSourceReceipt {
+    pub id: String,
+    pub title: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub citation: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub excerpt: Option<String>,
 }
 
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
@@ -444,6 +489,56 @@ pub fn export_praxis_context_pack(
     })
 }
 
+pub fn export_praxis_import_package(
+    package_dir: &Path,
+) -> Result<DialecticaPraxisContextExport, CompilerError> {
+    let package = PraxisCapsulePackage::load_from_dir(package_dir)
+        .map_err(|error| CompilerError::InvalidInput(error.to_string()))?;
+    let manifest = package.manifest;
+    let claims = read_jsonl_values(&package_dir.join("claims.jsonl"))?;
+    let sources = read_jsonl_values(&package_dir.join("evidence/sources.jsonl"))?;
+    let review: Value =
+        serde_json::from_str(&fs::read_to_string(package_dir.join("review/review.json"))?)?;
+    let source_receipts = sources
+        .iter()
+        .filter_map(praxis_source_receipt)
+        .collect::<Vec<_>>();
+    let mut exported_claims = claims
+        .iter()
+        .filter_map(praxis_claim_from_value)
+        .collect::<Vec<_>>();
+    exported_claims.extend(rejected_claims_from_review(&review));
+    let evidence_gaps = evidence_gaps_from_review(&review);
+    exported_claims.extend(evidence_gaps.iter().enumerate().map(|(index, gap)| {
+        DialecticaPraxisClaim {
+            id: format!("evidence_gap_{:03}", index + 1),
+            kind: DialecticaPraxisClaimKind::EvidenceGap,
+            text: gap.clone(),
+            source_ids: Vec::new(),
+        }
+    }));
+    let uncertainties = review
+        .get("caveats")
+        .and_then(Value::as_array)
+        .into_iter()
+        .flatten()
+        .filter_map(Value::as_str)
+        .map(str::to_owned)
+        .collect::<Vec<_>>();
+
+    Ok(DialecticaPraxisContextExport {
+        contract_version: DIALECTICA_PRAXIS_CONTEXT_CONTRACT_VERSION.to_owned(),
+        package_id: manifest.capsule_id,
+        exported_at: manifest.updated_at,
+        title: manifest.title,
+        claims: exported_claims,
+        assumptions: Vec::new(),
+        uncertainties,
+        evidence_gaps,
+        source_receipts,
+    })
+}
+
 pub fn export_schema_dir(path: &Path) -> Result<(), CompilerError> {
     fs::create_dir_all(path)?;
     capsule_diff::export_diff_schema_dir(path)?;
@@ -622,6 +717,166 @@ fn source_record(span: &SourceSpan, document: Option<&SourceDocument>) -> Value 
         "quote": span.quote,
         "notes": span.extraction_notes,
     })
+}
+
+fn praxis_claim_from_value(claim: &Value) -> Option<DialecticaPraxisClaim> {
+    let id = string_value(claim, &["claim_id", "id"])?;
+    let text = string_value(claim, &["claim_text", "text"])?;
+    let source_ids = source_ids_from_claim(claim);
+    let kind = if claim
+        .get("disputed")
+        .and_then(Value::as_bool)
+        .unwrap_or(false)
+    {
+        DialecticaPraxisClaimKind::ConflictingClaim
+    } else {
+        match string_value(claim, &["review_state"]).as_deref() {
+            Some("rejected") => DialecticaPraxisClaimKind::ConflictingClaim,
+            Some("needs_review") => DialecticaPraxisClaimKind::EvidenceGap,
+            _ => DialecticaPraxisClaimKind::Fact,
+        }
+    };
+
+    Some(DialecticaPraxisClaim {
+        id,
+        kind,
+        text,
+        source_ids,
+    })
+}
+
+fn rejected_claims_from_review(review: &Value) -> Vec<DialecticaPraxisClaim> {
+    review
+        .get("rejected_records")
+        .and_then(Value::as_array)
+        .into_iter()
+        .flatten()
+        .filter_map(|record| {
+            let id = string_value(record, &["object_id", "proposal_id"])?;
+            let rationale = string_value(record, &["rationale"]).unwrap_or_else(|| {
+                "Reviewer rejected this record for promoted PRAXIS context.".to_owned()
+            });
+            Some(DialecticaPraxisClaim {
+                id,
+                kind: DialecticaPraxisClaimKind::ConflictingClaim,
+                text: format!("Review-rejected record: {rationale}"),
+                source_ids: Vec::new(),
+            })
+        })
+        .collect()
+}
+
+fn evidence_gaps_from_review(review: &Value) -> Vec<String> {
+    let mut gaps = Vec::new();
+    gaps.extend(
+        review
+            .get("open_questions")
+            .and_then(Value::as_array)
+            .into_iter()
+            .flatten()
+            .filter_map(Value::as_str)
+            .map(str::to_owned),
+    );
+    gaps.extend(
+        review
+            .get("promotion")
+            .and_then(|promotion| promotion.get("evidence_requested_proposal_ids"))
+            .and_then(Value::as_array)
+            .into_iter()
+            .flatten()
+            .filter_map(Value::as_str)
+            .map(|proposal_id| {
+                format!("Evidence requested before promoting proposal {proposal_id}.")
+            }),
+    );
+    gaps.extend(
+        review
+            .get("review_actions")
+            .and_then(Value::as_array)
+            .into_iter()
+            .flatten()
+            .filter(|action| string_value(action, &["decision"]).as_deref() == Some("needs_review"))
+            .map(|action| {
+                let object_ids = action
+                    .get("object_ids")
+                    .and_then(Value::as_array)
+                    .into_iter()
+                    .flatten()
+                    .filter_map(Value::as_str)
+                    .collect::<Vec<_>>()
+                    .join(", ");
+                let rationale = string_value(action, &["rationale"])
+                    .unwrap_or_else(|| "Reviewer requested more evidence.".to_owned());
+                if object_ids.is_empty() {
+                    rationale
+                } else {
+                    format!("{object_ids}: {rationale}")
+                }
+            }),
+    );
+    gaps
+}
+
+fn praxis_source_receipt(source: &Value) -> Option<DialecticaPraxisSourceReceipt> {
+    let id = string_value(source, &["source_id", "document_id", "id"])?;
+    let title = string_value(source, &["title"]).unwrap_or_else(|| id.clone());
+    let uri = string_value(source, &["uri", "url"]);
+    let publisher = string_value(source, &["publisher"]);
+    let retrieved_at = string_value(source, &["retrieved_at"]);
+    let citation = [
+        publisher.as_deref(),
+        retrieved_at.as_deref(),
+        uri.as_deref(),
+    ]
+    .into_iter()
+    .flatten()
+    .filter(|part| !part.is_empty())
+    .collect::<Vec<_>>()
+    .join("; ");
+    Some(DialecticaPraxisSourceReceipt {
+        id,
+        title,
+        url: uri.filter(|value| is_http_url(value)),
+        citation: if citation.is_empty() {
+            None
+        } else {
+            Some(citation)
+        },
+        excerpt: string_value(source, &["quote", "excerpt"]),
+    })
+}
+
+fn source_ids_from_claim(claim: &Value) -> Vec<String> {
+    let mut source_ids = claim
+        .get("source_span_ids")
+        .and_then(Value::as_array)
+        .into_iter()
+        .flatten()
+        .filter_map(Value::as_str)
+        .map(str::to_owned)
+        .collect::<Vec<_>>();
+    if source_ids.is_empty() {
+        if let Some(source_id) = claim
+            .get("source_span")
+            .and_then(|span| span.get("source_id"))
+            .and_then(Value::as_str)
+        {
+            source_ids.push(source_id.to_owned());
+        }
+    }
+    source_ids
+}
+
+fn string_value(value: &Value, keys: &[&str]) -> Option<String> {
+    keys.iter()
+        .find_map(|key| value.get(*key).and_then(Value::as_str))
+        .map(str::trim)
+        .filter(|text| !text.is_empty())
+        .map(str::to_owned)
+}
+
+fn is_http_url(value: &str) -> bool {
+    value.starts_with("https://") || value.starts_with("http://")
 }
 
 fn claim_values(records: &[&PromotedRecord]) -> Vec<Value> {
@@ -1345,7 +1600,9 @@ mod tests {
 
     use super::{
         can_emit_bundle, compile_fixture, compile_from_parts, export_praxis_context_pack,
-        verify_integrity_envelope, write_capsule_archive, write_capsule_diff,
+        export_praxis_import_package, verify_integrity_envelope, write_capsule_archive,
+        write_capsule_diff, DialecticaPraxisClaimKind, DialecticaPraxisContextExport,
+        DIALECTICA_PRAXIS_CONTEXT_CONTRACT_VERSION,
     };
 
     #[test]
@@ -1447,6 +1704,87 @@ mod tests {
             .source_ids
             .iter()
             .any(|source_id| source_id == "doc_election_commission_statement"));
+
+        let _ = fs::remove_dir_all(out);
+    }
+
+    #[test]
+    fn praxis_import_export_round_trips_with_copied_praxis_contract() {
+        let out = fresh_temp_dir("dialectica_praxis_import_export_fixture");
+
+        compile_fixture(&golden_fixture_dir(), &out).expect("fixture should compile");
+        let export = export_praxis_import_package(&out).expect("PRAXIS import export should build");
+        let export_path = out.join("praxis-export.json");
+        let text = serde_json::to_string_pretty(&export).expect("export should serialize");
+        fs::write(&export_path, format!("{text}\n")).expect("export should write");
+        let value: Value =
+            serde_json::from_str(&fs::read_to_string(&export_path).expect("export should read"))
+                .expect("export JSON should parse");
+        assert_matches_copied_praxis_zod_contract(&value);
+        let round_trip: DialecticaPraxisContextExport =
+            serde_json::from_value(value).expect("copied PRAXIS contract should deserialize");
+
+        assert_eq!(
+            round_trip.contract_version,
+            DIALECTICA_PRAXIS_CONTEXT_CONTRACT_VERSION
+        );
+        assert_eq!(
+            round_trip.package_id,
+            "cap_build_conflict_situation_fixture_v1"
+        );
+        assert!(round_trip
+            .claims
+            .iter()
+            .any(|claim| claim.kind == DialecticaPraxisClaimKind::Fact));
+        assert!(round_trip
+            .source_receipts
+            .iter()
+            .all(|receipt| match receipt.url.as_deref() {
+                Some(url) => url.starts_with("http"),
+                None => true,
+            }));
+
+        let _ = fs::remove_dir_all(out);
+    }
+
+    #[test]
+    fn praxis_import_export_maps_rejected_reviews_to_conflicting_claims() {
+        let build_request = load_build_request(&golden_fixture_dir().join("build_request.json"))
+            .expect("build request should load");
+        let source_pack =
+            load_source_pack(&golden_fixture_dir().join("source-pack/source_pack.json"))
+                .expect("source pack should load");
+        let proposal_set = ProposalSet::load_from_dir(&golden_fixture_dir().join("proposals"))
+            .expect("proposal set should load");
+        let mut decision_set =
+            ReviewerDecisionSet::load_from_dir(&golden_fixture_dir().join("review-decisions"))
+                .expect("decision set should load");
+        let rejected = decision_set
+            .decisions
+            .iter_mut()
+            .find(|decision| decision.proposal_id == "prop_claim_army_rejected")
+            .expect("fixture decision should exist");
+        rejected.status = ReviewDecisionStatus::Reject;
+        rejected.caveats.clear();
+        rejected.rationale =
+            "Rejected because the contested leverage inference needs a second source.".to_owned();
+        let out = fresh_temp_dir("dialectica_praxis_rejected_export_fixture");
+
+        compile_from_parts(
+            &build_request,
+            &source_pack,
+            &proposal_set,
+            &decision_set,
+            &out,
+        )
+        .expect("rejected records should compile as lineage");
+        let export = export_praxis_import_package(&out).expect("PRAXIS import export should build");
+
+        assert!(export.claims.iter().any(|claim| {
+            claim.id == "clm_army_rejected_certification"
+                && claim.kind == DialecticaPraxisClaimKind::ConflictingClaim
+                && claim.text.contains("contested leverage inference")
+        }));
 
         let _ = fs::remove_dir_all(out);
     }
@@ -1642,6 +1980,57 @@ mod tests {
         let root = std::env::temp_dir().join(format!("{}_{}", name, std::process::id()));
         let _ = fs::remove_dir_all(&root);
         root
+    }
+
+    fn assert_matches_copied_praxis_zod_contract(value: &Value) {
+        assert_eq!(
+            value.get("contractVersion").and_then(Value::as_str),
+            Some(DIALECTICA_PRAXIS_CONTEXT_CONTRACT_VERSION)
+        );
+        assert_non_empty_string(value, "packageId");
+        assert_non_empty_string(value, "exportedAt");
+        assert_non_empty_string(value, "title");
+        let claims = value
+            .get("claims")
+            .and_then(Value::as_array)
+            .expect("claims should be an array");
+        assert!(!claims.is_empty());
+        for claim in claims {
+            assert_non_empty_string(claim, "id");
+            assert_non_empty_string(claim, "text");
+            assert!(matches!(
+                claim.get("kind").and_then(Value::as_str),
+                Some("fact" | "evidence_gap" | "conflicting_claim")
+            ));
+            assert!(claim
+                .get("sourceIds")
+                .and_then(Value::as_array)
+                .expect("sourceIds should be an array")
+                .iter()
+                .all(Value::is_string));
+        }
+        for key in ["assumptions", "uncertainties", "evidenceGaps"] {
+            assert!(value.get(key).and_then(Value::as_array).is_some());
+        }
+        let source_receipts = value
+            .get("sourceReceipts")
+            .and_then(Value::as_array)
+            .expect("sourceReceipts should be an array");
+        assert!(!source_receipts.is_empty());
+        for receipt in source_receipts {
+            assert_non_empty_string(receipt, "id");
+            assert_non_empty_string(receipt, "title");
+            if let Some(url) = receipt.get("url").and_then(Value::as_str) {
+                assert!(url.starts_with("http://") || url.starts_with("https://"));
+            }
+        }
+    }
+
+    fn assert_non_empty_string(value: &Value, key: &str) {
+        assert!(value
+            .get(key)
+            .and_then(Value::as_str)
+            .is_some_and(|text| !text.trim().is_empty()));
     }
 
     fn revise_certified_claim(package_dir: &Path) {

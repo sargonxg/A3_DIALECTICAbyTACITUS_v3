@@ -43,7 +43,6 @@
       "type": "object",
       "required": [
         "answer_id",
-        "source_span_id",
         "stage_id",
         "text"
       ],
@@ -61,7 +60,10 @@
           }
         },
         "source_span_id": {
-          "type": "string"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "stage_id": {
           "type": "string"

@@ -385,6 +385,9 @@ fn extractor_schema_export_writes_builder_contracts() {
     assert!(output_dir
         .join("elicitation_completeness_score.schema.json")
         .exists());
+    assert!(output_dir
+        .join("elicitation_proposal_draft.schema.json")
+        .exists());
 
     std::fs::remove_dir_all(output_dir).expect("temp schema dir should clean up");
 }

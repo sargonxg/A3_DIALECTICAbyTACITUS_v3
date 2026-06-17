@@ -1,0 +1,580 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ElicitationProposalDraft",
+  "type": "object",
+  "required": [
+    "build_request",
+    "completeness_score",
+    "proposal_set",
+    "source_pack"
+  ],
+  "properties": {
+    "build_request": {
+      "$ref": "#/definitions/CapsuleBuildRequest"
+    },
+    "completeness_score": {
+      "$ref": "#/definitions/ElicitationCompletenessScore"
+    },
+    "proposal_set": {
+      "$ref": "#/definitions/ProposalSet"
+    },
+    "source_pack": {
+      "$ref": "#/definitions/SourcePack"
+    }
+  },
+  "definitions": {
+    "BuildMode": {
+      "type": "string",
+      "enum": [
+        "auto_draft",
+        "assisted",
+        "plus_promoted"
+      ]
+    },
+    "CapsuleBuildRequest": {
+      "type": "object",
+      "required": [
+        "build_mode",
+        "contract_version",
+        "output_intent",
+        "request_id",
+        "review_policy",
+        "target_workflow"
+      ],
+      "properties": {
+        "build_mode": {
+          "$ref": "#/definitions/BuildMode"
+        },
+        "contract_version": {
+          "type": "string"
+        },
+        "output_intent": {
+          "type": "string"
+        },
+        "request_id": {
+          "type": "string"
+        },
+        "requested_type": {
+          "default": null,
+          "anyOf": [
+            {
+              "$ref": "#/definitions/CapsuleType"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "review_policy": {
+          "$ref": "#/definitions/ReviewPolicy"
+        },
+        "target_workflow": {
+          "type": "string"
+        }
+      }
+    },
+    "CapsuleType": {
+      "type": "string",
+      "enum": [
+        "user",
+        "situation",
+        "tool",
+        "output"
+      ]
+    },
+    "ElicitationCompletenessScore": {
+      "type": "object",
+      "required": [
+        "answered_stage_count",
+        "complete_enough",
+        "criterion_scores",
+        "minimum_answered_stages",
+        "missing_stage_ids",
+        "protocol_id"
+      ],
+      "properties": {
+        "answered_stage_count": {
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0.0
+        },
+        "complete_enough": {
+          "type": "boolean"
+        },
+        "criterion_scores": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ElicitationCriterionScore"
+          }
+        },
+        "minimum_answered_stages": {
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0.0
+        },
+        "missing_stage_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "protocol_id": {
+          "type": "string"
+        }
+      }
+    },
+    "ElicitationCriterionScore": {
+      "type": "object",
+      "required": [
+        "criterion_id",
+        "minimum_count",
+        "observed_count",
+        "passed",
+        "target_record_family"
+      ],
+      "properties": {
+        "criterion_id": {
+          "type": "string"
+        },
+        "minimum_count": {
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0.0
+        },
+        "observed_count": {
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0.0
+        },
+        "passed": {
+          "type": "boolean"
+        },
+        "target_record_family": {
+          "type": "string"
+        }
+      }
+    },
+    "ExtractionProposal": {
+      "type": "object",
+      "required": [
+        "capsule_type",
+        "confidence",
+        "kind",
+        "object_id",
+        "payload",
+        "proposal_id",
+        "run_id",
+        "uncertainty"
+      ],
+      "properties": {
+        "capsule_type": {
+          "$ref": "#/definitions/CapsuleType"
+        },
+        "confidence": {
+          "type": "number",
+          "format": "double"
+        },
+        "kind": {
+          "$ref": "#/definitions/ProposalKind"
+        },
+        "object_id": {
+          "type": "string"
+        },
+        "payload": true,
+        "proposal_id": {
+          "type": "string"
+        },
+        "review_triggers": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ReviewTrigger"
+          }
+        },
+        "run_id": {
+          "type": "string"
+        },
+        "source_span_ids": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "uncertainty": {
+          "type": "string"
+        }
+      }
+    },
+    "ExtractionRun": {
+      "type": "object",
+      "required": [
+        "build_mode",
+        "contract_version",
+        "model_receipts",
+        "run_id",
+        "source_pack_id",
+        "type_inference"
+      ],
+      "properties": {
+        "build_mode": {
+          "$ref": "#/definitions/BuildMode"
+        },
+        "contract_version": {
+          "type": "string"
+        },
+        "model_receipts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ModelInvocationReceipt"
+          }
+        },
+        "requested_type": {
+          "default": null,
+          "anyOf": [
+            {
+              "$ref": "#/definitions/CapsuleType"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "run_id": {
+          "type": "string"
+        },
+        "source_pack_id": {
+          "type": "string"
+        },
+        "type_inference": {
+          "$ref": "#/definitions/TypeInference"
+        }
+      }
+    },
+    "ModelInvocationReceipt": {
+      "type": "object",
+      "required": [
+        "created_at",
+        "fixture_mode",
+        "input_digest",
+        "model",
+        "output_digest",
+        "prompt_template_id",
+        "provider",
+        "receipt_id"
+      ],
+      "properties": {
+        "created_at": {
+          "type": "string"
+        },
+        "fixture_mode": {
+          "type": "boolean"
+        },
+        "input_digest": {
+          "type": "string"
+        },
+        "model": {
+          "type": "string"
+        },
+        "output_digest": {
+          "type": "string"
+        },
+        "prompt_template_id": {
+          "type": "string"
+        },
+        "provider": {
+          "type": "string"
+        },
+        "receipt_id": {
+          "type": "string"
+        }
+      }
+    },
+    "PromptInjectionRisk": {
+      "type": "string",
+      "enum": [
+        "none",
+        "low",
+        "medium",
+        "high",
+        "quarantined"
+      ]
+    },
+    "ProposalKind": {
+      "type": "string",
+      "enum": [
+        "claim",
+        "episode",
+        "graph_node",
+        "graph_edge",
+        "ontology_term",
+        "reasoning_device",
+        "language_rule",
+        "caveat",
+        "rights_rule",
+        "output_rule"
+      ]
+    },
+    "ProposalSet": {
+      "type": "object",
+      "required": [
+        "extraction_run",
+        "proposals"
+      ],
+      "properties": {
+        "extraction_run": {
+          "$ref": "#/definitions/ExtractionRun"
+        },
+        "proposals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ExtractionProposal"
+          }
+        }
+      }
+    },
+    "ReviewPolicy": {
+      "type": "object",
+      "required": [
+        "blocked_without_source_spans",
+        "default_reviewer_role",
+        "plus_requires_human_review",
+        "policy_id",
+        "require_language_review",
+        "require_rights_review"
+      ],
+      "properties": {
+        "blocked_without_source_spans": {
+          "type": "boolean"
+        },
+        "default_reviewer_role": {
+          "type": "string"
+        },
+        "plus_requires_human_review": {
+          "type": "boolean"
+        },
+        "policy_id": {
+          "type": "string"
+        },
+        "require_language_review": {
+          "type": "boolean"
+        },
+        "require_rights_review": {
+          "type": "boolean"
+        }
+      }
+    },
+    "ReviewTrigger": {
+      "type": "object",
+      "required": [
+        "blocking",
+        "level",
+        "reason",
+        "reviewer_role",
+        "trigger_id"
+      ],
+      "properties": {
+        "blocking": {
+          "type": "boolean"
+        },
+        "level": {
+          "$ref": "#/definitions/ReviewTriggerLevel"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "reviewer_role": {
+          "type": "string"
+        },
+        "trigger_id": {
+          "type": "string"
+        }
+      }
+    },
+    "ReviewTriggerLevel": {
+      "type": "string",
+      "enum": [
+        "info",
+        "human_review",
+        "required_gate",
+        "promotion_blocker"
+      ]
+    },
+    "SourceDocument": {
+      "type": "object",
+      "required": [
+        "content_hash",
+        "document_id",
+        "language",
+        "prompt_injection_risk",
+        "retrieved_at",
+        "rights_or_access",
+        "source_type",
+        "title",
+        "trust_status",
+        "uri"
+      ],
+      "properties": {
+        "content_hash": {
+          "type": "string"
+        },
+        "document_id": {
+          "type": "string"
+        },
+        "language": {
+          "type": "string"
+        },
+        "prompt_injection_risk": {
+          "$ref": "#/definitions/PromptInjectionRisk"
+        },
+        "retrieved_at": {
+          "type": "string"
+        },
+        "rights_or_access": {
+          "type": "string"
+        },
+        "source_type": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "trust_status": {
+          "type": "string"
+        },
+        "uri": {
+          "type": "string"
+        }
+      }
+    },
+    "SourcePack": {
+      "type": "object",
+      "required": [
+        "contract_version",
+        "created_at",
+        "documents",
+        "pack_id",
+        "spans",
+        "title"
+      ],
+      "properties": {
+        "contract_version": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "documents": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SourceDocument"
+          }
+        },
+        "pack_id": {
+          "type": "string"
+        },
+        "spans": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SourceSpan"
+          }
+        },
+        "target_capsule_type": {
+          "default": null,
+          "anyOf": [
+            {
+              "$ref": "#/definitions/CapsuleType"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "title": {
+          "type": "string"
+        }
+      }
+    },
+    "SourceSpan": {
+      "type": "object",
+      "required": [
+        "document_id",
+        "language",
+        "locator",
+        "quote",
+        "rights_or_access",
+        "span_id",
+        "text_hash"
+      ],
+      "properties": {
+        "document_id": {
+          "type": "string"
+        },
+        "extraction_notes": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "language": {
+          "type": "string"
+        },
+        "locator": {
+          "type": "string"
+        },
+        "quote": {
+          "type": "string"
+        },
+        "rights_or_access": {
+          "type": "string"
+        },
+        "span_id": {
+          "type": "string"
+        },
+        "text_hash": {
+          "type": "string"
+        }
+      }
+    },
+    "TypeInference": {
+      "type": "object",
+      "required": [
+        "confidence",
+        "explanation",
+        "selected_type",
+        "source"
+      ],
+      "properties": {
+        "confidence": {
+          "type": "number",
+          "format": "double"
+        },
+        "conflicting_signals": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "explanation": {
+          "type": "string"
+        },
+        "selected_type": {
+          "$ref": "#/definitions/CapsuleType"
+        },
+        "source": {
+          "$ref": "#/definitions/TypeInferenceSource"
+        }
+      }
+    },
+    "TypeInferenceSource": {
+      "type": "string",
+      "enum": [
+        "user_selected",
+        "ai_suggested",
+        "mixed"
+      ]
+    }
+  }
+}

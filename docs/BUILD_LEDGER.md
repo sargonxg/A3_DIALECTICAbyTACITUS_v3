@@ -784,3 +784,72 @@ Next:
    after review promotion;
 3. continue composition inspector work once the protocol-to-proposal boundary
    is covered.
+
+## 2026-06-11 - PRAXIS Import Contract JSON Export
+
+Status: implemented locally; production PRAXIS API calls remain outside this
+repo and stay review-gated.
+
+Actions:
+
+- added compiler-owned PRAXIS contract export for compiled package directories;
+- added CLI `praxis-export <compiled-dir> --out <file.json>`;
+- mapped promoted/caveated claims to PRAXIS `fact`, review-rejected or
+  disputed records to `conflicting_claim`, and open review gaps to
+  `evidence_gap`;
+- preserved source receipts while keeping non-HTTP source identifiers out of
+  the optional URL field;
+- added compiler round-trip coverage against a copied PRAXIS import-contract
+  shape.
+
+Evidence:
+
+- `cargo test -p dialectica-compiler`;
+- `cargo run -p dialectica-cli -- build-fixture fixtures/golden-policy-capsule --out <temp>`;
+- `cargo run -p dialectica-cli -- praxis-export <temp> --out <temp>.json`;
+- PRAXIS preview smoke parsed the exported JSON and reported
+  `facts=2`, `conflicts=0`, `gaps=0`, and `receipts=4`.
+
+Next:
+
+1. keep the JSON export as the local PRAXIS bridge until store-backed jobs and
+   authenticated API routes exist;
+2. add more contested/rejected fixture rows when the review model emits richer
+   disagreement examples.
+
+## 2026-06-17 - Elicitation Transcript To Proposal Draft
+
+Status: implemented locally as a deterministic protocol-session draft path;
+review promotion and valid Tool capsule compilation remain explicit follow-up
+steps.
+
+Actions:
+
+- added extractor-owned `ElicitationProposalDraft`;
+- added deterministic `draft_elicitation_proposals` for protocol sessions;
+- converted elicitation answers into transcript source documents and source
+  spans;
+- emitted source-span-backed proposal records only when the protocol session is
+  complete enough;
+- attached blocking review triggers to each elicitation-derived proposal;
+- added CLI `elicitation-draft --protocol <file> --session <file> --out <dir>`;
+- wrote local draft artifacts in the existing source-pack/proposal layout so
+  `proposal-check`, `build-plan`, and `review-draft` can consume them.
+
+Evidence:
+
+- `cargo test -p dialectica-extractor elicitation_session_ --locked`;
+- `cargo check -p dialectica-cli --locked`;
+- temp Tool session smoke:
+  `cargo run -p dialectica-cli -- elicitation-draft ... --mode plus-promoted`;
+- generated draft passed
+  `cargo run -p dialectica-cli -- proposal-check <request> <source-pack> <proposal-dir>`;
+- generated draft produced a build plan with five blocking review gates.
+
+Next:
+
+1. add a committed scripted `tool.v1` fixture session and expected draft
+   outputs;
+2. extend review/promotion fixtures so the scripted Tool draft can compile into
+   a valid Tool capsule;
+3. add composition and attribution after Tool capsule promotion is proven.

@@ -18,6 +18,10 @@ fn main() {
             let remaining = args.collect::<Vec<_>>();
             build_documents_from_args(&remaining);
         }
+        "elicitation-draft" => {
+            let remaining = args.collect::<Vec<_>>();
+            draft_elicitation_from_args(&remaining);
+        }
         "validate" => {
             let Some(path) = args.next() else {
                 eprintln!("missing bundle directory");
@@ -202,6 +206,10 @@ fn main() {
             let remaining = args.collect::<Vec<_>>();
             write_context_pack_from_args(&remaining);
         }
+        "praxis-export" => {
+            let remaining = args.collect::<Vec<_>>();
+            write_praxis_import_export_from_args(&remaining);
+        }
         "mcp-config" => print_mcp_config(),
         "ladybug-plan" => {
             let Some(path) = args.next() else {
@@ -269,6 +277,7 @@ fn print_help() {
     println!("  welcome                 print the DIALECTICA operator welcome");
     println!("  doctor                  print scaffold health");
     println!("  build-docs --type <user|situation|tool|output> --input <dir> --out <dir> [--title <title>] [--workflow <workflow>] [--mode <assisted|auto-draft|plus-promoted>]");
+    println!("  elicitation-draft --protocol <file> --session <file> --out <dir> [--workflow <workflow>] [--mode <assisted|auto-draft|plus-promoted>]");
     println!("  validate <bundle-dir>   validate a capsule bundle directory");
     println!("  verify <compiled-dir>   verify a compiled v3 package integrity envelope");
     println!("  inspect <bundle-dir>    print capsule bundle summary");
@@ -287,6 +296,7 @@ fn print_help() {
     println!("  eval <compiled-dir> [--workflow <workflow>]");
     println!("  eval-diff <diff.json>");
     println!("  praxis-pack <compiled-dir> --out <file.json> [--workflow <workflow>]");
+    println!("  praxis-export <compiled-dir> --out <file.json>  Export capsule for PRAXIS (.json)");
     println!("  mcp-config              print a Codex MCP config snippet");
     println!("  ladybug-plan <dir>      print embedded Ladybug projection plan");
     println!("  ladybug-build <dir>     build graph/ladybug/capsule.lbug from graph.jsonld");
@@ -324,6 +334,121 @@ fn print_doctor() {
     println!("legacy_schema_version={}", manifest.schema_version);
     println!("compiler={}", dialectica_compiler::COMPILER_ID);
     println!("export_ready={}", manifest.is_export_ready());
+}
+
+fn draft_elicitation_from_args(args: &[String]) {
+    let Some(protocol_path) = option_value(args, "--protocol") else {
+        eprintln!("missing --protocol <file>");
+        std::process::exit(2);
+    };
+    let Some(session_path) = option_value(args, "--session") else {
+        eprintln!("missing --session <file>");
+        std::process::exit(2);
+    };
+    let Some(output_dir) = option_value(args, "--out") else {
+        eprintln!("missing --out <directory>");
+        std::process::exit(2);
+    };
+
+    let protocol = read_elicitation_protocol_or_exit(Path::new(&protocol_path));
+    let session = read_elicitation_session_or_exit(Path::new(&session_path));
+    let mode = option_value(args, "--mode").unwrap_or_else(|| "assisted".to_owned());
+    let build_mode = match dialectica_builder::parse_build_mode(&mode) {
+        Ok(value) => value,
+        Err(error) => {
+            eprintln!("{error}");
+            std::process::exit(2);
+        }
+    };
+    let workflow =
+        option_value(args, "--workflow").unwrap_or_else(|| match protocol.capsule_type {
+            dialectica_extractor::CapsuleType::User => "user_context".to_owned(),
+            dialectica_extractor::CapsuleType::Situation => "decision_brief".to_owned(),
+            dialectica_extractor::CapsuleType::Tool => "method_application".to_owned(),
+            dialectica_extractor::CapsuleType::Output => "output_review".to_owned(),
+        });
+    let intent = option_value(args, "--intent").unwrap_or_else(|| {
+        format!(
+            "Create a {} capsule from elicitation protocol {}.",
+            protocol.capsule_type.as_str(),
+            protocol.protocol_id
+        )
+    });
+    let created_at =
+        option_value(args, "--created-at").unwrap_or_else(|| "2026-06-17T00:00:00Z".to_owned());
+
+    let draft = dialectica_extractor::draft_elicitation_proposals(
+        &protocol,
+        &session,
+        build_mode,
+        &workflow,
+        &intent,
+        &created_at,
+    );
+
+    let output = Path::new(&output_dir);
+    let source_pack_dir = output.join("source-pack");
+    let proposal_dir = output.join("proposals");
+    if let Err(error) = std::fs::create_dir_all(&source_pack_dir)
+        .and_then(|_| std::fs::create_dir_all(&proposal_dir))
+    {
+        eprintln!("{error}");
+        std::process::exit(1);
+    }
+
+    let source_pack_path = source_pack_dir.join("source_pack.json");
+    let build_request_path = output.join("build_request.json");
+    let extraction_run_path = proposal_dir.join("extraction_run.json");
+    let proposals_path = proposal_dir.join("proposals.jsonl");
+    let score_path = output.join("completeness_score.json");
+
+    let source_pack_json = serde_json::to_value(&draft.source_pack).unwrap_or_else(|error| {
+        eprintln!("failed to serialize source pack: {error}");
+        std::process::exit(1);
+    });
+    let build_request_json = serde_json::to_value(&draft.build_request).unwrap_or_else(|error| {
+        eprintln!("failed to serialize build request: {error}");
+        std::process::exit(1);
+    });
+    let extraction_run_json = serde_json::to_value(&draft.proposal_set.extraction_run)
+        .unwrap_or_else(|error| {
+            eprintln!("failed to serialize extraction run: {error}");
+            std::process::exit(1);
+        });
+    let score_json = serde_json::to_value(&draft.completeness_score).unwrap_or_else(|error| {
+        eprintln!("failed to serialize completeness score: {error}");
+        std::process::exit(1);
+    });
+    let write_result = write_pretty_json(&source_pack_path, &source_pack_json)
+        .and_then(|_| write_pretty_json(&build_request_path, &build_request_json))
+        .and_then(|_| write_pretty_json(&extraction_run_path, &extraction_run_json))
+        .and_then(|_| write_proposals_jsonl(&proposals_path, &draft.proposal_set.proposals))
+        .and_then(|_| write_pretty_json(&score_path, &score_json));
+    if let Err(error) = write_result {
+        eprintln!("{error}");
+        std::process::exit(1);
+    }
+
+    let report = dialectica_extractor::validate_proposal_set(
+        &draft.source_pack,
+        &draft.build_request,
+        &draft.proposal_set,
+    );
+    println!("output_dir={}", output.display());
+    println!("source_pack_path={}", source_pack_path.display());
+    println!("build_request_path={}", build_request_path.display());
+    println!("proposal_dir={}", proposal_dir.display());
+    println!("completeness_score_path={}", score_path.display());
+    println!(
+        "complete_enough={}",
+        draft.completeness_score.complete_enough
+    );
+    println!("proposal_count={}", draft.proposal_set.proposals.len());
+    println!("valid={}", !report.has_errors());
+    if report.has_errors() {
+        print_build_validation_report(&report);
+        std::process::exit(1);
+    }
 }
 
 fn build_documents_from_args(args: &[String]) {
@@ -444,6 +569,53 @@ fn write_context_pack_from_args(args: &[String]) {
             println!("context_pack_path={}", path.display());
             println!("capsule_id={}", pack.capsule_id);
             println!("workflow={}", pack.workflow);
+            println!("valid=true");
+        }
+        Err(error) => {
+            eprintln!("{error}");
+            println!("valid=false");
+            std::process::exit(1);
+        }
+    }
+}
+
+fn write_praxis_import_export_from_args(args: &[String]) {
+    let Some(package_dir) = args.first() else {
+        eprintln!("missing compiled package directory");
+        std::process::exit(2);
+    };
+    let Some(output_file) = option_value(args, "--out") else {
+        eprintln!("missing --out <file.json>");
+        std::process::exit(2);
+    };
+
+    match dialectica_compiler::export_praxis_import_package(Path::new(package_dir)) {
+        Ok(export_package) => {
+            let text = match serde_json::to_string_pretty(&export_package) {
+                Ok(value) => value,
+                Err(error) => {
+                    eprintln!("failed to serialize PRAXIS export: {error}");
+                    std::process::exit(1);
+                }
+            };
+            let path = Path::new(&output_file);
+            if let Some(parent) = path.parent() {
+                if let Err(error) = std::fs::create_dir_all(parent) {
+                    eprintln!("{error}");
+                    std::process::exit(1);
+                }
+            }
+            if let Err(error) = std::fs::write(path, format!("{text}\n")) {
+                eprintln!("{error}");
+                std::process::exit(1);
+            }
+            println!("praxis_export_path={}", path.display());
+            println!("package_id={}", export_package.package_id);
+            println!("claim_count={}", export_package.claims.len());
+            println!(
+                "source_receipt_count={}",
+                export_package.source_receipts.len()
+            );
             println!("valid=true");
         }
         Err(error) => {
@@ -1136,6 +1308,60 @@ fn option_value(args: &[String], option_name: &str) -> Option<String> {
             None
         }
     })
+}
+
+fn read_elicitation_protocol_or_exit(path: &Path) -> dialectica_extractor::ElicitationProtocol {
+    let text = match std::fs::read_to_string(path) {
+        Ok(value) => value,
+        Err(error) => {
+            eprintln!("failed to read {}: {error}", path.display());
+            std::process::exit(1);
+        }
+    };
+    match serde_json::from_str(&text) {
+        Ok(value) => value,
+        Err(error) => {
+            eprintln!("failed to parse {}: {error}", path.display());
+            std::process::exit(1);
+        }
+    }
+}
+
+fn read_elicitation_session_or_exit(path: &Path) -> dialectica_extractor::ElicitationSession {
+    let text = match std::fs::read_to_string(path) {
+        Ok(value) => value,
+        Err(error) => {
+            eprintln!("failed to read {}: {error}", path.display());
+            std::process::exit(1);
+        }
+    };
+    match serde_json::from_str(&text) {
+        Ok(value) => value,
+        Err(error) => {
+            eprintln!("failed to parse {}: {error}", path.display());
+            std::process::exit(1);
+        }
+    }
+}
+
+fn write_pretty_json(path: &Path, value: &serde_json::Value) -> std::io::Result<()> {
+    let text = serde_json::to_string_pretty(value)
+        .map_err(|error| std::io::Error::other(error.to_string()))?;
+    std::fs::write(path, format!("{text}\n"))
+}
+
+fn write_proposals_jsonl(
+    path: &Path,
+    values: &[dialectica_extractor::ExtractionProposal],
+) -> std::io::Result<()> {
+    let mut text = String::new();
+    for value in values {
+        let line = serde_json::to_string(value)
+            .map_err(|error| std::io::Error::other(error.to_string()))?;
+        text.push_str(&line);
+        text.push('\n');
+    }
+    std::fs::write(path, text)
 }
 
 fn is_v3_package(path: &Path) -> bool {

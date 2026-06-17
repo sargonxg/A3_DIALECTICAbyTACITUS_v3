@@ -125,8 +125,9 @@ Implemented local proof:
 
 ### Slice I: Elicitation Protocols
 
-Status: local v1 read/score surface implemented; ADR-007 proposal-only boundary
-still applies to derived records.
+Status: local v1 read/score surface and deterministic transcript-to-proposal
+draft path implemented; ADR-007 proposal-only boundary still applies to
+derived records.
 
 Governance: [ADR-012](decisions/ADR-012-elicitation-protocol-contract.md).
 
@@ -156,11 +157,12 @@ Implemented local proof:
   `POST /v1/protocols/{capsule_type}/score`;
 - local MCP `dialectica_get_protocol` and
   `dialectica_score_protocol_session`.
+- extractor-owned `draft_elicitation_proposals`;
+- CLI `elicitation-draft` that writes source-pack, build request, proposal set,
+  and completeness score artifacts consumable by the existing review flow.
 
 Remaining before Slice I is complete:
 
-- convert protocol sessions into JSONL transcript source packs;
-- emit derived proposal records behind review gates;
 - scripted `tool.v1` fixture that compiles into a valid Tool capsule with
   transcript-span provenance.
 

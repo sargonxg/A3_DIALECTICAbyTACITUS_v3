@@ -13,7 +13,7 @@ use std::{
 
 use schemars::{schema::RootSchema, schema_for, JsonSchema};
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
-use serde_json::Value;
+use serde_json::{json, Value};
 
 pub const EXTRACTOR_CONTRACT_VERSION: &str = "0.1.0";
 
@@ -209,7 +209,8 @@ pub struct ElicitationSession {
 pub struct ElicitationAnswer {
     pub answer_id: String,
     pub stage_id: String,
-    pub source_span_id: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub source_span_id: Option<String>,
     pub text: String,
     #[serde(default)]
     pub derived_record_counts: BTreeMap<String, usize>,
@@ -232,6 +233,14 @@ pub struct ElicitationCriterionScore {
     pub observed_count: usize,
     pub minimum_count: usize,
     pub passed: bool,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, JsonSchema)]
+pub struct ElicitationProposalDraft {
+    pub source_pack: SourcePack,
+    pub build_request: CapsuleBuildRequest,
+    pub proposal_set: ProposalSet,
+    pub completeness_score: ElicitationCompletenessScore,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, JsonSchema)]
@@ -638,6 +647,133 @@ pub fn score_elicitation_session(
         minimum_answered_stages: protocol.completeness.minimum_answered_stages,
         missing_stage_ids,
         criterion_scores,
+    }
+}
+
+pub fn draft_elicitation_proposals(
+    protocol: &ElicitationProtocol,
+    session: &ElicitationSession,
+    build_mode: BuildMode,
+    target_workflow: &str,
+    output_intent: &str,
+    created_at: &str,
+) -> ElicitationProposalDraft {
+    let completeness_score = score_elicitation_session(protocol, session);
+    let capsule_type = protocol.capsule_type;
+    let session_slug = stable_id_part(&session.session_id);
+    let document_id = format!("doc_{session_slug}_transcript");
+    let transcript_text = session
+        .answers
+        .iter()
+        .map(|answer| answer.text.as_str())
+        .collect::<Vec<_>>()
+        .join("\n\n");
+
+    let source_pack = SourcePack {
+        pack_id: format!("srcpack_{session_slug}"),
+        contract_version: EXTRACTOR_CONTRACT_VERSION.to_owned(),
+        target_capsule_type: Some(capsule_type),
+        title: format!("{} Transcript", protocol.title),
+        created_at: created_at.to_owned(),
+        documents: vec![SourceDocument {
+            document_id: document_id.clone(),
+            source_type: "elicitation_transcript".to_owned(),
+            title: format!("{} session {}", protocol.title, session.session_id),
+            uri: format!("dialectica://elicitation-sessions/{}", session.session_id),
+            retrieved_at: created_at.to_owned(),
+            language: "en".to_owned(),
+            rights_or_access: "operator_provided_transcript".to_owned(),
+            content_hash: digest_text(&transcript_text),
+            trust_status: "transcript_source_material".to_owned(),
+            prompt_injection_risk: PromptInjectionRisk::Low,
+        }],
+        spans: session
+            .answers
+            .iter()
+            .map(|answer| SourceSpan {
+                span_id: stable_answer_span_id(answer),
+                document_id: document_id.clone(),
+                locator: format!("stage:{};answer:{}", answer.stage_id, answer.answer_id),
+                text_hash: digest_text(&answer.text),
+                quote: answer.text.clone(),
+                language: "en".to_owned(),
+                rights_or_access: "operator_provided_transcript".to_owned(),
+                extraction_notes: vec![
+                    format!("elicitation_stage:{}", answer.stage_id),
+                    format!("answer_id:{}", answer.answer_id),
+                ],
+            })
+            .collect(),
+    };
+
+    let review_policy = ReviewPolicy {
+        policy_id: format!("review_policy_{session_slug}"),
+        plus_requires_human_review: matches!(build_mode, BuildMode::PlusPromoted),
+        default_reviewer_role: default_reviewer_role(capsule_type).to_owned(),
+        blocked_without_source_spans: true,
+        require_language_review: true,
+        require_rights_review: true,
+    };
+    let build_request = CapsuleBuildRequest {
+        request_id: format!("build_{session_slug}"),
+        contract_version: EXTRACTOR_CONTRACT_VERSION.to_owned(),
+        requested_type: Some(capsule_type),
+        build_mode,
+        target_workflow: target_workflow.to_owned(),
+        output_intent: output_intent.to_owned(),
+        review_policy,
+    };
+    let run_id = format!("run_{session_slug}");
+    let proposals = if completeness_score.complete_enough {
+        session
+            .answers
+            .iter()
+            .filter_map(|answer| {
+                proposal_from_elicitation_answer(protocol, session, answer, &run_id)
+            })
+            .collect()
+    } else {
+        Vec::new()
+    };
+    let proposal_digest = proposals
+        .iter()
+        .map(|proposal| proposal.proposal_id.as_str())
+        .collect::<Vec<_>>()
+        .join("\n");
+    let extraction_run = ExtractionRun {
+        run_id: run_id.clone(),
+        contract_version: EXTRACTOR_CONTRACT_VERSION.to_owned(),
+        source_pack_id: source_pack.pack_id.clone(),
+        requested_type: Some(capsule_type),
+        type_inference: TypeInference {
+            selected_type: capsule_type,
+            source: TypeInferenceSource::UserSelected,
+            confidence: 1.0,
+            explanation: "Protocol capsule_type is authoritative for elicitation drafts."
+                .to_owned(),
+            conflicting_signals: Vec::new(),
+        },
+        build_mode,
+        model_receipts: vec![ModelInvocationReceipt {
+            receipt_id: format!("receipt_{run_id}"),
+            provider: "dialectica_fixture".to_owned(),
+            model: "deterministic_elicitation_mapper_v1".to_owned(),
+            prompt_template_id: protocol.protocol_id.clone(),
+            input_digest: digest_text(&transcript_text),
+            output_digest: digest_text(&proposal_digest),
+            created_at: created_at.to_owned(),
+            fixture_mode: true,
+        }],
+    };
+
+    ElicitationProposalDraft {
+        source_pack,
+        build_request,
+        proposal_set: ProposalSet {
+            extraction_run,
+            proposals,
+        },
+        completeness_score,
     }
 }
 
@@ -1181,6 +1317,11 @@ pub fn export_schema_dir(path: &Path) -> Result<(), ExtractorLoadError> {
         "elicitation_completeness_score.schema.json",
         schema_for!(ElicitationCompletenessScore),
     )?;
+    write_schema(
+        path,
+        "elicitation_proposal_draft.schema.json",
+        schema_for!(ElicitationProposalDraft),
+    )?;
     Ok(())
 }
 
@@ -1341,6 +1482,211 @@ fn is_sha256_digest(value: &str) -> bool {
         return false;
     };
     hex.len() == 64 && hex.chars().all(|character| character.is_ascii_hexdigit())
+}
+
+fn proposal_from_elicitation_answer(
+    protocol: &ElicitationProtocol,
+    session: &ElicitationSession,
+    answer: &ElicitationAnswer,
+    run_id: &str,
+) -> Option<ExtractionProposal> {
+    let stage = protocol
+        .stages
+        .iter()
+        .find(|stage| stage.stage_id == answer.stage_id)?;
+    let (record_family, _) = answer
+        .derived_record_counts
+        .iter()
+        .filter(|(_, count)| **count > 0)
+        .find(|(family, _)| stage.target_record_families.contains(*family))?;
+    let kind = proposal_kind_for_record_family(record_family)?;
+    let session_slug = stable_id_part(&session.session_id);
+    let family_slug = stable_id_part(record_family);
+    let answer_slug = stable_id_part(&answer.answer_id);
+    let object_id = format!(
+        "{}_{}_{}",
+        session.capsule_type.as_str(),
+        family_slug,
+        answer_slug
+    );
+
+    Some(ExtractionProposal {
+        proposal_id: format!("prop_{session_slug}_{family_slug}_{answer_slug}"),
+        run_id: run_id.to_owned(),
+        capsule_type: session.capsule_type,
+        kind,
+        object_id: object_id.clone(),
+        source_span_ids: vec![stable_answer_span_id(answer)],
+        confidence: 0.72,
+        uncertainty: "Derived deterministically from an elicitation transcript; human review must confirm the proposed record before promotion.".to_owned(),
+        payload: elicitation_payload(kind, &object_id, stage, answer, record_family),
+        review_triggers: vec![ReviewTrigger {
+            trigger_id: format!("elicitation_{family_slug}_review"),
+            level: ReviewTriggerLevel::RequiredGate,
+            reviewer_role: default_reviewer_role(session.capsule_type).to_owned(),
+            reason: format!(
+                "Elicitation-derived {record_family} requires human review before canonical capsule promotion."
+            ),
+            blocking: true,
+        }],
+    })
+}
+
+fn proposal_kind_for_record_family(record_family: &str) -> Option<ProposalKind> {
+    match record_family {
+        "claim" | "source_requirement" | "citation_rule" => Some(ProposalKind::Claim),
+        "episode" => Some(ProposalKind::Episode),
+        "graph_node" | "graph_pattern" | "precedent" => Some(ProposalKind::GraphNode),
+        "graph_edge" => Some(ProposalKind::GraphEdge),
+        "ontology_term" | "salience_prior" => Some(ProposalKind::OntologyTerm),
+        "reasoning_device" | "heuristic" => Some(ProposalKind::ReasoningDevice),
+        "language_rule" => Some(ProposalKind::LanguageRule),
+        "caveat" | "trap" => Some(ProposalKind::Caveat),
+        "rights_rule" => Some(ProposalKind::RightsRule),
+        "output_rule" => Some(ProposalKind::OutputRule),
+        _ => None,
+    }
+}
+
+fn elicitation_payload(
+    kind: ProposalKind,
+    object_id: &str,
+    stage: &ElicitationStage,
+    answer: &ElicitationAnswer,
+    record_family: &str,
+) -> Value {
+    match kind {
+        ProposalKind::ReasoningDevice => json!({
+            "device_id": object_id,
+            "label": stage.title,
+            "record_family": record_family,
+            "steps": [answer.text],
+            "source_answer_id": answer.answer_id,
+            "stage_id": answer.stage_id,
+        }),
+        ProposalKind::Caveat => json!({
+            "caveat_id": object_id,
+            "statement": answer.text,
+            "record_family": record_family,
+            "source_answer_id": answer.answer_id,
+            "stage_id": answer.stage_id,
+        }),
+        ProposalKind::OutputRule => json!({
+            "output_rule_id": object_id,
+            "rule": answer.text,
+            "record_family": record_family,
+            "source_answer_id": answer.answer_id,
+            "stage_id": answer.stage_id,
+        }),
+        ProposalKind::LanguageRule => json!({
+            "language_rule_id": object_id,
+            "rule": answer.text,
+            "record_family": record_family,
+            "source_answer_id": answer.answer_id,
+            "stage_id": answer.stage_id,
+        }),
+        ProposalKind::RightsRule => json!({
+            "rights_rule_id": object_id,
+            "rule": answer.text,
+            "record_family": record_family,
+            "source_answer_id": answer.answer_id,
+            "stage_id": answer.stage_id,
+        }),
+        ProposalKind::Claim => json!({
+            "claim_id": object_id,
+            "claim_text": answer.text,
+            "record_family": record_family,
+            "source_answer_id": answer.answer_id,
+            "stage_id": answer.stage_id,
+        }),
+        ProposalKind::GraphNode => json!({
+            "node_id": object_id,
+            "label": stage.title,
+            "description": answer.text,
+            "record_family": record_family,
+            "source_answer_id": answer.answer_id,
+            "stage_id": answer.stage_id,
+        }),
+        ProposalKind::GraphEdge => json!({
+            "edge_id": object_id,
+            "description": answer.text,
+            "record_family": record_family,
+            "source_answer_id": answer.answer_id,
+            "stage_id": answer.stage_id,
+        }),
+        ProposalKind::OntologyTerm => json!({
+            "term_id": object_id,
+            "label": stage.title,
+            "definition": answer.text,
+            "record_family": record_family,
+            "source_answer_id": answer.answer_id,
+            "stage_id": answer.stage_id,
+        }),
+        ProposalKind::Episode => json!({
+            "episode_id": object_id,
+            "label": stage.title,
+            "description": answer.text,
+            "record_family": record_family,
+            "source_answer_id": answer.answer_id,
+            "stage_id": answer.stage_id,
+        }),
+    }
+}
+
+fn default_reviewer_role(capsule_type: CapsuleType) -> &'static str {
+    match capsule_type {
+        CapsuleType::User => "user_context_reviewer",
+        CapsuleType::Situation => "policy_reviewer",
+        CapsuleType::Tool => "expert_method_reviewer",
+        CapsuleType::Output => "output_owner",
+    }
+}
+
+fn stable_answer_span_id(answer: &ElicitationAnswer) -> String {
+    let value = answer.source_span_id.as_deref().unwrap_or("").trim();
+    if value.is_empty() {
+        format!("span_{}", stable_id_part(&answer.answer_id))
+    } else {
+        stable_id_part(value)
+    }
+}
+
+fn stable_id_part(value: &str) -> String {
+    let normalized = value
+        .trim()
+        .chars()
+        .map(|character| {
+            if character.is_ascii_alphanumeric() {
+                character.to_ascii_lowercase()
+            } else {
+                '_'
+            }
+        })
+        .collect::<String>();
+    let compact = normalized
+        .split('_')
+        .filter(|part| !part.is_empty())
+        .collect::<Vec<_>>()
+        .join("_");
+    if compact.is_empty() {
+        "item".to_owned()
+    } else {
+        compact
+    }
+}
+
+fn digest_text(value: &str) -> String {
+    use std::collections::hash_map::DefaultHasher;
+    use std::hash::{Hash, Hasher};
+
+    let mut output = String::with_capacity(64);
+    for salt in 0_u8..4 {
+        let mut hasher = DefaultHasher::new();
+        salt.hash(&mut hasher);
+        value.hash(&mut hasher);
+        output.push_str(&format!("{:016x}", hasher.finish()));
+    }
+    format!("sha256:{output}")
 }
 
 fn read_json<T: DeserializeOwned>(base: &Path, relative: &str) -> Result<T, ExtractorLoadError> {
@@ -1513,14 +1859,15 @@ fn promoted_without_gate(proposal: &ExtractionProposal) -> PromotedRecord {
 #[cfg(test)]
 mod tests {
     use super::{
-        draft_reviewer_decision_set, plan_capsule_build, promote_records, route_review_gates,
-        score_elicitation_session, validate_proposal_set, validate_reviewer_decision_set,
-        validate_source_pack, BuildMode, BuildValidationSeverity, CapsuleBuildRequest, CapsuleType,
-        ElicitationAnswer, ElicitationCompleteness, ElicitationCompletenessCriterion,
-        ElicitationProtocol, ElicitationSession, ElicitationStage, ExtractionProposal,
-        ExtractionRun, ModelInvocationReceipt, PromptInjectionRisk, ProposalKind, ProposalSet,
-        ReviewDecisionStatus, ReviewPolicy, ReviewTrigger, ReviewTriggerLevel, SourceDocument,
-        SourcePack, SourceSpan, TypeInference, TypeInferenceSource, EXTRACTOR_CONTRACT_VERSION,
+        draft_elicitation_proposals, draft_reviewer_decision_set, plan_capsule_build,
+        promote_records, route_review_gates, score_elicitation_session, validate_proposal_set,
+        validate_reviewer_decision_set, validate_source_pack, BuildMode, BuildValidationSeverity,
+        CapsuleBuildRequest, CapsuleType, ElicitationAnswer, ElicitationCompleteness,
+        ElicitationCompletenessCriterion, ElicitationProtocol, ElicitationSession,
+        ElicitationStage, ExtractionProposal, ExtractionRun, ModelInvocationReceipt,
+        PromptInjectionRisk, ProposalKind, ProposalSet, ReviewDecisionStatus, ReviewPolicy,
+        ReviewTrigger, ReviewTriggerLevel, SourceDocument, SourcePack, SourceSpan, TypeInference,
+        TypeInferenceSource, EXTRACTOR_CONTRACT_VERSION,
     };
     use std::collections::BTreeMap;
 
@@ -1683,14 +2030,14 @@ mod tests {
                 ElicitationAnswer {
                     answer_id: "ans_walkthrough".to_owned(),
                     stage_id: "walkthrough".to_owned(),
-                    source_span_id: "span_walkthrough".to_owned(),
+                    source_span_id: Some("span_walkthrough".to_owned()),
                     text: "The expert supplied the method steps.".to_owned(),
                     derived_record_counts: BTreeMap::from([("reasoning_device".to_owned(), 10)]),
                 },
                 ElicitationAnswer {
                     answer_id: "ans_traps".to_owned(),
                     stage_id: "traps".to_owned(),
-                    source_span_id: "span_traps".to_owned(),
+                    source_span_id: Some("span_traps".to_owned()),
                     text: "The expert supplied common failure modes.".to_owned(),
                     derived_record_counts: BTreeMap::from([("trap".to_owned(), 3)]),
                 },
@@ -1706,6 +2053,165 @@ mod tests {
             .criterion_scores
             .iter()
             .all(|criterion| criterion.passed));
+    }
+
+    #[test]
+    fn elicitation_session_drafts_source_pack_and_review_gated_proposals() {
+        let protocol = fixture_tool_protocol();
+        let session = fixture_tool_session();
+
+        let draft = draft_elicitation_proposals(
+            &protocol,
+            &session,
+            BuildMode::PlusPromoted,
+            "decision_brief",
+            "Capture the expert method for PRAXIS use.",
+            "2026-06-17T00:00:00Z",
+        );
+
+        assert!(draft.completeness_score.complete_enough);
+        assert_eq!(draft.source_pack.pack_id, "srcpack_sess_tool_fixture");
+        assert_eq!(draft.source_pack.documents.len(), 1);
+        assert_eq!(draft.source_pack.spans.len(), 2);
+        assert_eq!(draft.source_pack.spans[0].span_id, "span_walkthrough");
+        assert_eq!(
+            draft.source_pack.spans[0].extraction_notes,
+            vec!["elicitation_stage:walkthrough", "answer_id:ans_walkthrough"]
+        );
+        assert_eq!(draft.build_request.requested_type, Some(CapsuleType::Tool));
+        assert_eq!(
+            draft.proposal_set.extraction_run.source_pack_id,
+            draft.source_pack.pack_id
+        );
+        assert_eq!(draft.proposal_set.proposals.len(), 2);
+        assert!(draft
+            .proposal_set
+            .proposals
+            .iter()
+            .all(|proposal| !proposal.source_span_ids.is_empty()));
+        assert!(draft.proposal_set.proposals.iter().all(|proposal| proposal
+            .review_triggers
+            .iter()
+            .any(|trigger| trigger.blocking)));
+
+        let report = validate_proposal_set(
+            &draft.source_pack,
+            &draft.build_request,
+            &draft.proposal_set,
+        );
+        assert!(!report.has_errors(), "{:#?}", report.findings);
+
+        let gates = route_review_gates(&draft.build_request, &draft.proposal_set);
+        assert_eq!(gates.len(), draft.proposal_set.proposals.len());
+    }
+
+    #[test]
+    fn elicitation_session_keeps_incomplete_answers_as_source_but_no_proposals() {
+        let protocol = fixture_tool_protocol();
+        let session = ElicitationSession {
+            session_id: "sess_tool_incomplete".to_owned(),
+            protocol_id: "tool.v1".to_owned(),
+            capsule_type: CapsuleType::Tool,
+            current_stage_id: "walkthrough".to_owned(),
+            answers: vec![ElicitationAnswer {
+                answer_id: "ans_walkthrough".to_owned(),
+                stage_id: "walkthrough".to_owned(),
+                source_span_id: None,
+                text: "The answer describes the method but no derived records are counted."
+                    .to_owned(),
+                derived_record_counts: BTreeMap::new(),
+            }],
+        };
+
+        let draft = draft_elicitation_proposals(
+            &protocol,
+            &session,
+            BuildMode::Assisted,
+            "decision_brief",
+            "Capture the expert method for PRAXIS use.",
+            "2026-06-17T00:00:00Z",
+        );
+
+        assert!(!draft.completeness_score.complete_enough);
+        assert_eq!(draft.source_pack.spans.len(), 1);
+        assert_eq!(draft.source_pack.spans[0].span_id, "span_ans_walkthrough");
+        assert!(draft.proposal_set.proposals.is_empty());
+    }
+
+    fn fixture_tool_protocol() -> ElicitationProtocol {
+        ElicitationProtocol {
+            protocol_id: "tool.v1".to_owned(),
+            schema_version: "elicitation_protocol_v1".to_owned(),
+            capsule_type: CapsuleType::Tool,
+            version: "1.0.0".to_owned(),
+            title: "Tool Capsule Expert Elicitation".to_owned(),
+            description: "Fixture protocol".to_owned(),
+            stages: vec![
+                ElicitationStage {
+                    stage_id: "walkthrough".to_owned(),
+                    order: 1,
+                    title: "Walkthrough".to_owned(),
+                    question_templates: vec!["Walk me through the method.".to_owned()],
+                    target_record_families: vec!["reasoning_device".to_owned()],
+                    completion_criteria: vec!["At least one concrete step.".to_owned()],
+                    follow_up_hints: Vec::new(),
+                },
+                ElicitationStage {
+                    stage_id: "traps".to_owned(),
+                    order: 2,
+                    title: "Traps".to_owned(),
+                    question_templates: vec!["What do people get wrong?".to_owned()],
+                    target_record_families: vec!["trap".to_owned(), "caveat".to_owned()],
+                    completion_criteria: vec!["Named failure cases.".to_owned()],
+                    follow_up_hints: Vec::new(),
+                },
+            ],
+            completeness: ElicitationCompleteness {
+                minimum_answered_stages: 2,
+                criteria: vec![
+                    ElicitationCompletenessCriterion {
+                        criterion_id: "devices".to_owned(),
+                        target_record_family: "reasoning_device".to_owned(),
+                        minimum_count: 1,
+                        description: "Minimum method devices.".to_owned(),
+                    },
+                    ElicitationCompletenessCriterion {
+                        criterion_id: "traps".to_owned(),
+                        target_record_family: "trap".to_owned(),
+                        minimum_count: 1,
+                        description: "Minimum traps.".to_owned(),
+                    },
+                ],
+            },
+        }
+    }
+
+    fn fixture_tool_session() -> ElicitationSession {
+        ElicitationSession {
+            session_id: "sess_tool_fixture".to_owned(),
+            protocol_id: "tool.v1".to_owned(),
+            capsule_type: CapsuleType::Tool,
+            current_stage_id: "traps".to_owned(),
+            answers: vec![
+                ElicitationAnswer {
+                    answer_id: "ans_walkthrough".to_owned(),
+                    stage_id: "walkthrough".to_owned(),
+                    source_span_id: Some("span_walkthrough".to_owned()),
+                    text: "First separate the source-backed fact from the analyst inference."
+                        .to_owned(),
+                    derived_record_counts: BTreeMap::from([("reasoning_device".to_owned(), 1)]),
+                },
+                ElicitationAnswer {
+                    answer_id: "ans_traps".to_owned(),
+                    stage_id: "traps".to_owned(),
+                    source_span_id: Some("span_traps".to_owned()),
+                    text:
+                        "The main trap is letting plausible leverage become an uncited conclusion."
+                            .to_owned(),
+                    derived_record_counts: BTreeMap::from([("trap".to_owned(), 1)]),
+                },
+            ],
+        }
     }
 
     fn fixture_source_pack() -> SourcePack {
