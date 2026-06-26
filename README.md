@@ -17,6 +17,13 @@ source-grounded knowledge objects that humans and AI agents can inspect, share,
 compose, and use interchangeably across policy, research, analysis, drafting,
 scenario, and decision workflows.
 
+## 30-Second Read
+
+- **What it is**: a Rust-first capsule compiler and review engine for PRAXIS.
+- **What it proves today**: schema validation, source-pack checks, deterministic fixture extraction, capsule archive writing, PRAXIS context-pack export, local import receipts, MCP tools, and Axum fixture APIs.
+- **What it is not yet**: a full cloud ingestion product with PDF/OCR, auth, durable jobs, live provider calls, and production PRAXIS frontend integration.
+- **Best place to start**: [docs/CODING_LEDGER.md](docs/CODING_LEDGER.md), then [docs/NEXT_CODE_BUILD_PLAN.md](docs/NEXT_CODE_BUILD_PLAN.md).
+
 The product thesis is:
 
 > PRAXIS Augmented Generation with PRAXIS Capsules by TACITUS.
@@ -27,34 +34,8 @@ The technical thesis is:
 > substrate, the knowledge to reason over, and guidance, the expert reasoning
 > to reason with.
 
-Current truth:
-
-- **Works now**: Rust contract validation, canonical v3 Situation Capsule
-  fixture validation with required embedded Ladybug projection, legacy
-  migration fixture validation, source-pack validation, fixture-mode extraction
-  proposal validation, review-trigger routing, reviewer-decision validation,
-  promotion normalization, deterministic fixture-mode v3 package compilation,
-  deterministic local document-folder capsule building, `.capsule` archive
-  writing, PRAXIS context-pack export, PRAXIS local import receipts,
-  review-queue and promotion-summary artifacts, JSONL user/assistant
-  discussion capture as local source material, deterministic MVP eval checks,
-  Codex MCP stdio tools/resources/prompts, Axum fixture API routes, build-plan
-  printing, schema export, and CLI
-  `doctor`/`validate`/`inspect`/`ontology-plan`/`ladybug-*`/`source-pack-check`/
-  `proposal-check`/`build-plan`/`review-check`/`promote-check`/`schema-export`.
-  `welcome`/`build-docs`/`build-fixture`/`archive`/`context-pack`/
-  `praxis-pack`/`mcp-config`/`eval`.
-- **Not built yet**: editable review-decision workflow, PDF/OCR/scanned-image
-  and web ingestion, richer conversation adapters, live model provider calls,
-  PostgreSQL migrations, durable build jobs, task handler, cloud artifact
-  storage, auth, deployment wiring, and PRAXIS frontend integration.
-- **Next build**: editable review decisions first, so a human-edited reject or
-  approval can re-run promotion and recompilation before cloud persistence or
-  live provider work starts.
-
-Start with [docs/CODING_LEDGER.md](docs/CODING_LEDGER.md) and
-[docs/NEXT_CODE_BUILD_PLAN.md](docs/NEXT_CODE_BUILD_PLAN.md). Use
-[docs/README.md](docs/README.md) for the complete documentation map.
+For the full current-state ledger, use [docs/CODING_LEDGER.md](docs/CODING_LEDGER.md).
+For the complete documentation map, use [docs/README.md](docs/README.md).
 
 ## Why This Matters
 
