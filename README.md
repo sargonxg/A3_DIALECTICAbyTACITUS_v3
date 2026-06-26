@@ -9,6 +9,8 @@
 ![Capsule](https://img.shields.io/badge/capsule-signed%20bundle-111827)
 ![PRAXIS](https://img.shields.io/badge/serves-PRAXIS%20Capsules-0F766E)
 ![License](https://img.shields.io/badge/license-Apache--2.0-blue)
+[![Docs](https://github.com/sargonxg/A3_DIALECTICAbyTACITUS_v3/actions/workflows/docs.yml/badge.svg?branch=main)](https://github.com/sargonxg/A3_DIALECTICAbyTACITUS_v3/actions/workflows/docs.yml)
+[![Rust](https://img.shields.io/badge/Rust-2021-orange?logo=rust)](Cargo.toml)
 
 DIALECTICA is the TACITUS context-capsule engine for PRAXIS.
 
