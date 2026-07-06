@@ -60,6 +60,12 @@ $shortSha = git rev-parse --short HEAD
 gcloud builds submit --config cloudbuild.dialectica-mcp.yaml --substitutions "_REGION=$env:DIALECTICA_REGION,_SERVICE=dialectica-mcp,_REPOSITORY=dialectica,_IMAGE_TAG=$shortSha"
 ```
 
+Or use the checked-in Codex-friendly wrapper:
+
+```powershell
+.\infrastructure\cloud-run\deploy-dialectica-mcp.ps1 -Region $env:DIALECTICA_REGION
+```
+
 Read the deployed URL:
 
 ```powershell

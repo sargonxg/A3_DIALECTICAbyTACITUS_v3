@@ -133,6 +133,7 @@ jobs:
           test -f schemas/capsule-0.1.0/capsule.schema.json
           test -f schemas/capsule-0.1.0/ontology_blueprint.schema.json
           test -f infrastructure/cloud-run/dialectica-mcp.Dockerfile
+          test -f infrastructure/cloud-run/deploy-dialectica-mcp.ps1
           test -f cloudbuild.dialectica-mcp.yaml
 
   rust-workspace:
