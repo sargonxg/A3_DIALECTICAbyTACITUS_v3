@@ -1,6 +1,7 @@
 # Codex MCP Capsule Builder
 
-Status: implemented for the local hardened stdio build loop.
+Status: implemented for the local hardened stdio build loop and first hosted
+HTTP `/mcp` loop.
 
 This is the current operator path for building a PRAXIS Capsule with Codex.
 It runs locally, does not require cloud credentials, and produces artifacts
@@ -105,6 +106,8 @@ Tools:
 | --- | --- |
 | `dialectica_welcome` | returns the operator welcome |
 | `dialectica_build_capsule` | builds a capsule from local documents |
+| `dialectica_upload_sources` | uploads text source files into the hosted MCP workspace and returns a `build_id` |
+| `dialectica_build_uploaded_capsule` | builds a capsule from previously uploaded hosted source files |
 | `dialectica_capture_discussion` | writes a user/assistant discussion JSONL source file for capsule ingestion |
 | `dialectica_inspect_capsule` | inspects a compiled package and Ladybug projection metadata |
 | `dialectica_validate_capsule` | validates a compiled package and returns precise findings |
@@ -130,6 +133,8 @@ block for older clients. Invalid tool arguments return an MCP tool result with
 | --- | --- | --- | --- |
 | `dialectica_welcome` | none | none | `{ "welcome": string }` |
 | `dialectica_build_capsule` | `capsule_type`, `input_dir`, `out_dir` | `title`, `workflow`, `mode` | builder receipt paths, counts, digests, and `promotion_note` |
+| `dialectica_upload_sources` | `files` | `build_id`, `overwrite` | `build_id`, hosted workspace path, uploaded file count, and `next_tool` |
+| `dialectica_build_uploaded_capsule` | `build_id`, `capsule_type` | `title`, `workflow`, `mode` | builder receipt paths, counts, digests, hosted paths, and `promotion_note` |
 | `dialectica_capture_discussion` | `out_file`, `turns` | turn `timestamp` values | discussion JSONL path and turn count |
 | `dialectica_inspect_capsule` | `package_dir` | none | manifest, review state, counts, validation boolean, Ladybug status |
 | `dialectica_validate_capsule` | `package_dir` | none | `valid`, finding counts, and `findings` |
@@ -190,7 +195,7 @@ Resources:
 | `dialectica://welcome` | operator welcome |
 | `dialectica://builder/contract` | what each capsule build contains |
 | `dialectica://praxis/bridge` | how PRAXIS consumes local and cloud artifacts |
-| `dialectica://hosted/mcp` | future hosted `/mcp` behavior and auth/path restrictions |
+| `dialectica://hosted/mcp` | hosted `/mcp` behavior and auth/path restrictions |
 
 Prompt:
 
@@ -207,6 +212,15 @@ Local bridge now:
 3. `praxis-import.json` links the context pack, archive, manifest, graph,
    Ladybug projection metadata, and source pack.
 
+Cloud bridge now:
+
+1. deploy `dialectica-mcp` to Cloud Run with the bearer token from Secret
+   Manager;
+2. upload source text to `/mcp` with `dialectica_upload_sources`;
+3. build with `dialectica_build_uploaded_capsule` using the returned `build_id`;
+4. inspect and validate the server-side package before handing the capsule to
+   PRAXIS.
+
 Cloud bridge next:
 
 1. upload `*.capsule` to Cloud Storage;
@@ -218,14 +232,14 @@ Cloud bridge next:
 
 ## Local vs Hosted MCP
 
-| Concern | Local stdio MCP now | Hosted Streamable HTTP MCP later |
-| --- | --- | --- |
-| Transport | newline-delimited JSON-RPC over stdin/stdout | single `/mcp` endpoint using Streamable HTTP |
-| Auth | local process trust and OS permissions | OAuth/service auth, tenant ownership checks, token audience validation |
-| Inputs | local filesystem paths under optional `DIALECTICA_MCP_ROOTS` | `build_id`, `capsule_id`, and artifact IDs only |
-| Artifact storage | local directories and `.capsule` files | Cloud Storage objects plus Cloud SQL state |
-| PRAXIS access | local `praxis-context-pack.json` or archive handoff | authenticated API/MCP call or signed artifact URL |
-| Promotion | draft/assisted outputs with caveats | same review gates; no silent canonical promotion |
+| Concern | Local stdio MCP now | Hosted HTTP MCP now | Durable hosted MCP later |
+| --- | --- | --- | --- |
+| Transport | newline-delimited JSON-RPC over stdin/stdout | single `/mcp` endpoint using JSON-RPC POST | same endpoint with resumable/session-aware clients |
+| Auth | local process trust and OS permissions | bearer token plus optional Origin allow-list | OAuth/service auth, tenant ownership checks, token audience validation |
+| Inputs | local filesystem paths under optional `DIALECTICA_MCP_ROOTS` | uploaded text files addressed by `build_id` | `build_id`, `capsule_id`, and durable artifact IDs |
+| Artifact storage | local directories and `.capsule` files | Cloud Run instance workspace | Cloud Storage objects plus Cloud SQL state |
+| PRAXIS access | local `praxis-context-pack.json` or archive handoff | MCP-inspected server-side artifact paths | authenticated API/MCP call or signed artifact URL |
+| Promotion | draft/assisted outputs with caveats | same review gates; no silent canonical promotion | same review gates; no silent canonical promotion |
 
 ## Human Gate Posture
 

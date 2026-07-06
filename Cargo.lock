@@ -433,6 +433,7 @@ dependencies = [
 name = "dialectica-mcp"
 version = "0.1.0"
 dependencies = [
+ "axum",
  "dialectica-builder",
  "dialectica-capsule",
  "dialectica-compiler",
@@ -441,6 +442,8 @@ dependencies = [
  "serde",
  "serde_json",
  "sha2",
+ "tokio",
+ "tower",
 ]
 
 [[package]]

@@ -43,8 +43,11 @@ When documents conflict, use this order:
 35. `docs/TECH_BENCHMARK.md`
 36. `docs/PYTHON_TOOLING.md`
 37. `docs/DIALECTICA_v3_BUILD_INSTRUCTIONS.md` as reference context
-38. ADRs in `docs/decisions/`
-39. Implementation notes in issues, PRs, and comments
+38. `docs/DIALECTICA_CAPSULE_CAPTURE_DOCTRINE.md` as capture doctrine context
+39. `docs/DIALECTICA_BUILD_PROGRAM.md` as program context
+40. `docs/HOSTED_MCP_CLOUD_RUN.md` as hosted MCP operations context
+41. ADRs in `docs/decisions/`
+42. Implementation notes in issues, PRs, and comments
 
 If an implementation contradicts a higher-priority document, update the
 document through an ADR or stop and ask for a product decision.
@@ -154,6 +157,7 @@ Before building service code, the repo needs:
 - graph profile registry alignment;
 - language profile contract;
 - deployment skeleton for local Docker and Cloud Run;
+- hosted MCP deployment runbook and Cloud Run container build config;
 - CI check for formatting, tests, and docs presence.
 
 Current implementation status: the first executable capsule-build loop now
@@ -161,14 +165,15 @@ includes Rust legacy bundle structs, v3 package validation, schema export, a
 legacy expected-bundle fixture, a canonical v3 Situation Capsule fixture,
 fixture-mode source-pack/proposal/review/promotion contracts, deterministic v3
 package compilation, `.capsule` archive writing, PRAXIS context-pack export,
-and fixture-backed Axum API routes for health, version, manifest, graph
-preview, context pack, and read receipts.
+fixture-backed Axum API routes for health, version, manifest, graph preview,
+context pack, and read receipts, and a hosted Codex MCP HTTP transport with
+server-side source upload/build workflow for Cloud Run.
 
 Still missing before DIALECTICA is a real production capsule-building service:
 live document/PDF/conversation ingestion, live model-provider extraction,
 PostgreSQL migrations, durable build jobs, task-handler routes, production
-artifact storage, auth, deployment wiring, eval reports, and PRAXIS frontend
-integration.
+artifact storage, tenant-aware authorization beyond bearer-token MCP access,
+eval reports, and PRAXIS frontend integration.
 
 ## First Definition of Done
 

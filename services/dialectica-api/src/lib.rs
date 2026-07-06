@@ -162,6 +162,7 @@ async fn manifest(
         "title": package.manifest.title,
         "type": package.manifest.capsule_type,
         "category": package.manifest.category,
+        "purpose_profile": package.manifest.purpose_profile,
         "cores": package.manifest.cores,
         "status": "ready",
         "review_state": "approved_with_caveats",
@@ -559,6 +560,10 @@ mod tests {
         .await;
         assert_eq!(manifest.0, StatusCode::OK);
         assert_eq!(manifest.1["type"], "situation");
+        assert_eq!(
+            manifest.1["purpose_profile"]["serves_decision"],
+            "Support conflict-analysis drafting about a synthetic border-region certification dispute."
+        );
 
         let graph = request_json(
             app.clone(),

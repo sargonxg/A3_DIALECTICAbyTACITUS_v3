@@ -1,9 +1,9 @@
 # Capsule Change Memo
 
-Diff: `diff_cap_build_conflict_situation_fixture_v1_59e77c1356fc_to_cap_build_conflict_situation_fixture_v1_3277966be18b`
+Diff: `diff_cap_build_conflict_situation_fixture_v1_d80d6e8733a6_to_cap_build_conflict_situation_fixture_v1_2d788efa69df`
 
-- Old capsule: `cap_build_conflict_situation_fixture_v1` v1 (sha256:59e77c1356fc44c1f5f52e348ed5ea190aff2086b0e7f5544fcfdd6a4fdcd77f)
-- New capsule: `cap_build_conflict_situation_fixture_v1` v1 (sha256:3277966be18be8968b1d469c7e097a1615ee915a53f44ad18aabf64e882922b7)
+- Old capsule: `cap_build_conflict_situation_fixture_v1` v1 (sha256:d80d6e8733a69cf2b81a058c91e5277ceaa137c1e8809b67e76d2145f1db2bda)
+- New capsule: `cap_build_conflict_situation_fixture_v1` v1 (sha256:2d788efa69df26cd360b502f2b99dc7215120c9f4aa48271b074172619a3b575)
 
 ## Summary
 

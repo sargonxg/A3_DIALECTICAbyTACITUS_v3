@@ -53,6 +53,7 @@ jobs:
           test -f docs/POST_BUILD_AUDIT_2026_06_08.md
           test -f docs/CODE_QUALITY_TOOLING.md
           test -f docs/CODEX_MCP_CAPSULE_BUILDER.md
+          test -f docs/HOSTED_MCP_CLOUD_RUN.md
           test -f docs/LLM_CONTEXT_EXTRACTION_ARCHITECTURE.md
           test -f docs/SCAFFOLD_AUDIT.md
           test -f docs/FOUNDATION_BUILD.md
@@ -116,6 +117,7 @@ jobs:
           test -f fixtures/golden-policy-capsule/review-decisions/decision_set.json
           test -f schemas/capsule-3.0/praxis_capsule_manifest.schema.json
           test -f schemas/capsule-3.0/praxis_capsule_package.schema.json
+          test -f schemas/capsule-3.0/purpose_profile.schema.json
           test -f schemas/capsule-3.0/ladybug_projection_manifest.schema.json
           test -f schemas/capsule-3.0/ladybug_projection_build_receipt.schema.json
           test -f schemas/capsule-3.0/capsule_build_request.schema.json
@@ -130,6 +132,8 @@ jobs:
           test -f schemas/capsule-0.1.0/manifest.schema.json
           test -f schemas/capsule-0.1.0/capsule.schema.json
           test -f schemas/capsule-0.1.0/ontology_blueprint.schema.json
+          test -f infrastructure/cloud-run/dialectica-mcp.Dockerfile
+          test -f cloudbuild.dialectica-mcp.yaml
 
   rust-workspace:
     name: Rust workspace

@@ -344,11 +344,13 @@ fn schema_export_writes_required_snapshots() {
 
     let manifest_schema = output_dir.join("manifest.schema.json");
     let v3_manifest_schema = output_dir.join("praxis_capsule_manifest.schema.json");
+    let purpose_profile_schema = output_dir.join("purpose_profile.schema.json");
     let capsule_schema = output_dir.join("capsule.schema.json");
     let ontology_blueprint_schema = output_dir.join("ontology_blueprint.schema.json");
 
     assert!(manifest_schema.exists());
     assert!(v3_manifest_schema.exists());
+    assert!(purpose_profile_schema.exists());
     assert!(capsule_schema.exists());
     assert!(ontology_blueprint_schema.exists());
     assert!(std::fs::read_to_string(manifest_schema)

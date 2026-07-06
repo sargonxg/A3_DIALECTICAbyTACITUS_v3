@@ -5,6 +5,35 @@
   "type": "situation",
   "category": "conflict_analysis",
   "title": "Synthetic Border-Region Conflict Situation",
+  "purpose_profile": {
+    "serves_decision": "Support conflict-analysis drafting about a synthetic border-region certification dispute.",
+    "audience": "PRAXIS operator and downstream policy-analysis agents",
+    "time_horizon": "Fixture event window beginning 2026-06-08",
+    "scope_in": [
+      "synthetic election commission statement",
+      "synthetic regional army command rejection"
+    ],
+    "scope_out": [
+      "real-world conflict assessment",
+      "uncaveated legal or security recommendation"
+    ],
+    "success_criteria": [
+      "claims remain tied to source spans",
+      "caveats and open questions remain visible in PRAXIS context"
+    ],
+    "red_lines": [
+      "do not treat fixture material as real-world evidence",
+      "do not suppress contested or stale context"
+    ],
+    "misuse_conditions": [
+      "refuse production use because the fixture is synthetic",
+      "re-gate if used outside conflict-analysis fixture testing"
+    ],
+    "staleness_policy": {
+      "warn_after_days": 14,
+      "refuse_after_days": 30
+    }
+  },
   "owner_uid": "fixture_owner",
   "situation_id": "sit_border_region_fixture",
   "cores": ["aco", "conflict_analysis"],

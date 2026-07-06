@@ -87,7 +87,8 @@ Python tools live under `tools/python/` and may be used for:
 - one-off source-pack inspection;
 - research notebooks or scripts;
 - graph export sanity checks;
-- marketplace analytics prototypes.
+- marketplace analytics prototypes;
+- optional Databricks profile checks and analytics export prototypes.
 
 Python tools must not become the canonical write path for capsule truth. If a
 Python utility proposes capsule records, the Rust validator and review ledger

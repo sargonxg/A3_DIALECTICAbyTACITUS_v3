@@ -1,0 +1,70 @@
+resources:
+  jobs:
+    tacitus_context_capsule_builder_showcase:
+      name: "[${bundle.target}] TACITUS Context Capsule Builder Showcase"
+      description: "Builds USER, SITUATION, TOOL, and OUTPUT Context Capsule demo tables for PRAXIS/DIALECTICA."
+      max_concurrent_runs: 1
+      tasks:
+        - task_key: setup_capsule_lakehouse
+          notebook_task:
+            notebook_path: ../notebooks/01_setup_capsule_lakehouse.py
+            base_parameters:
+              catalog: ${var.catalog}
+
+        - task_key: load_demo_inputs
+          depends_on:
+            - task_key: setup_capsule_lakehouse
+          notebook_task:
+            notebook_path: ../notebooks/02_load_demo_inputs.py
+            base_parameters:
+              catalog: ${var.catalog}
+
+        - task_key: build_context_capsules
+          depends_on:
+            - task_key: load_demo_inputs
+          notebook_task:
+            notebook_path: ../notebooks/03_build_context_capsules.py
+            base_parameters:
+              catalog: ${var.catalog}
+
+        - task_key: build_guided_capsule_builder_flow
+          depends_on:
+            - task_key: build_context_capsules
+          notebook_task:
+            notebook_path: ../notebooks/04_build_guided_capsule_builder_flow.py
+            base_parameters:
+              catalog: ${var.catalog}
+
+        - task_key: showcase_capsule_factory
+          depends_on:
+            - task_key: build_guided_capsule_builder_flow
+          notebook_task:
+            notebook_path: ../notebooks/04_showcase_capsule_factory.py
+            base_parameters:
+              catalog: ${var.catalog}
+
+        - task_key: prepare_databricks_showcase_assets
+          depends_on:
+            - task_key: showcase_capsule_factory
+          notebook_task:
+            notebook_path: ../notebooks/05_prepare_databricks_showcase_assets.py
+            base_parameters:
+              catalog: ${var.catalog}
+
+        - task_key: prepare_ai_showroom
+          depends_on:
+            - task_key: prepare_databricks_showcase_assets
+          notebook_task:
+            notebook_path: ../notebooks/06_prepare_ai_showroom.py
+            base_parameters:
+              catalog: ${var.catalog}
+              model_endpoint: databricks-gpt-5-mini
+
+        - task_key: prepare_capsule_ops_agent
+          depends_on:
+            - task_key: prepare_ai_showroom
+          notebook_task:
+            notebook_path: ../notebooks/07_prepare_capsule_ops_agent.py
+            base_parameters:
+              catalog: ${var.catalog}
+              model_endpoint: databricks-gpt-5-mini

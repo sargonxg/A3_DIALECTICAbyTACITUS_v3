@@ -1,6 +1,7 @@
 use std::{
     fs,
     path::{Component, Path, PathBuf},
+    time::{SystemTime, UNIX_EPOCH},
 };
 
 use dialectica_capsule::{PraxisCapsulePackage, ValidationSeverity};
@@ -25,6 +26,8 @@ pub fn call_tool(name: &str, arguments: &Value) -> Value {
     let result = match name {
         "dialectica_welcome" => Ok(json!({ "welcome": WELCOME })),
         "dialectica_build_capsule" => build_capsule_tool(arguments),
+        "dialectica_upload_sources" => upload_sources_tool(arguments),
+        "dialectica_build_uploaded_capsule" => build_uploaded_capsule_tool(arguments),
         "dialectica_capture_discussion" => capture_discussion_tool(arguments),
         "dialectica_inspect_capsule" => inspect_capsule_tool(arguments),
         "dialectica_validate_capsule" => validate_capsule_tool(arguments),
@@ -74,6 +77,105 @@ fn build_capsule_tool(arguments: &Value) -> Result<Value, String> {
     let mut value = serde_json::to_value(receipt).map_err(|error| error.to_string())?;
     value["promotion_note"] = json!(
         "Local MCP builds create draft or assisted capsule artifacts. Expert promotion remains an explicit review decision outside this tool."
+    );
+    Ok(value)
+}
+
+fn upload_sources_tool(arguments: &Value) -> Result<Value, String> {
+    let build_id = match optional_string(arguments, "build_id") {
+        Some(value) => validate_build_id(&value)?,
+        None => generated_build_id(),
+    };
+    let overwrite = optional_bool(arguments, "overwrite").unwrap_or(false);
+    let files = arguments
+        .get("files")
+        .and_then(Value::as_array)
+        .ok_or_else(|| "missing required argument: files".to_owned())?;
+    if files.is_empty() {
+        return Err("files must contain at least one source file".to_owned());
+    }
+
+    let workspace = hosted_workspace_root()?;
+    let sources_dir = workspace.join(&build_id).join("sources");
+    if sources_dir.exists() && !overwrite {
+        return Err(format!(
+            "build_id {build_id} already has uploaded sources; choose a new build_id or set overwrite=true"
+        ));
+    }
+    fs::create_dir_all(&sources_dir).map_err(|error| error.to_string())?;
+
+    let mut written = Vec::new();
+    for (index, file) in files.iter().enumerate() {
+        let filename = file
+            .get("filename")
+            .and_then(Value::as_str)
+            .ok_or_else(|| format!("files[{index}].filename is required"))?;
+        let filename = validate_upload_filename(filename)?;
+        let content = file
+            .get("content")
+            .and_then(Value::as_str)
+            .ok_or_else(|| format!("files[{index}].content is required"))?;
+        let path = sources_dir.join(&filename);
+        fs::write(&path, content).map_err(|error| error.to_string())?;
+        written.push(json!({
+            "filename": filename,
+            "bytes": content.len()
+        }));
+    }
+
+    Ok(json!({
+        "build_id": build_id,
+        "workspace": workspace,
+        "input_dir": sources_dir,
+        "file_count": written.len(),
+        "files": written,
+        "next_tool": "dialectica_build_uploaded_capsule"
+    }))
+}
+
+fn build_uploaded_capsule_tool(arguments: &Value) -> Result<Value, String> {
+    let build_id = validate_build_id(&required_string(arguments, "build_id")?)?;
+    let capsule_type =
+        dialectica_builder::parse_capsule_type(&required_string(arguments, "capsule_type")?)
+            .map_err(|error| error.to_string())?;
+    let mode = optional_string(arguments, "mode").unwrap_or_else(|| "assisted".to_owned());
+    let build_mode =
+        dialectica_builder::parse_build_mode(&mode).map_err(|error| error.to_string())?;
+    let workflow =
+        optional_string(arguments, "workflow").unwrap_or_else(|| default_workflow(capsule_type));
+    let title = optional_string(arguments, "title");
+
+    let build_dir = hosted_workspace_root()?.join(&build_id);
+    let input_dir = build_dir.join("sources");
+    if !input_dir.is_dir() {
+        return Err(format!(
+            "uploaded source directory is missing for build_id {build_id}; call dialectica_upload_sources first"
+        ));
+    }
+    let output_dir = build_dir.join("output");
+    if output_dir.exists() {
+        return Err(format!(
+            "output already exists for build_id {build_id}; use a fresh build_id for a new hosted build"
+        ));
+    }
+
+    let receipt =
+        dialectica_builder::build_documents_capsule(&dialectica_builder::BuildDocumentsOptions {
+            input_dir: input_dir.clone(),
+            output_dir: output_dir.clone(),
+            capsule_type,
+            build_mode,
+            title,
+            workflow,
+        })
+        .map_err(|error| error.to_string())?;
+    let mut value = serde_json::to_value(receipt).map_err(|error| error.to_string())?;
+    value["build_id"] = json!(build_id);
+    value["hosted_workspace"] = json!(build_dir);
+    value["hosted_input_dir"] = json!(input_dir);
+    value["hosted_output_dir"] = json!(output_dir);
+    value["promotion_note"] = json!(
+        "Hosted MCP builds create draft or assisted capsule artifacts. Expert promotion remains an explicit review decision outside this tool."
     );
     Ok(value)
 }
@@ -213,10 +315,10 @@ fn capsule_status_tool(arguments: &Value) -> Result<Value, String> {
         "archive": file_status(archive_path.as_deref()),
         "praxis_context_pack": file_status(praxis_pack_path.as_deref()),
         "hosted_mode": {
-            "ready": false,
+            "ready": true,
             "planned_endpoint": "/mcp",
-            "artifact_addressing": "build_id, capsule_id, or artifact_id only; no raw local filesystem paths",
-            "auth_required": true
+            "artifact_addressing": "build_id for uploaded hosted sources; package_dir remains available for local trusted workspaces",
+            "auth_env": "DIALECTICA_MCP_BEARER_TOKEN"
         }
     }))
 }
@@ -383,7 +485,7 @@ pub fn read_resource(params: &Value) -> Value {
             "Local bridge: use praxis-context-pack.json for immediate PRAXIS agent context and store the .capsule archive as the portable artifact. Cloud bridge: upload the archive to Cloud Storage, persist state in Cloud SQL PostgreSQL, and let PRAXIS fetch by authenticated capsule_id or signed artifact URL.".to_owned()
         }
         "dialectica://hosted/mcp" => {
-            "Future hosted MCP runs at /mcp over Streamable HTTP, requires authentication, validates tenant ownership and token audience, and accepts build_id, capsule_id, or artifact_id instead of raw filesystem paths.".to_owned()
+            "Hosted MCP runs at /mcp over Streamable HTTP, supports optional bearer-token authentication and Origin allow-listing, and accepts uploaded source files by build_id instead of client-local filesystem paths.".to_owned()
         }
         "dialectica://protocols/user.v1" => protocol_resource_text(CapsuleType::User),
         "dialectica://protocols/situation.v1" => protocol_resource_text(CapsuleType::Situation),
@@ -452,6 +554,51 @@ pub fn tool_definitions() -> Vec<Value> {
                     "mode": { "type": "string", "enum": ["auto-draft", "assisted", "plus-promoted"] }
                 },
                 "required": ["capsule_type", "input_dir", "out_dir"],
+                "additionalProperties": false
+            },
+            "outputSchema": loose_object_schema()
+        }),
+        json!({
+            "name": "dialectica_upload_sources",
+            "title": "Upload Hosted Capsule Sources",
+            "description": "Upload text source files into the hosted MCP workspace and return a build_id. Use this before hosted builds so cloud clients do not pass local filesystem paths.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "build_id": { "type": "string", "description": "Optional stable build id using ASCII letters, numbers, '-' or '_'." },
+                    "overwrite": { "type": "boolean", "description": "Overwrite previously uploaded source files for this build_id." },
+                    "files": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "filename": { "type": "string", "description": "Single safe filename; path separators are rejected." },
+                                "content": { "type": "string", "description": "UTF-8 source text." }
+                            },
+                            "required": ["filename", "content"],
+                            "additionalProperties": false
+                        }
+                    }
+                },
+                "required": ["files"],
+                "additionalProperties": false
+            },
+            "outputSchema": loose_object_schema()
+        }),
+        json!({
+            "name": "dialectica_build_uploaded_capsule",
+            "title": "Build Uploaded Hosted Capsule",
+            "description": "Build a PRAXIS context capsule from source files previously uploaded with dialectica_upload_sources.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "build_id": { "type": "string" },
+                    "capsule_type": { "type": "string", "enum": ["user", "situation", "tool", "output"] },
+                    "title": { "type": "string" },
+                    "workflow": { "type": "string" },
+                    "mode": { "type": "string", "enum": ["auto-draft", "assisted", "plus-promoted"] }
+                },
+                "required": ["build_id", "capsule_type"],
                 "additionalProperties": false
             },
             "outputSchema": loose_object_schema()
@@ -684,7 +831,7 @@ pub fn resource_definitions() -> Vec<Value> {
             "uri": "dialectica://hosted/mcp",
             "name": "hosted-mcp",
             "title": "Hosted MCP Design Boundary",
-            "description": "Future Streamable HTTP /mcp behavior and auth/path restrictions.",
+            "description": "Streamable HTTP /mcp behavior and auth/path restrictions.",
             "mimeType": "text/plain"
         }),
         json!({
@@ -761,6 +908,75 @@ fn optional_string(arguments: &Value, key: &str) -> Option<String> {
         .get(key)
         .and_then(Value::as_str)
         .map(str::to_owned)
+}
+
+fn optional_bool(arguments: &Value, key: &str) -> Option<bool> {
+    arguments.get(key).and_then(Value::as_bool)
+}
+
+fn hosted_workspace_root() -> Result<PathBuf, String> {
+    let path = std::env::var_os("DIALECTICA_MCP_WORKSPACE")
+        .map(PathBuf::from)
+        .unwrap_or_else(|| std::env::temp_dir().join("dialectica-mcp-workspace"));
+    if path
+        .components()
+        .any(|component| component == Component::ParentDir)
+    {
+        return Err(format!(
+            "DIALECTICA_MCP_WORKSPACE must not contain parent traversal: {}",
+            path.display()
+        ));
+    }
+    fs::create_dir_all(&path).map_err(|error| error.to_string())?;
+    fs::canonicalize(&path).map_err(|error| error.to_string())
+}
+
+fn generated_build_id() -> String {
+    let nanos = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .map(|duration| duration.as_nanos())
+        .unwrap_or(0);
+    format!("build_{}_{}", std::process::id(), nanos)
+}
+
+fn validate_build_id(value: &str) -> Result<String, String> {
+    let trimmed = value.trim();
+    if trimmed.is_empty() {
+        return Err("build_id must not be empty".to_owned());
+    }
+    if trimmed.len() > 96 {
+        return Err("build_id must be 96 characters or fewer".to_owned());
+    }
+    if !trimmed
+        .chars()
+        .all(|character| character.is_ascii_alphanumeric() || matches!(character, '-' | '_'))
+    {
+        return Err("build_id may contain only ASCII letters, numbers, '-' and '_'".to_owned());
+    }
+    Ok(trimmed.to_owned())
+}
+
+fn validate_upload_filename(value: &str) -> Result<String, String> {
+    let trimmed = value.trim();
+    if trimmed.is_empty() {
+        return Err("uploaded filename must not be empty".to_owned());
+    }
+    if matches!(trimmed, "." | "..") {
+        return Err("uploaded filename must not be '.' or '..'".to_owned());
+    }
+    if trimmed.contains('/') || trimmed.contains('\\') {
+        return Err("uploaded filename must not contain path separators".to_owned());
+    }
+    if !trimmed
+        .chars()
+        .all(|character| character.is_ascii_alphanumeric() || matches!(character, '-' | '_' | '.'))
+    {
+        return Err(
+            "uploaded filename may contain only ASCII letters, numbers, '-', '_' and '.'"
+                .to_owned(),
+        );
+    }
+    Ok(trimmed.to_owned())
 }
 
 fn required_path(arguments: &Value, key: &str, kind: PathKind) -> Result<PathBuf, String> {

@@ -9,8 +9,10 @@ CLI proof, local diff/change-memo proof, deterministic integrity-envelope
 verification proof, and typed elicitation protocol read/score proof verified on
 2026-06-10; PRAXIS contract JSON export verified on 2026-06-11; deterministic
 elicitation transcript-to-proposal draft verified on 2026-06-17;
-PDF/OCR/conversation ingestion and the durable capsule-building service are not
-yet implemented. See
+manifest-level Purpose Profile validation, compiler rendering, PRAXIS
+context-pack exposure, schema export, and first hosted Codex MCP HTTP transport
+plus Cloud Run deployment wiring verified on 2026-07-06; PDF/OCR/conversation
+ingestion and the durable capsule-building service are not yet implemented. See
 [Code Audit 2026-06-08](CODE_AUDIT_2026_06_08.md),
 [Missing Work Audit 2026-06-08](MISSING_WORK_AUDIT_2026_06_08.md), and
 [LLM Context Extraction Architecture](LLM_CONTEXT_EXTRACTION_ARCHITECTURE.md).
@@ -19,6 +21,9 @@ Strategic update: the 2026-06-09 DIALECTICA v3 strategic plan adds diff,
 elicitation, composition, visibility, attribution, scorecard, Living Capsule,
 and publish-validation slices. These are ledgered as planned work below. They
 are not implemented until they have command, fixture, and test evidence.
+The 2026-07-02 Capsule Capture Doctrine and Build Program are now checked into
+`docs/` as planning context; only the Purpose Profile slice described below is
+implemented.
 
 This ledger turns the architecture docs into a coding sequence. Keep it updated
 whenever a crate, service, migration, fixture, or deployment gate changes.
@@ -48,16 +53,17 @@ The first functional app is not complete until a developer can:
 | Area | Path | Current status | First real implementation |
 | --- | --- | --- | --- |
 | Workspace | `Cargo.toml` | created | keep all crates in one Cargo workspace |
-| Capsule contract | `crates/dialectica-capsule` | v3 package validator plus legacy structs, validation, and schema export implemented | expand validators and checksum/signature contract |
+| Capsule contract | `crates/dialectica-capsule` | v3 package validator plus legacy structs, Purpose Profile schema/validation, validation, and schema export implemented | expand validators and checksum/signature contract |
 | Builder | `crates/dialectica-builder` | local text-document folder and JSONL discussion source to source pack, proposals, review queue, caveated decisions, package, `.capsule`, PRAXIS pack, and import receipt implemented | add PDF/OCR/web ingestion and richer human proposal/review cycles |
 | Extractor | `crates/dialectica-extractor` | fixture-mode source-pack, proposal envelope, model receipt, build-plan, editable reviewer-decision drafts, promotion normalization, elicitation protocol/session/score contracts, deterministic transcript-to-proposal drafts, schema export, and review-trigger routing implemented | scripted Tool capsule promotion fixture, provider traits, and live model orchestration |
-| Compiler | `crates/dialectica-compiler` | deterministic fixture-mode v3 package writer, `.capsule` archive writer, PRAXIS context-pack exporter, PRAXIS import-contract JSON exporter, capsule diff/change-memo writer, integrity-envelope writer/verifier, and review-blocking tests implemented | add elicitation and composition compiler contracts after local proof |
+| Compiler | `crates/dialectica-compiler` | deterministic fixture-mode v3 package writer, Purpose-first agent context rendering, `.capsule` archive writer, PRAXIS context-pack exporter, PRAXIS import-contract JSON exporter, capsule diff/change-memo writer, integrity-envelope writer/verifier, and review-blocking tests implemented | add elicitation and composition compiler contracts after local proof |
 | Store | `crates/dialectica-store` | scaffolded with migration family names only | SQLx migrations and repository interfaces |
 | Evals | `crates/dialectica-eval` | deterministic MVP PRAXIS handoff checks and diff-correctness checks implemented | add fixture outcome, temporal, reasoning-device adherence, and PRAXIS-vs-baseline evals |
 | CLI | `crates/dialectica-cli` | `welcome`, `build-docs`, `elicitation-draft`, `doctor`, `validate`, `verify`, `inspect`, `ontology-plan`, `ladybug-check`, `source-pack-check`, `proposal-check`, `build-plan`, `review-draft`, `review-check`, `promote-check`, `compile-reviewed`, `diff`, `eval`, `eval-diff`, `build-fixture`, `archive`, `context-pack`, `praxis-pack`, `praxis-export`, `mcp-config`, and `schema-export` implemented | add durable job commands after store exists |
 | API | `services/dialectica-api` | fixture-backed Axum health, version, manifest, graph-preview, context-pack, read-receipt, protocol read, and protocol score routes implemented | store-backed jobs, auth, and artifact lookup |
-| MCP | `services/dialectica-mcp` | Hardened Codex stdio MCP server with protocol router, output schemas, structuredContent, welcome, build, discussion capture, inspect, validate, status, review queue, protocol read/score, archive, diff, PRAXIS pack, ontology-plan, read-only Ladybug query, PRAXIS handoff, resources, and prompt implemented | add hosted/authenticated Streamable HTTP `/mcp` only after threat model, auth, tenant checks, and store-backed artifact IDs |
+| MCP | `services/dialectica-mcp` | Hardened Codex stdio MCP server plus hosted HTTP `/mcp` transport with bearer-token auth, Origin allow-listing, server-side source upload by `build_id`, build, inspect, validate, status, review queue, protocol read/score, archive, diff, PRAXIS pack, ontology-plan, read-only Ladybug query, PRAXIS handoff, resources, and prompt implemented | add tenant-aware auth, durable artifact IDs, and store-backed capsule lookup |
 | Task handler | `services/dialectica-task-handler` | scaffolded binary that prints store env | Cloud Tasks-compatible HTTP handler |
+| Databricks capsule factory | `databricks/` | local Databricks Bundle validates against the `tacitus` profile and defines a showcase job for USER, SITUATION, TOOL, and OUTPUT capsule demo tables in the existing `dialectica` catalog | deploy/run only after operator approval, then replace synthetic demo rows with source-backed Domain Pack ingestion |
 | Contract tests | `tests/dialectica-contract-tests` | canonical v3 fixture, source-pack/proposal validation, review-gate routing, reviewer-decision validation, promotion normalization, generated compiler package, archive, context-pack, API route, and legacy migration tests implemented | deep-validator and store-backed job tests |
 
 ## 2026-06-08 Audit Result
@@ -82,11 +88,16 @@ Verified as working:
   PRAXIS `parseDialecticaContextExport`;
 - protocol sessions can draft transcript source packs and source-backed
   review-gated proposals through `elicitation-draft`;
+- v3 manifests require `purpose_profile`; compiler-generated capsules render
+  Purpose first in `agent_context.md` and expose it in PRAXIS context packs;
 - local document-folder builder produces a compiled package, `.capsule`,
   `praxis-context-pack.json`, `praxis-import.json`, and build-source trace;
 - Codex MCP stdio server advertises schema-backed capsule build, inspect,
   validate, status, archive, PRAXIS pack, ontology, resource, and prompt
   surfaces;
+- Codex MCP HTTP server runs at `/mcp`, requires a bearer token when
+  `DIALECTICA_MCP_BEARER_TOKEN` is set, and supports hosted source upload plus
+  `build_id`-addressed capsule builds for Cloud Run;
 - fixture Axum API serves health, version, manifest, graph preview, context
   pack, and deterministic read receipts;
 - schema export works;
@@ -101,6 +112,8 @@ Not yet built:
 - production key management beyond the deterministic local integrity envelope;
 - cloud/store-backed diff routes beyond the local compiler, CLI, and MCP diff
   proof;
+- tenant-aware hosted MCP authorization and durable artifact storage beyond the
+  first bearer-token, server-workspace Cloud Run surface;
 - committed scripted Tool elicitation fixture that promotes and compiles into a
   valid Tool capsule;
 - durable/resumable protocol sessions beyond fixture read/score;

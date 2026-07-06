@@ -6,7 +6,8 @@ backend without becoming the backend.
 Current tool lanes:
 
 - `python/`: eval reports, fixture inspection, source-pack analysis, and graph
-  sanity checks.
+  sanity checks, plus optional Databricks profile verification for TACITUS
+  analytics.
 
 Rules:
 

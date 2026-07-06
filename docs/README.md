@@ -60,10 +60,15 @@ deployment, PRAXIS integration, security, or operations context.
 36. [Architecture](ARCHITECTURE.md)
 37. [Deployment](DEPLOYMENT.md)
 38. [Python Tooling](PYTHON_TOOLING.md)
-39. [DIALECTICA v3 Build Instructions](DIALECTICA_v3_BUILD_INSTRUCTIONS.md)
+39. [Databricks Connection](DATABRICKS_CONNECTION.md)
+40. [DIALECTICA v3 Build Instructions](DIALECTICA_v3_BUILD_INSTRUCTIONS.md)
+41. [DIALECTICA Capsule Capture Doctrine](DIALECTICA_CAPSULE_CAPTURE_DOCTRINE.md)
+42. [DIALECTICA Build Program](DIALECTICA_BUILD_PROGRAM.md)
+43. [Hosted MCP on Cloud Run](HOSTED_MCP_CLOUD_RUN.md)
 
 Build support:
 
+- [Databricks Context Capsule Factory](../databricks/README.md)
 - [Agent Guide](AGENT_GUIDE.md)
 - [Agentic Workflows](AGENTIC_WORKFLOWS.md)
 - [Build Ledger](BUILD_LEDGER.md)

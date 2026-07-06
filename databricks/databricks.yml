@@ -1,0 +1,32 @@
+bundle:
+  name: tacitus-context-capsule-factory
+
+include:
+  - resources/*.yml
+
+variables:
+  catalog:
+    description: Unity Catalog catalog for TACITUS capsule demo tables.
+    default: dialectica
+  node_type_id:
+    description: Small AWS node type for demo job clusters.
+    default: i3.xlarge
+  spark_version:
+    description: Databricks Runtime version for demo job clusters.
+    default: 16.4.x-scala2.12
+
+targets:
+  dev:
+    default: true
+    mode: development
+    workspace:
+      host: https://dbc-69e04818-40fb.cloud.databricks.com
+    variables:
+      catalog: dialectica
+
+  prod:
+    mode: production
+    workspace:
+      host: https://dbc-69e04818-40fb.cloud.databricks.com
+    variables:
+      catalog: dialectica

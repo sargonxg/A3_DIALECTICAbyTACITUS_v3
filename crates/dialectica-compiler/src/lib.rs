@@ -16,9 +16,10 @@ use std::{
 
 use dialectica_capsule::{
     CapsuleManifest, LadybugProjectionBuildReceipt, LadybugProjectionManifest,
-    PraxisCapsuleManifest, PraxisCapsulePackage, CAPSULE_MIME_TYPE, CAPSULE_SPEC_VERSION,
-    LADYBUG_BUILD_RECEIPT_PATH, LADYBUG_DATABASE_PATH, LADYBUG_PROJECTION_MANIFEST_PATH,
-    LADYBUG_PROJECTION_PROFILE, LADYBUG_QUERIES_PATH, LADYBUG_SCHEMA_PATH,
+    PraxisCapsuleManifest, PraxisCapsulePackage, PurposeProfile, PurposeStalenessPolicy,
+    CAPSULE_MIME_TYPE, CAPSULE_SPEC_VERSION, LADYBUG_BUILD_RECEIPT_PATH, LADYBUG_DATABASE_PATH,
+    LADYBUG_PROJECTION_MANIFEST_PATH, LADYBUG_PROJECTION_PROFILE, LADYBUG_QUERIES_PATH,
+    LADYBUG_SCHEMA_PATH,
 };
 use dialectica_extractor::{
     load_build_request, load_source_pack, promote_records, BuildValidationReport,
@@ -127,6 +128,7 @@ pub struct PraxisContextPack {
     pub capsule_id: String,
     pub spec_version: String,
     pub workflow: String,
+    pub purpose_profile: PurposeProfile,
     pub summary: String,
     pub agent_context: String,
     pub operations: String,
@@ -349,6 +351,7 @@ pub fn export_praxis_context_pack(
     let package = PraxisCapsulePackage::load_from_dir(package_dir)
         .map_err(|error| CompilerError::InvalidInput(error.to_string()))?;
     let manifest = package.manifest;
+    let purpose_profile = manifest.purpose_profile.clone();
     let agent_context = fs::read_to_string(package_dir.join("agent_context.md"))?;
     let operations = fs::read_to_string(package_dir.join("operations.md"))?;
     let claims = read_jsonl_values(&package_dir.join("claims.jsonl"))?;
@@ -439,6 +442,7 @@ pub fn export_praxis_context_pack(
         capsule_id: manifest.capsule_id,
         spec_version: manifest.spec_version,
         workflow: workflow.to_owned(),
+        purpose_profile: purpose_profile.clone(),
         summary: format!(
             "{}. Use this capsule for {} with explicit source receipts and caveats.",
             manifest.title, workflow
@@ -468,6 +472,12 @@ pub fn export_praxis_context_pack(
             .collect(),
         capsule_health: json!({
             "status": "usable_with_caveats",
+            "purpose_status": "complete",
+            "staleness_policy": {
+                "warn_after_days": purpose_profile.staleness_policy.warn_after_days,
+                "refuse_after_days": purpose_profile.staleness_policy.refuse_after_days,
+                "refuse_generation": false
+            },
             "warning_count": caveats.len(),
             "rejected_record_count": rejected_record_ids.len()
         }),
@@ -564,6 +574,7 @@ fn write_package(
         capsule_type: capsule_type_value(promoted.selected_type).to_owned(),
         category: build_request.target_workflow.clone(),
         title: source_pack.title.clone(),
+        purpose_profile: purpose_profile(build_request, source_pack),
         owner_uid: None,
         situation_id: Some(build_request.request_id.clone()),
         cores: vec!["aco".to_owned(), "capsule_specific_ontology".to_owned()],
@@ -685,6 +696,60 @@ fn prepare_output_dir(output_dir: &Path) -> Result<(), CompilerError> {
     }
     fs::create_dir_all(output_dir)?;
     Ok(())
+}
+
+fn purpose_profile(
+    build_request: &CapsuleBuildRequest,
+    source_pack: &SourcePack,
+) -> PurposeProfile {
+    let source_titles = source_pack
+        .documents
+        .iter()
+        .map(|document| format!("source `{}`: {}", document.document_id, document.title))
+        .collect::<Vec<_>>();
+    let source_scope = if source_titles.is_empty() {
+        vec![
+            "No source documents were supplied; compilation should fail before promotion."
+                .to_owned(),
+        ]
+    } else {
+        source_titles
+    };
+
+    PurposeProfile {
+        serves_decision: if build_request.output_intent.trim().is_empty() {
+            format!(
+                "Support the `{}` PRAXIS workflow with reviewed capsule context.",
+                build_request.target_workflow
+            )
+        } else {
+            build_request.output_intent.clone()
+        },
+        audience: "PRAXIS operator and downstream policy-analysis agents".to_owned(),
+        time_horizon: format!("Built from source pack timestamp {}", source_pack.created_at),
+        scope_in: source_scope,
+        scope_out: vec![
+            "Rejected, unreviewed, or evidence-requested proposals are lineage only.".to_owned(),
+            "The capsule must not be used as uncaveated legal, electoral, medical, or financial advice.".to_owned(),
+        ],
+        success_criteria: vec![
+            "Every promoted record remains source-span-backed or review-backed.".to_owned(),
+            "PRAXIS receives Purpose before claims, devices, caveats, and output rules.".to_owned(),
+            "Stale or caveated records remain visible as warnings instead of silent context.".to_owned(),
+        ],
+        red_lines: vec![
+            "Do not promote model-derived content without Rust validation and human review.".to_owned(),
+            "Do not hide caveats, rejected records, source gaps, or freshness warnings.".to_owned(),
+        ],
+        misuse_conditions: vec![
+            "Refuse or re-gate generation when the capsule is beyond its refusal staleness policy.".to_owned(),
+            "Do not use this capsule outside the requested workflow without a new review decision.".to_owned(),
+        ],
+        staleness_policy: PurposeStalenessPolicy {
+            warn_after_days: 14,
+            refuse_after_days: 30,
+        },
+    }
 }
 
 fn source_records(source_pack: &SourcePack) -> Vec<Value> {
@@ -1230,6 +1295,40 @@ fn agent_context_markdown(
     output_rules: &[&PromotedRecord],
 ) -> String {
     let mut text = String::new();
+    text.push_str("# PURPOSE\n\n");
+    text.push_str(&format!(
+        "- Serves decision: {}\n",
+        manifest.purpose_profile.serves_decision
+    ));
+    text.push_str(&format!(
+        "- Audience: {}\n",
+        manifest.purpose_profile.audience
+    ));
+    text.push_str(&format!(
+        "- Time horizon: {}\n",
+        manifest.purpose_profile.time_horizon
+    ));
+    text.push_str(&format!(
+        "- Staleness: warn after {} days; refuse after {} days\n",
+        manifest.purpose_profile.staleness_policy.warn_after_days,
+        manifest.purpose_profile.staleness_policy.refuse_after_days
+    ));
+    if !manifest.purpose_profile.scope_in.is_empty() {
+        text.push_str("- Scope in: ");
+        text.push_str(&manifest.purpose_profile.scope_in.join("; "));
+        text.push('\n');
+    }
+    if !manifest.purpose_profile.scope_out.is_empty() {
+        text.push_str("- Scope out: ");
+        text.push_str(&manifest.purpose_profile.scope_out.join("; "));
+        text.push('\n');
+    }
+    if !manifest.purpose_profile.misuse_conditions.is_empty() {
+        text.push_str("- Misuse conditions: ");
+        text.push_str(&manifest.purpose_profile.misuse_conditions.join("; "));
+        text.push('\n');
+    }
+    text.push('\n');
     text.push_str("# CONTRACT\n\n");
     text.push_str("Use this PRAXIS Capsule as source-grounded context. Cite source span ids, surface caveats, and do not promote rejected or unreviewed records.\n\n");
     text.push_str("# CAPSULE\n\n");
@@ -1692,6 +1791,11 @@ mod tests {
 
         assert_eq!(pack.capsule_id, "cap_build_conflict_situation_fixture_v1");
         assert_eq!(pack.workflow, "conflict_map");
+        assert!(pack
+            .purpose_profile
+            .serves_decision
+            .contains("decision brief"));
+        assert!(pack.agent_context.starts_with("# PURPOSE"));
         assert!(!pack.agent_context.trim().is_empty());
         assert!(!pack.retrieval_records.is_empty());
         assert!(!pack.reasoning_devices.is_empty());

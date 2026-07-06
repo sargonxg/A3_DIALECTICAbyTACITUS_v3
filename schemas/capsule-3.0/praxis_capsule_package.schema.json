@@ -26,6 +26,7 @@
         "created_at",
         "layers_present",
         "provenance_root_hash",
+        "purpose_profile",
         "signature",
         "spec_version",
         "title",
@@ -72,6 +73,9 @@
         "provenance_root_hash": {
           "type": "string"
         },
+        "purpose_profile": {
+          "$ref": "#/definitions/PurposeProfile"
+        },
         "signature": {
           "type": "string"
         },
@@ -98,6 +102,83 @@
         "version": {
           "type": "integer",
           "format": "uint64",
+          "minimum": 0.0
+        }
+      }
+    },
+    "PurposeProfile": {
+      "type": "object",
+      "required": [
+        "audience",
+        "misuse_conditions",
+        "red_lines",
+        "scope_in",
+        "scope_out",
+        "serves_decision",
+        "staleness_policy",
+        "success_criteria",
+        "time_horizon"
+      ],
+      "properties": {
+        "audience": {
+          "type": "string"
+        },
+        "misuse_conditions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "red_lines": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "scope_in": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "scope_out": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "serves_decision": {
+          "type": "string"
+        },
+        "staleness_policy": {
+          "$ref": "#/definitions/PurposeStalenessPolicy"
+        },
+        "success_criteria": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "time_horizon": {
+          "type": "string"
+        }
+      }
+    },
+    "PurposeStalenessPolicy": {
+      "type": "object",
+      "required": [
+        "refuse_after_days",
+        "warn_after_days"
+      ],
+      "properties": {
+        "refuse_after_days": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0.0
+        },
+        "warn_after_days": {
+          "type": "integer",
+          "format": "uint32",
           "minimum": 0.0
         }
       }

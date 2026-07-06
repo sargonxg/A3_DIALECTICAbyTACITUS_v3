@@ -252,7 +252,7 @@ Cargo workspace
   crates/dialectica-eval          quality and outcome checks
   crates/dialectica-cli           local validation and fixture commands
   services/dialectica-api         PRAXIS-facing API
-  services/dialectica-mcp         Codex MCP stdio capsule builder
+  services/dialectica-mcp         Codex MCP stdio and hosted HTTP capsule builder
   services/dialectica-task-handler Cloud Tasks entrypoint
   tests/dialectica-contract-tests workspace contract tests
 ```
@@ -276,6 +276,7 @@ cargo run -p dialectica-cli -- welcome
 cargo run -p dialectica-cli -- build-docs --type situation --input .\docs --out $env:TEMP\dialectica-doc-capsule --title "Local Situation Capsule" --workflow decision_brief
 cargo run -p dialectica-cli -- inspect $env:TEMP\dialectica-doc-capsule\package
 cargo run -p dialectica-cli -- mcp-config
+cargo run -p dialectica-mcp -- --http
 cargo run -p dialectica-cli -- doctor
 cargo run -p dialectica-cli -- validate fixtures/canonical-capsules/conflict-situation-capsule
 cargo run -p dialectica-cli -- inspect fixtures/canonical-capsules/conflict-situation-capsule
@@ -543,6 +544,7 @@ pull-based workers, but they should not be the first runtime dependency.
 Recommended first deployment:
 
 - Cloud Run service: `dialectica-api`
+- Cloud Run service: `dialectica-mcp`
 - Cloud Run service: `dialectica-task-handler`
 - Cloud Run jobs: `capsule-backfill`, `capsule-eval`, `source-reindex`
 - Cloud Tasks queues: durable ingestion, compile, review, and export work
@@ -573,6 +575,8 @@ Primary source anchors:
   <https://docs.cloud.google.com/kubernetes-engine/docs/concepts/autopilot-overview>
 
 See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for the full deployment decision.
+See [docs/HOSTED_MCP_CLOUD_RUN.md](docs/HOSTED_MCP_CLOUD_RUN.md) for the
+first hosted Codex MCP deploy path.
 
 ## Benchmark-Informed Position
 
@@ -652,11 +656,13 @@ validate reviewer decisions, normalize promoted records, print a build plan,
 compile a deterministic v3 package, write a deterministic `.capsule` archive,
 export a PRAXIS context pack, diff package versions into cited change memos,
 verify signed package integrity envelopes, serve typed BUILD elicitation
-protocols over API/MCP, serve fixture-backed Axum API routes, and export JSON
-Schema snapshots. Live model-provider calls, durable storage, PRAXIS frontend
-integration, and cloud deployment wait until this local build loop is hardened
-with transcript-to-proposal elicitation, composition contracts, store-backed
-jobs, and ingestion adapters.
+protocols over API/MCP, serve fixture-backed Axum API routes, run a hosted MCP
+HTTP `/mcp` surface for Codex-driven source upload and capsule builds, and
+export JSON Schema snapshots. Live model-provider calls, durable storage, PRAXIS
+frontend integration, tenant-aware hosted authorization, and store-backed jobs
+wait until this local and hosted build loop is hardened with
+transcript-to-proposal elicitation, composition contracts, and ingestion
+adapters.
 
 Start here:
 
@@ -678,12 +684,14 @@ Start here:
    ECC/Codex skills, and verification loop.
 9. [Codex MCP Capsule Builder](docs/CODEX_MCP_CAPSULE_BUILDER.md): local CLI
    and MCP build loop for PRAXIS capsule artifacts.
-10. [Capsule Spec](docs/CAPSULE_SPEC.md): portable bundle contract.
-11. [Engineering Baseline](docs/ENGINEERING_BASELINE.md): crate ownership and
+10. [Hosted MCP on Cloud Run](docs/HOSTED_MCP_CLOUD_RUN.md): Cloud Run deploy
+   and Codex connection runbook.
+11. [Capsule Spec](docs/CAPSULE_SPEC.md): portable bundle contract.
+12. [Engineering Baseline](docs/ENGINEERING_BASELINE.md): crate ownership and
    command gates.
-12. [Improvement Guidelines](docs/IMPROVEMENT_GUIDELINES.md): current gaps and
+13. [Improvement Guidelines](docs/IMPROVEMENT_GUIDELINES.md): current gaps and
    quality bar.
-13. [Scaffold Audit](docs/SCAFFOLD_AUDIT.md): what is real now, what is still
+14. [Scaffold Audit](docs/SCAFFOLD_AUDIT.md): what is real now, what is still
    missing, and what blocks the functional engine.
 
 Use [docs/README.md](docs/README.md) for the full documentation index and

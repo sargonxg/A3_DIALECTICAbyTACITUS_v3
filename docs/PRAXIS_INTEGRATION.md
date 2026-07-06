@@ -24,6 +24,9 @@ Boundary:
   user library state, and cockpit UX state.
 - Firestore mirrors must include the DIALECTICA `bundle_digest` and must be
   refreshed or invalidated when the digest changes.
+- Databricks, when enabled, is a derived analytics and ML plane for TACITUS
+  evals, graph snapshots, and quality metrics. It must not become a direct
+  PRAXIS write path or a hidden source of capsule truth.
 
 ## Minimal API Surface
 
@@ -258,6 +261,22 @@ Minimum receipt fields:
 
 These receipts let DIALECTICA and PRAXIS measure which capsules improve real
 workflows and which ones need review, refresh, or retirement.
+
+## Databricks Analytics Lane
+
+See `docs/DATABRICKS_CONNECTION.md` for local profile checks and the optional
+TACITUS analytics boundary.
+
+The first useful exports are append-only derived tables:
+
+- capsule build metrics;
+- graph node and edge snapshots keyed by `snapshot_id`, `workspace_id`,
+  `capsule_id`, and `bundle_digest`;
+- PRAXIS read receipts;
+- answer-quality eval summaries.
+
+PRAXIS should treat Databricks values as aggregate analytics or experimental ML
+features unless a later ADR creates a reviewed production contract.
 
 ## Capsule+ Compatibility
 

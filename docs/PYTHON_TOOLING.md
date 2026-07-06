@@ -14,7 +14,8 @@ Python tools may:
 - produce eval summaries;
 - run research utilities;
 - sanity-check graph exports;
-- prototype marketplace analytics.
+- prototype marketplace analytics;
+- check optional analytics-plane credentials without printing secrets.
 
 Python tools must not:
 
@@ -31,8 +32,10 @@ tools/python/
   pyproject.toml
   dialectica_tools/
     capsule_report.py
+    databricks_connection.py
   tests/
     test_capsule_report.py
+    test_databricks_connection.py
 ```
 
 ## Current Gate
@@ -40,6 +43,13 @@ tools/python/
 ```powershell
 python -m compileall tools/python
 python -m unittest discover tools/python/tests
+```
+
+Optional Databricks profile check:
+
+```powershell
+cd tools/python
+python -m dialectica_tools.databricks_connection --profile tacitus
 ```
 
 Add `ruff`, `mypy`, and `pytest` when the Python toolchain becomes large enough

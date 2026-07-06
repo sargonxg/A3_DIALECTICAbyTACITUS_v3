@@ -1,0 +1,154 @@
+resources:
+  apps:
+    tacitus_capsule_builder_app:
+      name: "tacitus-capsule-builder-${bundle.target}"
+      source_code_path: ../app
+      description: "Databricks-only TACITUS Context Capsule Factory control room for PRAXIS showcase demos."
+      resources:
+        - name: sql-warehouse
+          sql_warehouse:
+            id: 94eac31b954c5649
+            permission: CAN_USE
+        - name: capsule-workflow-job
+          job:
+            id: 1123194333821498
+            permission: CAN_MANAGE_RUN
+        - name: dashboard-kpis
+          uc_securable:
+            securable_type: TABLE
+            securable_full_name: dialectica.capsule_gold.dashboard_kpis
+            permission: SELECT
+        - name: showroom-console
+          uc_securable:
+            securable_type: TABLE
+            securable_full_name: dialectica.capsule_gold.dashboard_showroom_console
+            permission: SELECT
+        - name: showroom-ai-extraction-lab
+          uc_securable:
+            securable_type: TABLE
+            securable_full_name: dialectica.capsule_gold.dashboard_ai_extraction_lab
+            permission: SELECT
+        - name: showroom-ontology
+          uc_securable:
+            securable_type: TABLE
+            securable_full_name: dialectica.capsule_gold.dashboard_ontology_showroom
+            permission: SELECT
+        - name: showroom-deep-dive
+          uc_securable:
+            securable_type: TABLE
+            securable_full_name: dialectica.capsule_gold.dashboard_capsule_deep_dive
+            permission: SELECT
+        - name: dashboard-capsule-portfolio
+          uc_securable:
+            securable_type: TABLE
+            securable_full_name: dialectica.capsule_gold.dashboard_capsule_portfolio
+            permission: SELECT
+        - name: builder-console
+          uc_securable:
+            securable_type: TABLE
+            securable_full_name: dialectica.capsule_gold.dashboard_builder_console
+            permission: SELECT
+        - name: graph-console
+          uc_securable:
+            securable_type: TABLE
+            securable_full_name: dialectica.capsule_gold.dashboard_graph_console
+            permission: SELECT
+        - name: dashboard-review-workbench
+          uc_securable:
+            securable_type: TABLE
+            securable_full_name: dialectica.capsule_gold.dashboard_review_workbench
+            permission: SELECT
+        - name: dashboard-agent-guidance
+          uc_securable:
+            securable_type: TABLE
+            securable_full_name: dialectica.capsule_gold.dashboard_agent_guidance
+            permission: SELECT
+        - name: ai-search-corpus
+          uc_securable:
+            securable_type: TABLE
+            securable_full_name: dialectica.capsule_gold.ai_search_corpus
+            permission: SELECT
+        - name: context-pack-exports
+          uc_securable:
+            securable_type: TABLE
+            securable_full_name: dialectica.capsule_exports.context_pack_exports
+            permission: SELECT
+        - name: agent-console
+          uc_securable:
+            securable_type: TABLE
+            securable_full_name: dialectica.capsule_gold.dashboard_agent_console
+            permission: SELECT
+        - name: agent-requests-write
+          uc_securable:
+            securable_type: TABLE
+            securable_full_name: dialectica.capsule_gold.agent_requests
+            permission: MODIFY
+        - name: agent-responses-write
+          uc_securable:
+            securable_type: TABLE
+            securable_full_name: dialectica.capsule_gold.agent_responses
+            permission: MODIFY
+        - name: agent-tool-invocations-write
+          uc_securable:
+            securable_type: TABLE
+            securable_full_name: dialectica.capsule_gold.agent_tool_invocations
+            permission: MODIFY
+        - name: agent-feedback-write
+          uc_securable:
+            securable_type: TABLE
+            securable_full_name: dialectica.capsule_gold.agent_feedback_queue
+            permission: MODIFY
+
+    tacitus_capsule_factory_mcp:
+      name: "mcp-tacitus-capsules-${bundle.target}"
+      source_code_path: ../mcp_app
+      description: "Custom MCP server for controlling and inspecting the TACITUS Databricks Context Capsule Factory."
+      resources:
+        - name: sql-warehouse
+          sql_warehouse:
+            id: 94eac31b954c5649
+            permission: CAN_USE
+        - name: capsule-workflow-job
+          job:
+            id: 1123194333821498
+            permission: CAN_MANAGE_RUN
+        - name: mcp-dashboard-kpis
+          uc_securable:
+            securable_type: TABLE
+            securable_full_name: dialectica.capsule_gold.dashboard_kpis
+            permission: SELECT
+        - name: mcp-showroom-console
+          uc_securable:
+            securable_type: TABLE
+            securable_full_name: dialectica.capsule_gold.dashboard_showroom_console
+            permission: SELECT
+        - name: mcp-capsule-portfolio
+          uc_securable:
+            securable_type: TABLE
+            securable_full_name: dialectica.capsule_gold.dashboard_capsule_portfolio
+            permission: SELECT
+        - name: mcp-ai-extraction-lab
+          uc_securable:
+            securable_type: TABLE
+            securable_full_name: dialectica.capsule_gold.dashboard_ai_extraction_lab
+            permission: SELECT
+        - name: mcp-agent-console
+          uc_securable:
+            securable_type: TABLE
+            securable_full_name: dialectica.capsule_gold.dashboard_agent_console
+            permission: SELECT
+        - name: mcp-contracts
+          uc_securable:
+            securable_type: TABLE
+            securable_full_name: dialectica.capsule_gold.dashboard_mcp_contracts
+            permission: SELECT
+        - name: mcp-tool-invocations-write
+          uc_securable:
+            securable_type: TABLE
+            securable_full_name: dialectica.capsule_gold.agent_tool_invocations
+            permission: MODIFY
+        - name: mcp-feedback-write
+          uc_securable:
+            securable_type: TABLE
+            securable_full_name: dialectica.capsule_gold.agent_feedback_queue
+            permission: MODIFY

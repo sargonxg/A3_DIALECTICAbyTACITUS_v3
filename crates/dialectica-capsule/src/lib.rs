@@ -695,6 +695,37 @@ pub struct CapsuleHealthReport {
     pub warnings: Vec<String>,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+pub struct PurposeStalenessPolicy {
+    pub warn_after_days: u32,
+    pub refuse_after_days: u32,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+pub struct PurposeProfile {
+    pub serves_decision: String,
+    pub audience: String,
+    pub time_horizon: String,
+    pub scope_in: Vec<String>,
+    pub scope_out: Vec<String>,
+    pub success_criteria: Vec<String>,
+    pub red_lines: Vec<String>,
+    pub misuse_conditions: Vec<String>,
+    pub staleness_policy: PurposeStalenessPolicy,
+}
+
+impl PurposeProfile {
+    pub fn is_complete(&self) -> bool {
+        !self.serves_decision.trim().is_empty()
+            && !self.audience.trim().is_empty()
+            && !self.time_horizon.trim().is_empty()
+            && !self.scope_in.is_empty()
+            && !self.success_criteria.is_empty()
+            && self.staleness_policy.warn_after_days > 0
+            && self.staleness_policy.refuse_after_days >= self.staleness_policy.warn_after_days
+    }
+}
+
 /// Canonical v3 manifest for a portable `.capsule` package.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, JsonSchema)]
 pub struct PraxisCapsuleManifest {
@@ -706,6 +737,7 @@ pub struct PraxisCapsuleManifest {
     pub capsule_type: String,
     pub category: String,
     pub title: String,
+    pub purpose_profile: PurposeProfile,
     #[serde(default)]
     pub owner_uid: Option<String>,
     #[serde(default)]
@@ -1042,6 +1074,11 @@ pub fn export_schema_dir(path: &Path) -> Result<(), CapsuleLoadError> {
         path,
         "praxis_capsule_manifest.schema.json",
         schema_for!(PraxisCapsuleManifest),
+    )?;
+    write_schema(
+        path,
+        "purpose_profile.schema.json",
+        schema_for!(PurposeProfile),
     )?;
     write_schema(
         path,
@@ -1498,6 +1535,36 @@ fn validate_v3_manifest(package: &PraxisCapsulePackage, report: &mut ValidationR
             ),
             Some(manifest.capsule_id.clone()),
             "Use user, situation, tool, or output. Model source packs, stakeholder maps, scenarios, ontology modules, and expert picks as internal layers.",
+        ));
+    }
+
+    if !manifest.purpose_profile.is_complete() {
+        report.push(ValidationFinding::error(
+            "incomplete_purpose_profile",
+            "manifest.purpose_profile",
+            "Purpose profile must declare the served decision, audience, time horizon, scope, success criteria, and staleness policy.",
+            Some(manifest.capsule_id.clone()),
+            "Populate Purpose before promotion. Purpose is the first contract block consumed by PRAXIS and downstream agents.",
+        ));
+    }
+
+    if manifest.purpose_profile.misuse_conditions.is_empty() {
+        report.push(ValidationFinding::warning(
+            "purpose_has_no_misuse_conditions",
+            "manifest.purpose_profile.misuse_conditions",
+            "Purpose profile has no misuse conditions.",
+            Some(manifest.capsule_id.clone()),
+            "Declare at least one condition under which this capsule should not be used.",
+        ));
+    }
+
+    if manifest.purpose_profile.red_lines.is_empty() {
+        report.push(ValidationFinding::warning(
+            "purpose_has_no_red_lines",
+            "manifest.purpose_profile.red_lines",
+            "Purpose profile has no red lines.",
+            Some(manifest.capsule_id.clone()),
+            "Declare reviewer-visible red lines so PRAXIS can preserve refusal and escalation posture.",
         ));
     }
 
@@ -2232,8 +2299,8 @@ mod tests {
     };
 
     use super::{
-        CapsuleManifest, PraxisCapsuleManifest, PraxisCapsulePackage, ReviewState,
-        CAPSULE_MIME_TYPE,
+        CapsuleManifest, PraxisCapsuleManifest, PraxisCapsulePackage, PurposeProfile,
+        PurposeStalenessPolicy, ReviewState, CAPSULE_MIME_TYPE,
     };
 
     #[test]
@@ -2285,6 +2352,7 @@ mod tests {
             capsule_type: "situation".to_owned(),
             category: "conflict".to_owned(),
             title: "Conflict Situation".to_owned(),
+            purpose_profile: test_purpose_profile(),
             owner_uid: None,
             situation_id: None,
             cores: vec!["aco".to_owned(), "temporal".to_owned()],
@@ -2345,6 +2413,20 @@ mod tests {
   "type": "situation",
   "category": "test",
   "title": "Missing Ladybug Test",
+  "purpose_profile": {
+    "serves_decision": "Test v3 validation.",
+    "audience": "DIALECTICA contract tests",
+    "time_horizon": "Fixture time",
+    "scope_in": ["minimal fixture"],
+    "scope_out": ["production use"],
+    "success_criteria": ["validator emits expected findings"],
+    "red_lines": ["do not treat this as a real capsule"],
+    "misuse_conditions": ["missing Ladybug projection is invalid"],
+    "staleness_policy": {
+      "warn_after_days": 14,
+      "refuse_after_days": 30
+    }
+  },
   "owner_uid": null,
   "situation_id": null,
   "cores": ["aco"],
@@ -2379,5 +2461,22 @@ mod tests {
         fs::write(root.join("runtime.json"), "{}").expect("runtime should write");
         fs::write(root.join("agent_context.md"), "test").expect("agent context should write");
         fs::write(root.join("operations.md"), "test").expect("operations should write");
+    }
+
+    fn test_purpose_profile() -> PurposeProfile {
+        PurposeProfile {
+            serves_decision: "Test capsule validation.".to_owned(),
+            audience: "DIALECTICA contract tests".to_owned(),
+            time_horizon: "Fixture time".to_owned(),
+            scope_in: vec!["fixture records".to_owned()],
+            scope_out: vec!["production use".to_owned()],
+            success_criteria: vec!["validator produces expected findings".to_owned()],
+            red_lines: vec!["do not promote test fixtures".to_owned()],
+            misuse_conditions: vec!["fixture content is synthetic".to_owned()],
+            staleness_policy: PurposeStalenessPolicy {
+                warn_after_days: 14,
+                refuse_after_days: 30,
+            },
+        }
     }
 }

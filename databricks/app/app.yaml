@@ -1,0 +1,10 @@
+command: ['streamlit', 'run', 'app.py']
+env:
+  - name: STREAMLIT_GATHER_USAGE_STATS
+    value: 'false'
+  - name: DATABRICKS_WAREHOUSE_ID
+    valueFrom: sql-warehouse
+  - name: DATABRICKS_CAPSULE_JOB_ID
+    value: '1123194333821498'
+  - name: TACITUS_CATALOG
+    value: dialectica
