@@ -1,0 +1,18 @@
+{
+  "contractVersion": "dialectica-cognitive-draft/1",
+  "capsuleId": "tacitus/synthetic-diplomacy",
+  "version": "0.1.0",
+  "profile": "language",
+  "nodes": [],
+  "statements": [],
+  "knowledge": [{
+    "id": "language-1", "kind": "languageRule", "label": "Considering is not accepting",
+    "scope": ["diplomacy"], "expression": "prepared to consider", "language": "en", "domain": "diplomacy",
+    "meaning": "Conditional willingness to examine a proposal.", "nonImplications": ["Formal acceptance"],
+    "reviewState": "proposed",
+    "provenance": {
+      "generatedBy": {"type": "human", "id": "fixture-expert", "at": "2026-10-03T00:00:00Z"},
+      "sourceRefs": ["e1"], "confidenceKind": "human-authored"
+    }
+  }]
+}

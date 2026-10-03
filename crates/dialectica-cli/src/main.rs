@@ -7,6 +7,85 @@ use dialectica_capsule::{
     ReviewState, CAPSULE_SPEC_VERSION,
 };
 
+fn export_cognitive_native_from_args(args: &[String]) {
+    let result = (|| -> Result<dialectica_compiler::NativeCognitiveReceipt, String> {
+        let request_path = args
+            .first()
+            .ok_or("Missing cognitive draft request JSON.")?;
+        let mut flags = std::collections::BTreeMap::new();
+        let mut allow_write = false;
+        let mut i = 1;
+        while i < args.len() {
+            let flag = &args[i];
+            if flag == "--allow-write" {
+                if allow_write {
+                    return Err("Duplicate --allow-write.".to_owned());
+                }
+                allow_write = true;
+                i += 1;
+                continue;
+            }
+            if !["--source-pack", "--praxis-root", "--out"].contains(&flag.as_str()) {
+                return Err("Unknown cognitive-export option.".to_owned());
+            }
+            let value = args
+                .get(i + 1)
+                .filter(|v| !v.starts_with("--"))
+                .ok_or("Missing cognitive-export option value.")?;
+            if flags.insert(flag.as_str(), value.as_str()).is_some() {
+                return Err("Duplicate cognitive-export option.".to_owned());
+            }
+            i += 2;
+        }
+        if !allow_write {
+            return Err("Native draft export requires --allow-write.".to_owned());
+        }
+        let read = |path: &str| -> Result<String, String> {
+            let metadata = std::fs::metadata(path)
+                .map_err(|_| "Cannot read cognitive input file.".to_owned())?;
+            if !metadata.is_file() || metadata.len() > 16 * 1024 * 1024 {
+                return Err("Cognitive input exceeds file budget.".to_owned());
+            }
+            let content = std::fs::read_to_string(path)
+                .map_err(|_| "Cannot read cognitive input JSON.".to_owned())?;
+            if content.len() > 16 * 1024 * 1024 {
+                return Err("Cognitive input exceeds file budget.".to_owned());
+            }
+            Ok(content)
+        };
+        let source_path = flags.get("--source-pack").ok_or("Missing --source-pack.")?;
+        let root = flags.get("--praxis-root").ok_or("Missing --praxis-root.")?;
+        let output = flags.get("--out").ok_or("Missing --out.")?;
+        let request: dialectica_compiler::CognitiveDraftRequest =
+            serde_json::from_str(&read(request_path)?)
+                .map_err(|_| "Invalid cognitive draft request JSON.".to_owned())?;
+        let source: dialectica_extractor::SourcePack = serde_json::from_str(&read(source_path)?)
+            .map_err(|_| "Invalid source-pack JSON.".to_owned())?;
+        let draft = dialectica_compiler::compile_cognitive_draft(&request, &source)
+            .map_err(|e| e.to_string())?;
+        dialectica_compiler::write_native_cognitive_capsule(
+            &draft,
+            Path::new(root),
+            Path::new(output),
+            true,
+        )
+        .map_err(|e| e.to_string())
+    })();
+    match result {
+        Ok(receipt) => match serde_json::to_string_pretty(&receipt) {
+            Ok(value) => println!("{value}"),
+            Err(_) => {
+                eprintln!("Cannot encode native export receipt.");
+                std::process::exit(1);
+            }
+        },
+        Err(error) => {
+            eprintln!("{error}");
+            std::process::exit(2);
+        }
+    }
+}
+
 fn main() {
     let mut args = std::env::args().skip(1);
     let command = args.next().unwrap_or_else(|| "help".to_owned());
@@ -21,6 +100,10 @@ fn main() {
         "elicitation-draft" => {
             let remaining = args.collect::<Vec<_>>();
             draft_elicitation_from_args(&remaining);
+        }
+        "cognitive-export" => {
+            let remaining = args.collect::<Vec<_>>();
+            export_cognitive_native_from_args(&remaining);
         }
         "validate" => {
             let Some(path) = args.next() else {
@@ -292,6 +375,7 @@ fn print_help() {
     println!("  diff <old-compiled-dir> <new-compiled-dir> --out <dir>");
     println!("  build-fixture <fixture-dir> --out <dir>");
     println!("  archive <compiled-dir> --out <file.capsule>");
+    println!("  cognitive-export <draft.json> --source-pack <source_pack.json> --praxis-root <installed-checkout> --out <new.capsule> --allow-write");
     println!("  context-pack <compiled-dir> [--workflow <workflow>]");
     println!("  eval <compiled-dir> [--workflow <workflow>]");
     println!("  eval-diff <diff.json>");

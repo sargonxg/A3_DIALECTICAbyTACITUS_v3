@@ -32,7 +32,13 @@ use sha2::{Digest, Sha256};
 use zip::{write::SimpleFileOptions, CompressionMethod, ZipWriter};
 
 mod capsule_diff;
+mod cognitive_draft;
 mod integrity;
+
+pub use cognitive_draft::{
+    compile_cognitive_draft, write_native_cognitive_capsule, CognitiveDraftRequest,
+    NativeCognitiveReceipt,
+};
 
 pub use capsule_diff::{
     diff_capsules, export_diff_schema_dir, render_change_memo, write_capsule_diff, CapsuleDiff,

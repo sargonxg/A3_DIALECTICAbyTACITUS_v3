@@ -1,0 +1,17 @@
+{
+  "pack_id": "fixture-cognitive-source", "contract_version": "0.1.0",
+  "title": "Synthetic diplomatic statement", "created_at": "2026-10-03T00:00:00Z",
+  "documents": [{
+    "document_id": "doc-1", "source_type": "official_statement", "title": "Synthetic statement",
+    "uri": "fixture://statement", "retrieved_at": "2026-10-03T00:00:00Z", "language": "en",
+    "rights_or_access": "private_fixture",
+    "content_hash": "sha256:95f8558430e7c85af23adcde211051028334781a95e4ab19144b7bf2431d8ba1",
+    "trust_status": "synthetic", "prompt_injection_risk": "low"
+  }],
+  "spans": [{
+    "span_id": "e1", "document_id": "doc-1", "locator": "paragraph:1",
+    "text_hash": "sha256:95f8558430e7c85af23adcde211051028334781a95e4ab19144b7bf2431d8ba1",
+    "quote": "We are prepared to consider the proposal subject to monitoring.",
+    "language": "en", "rights_or_access": "private_fixture"
+  }]
+}

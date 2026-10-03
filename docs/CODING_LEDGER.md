@@ -28,6 +28,28 @@ implemented.
 This ledger turns the architecture docs into a coding sequence. Keep it updated
 whenever a crate, service, migration, fixture, or deployment gate changes.
 
+## 2026-10-03 Cognitive Draft Native Bridge
+
+The separate `dialectica-cognitive-draft/1` adapter and `cognitive-export` CLI
+compile explicitly supplied typed proposals against the existing source pack,
+verify literal quote digests, preserve document version declarations and
+delegate final native archive validation to an explicitly installed PRAXIS
+checkout. All semantic records remain proposed, rights remain private, and no
+review, promoted spec-3.x bundle, Ladybug, store or hosted service path changes.
+See [ADR-013](decisions/ADR-013-cognitive-draft-native-package-bridge.md) and
+[local export instructions](COGNITIVE_NATIVE_EXPORT.md).
+
+Actual focused evidence: compiler/CLI Cargo tests and Clippy passed; all three
+new default tests and the explicitly invoked Rust-to-PRAXIS roundtrip passed.
+`cargo fmt --all -- --check`, Python compile/unittest checks and `git diff
+--check` passed. The retained native artifact's SHA-256 is
+`0daebaf827d0e6675abcb11208c292ff89312d50022712c7433559e4d5dd645b`;
+the current shared PRAXIS runtime validated that artifact with no issues.
+Graphify code refresh completed with zero model tokens; SQL extraction and
+semantic document extraction remain outside that code-only evidence. The full
+workspace/Ladybug fixture gate was not rerun for this additive draft-only slice;
+focused compatibility evidence does not establish hosted production acceptance.
+
 ## North Star
 
 DIALECTICA builds PRAXIS Capsules: signed, portable, reviewable knowledge-work
