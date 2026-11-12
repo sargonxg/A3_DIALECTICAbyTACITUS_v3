@@ -11,6 +11,21 @@
 
 # DIALECTICA
 
+<!-- tacitus-practical-entry -->
+## Purpose, code and a playable introduction
+
+Build, validate and inspect portable context bundles that preserve evidence, guidance, review state and export rules.
+
+**Experimental context engine.** Active Rust experiment with its own capsule contract. Full cloud ingestion and PRAXIS integration remain incomplete.
+
+[Setup, code walkthrough, research & verification](TACITUS_GUIDE.md) · [Play the original 8-bit teaching adventure](tacitus-demo/index.html) · [Demo credits](tacitus-demo/CREDITS.md)
+
+![The original House of Evidence teaching adventure; synthetic case, separate from this project’s runtime](tacitus-demo/mansion.png)
+
+Research: [RAG](https://arxiv.org/abs/2005.11401), [long-context evidence use](https://arxiv.org/abs/2307.03172), [GraphRAG](https://arxiv.org/abs/2404.16130). [What TACITUS borrows, adds and still needs to measure](https://github.com/sargonxg/sargonxg/blob/main/docs/RESEARCH_AND_DESIGN.md).
+<!-- /tacitus-practical-entry -->
+
+
 **The TACITUS context-capsule engine for PRAXIS.**
 
 DIALECTICA is a Rust-first system for building, validating, reviewing, storing, and exporting portable context objects. A PRAXIS Capsule keeps evidence, temporal status, graph structure, analytical guidance, review decisions, caveats, and output rules together so that analysts and AI agents can work from the same inspectable context.
