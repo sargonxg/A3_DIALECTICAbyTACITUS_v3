@@ -171,6 +171,10 @@ jobs:
         run: cargo run -p dialectica-cli -- inspect fixtures/canonical-capsules/conflict-situation-capsule
       - name: Check canonical v3 Ladybug projection manifest
         run: cargo run -p dialectica-cli -- ladybug-check fixtures/canonical-capsules/conflict-situation-capsule
+      - name: Query pinned native Ladybug fixture
+        run: |
+          cargo run --locked -p dialectica-cli --features ladybug -- ladybug-query fixtures/canonical-capsules/conflict-situation-capsule 'MATCH (n:CapsuleNode) RETURN count(n) AS node_count;' > "$RUNNER_TEMP/ladybug-count.tsv"
+          test "$(tail -n 1 "$RUNNER_TEMP/ladybug-count.tsv")" = "9"
       - name: Validate golden capsule
         run: cargo run -p dialectica-cli -- validate fixtures/golden-policy-capsule/expected-bundle
       - name: Inspect golden capsule

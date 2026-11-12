@@ -1,0 +1,4 @@
+# Keep the optional native library aligned with the locked Rust wrapper.
+# An explicit operator environment override remains visible and intentional.
+[env]
+LBUG_VERSION = "0.17.1"

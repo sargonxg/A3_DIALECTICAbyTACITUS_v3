@@ -16,7 +16,7 @@
 
 Build, validate and inspect portable context bundles that preserve evidence, guidance, review state and export rules.
 
-**Experimental context engine.** Active Rust experiment with its own capsule contract. Full cloud ingestion and PRAXIS integration remain incomplete.
+**Experimental context engine.** [Current local/native verification and pinned graph command](docs/LOCAL_VERIFICATION_2026-11-12.md). Active Rust experiment with its own capsule contract. Full cloud ingestion and PRAXIS integration remain incomplete.
 
 [Setup, code walkthrough, research & verification](TACITUS_GUIDE.md) · [Play the original 8-bit teaching adventure](tacitus-demo/index.html) · [Demo credits](tacitus-demo/CREDITS.md)
 

@@ -1,5 +1,9 @@
 # Coding Ledger
 
+## 2026-11-12 local acceptance and optional native pin
+
+Locked Rust 1.95.0 workspace/fixture gates were executed. The optional Ladybug query now uses the native 0.17.1 release matching the locked Rust wrapper, via a Cargo environment default; the fixture yields nine nodes. CI checks the actual query. See [local verification and remaining gates](LOCAL_VERIFICATION_2026-11-12.md). No capsule contract, storage architecture, production provider or deployment scope changes.
+
 Status: active control file for the first functional DIALECTICA build.
 
 Current audit result: executable v3 contract scaffold plus fixture-mode
